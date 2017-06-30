@@ -1,0 +1,110 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<br>
+
+<?php if ($obj->havePermission( $obj::PERMISSION_EDIT_ANY, $permissions )): ?>
+<p class="elbp_centre">
+    <button class="elbp_b" style="display:inline-block;" onclick="toggleEdit();return false;" id="elbp_custom_plugin_button_edit"><?= $string['edit'] ?></button>
+    <button class="elbp_b" style="display:none;" onclick="validateFormSubmission( $('#elbp_custom_plugin_form') );" id="elbp_custom_plugin_button_save"><?= $string['save'] ?></button>
+    &nbsp;&nbsp;
+    <button class="elbp_b" style="display:none;" onclick="toggleEdit();return false;" id="elbp_custom_plugin_button_cancel"><?= $string['cancel'] ?></button>
+</p>
+<?php endif; ?>
+
+<br>
+<?php if (!$mainAttributes && !$sideAttributes): ?>
+    <p class="elbp_centre"><?= $string['noattributesdefined'] ?></p>
+<?php endif; ?>
+
+<div id="elbp_custom_plugin" style="display:block;">
+    
+    <?php if ($obj->havePermission( $obj::PERMISSION_PRINT, $permissions )): ?>
+        <p class='elbp_right'><a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=all&student=<?= $obj->getStudentID() ?>&custom=1" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a></p>
+    <?php endif; ?>
+    
+    <?php if ($obj->getSetting('plugin_icon') !== false): ?>
+        <div id="custom_plugin_single_icon">
+            <img src="<?= $ELBP->wwwCustomPix ?><?= $obj->getSetting('plugin_icon') ?>" alt="<?= $obj->getTitle() ?>">
+        </div>
+    <?php endif; ?>
+    
+    <div class="elbp_custom_main_elements">
+        
+        <?php if ($mainAttributes): ?>
+            <?php foreach($mainAttributes as $att): ?>
+                <h2 class='custom_attribute_title'><?= $att->name ?></h2>
+                <div class="elbp_custom_attribute_content">
+                    <?= $att->displayValue() ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        
+    </div>
+    
+    
+    <div class="elbp_custom_side_elements">
+        
+        <?php if ($sideAttributes): ?>
+            <?php foreach($sideAttributes as $att): ?>
+                <p><?= $att->name ?>: <?= $att->displayValue() ?></p>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        
+    </div>
+    
+    <br class="cl" />
+    
+</div>
+
+
+<?php if ($obj->havePermission( $obj::PERMISSION_EDIT_ANY, $permissions )): ?>
+
+<div id="elbp_custom_plugin_edit" style="display:none;">
+    
+    <p id="custom_output" class="c"></p>
+    
+    <form id="elbp_custom_plugin_form" action="" method="post">
+    
+        <table class="custom_plugin_table">
+            <tr>
+                <th colspan="2" style='<?= $obj->getHeaderStyle() ?>'><?= $obj->getSetting('plugin_summary_title') ?></th>
+            </tr>
+            <?php foreach($attributes as $attribute): ?>
+            <tr>
+                <td><?= $attribute->name ?></td>
+                <td><?= $attribute->convertToFormElement(); ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+        
+    </form>
+    
+    
+</div>
+
+<?php endif; ?>
+
+<script>
+    
+    function validateFormSubmission(form)
+    {
+        if (ELBP.validate_form(form) == true)
+        {
+            ELBP.Custom.save_single("<?= $obj->getName() ?>", form );
+        }
+    }    
+    
+    
+    function toggleEdit(){
+        
+        $('#elbp_custom_plugin').toggle();
+        $('#elbp_custom_plugin_edit').toggle();
+        $('#elbp_custom_plugin_button_edit').toggle();
+        $('#elbp_custom_plugin_button_save').toggle();
+        $('#elbp_custom_plugin_button_cancel').toggle();
+        
+    }
+    
+</script>
+
+<?= \ELBP\ELBPFORM::getEndCode(); ?>

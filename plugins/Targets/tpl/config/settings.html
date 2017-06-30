@@ -1,0 +1,118 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php \elbp_display_attribute_creation_js($TAR); ?>
+
+<script>
+    var num = <?= count($TAR->getStatuses()) ?>;
+    
+    function addNewStatus(){
+        $('#status_table').append('<tr><td></td><td><input type="hidden" name="status_ids['+num+']" value="-1" /><input type="text" class="normal" name="status_names['+num+']" value="" maxlength="100" /></td><td><input type="text" name="status_imgs['+num+']" value="" maxlength="255" /></td><td><input class="elbp_small" type="text" name="status_order['+num+']" value="" /></td><td><input type="checkbox" name="status_achieved['+num+']" /></td><td><input type="checkbox" name="status_ignore['+num+']" /></td><td><input type="checkbox" name="status_listinsummary['+num+']" /></td><td></td></tr>');
+        num++;
+    }
+
+
+</script>
+
+<h2><?= $string['targetstatuses'] ?></h2>
+<p><?= $string['targetstatuses:desc'] ?></p>
+
+<form action="" method="post">
+    
+<table id="status_table">
+    <tr>
+        <th></th>
+        <th><?= $string['name'] ?></th>
+        <th><?= $string['imgurl'] ?></th>
+        <th><?= $string['order'] ?></th>
+        <th><?= $string['achieved'] ?></th>
+        <th><?= $string['ignore'] ?></th>
+        <th><?= $string['listinsummary'] ?></th>
+        <th><a href="#" onclick="addNewStatus();return false;"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/add_small.png" alt="add" /><?= $string['addnewstatus'] ?></a></th>
+    </tr>
+
+    <?php $num = 0; ?>
+    <?php foreach((array)$TAR->getStatuses() as $status): ?>
+    <tr>
+        <td><small><?= $status->id ?></small></td>
+        <td><input type="hidden" name="status_ids[<?= $num ?>]" value="<?= $status->id ?>" /><input type="text" class="normal" name="status_names[<?= $num ?>]" value="<?= $status->status ?>" maxlength="100" /></td>
+        <td><input type="text" name="status_imgs[<?= $num ?>]" value="<?= $status->img ?>" maxlength="255" /></td>
+        <td><input class="elbp_small" type="text" name="status_order[<?= $num ?>]" value="<?= $status->ordernum ?>" /></td>
+        <td><input type="checkbox" name="status_achieved[<?= $num ?>]" <?= ($status->achieved == 1) ? 'checked' : ''; ?> /></td>
+        <td><input type="checkbox" name="status_ignore[<?= $num ?>]" <?= ($status->ignored == 1) ? 'checked' : ''; ?> /></td>
+        <td><input type="checkbox" name="status_listinsummary[<?= $num ?>]" <?= ($status->listinsummary == 1) ? 'checked' : ''; ?> /></td>
+        <td></td>
+    </tr>
+    <?php $num++; ?>
+    <?php endforeach; ?>
+
+</table>
+    
+    <input type="submit" name="submit_statuses" value="<?= $string['save'] ?>" />
+    
+</form>
+
+
+<br><br>
+
+
+<h2><?= $string['targetattributes'] ?></h2>
+<p><?= $string['targetattributes:desc'] ?></p>
+
+
+<form action="" method="post">
+        
+    <?php \elbp_display_attribute_creation_form($TAR); ?>
+        
+    <input type="submit" name="submit_attributes" value="<?= $string['save'] ?>" />
+    
+</form>
+
+<br><br>
+
+<h2><?= $string['targethover'] ?></h2>
+<p><?= $string['targethover:desc'] ?></p>
+
+<form action="" method="post">
+    
+    <select name="external_target_name_hover_attribute">
+        <option value=""><?= $string['choose'] ?>...</option>
+        <?php if ($TAR->getAttributesForDisplay()): foreach($TAR->getAttributesForDisplay() as $attribute): ?>
+        <option value="<?= $attribute->name ?>" <?= ($TAR->getSetting('external_target_name_hover_attribute') == $attribute->name) ? 'selected' : ''; ?> ><?= $attribute->name ?></option>
+        <?php endforeach; endif; ?>
+    </select>
+    <br><br>
+    <input type="submit" name="submit_target_hover_attribute" value="<?= $string['save'] ?>" />
+    
+</form>
+
+
+<br><br>
+
+<h2><?= $string['targetfilter'] ?></h2>
+<p><?= $string['targetfilter:desc'] ?></p>
+
+<form action="" method="post">
+    
+    <select name="target_filter_attribute">
+        <option value=""><?= $string['choose'] ?>...</option>
+        <?php if ($TAR->getAttributesForDisplay()): foreach($TAR->getAttributesForDisplay() as $attribute): ?>
+        <option value="<?= $attribute->name ?>" <?= ($TAR->getSetting('target_filter_attribute') == $attribute->name) ? 'selected' : ''; ?> ><?= $attribute->name ?></option>
+        <?php endforeach; endif; ?>
+    </select>
+    <br><br>
+    <input type="submit" name="submit_target_filter_attribute" value="<?= $string['save'] ?>" />
+    
+</form>
+
+<br><br>
+
+<h2><?= $string['targetinstructions'] ?></h2>
+<p><?= $string['targetinstructions:desc'] ?></p>
+
+<form action="" method="post">
+    
+    <input type="text" class="elbp_max" name="new_target_instructions" value="<?= ($TAR->getSetting('new_target_instructions')) ? $TAR->getSetting('new_target_instructions') : ''; ?>" />
+    <br><br>
+    <input type="submit" name="submit_target_instructions" value="<?= $string['save'] ?>" />
+    
+</form>

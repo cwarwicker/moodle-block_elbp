@@ -1,0 +1,16 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<div class='elbp_config'>
+    
+    <h1><?= get_string('config', 'block_elbp') ?></h1>
+    
+    <ul class="elbp_tabrow">
+        <li class="<?= ($view == '' || $view == 'main') ? 'selected' : '' ?>"><a href="config.php"><?= $string['main'] ?></a></li>
+    </ul>
+    
+    <?= (!empty($MSGS['errors'])) ? elbp_print_error_msg($MSGS['errors']) : '' ?>
+    <?= (!empty($MSGS['success'])) ? elbp_print_success_msg($MSGS['success']) : '' ?>
+    
+    <?= $this->load( $CFG->dirroot . '/blocks/elbp/plugins/Attachments/tpl/config/'.$view.'.html' ); ?>
+        
+</div>

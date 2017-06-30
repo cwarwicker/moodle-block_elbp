@@ -1,0 +1,13 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php if(!defined('ELBP')) exit; ?>
+
+<form action="" method="post" enctype="multipart/form-data">
+<h2><?= get_string('blockconfig', 'block_elbp') ?></h2>
+<?php $OBJ->displayConfig() ?>
+
+
+
+<br><br>
+    <p class='elbp_centre'><input type="submit" name="submitconfig" value="<?= get_string('save', 'block_elbp') ?>" /></p>
+</form>

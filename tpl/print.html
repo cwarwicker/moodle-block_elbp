@@ -1,0 +1,151 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><?= $pageTitle ?></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style type="text/css">
+            
+            @font-face
+            {
+                font-family: bliss;
+                src: url('<?= $CFG->wwwroot ?>/blocks/elbp/lib/bliss_medium.ttf');
+            }
+            
+            <?php if ($logo): ?>
+            body
+            {
+                background-image: url('<?= $logo ; ?>');
+                background-repeat: no-repeat;
+                background-position: 20px 20px;
+            }
+            <?php endif; ?>
+            
+            div#content
+            {
+                padding-left: 1cm;
+                padding-right: 1cm;
+                font-size: 0.4cm;
+                font-family: bliss;
+            }
+            
+            table.info
+            {
+                width: 750px;
+                margin-left: auto; 
+                margin-right: auto;
+                text-align: center;
+            }
+            
+            table.info td
+            {
+                width: 250px;
+            }
+            
+            h1
+            {
+                font-size: 26pt;
+                text-transform: uppercase;
+            }
+                
+            h2
+            {
+                font-size: 20pt;
+            }
+            
+            h3
+            {
+                font-size: 16pt;
+            }
+            
+            .c
+            {
+                text-align: center;
+            }
+            
+            .b
+            {
+                font-weight: 900;
+            }
+            
+            p
+            {
+                margin-bottom: 20px;
+                margin-top: 0px;
+            }
+            
+            .cl
+            {
+                clear: both;
+            }
+            
+            p.b
+            {
+                margin-bottom: 8px;
+            }
+            
+            div.attribute-main
+            {
+                margin-bottom: 20px;
+            }
+            
+            div.divider
+            {
+                width: 100%;
+                height: 3px;
+                background-color: #000;
+            }
+            
+            table.elbp_matrix_display th, table.elbp_matrix_display td
+            {
+                border: 1px solid #000;
+                text-align: center;
+            }
+            
+            th, td
+            {
+                padding: 0;
+                margin: 0;
+                line-height: 15px;
+            }
+            
+            @media all {
+                .page-break	{ display: none; }
+            }
+
+            @media print {
+                .page-break	{ display: block; page-break-before: always; }
+            }
+            
+        </style>
+        <?php if (isset($css)): ?>
+            <link rel="stylesheet" href="<?= $css ?>" />
+        <?php endif; ?>
+    </head>
+    <body>
+        
+        <div id="content">
+                        
+            <?php if (isset($title)): ?>
+            <div class='c'>
+                <h1><?= $title ?></h1>
+            </div>
+            <?php endif; ?>
+            
+            <?php if (isset($heading)): ?>
+                <div class='c'>
+                    <h2><?= $heading ?></h2>
+                </div>
+            <?php endif; ?>
+                                    
+            <?= $content ?>
+            
+        </div>
+        
+        <script>
+            window.print();
+        </script>
+        
+    </body>
+</html>

@@ -1,0 +1,168 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<script>
+    var num = <?= count($ATT->getTypes()) ?>;
+    var numP = <?= count($ATT->getPeriods()) ?>;
+    
+    function addNewType(){
+        num++;
+        $('#types_table').append('<tr><td><input type="text" class="normal" name="type_names['+num+']" value="" /></td><td><input type="text" class="elbp_small" name="type_codes['+num+']" value="" /></td><td></td></tr>');
+    }
+    
+    function addNewPeriod(){
+        numP++;
+        $('#periods_table').append('<tr><td><input type="text" class="normal" name="periods['+numP+']" value="" /></td><td></td></tr>');
+    }
+    
+</script>
+
+<h2><?= $string['settings'] ?></h2>
+
+<form action="" method="post">
+    
+    <small><strong><?= get_string('coursename', 'block_elbp') ?></strong> - <?= get_string('coursename:desc' ,'block_elbp') ?></small><br>
+    <input type='radio' name='course_name' value='shortname' <?= ($ATT->getSetting('course_name') == 'shortname' ) ? 'checked' : '' ?> /> <?= get_string('shortname', 'block_elbp') ?> &nbsp; 
+    <input type='radio' name='course_name' value='idnumber' <?= ($ATT->getSetting('course_name') == 'idnumber' ) ? 'checked' : '' ?> /> <?= get_string('idnumber', 'block_elbp') ?> &nbsp; 
+    <input type='radio' name='course_name' value='fullname' <?= ($ATT->getSetting('course_name') == 'fullname' ) ? 'checked' : '' ?> /> <?= get_string('fullname', 'block_elbp') ?> &nbsp; 
+    
+    <br><br>
+    
+    <small><strong><?= get_string('coursetype', 'block_elbp') ?></strong> - <?= get_string('coursetype:desc' ,'block_elbp') ?></small><br>
+    <input type='radio' name='course_type' value='both' <?= ($ATT->getSetting('course_type') == 'both' ) ? 'checked' : '' ?> /> <?= get_string('both', 'block_elbp') ?> &nbsp; 
+    <input type='radio' name='course_type' value='meta' <?= ($ATT->getSetting('course_type') == 'meta' ) ? 'checked' : '' ?> /> <?= get_string('metacoursesonly', 'block_elbp') ?> &nbsp; 
+    <input type='radio' name='course_type' value='child' <?= ($ATT->getSetting('course_type') == 'child' ) ? 'checked' : '' ?> /> <?= get_string('childcoursesonly', 'block_elbp') ?> &nbsp; 
+    
+    
+    <br><br>
+    
+    <small><strong><?= get_string('courseattendancehookchildren', 'block_elbp') ?></strong> - <?= get_string('courseattendancehookchildren:desc' ,'block_elbp') ?></small><br>
+    <input type="radio" name="search_children_if_no_course_data" value="1" <?= ($ATT->getSetting('search_children_if_no_course_data') == 1) ? 'checked' : ''; ?> /> <?= $string['enable'] ?> &nbsp;&nbsp; 
+    <input type="radio" name="search_children_if_no_course_data" value="0" <?= ($ATT->getSetting('search_children_if_no_course_data') != 1) ? 'checked' : ''; ?> /> <?= $string['disable'] ?>
+    
+    
+    
+    <br><br>
+    <input type="submit" name="submit_settings" value="<?= $string['save'] ?>" />
+    
+</form>
+
+<br><br>
+
+<h2><?= $string['recordtypes'] ?></h2>
+<p><?= $string['recordtypes:desc'] ?></p>
+    
+<form action="" method="post">
+    
+<table id="types_table">
+    <tr>
+        <th><?= $string['name'] ?></th>
+        <th><?= $string['shortcode'] ?></th>
+        <th><a href="#" onclick="addNewType();return false;"><?= $string['addnewtype'] ?></a></th>
+    </tr>
+
+    <?php $num = 1; ?>
+    <?php foreach((array)$ATT->getTypes() as $short => $full): ?>
+    <tr>
+        <td><input type="text" class="normal" name="type_names[<?= $num ?>]" value="<?= $full ?>" /></td>
+        <td><input type="text" class="elbp_small" name="type_codes[<?= $num ?>]" value="<?= $short ?>" /></td> 
+        <td></td>
+    </tr>
+    <?php $num++; ?>
+    <?php endforeach; ?>
+
+</table>
+    
+    <input type="submit" name="submit_types" value="<?= $string['save'] ?>" />
+    
+</form>
+
+<br><br>
+
+<h2><?= $string['recordperiods'] ?></h2>
+<p><?= $string['recordperiods:desc'] ?></p>
+
+    
+<form action="" method="post">
+    
+    <table id="periods_table">
+    <tr>
+        <th><?= $string['period'] ?></th>
+        <th><a href="#" onclick="addNewPeriod();return false;"><?= $string['addnewperiod'] ?></a></th>
+    </tr>
+
+    <?php $num = 1; ?>
+    <?php foreach((array)$ATT->getPeriods() as $period): ?>
+    <tr>
+        <td><input type="text" class="normal" name="periods[<?= $num ?>]" value="<?= $period ?>" /></td>
+        <td></td>
+    </tr>
+    <?php $num++; ?>
+    <?php endforeach; ?>
+
+</table>
+    
+    <input type="submit" name="submit_periods" value="<?= $string['save'] ?>" />
+    
+</form>
+
+<br><br>
+
+
+<h2><?= $string['tracking'] ?></h2>
+<p><?= $string['trackingattchanges:desc'] ?></p>
+
+    
+<form action="" method="post">
+    
+    <p>
+        <input type="radio" name="tracking_enabled" value="1" <?= ($ATT->getSetting('tracking_enabled') == 1) ? 'checked' : ''; ?> /> <?= $string['enable'] ?> &nbsp;&nbsp; 
+        <input type="radio" name="tracking_enabled" value="0" <?= ($ATT->getSetting('tracking_enabled') != 1) ? 'checked' : ''; ?> /> <?= $string['disable'] ?>
+    </p>
+    
+    <p>
+        <?= $string['trackchangesevery'] ?>: <input type="number" name="track_days" min="1" max="31" value="<?= $ATT->getSetting('track_days') ?>" /> <?= $string['days'] ?>
+    </p>
+    
+    <p>
+        <?= $string['trackingperiod'] ?>: <input type="number" name="tracking_period" min="1" max="365" value="<?= $ATT->getSetting('tracking_period') ?>" /> <?= $string['days'] ?>
+    </p>
+    
+    <p>
+        <?= $string['startdate'] ?>: <input type="text" class="elbp_datepicker" name="tracking_start_date" value="<?= ($ATT->getSetting('tracking_start_date')) ? date('d-m-Y', $ATT->getSetting('tracking_start_date')) : ''; ?>" />
+    </p>
+    
+    <input type="submit" name="submit_tracking" value="<?= $string['save'] ?>" />
+    
+</form>
+
+<br><br>
+
+
+
+<h2><?= $string['profilesummary'] ?></h2>
+<p><?= $string['profilesummary:desc'] ?></p>
+
+<form action="" method="post">
+    
+    <table>
+        <tr>
+            <th><?= $string['type'] ?></th>
+            <th><?= $string['displayinsummary'] ?></th>
+        </tr>
+    <?php foreach((array)$ATT->getTypes() as $type): ?>
+    <tr>
+        <td><?= $type ?></td>
+        <td><select name="student_summary_display_<?= $type ?>">
+                <option value=""><?= $string['none'] ?></option>
+                <?php foreach((array)$ATT->getPeriods() as $period): ?>
+                <option value="<?= $period ?>" <?= ($ATT->getSetting('student_summary_display_'.$type) == $period) ? 'selected' : ''; ?> ><?= $period ?></option>
+                <?php endforeach; ?>
+            </select></td>
+    </tr>
+    <?php endforeach; ?>
+
+    </table>
+    
+        <input type="submit" name="submit_summary_display" value="<?= $string['save'] ?>" />
+
+</form>

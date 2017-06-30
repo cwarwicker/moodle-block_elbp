@@ -1,0 +1,98 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<div id='elbp_studentprofile'>
+    <table class='elbp_studentprofile_table'>
+        <tr>
+            <td class='elbp_studentprofile_column elbp_studentprofile_column_pic'>
+                <strong><?= strtoupper(fullname($student)) ?></strong><br>
+                <small>(<?= $user_or_id ?>)</small><br>
+                <?= $picture ?><br>
+                <small><a href="mailto:<?= $student->email ?>"><?= $student->email ?></a></small>
+            </td>
+
+            <td class='elbp_studentprofile_column_1'><br></td>
+
+            <td class='elbp_studentprofile_column elbp_studentprofile_column_details'>
+                <div id='elbp_studentprofile_details'>
+                    <strong><?= get_string('studentdetails', 'block_elbp') ?></strong>
+                    <br><br>
+                    <?= $details ?>
+                    <br>
+                        <?php if( ($access['user'] || \elbp_has_capability('block/elbp:change_others_profile', $access) ) && $obj->getSetting('allow_profile_editing') == 1):?>
+                            <div class='elbp_studentprofile_edit_link'><a id='elbp_studentprofile_details_edit_link' href='#' onclick='ELBP.StudentProfile.edit("details");return false;'>[<?= get_string('edit') ?>]</a></div>
+                        <?php endif; ?>
+                </div>
+            </td>
+
+            <td class='elbp_studentprofile_column_1'><br></td>
+
+            <td class='elbp_studentprofile_column elbp_studentprofile_column_info'>
+                <div id='elbp_studentprofile_info'>
+                    <strong><?= get_string('studentinfo', 'block_elbp') ?></strong>
+                    <br><br>
+                    <div id='elbp_studentprofile_info_simple'><?= $student_info ?><?= $extra_info ?></div>
+                    <div id='elbp_studentprofile_info_edit' style='display:none;'>
+                        <textarea id="student_info_textarea" rows="5" cols="10"><?= $student_info ?></textarea>
+                    </div>
+                    <br>
+                        <?php if( ($access['user'] || \elbp_has_capability('block/elbp:change_others_profile', $access) ) && $obj->getSetting('allow_profile_editing') == 1 && !$obj->isUsingMIS()):?>
+                            <div class='elbp_studentprofile_edit_link'><a id='elbp_studentprofile_info_edit_link' href='#' onclick='ELBP.StudentProfile.edit("info");return false;'>[<?= get_string('edit') ?>]</a></div>
+                        <?php endif; ?>
+                </div>
+            </td>
+        </tr>
+    </table>   
+</div>
+
+
+<p id="student_profile_output"></p>
+<?php if ($student_summary != ''): ?>
+<div id='elbp_studentprofile_summary'>
+    <div id="summary_title"><?= $string['summary'] ?></div>
+    <div id="summary_content">
+        <?= $student_summary ?>
+    </div>
+    <br class="elbp_cl">
+</div>
+<?php endif; ?>
+
+<?php if ($badges || $eLearningBadges): ?>
+<br>
+<div id='elbp_studentprofile_badges'>
+    <div id="badges_title">
+        <?= get_string('coursebadges', 'badges') ?>
+        <a href="#" onclick="toggleBadges();return false;">
+            <img id="toggle-badges" src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/switch_minus.gif" />
+        </a>
+    </div>
+    <div id="badges_content" style="<?= ($hideBadges) ? 'display:none;' : '' ?>">
+        
+        <?php if ($eLearningBadges): ?>
+            <?php foreach($eLearningBadges as $badge): ?>
+                <div class="badge" title="">
+                    <img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/badge.php?v=<?= count($badge->hours) ?>&b=eLearning" alt="<?= $badge->course->fullname ?>" class="activebadge" /><br>
+                    <small title="<?= implode(', ', $badge->hours) ?>"><b><?= $badge->course->fullname ?> (<?= count($badge->hours) ?>)</b></small>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        
+        <?php if ($badges): ?>
+            <?php foreach($badges as $badge): ?>
+                <div class="badge" title="">
+                    <a href="<?= $CFG->wwwroot ?>/badges/badge.php?hash=<?= $badge->hash ?>" target="_blank">
+                    <?php if (!is_null($badge->courseid)): ?>
+                        <?= \print_badge_image($badge, \context_course::instance($badge->courseid)); ?>
+                    <?php else: ?>
+                        <?= \print_badge_image($badge, \context_system::instance()); ?>
+                    <?php endif; ?>
+                    <br>
+                    <small><b><?= $badge->name ?></b></small>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        
+    </div>
+    <br class="elbp_cl">
+</div>
+<?php endif; ?>

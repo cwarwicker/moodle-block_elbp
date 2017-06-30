@@ -1,0 +1,88 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<h2><?= $string['learningstyles'] ?></h2>
+
+    <table>
+        
+        <tr>
+            <th style="vertical-align:top;"><?= $string['name'] ?></th>
+            <th><?= $string['desc'] ?></th>
+            <th><?= $string['parent'] ?></th>
+        </tr>
+        
+    
+    <?php if ($styles): ?>
+    
+        <?php foreach($styles as $style): ?>
+        
+            <tr>
+                <td><?= $style->name ?></td>
+                <td><?= $style->description ?></td>
+                <td>
+                    <?= (!is_null($style->parent)) ? $styles[$style->parent]->name : $string['na'] ; ?>
+                </td>
+            </tr>
+        
+        <?php endforeach; ?>
+    
+    <?php endif; ?>
+    
+    </table>
+
+
+<br><br>
+
+<h2><?= $string['questions'] ?></h2>
+<p><?= $string['learningstyle:questions:desc'] ?></p>
+
+
+    <table class="elbp_learning_style_answers_config">
+        
+        <tr>
+            <th rowspan='2'><?= $string['question'] ?></th>
+            <th colspan='2'><?= $string['answers'] ?></th>
+        </tr>
+        
+        <tr>
+            <th><?= $string['answer'] ?></th>
+            <th><?= $string['points'] ?></th>
+        </tr>
+        
+        <?php if ($questions): ?>
+        
+            <?php foreach($questions as $question): ?>
+            
+                <tr class="q">
+                    <td style='vertical-align:top;'>
+                        <?= $question->question ?>
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
+
+                <?php if ($question->answers): ?>
+
+                    <?php foreach($question->answers as $answer): ?>
+
+                    <tr class="a">
+                        <td></td>
+                        <td><?= $answer->answer ?></td>
+                        <td>
+                            <?= implode(", ", $OBJ->getAnswerPoints($answer->id)) ?>
+                        </td>
+                    </tr>
+                    
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
+            
+            <?php endforeach; ?>
+        
+        <?php endif; ?>
+        
+    </table>
+    
+
+
+<br><br>
+
+

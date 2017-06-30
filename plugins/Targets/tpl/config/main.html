@@ -1,0 +1,24 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<form action="" method="post">
+<h2><?= get_string('blockconfig', 'block_elbp') ?></h2>
+    <?php $TAR->displayConfig() ?>
+    
+    <br><br>
+    
+    <h2><?= $string['targetconfig'] ?></h2>
+    
+    <small><strong><?= $string['targetconfig:100progressachieved'] ?></strong> - <?= $string['targetconfig:100progressachieved:desc'] ?></small><br>
+    <input type='checkbox' name='target_set_achieved_when_100_progress' <?= ($TAR->getSetting('target_set_achieved_when_100_progress') == 1) ? 'checked' : ''; ?> />
+    <br><br>
+    
+    <small><strong><?= $string['targetconfig:achieved100progress'] ?></strong> - <?= $string['targetconfig:achieved100progress:desc'] ?></small><br>
+    <input type='checkbox' name='target_set_100_progress_when_achieved' <?= ($TAR->getSetting('target_set_100_progress_when_achieved') == 1) ? 'checked' : ''; ?> />
+    <br><br>
+    
+    <small><strong><?= $string['targetconfig:calendar'] ?></strong> - <?= $string['targetconfig:calendar:desc'] ?></small><br>
+    <input type='checkbox' name='integrate_calendar' <?= ($TAR->getSetting('integrate_calendar') == 1) ? 'checked' : ''; ?> />
+    <br><br>
+    
+    <p class='elbp_centre'><input type="submit" name="submitconfig" value="<?= $string['save'] ?>" /></p>
+</form>

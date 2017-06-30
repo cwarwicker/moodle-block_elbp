@@ -1,0 +1,116 @@
+<?php if(!defined('ELBP')) exit; ?>    
+    
+<br><br>
+
+<div id="elbp_learning_styles_content">
+
+<table id="learning_styles_table" class="elbp_centre">
+    
+    <tr>
+        <?php foreach($styles as $style): ?>
+        <td colspan="<?= (isset($style->children) ? (count($style->children) + 1) : 1) ?>">
+            <a href="#" onclick="showLearningStyleDescription(<?= $style->id ?>);return false;">
+                <img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/LearningStyles/pix/style_<?= $style->id ?>.png" alt="<?= $style->name ?>" /><br>
+            </a>
+            <h2><?= $style->name ?></h2>
+            <?php if ($scores): ?>
+                <span><?= round( ($scores[$style->id] / $scores['total']) * 100, 1 ) ?>%</span>
+            <?php endif; ?>
+        </td>
+        <?php endforeach; ?>
+    </tr>
+    
+    <tr>
+        
+        <?php foreach($styles as $style): ?>
+        
+            <?php if (isset($style->children) && $style->children): ?>
+            
+                <?php foreach($style->children as $child): ?>
+                    <td>
+                        <a href="#" onclick="showLearningStyleDescription(<?= $child->id ?>);return false;">
+                            <img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/LearningStyles/pix/style_<?= $child->id ?>.png" alt="<?= $child->name ?>" /><br>
+                        </a>
+                        <h2><?= $child->name ?></h2>
+                        <?php if ($scores): ?>
+                            <span><?= (isset($scores['total:'.$child->parent])) ? round( ($scores[$child->id] / $scores['total:'.$child->parent]) * 100, 1 ) : 0 ?>%</span>
+                        <?php endif; ?>
+                    </td>
+                <?php endforeach ;?>
+            
+            <?php else: ?>
+                <td></td>
+            <?php endif; ?>
+        
+        <?php endforeach; ?>
+        
+    </tr>
+    
+</table>
+
+<br>
+<div>
+    
+    <?php foreach($styles as $style): ?>
+    
+        <div class="hidden_learning_style_info" id="learning_style_info_<?= $style->id ?>">
+            <b><?= $style->name ?></b>: <?= $style->description ?>
+        </div>
+        
+        <?php if (isset($style->children) && $style->children): ?>
+            <?php foreach($style->children as $child): ?>
+                <div id="learning_style_info_<?= $child->id ?>" class="hidden_learning_style_info">
+                    <b><?= $child->name ?></b>: <?= $child->description ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    
+    <?php endforeach; ?>
+    
+</div>
+
+<br><br>
+
+<?php if (!$obj->userHasResults()): ?>
+    <p class="elbp_centre"><button onclick="ELBP.LearningStyles.load_display('questionnaire');return false;" class="elbp_b"><?= $string['takequestionnaire'] ?></button></p>
+<?php else: ?>
+    <p class="elbp_centre"><button onclick="ELBP.LearningStyles.load_display('questionnaire');return false;" class="elbp_b"><?= $string['takequestionnaireagain'] ?></button></p>
+    
+    <p class="elbp_centre"><small><?= $string['date'] ?>: <?= $obj->getLastTakenDate() ?></small></p>
+    
+    <table id="elbp_learning_styles_answers">
+        
+        <tr>
+            <th>#</th>
+            <th><?= $string['question'] ?></th>
+            <th><?= $string['youranswer'] ?></th>
+            <th><?= $string['style'] ?></th>
+        </tr>
+        
+        <?php if ($answers): ?>
+            <?php foreach($answers as $answer): ?>
+            <tr>
+                <td><?= $answer->qnum ?></td>
+                <td><?= $answer->question ?></td>
+                <td><?= $answer->answer ?></td>
+                <td><?= implode(", ", $answer->styles) ?></td>
+            </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
+        
+    </table>
+        
+<?php endif; ?>
+
+
+
+
+</div>
+
+<script>
+    function showLearningStyleDescription(id)
+    {
+        $('.hidden_learning_style_info').hide();
+        $('#learning_style_info_'+id).slideDown();
+    }
+</script>

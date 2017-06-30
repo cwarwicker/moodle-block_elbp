@@ -1,0 +1,118 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?= (!empty($MSGS['errors'])) ? elbp_error_alert_box($MSGS['errors']) : '' ?>
+<?= (!empty($MSGS['success'])) ? elbp_success_alert_box($MSGS['success']) : '' ?>
+
+<h2><?= $string['useractions'] ?></h2>
+<p><?= $string['useractions:desc'] ?></p>
+<br>
+<div id="user-actions">
+    
+    
+    <form action='#user-actions' method='post'>
+        
+        <small><strong><?= $string['resetuserplugincolours'] ?></strong> - <?= $string['resetuserplugincolours:desc'] ?></small><br>
+        <select name='reset_colours_for' onchange="$('#reset_colour_for_user').toggle();return false;">
+            <option value='ALL' selected='selected'><?= $string['allusers'] ?></option>
+            <option value='USER'><?= $string['specificuser'] ?></option>
+        </select> &nbsp;&nbsp; 
+        <input type='text' name='for_user' id='reset_colour_for_user' placeholder='<?= $string['username'] ?>' value='' style='display:none;' />
+         &nbsp;&nbsp; 
+        <input type="submit" name="submit_reset_colours" value="<?= $string['submit'] ?>" />
+        
+    </form>
+    
+    <br><br>
+    
+    <form action='#user-actions' method='post'>
+        
+        <small><strong><?= $string['clearmentee'] ?></strong> - <?= $string['clearmentee:desc'] ?></small><br>
+        <select name='clear_mentees_for' onchange="$('#clear_mentee_for_user').toggle();return false;">
+            <option value='ALL' selected='selected'><?= $string['allusers'] ?></option>
+            <option value='USER'><?= $string['specificuser'] ?></option>
+        </select> &nbsp;&nbsp; 
+        <input type='text' name='for_pt' id='clear_mentee_for_user' placeholder='<?= $string['username'] ?>' value='' style='display:none;' />
+         &nbsp;&nbsp; 
+        <input type="submit" name="submit_clear_personal_tutors" value="<?= $string['submit'] ?>" />
+        
+    </form>
+    
+    <br><br>
+    
+    <form action='#user-actions' method='post'>
+        
+        <small><strong><?= $string['setusercapabilities'] ?></strong> - <?= $string['setusercapabilities:desc'] ?></small><br>
+        <select name='capability' onchange="$('#cap-info').text( $(this).children(':selected').attr('desc') );return false;">
+            <option value="" desc=""></option>
+            <?php if($capabilities): ?>
+                <?php foreach($capabilities as $capability): ?>
+                    <option value="<?= $capability->id ?>" desc="<?= elbp_html($string[str_replace('block/', '', $capability->name)]) ?>"><?= $capability->name ?></option> 
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </select> &nbsp;&nbsp; 
+        
+        <select name='value'>
+            <option value="0"><?= strtoupper($string['prohibit']) ?></option>
+            <option value="1"><?= strtoupper($string['allow']) ?></option>
+        </select> &nbsp;&nbsp; 
+        
+        <input type='text' name='user' placeholder='<?= $string['username'] ?>' value='' />
+         &nbsp;&nbsp; 
+        <input type="submit" name="submit_user_capability" value="<?= $string['submit'] ?>" />
+        <br>
+        <small id='cap-info'></small>
+        
+    </form>
+
+    <br><br>
+    <?php if ($userCapabilities): ?>
+
+    <div id='elbp_user_capabilities'>
+        <table id='elbp_user_capabilities'>
+
+            <tr>
+                <th><?= $string['username'] ?></th>
+                <th><?= $string['user'] ?></th>
+                <th><?= $string['capability'] ?></th>
+                <th><?= $string['value'] ?></th>
+                <th></th>
+            </tr>
+
+            <?php foreach($userCapabilities as $userCap): ?>
+
+                <tr>
+                    <td><?= $userCap->username ?></td>
+                    <td><?= $userCap->firstname . ' ' . $userCap->lastname ?></td>
+                    <td><?= $userCap->name ?></td>
+                    <td><?= ($userCap->value == 1) ? strtoupper($string['allow']) : strtoupper($string['prohibit']) ?></td>
+                    <td>
+                        <form action='#user-actions' method='post'>
+                            <input type="hidden" name="id" value="<?= $userCap->id ?>" />
+                            <input type="image" name="submit_delete_user_capability" src="<?= $OUTPUT->pix_url('t/delete') ?>" />
+                        </form>
+                    </td>
+                </tr>
+
+            <?php endforeach; ?>            
+
+        </table>
+    </div>
+
+    <?php endif; ?>
+        
+    
+</div>
+
+<script>
+    
+    $(document).ready( function(){
+        
+        var hash = document.location.hash;
+        if (hash !== '')
+        {
+            $(hash).show();
+        }
+        
+    } );
+    
+</script>

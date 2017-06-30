@@ -1,0 +1,20 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<div class='elbp_config'>
+    
+    <h1><?= get_string('config', 'block_elbp') ?></h1>
+    
+    <ul class="elbp_tabrow">
+        <li class="<?= ($view == '' || $view == 'main') ? 'selected' : '' ?>"><a href="config.php"><?= $string['main'] ?></a></li>
+        <li class="<?= ($view == 'settings') ? 'selected' : '' ?>"><a href="config.php?view=settings"><?= $string['settings'] ?></a></li>
+        <li class="<?= ($view == 'mis') ? 'selected' : '' ?>"><a href="config.php?view=mis"><?= $string['mis'] ?></a></li>
+        <li class="<?= ($view == 'data') ? 'selected' : '' ?>"><a href="config.php?view=data"><?= $string['data'] ?></a></li>
+        <li class="<?= ($view == 'crons') ? 'selected' : '' ?>"><a href="config.php?view=crons"><?= $string['crons'] ?></a></li>
+    </ul>
+    
+    <?= (!empty($MSGS['errors'])) ? elbp_error_alert_box($MSGS['errors']) : '' ?>
+    <?= (!empty($MSGS['success'])) ? elbp_success_alert_box($MSGS['success']) : '' ?>
+    
+    <?= $this->load( $CFG->dirroot . '/blocks/elbp/plugins/'.$OBJ->getName().'/tpl/config/'.$view.'.html' ); ?>
+        
+</div>

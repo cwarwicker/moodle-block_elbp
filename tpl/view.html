@@ -1,0 +1,26 @@
+<?php if(!defined('ELBP')) exit; ?>
+<br>
+<div id='elbp_error_output'>ERROR: Oh No!</div>
+
+<?php if($groups): ?>
+
+    <ul class='elbp_tabrow'>
+        <?php foreach($groups as $group): ?>
+            <?php if (!isset($sel)) $sel = 'selected'; ?>
+            <li class='<?= $sel ?>'><a href='#' onclick='ELBP.load("group", <?= $group->id ?>);ELBP.set_group_class(this);return false;'><?= $group->name ?></a></li>
+            <?php if (isset($sel)) $sel = ''; ?>
+        <?php endforeach; ?>
+    </ul>
+
+<?php endif; ?>
+
+<br>
+
+<div id='elbp_summary_boxes'>
+
+    
+
+</div>
+
+
+<br><br><br><br>

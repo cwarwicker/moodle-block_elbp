@@ -1,0 +1,40 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<form id='my_settings'>
+
+    <p class="elbp_centre"><b><?= $userFullName ?></b></p>
+    
+    <strong><?= $string['generalsettings'] ?></strong><br>
+    <small><?= $string['pluginslayout'] ?></small><br>
+    <select name='plugins_layout'>
+        <?php if ($layouts): ?>
+            <?php foreach($layouts as $layout): ?>
+            <option value="<?= $layout->getID() ?>" <?= (($userLayout = \ELBP\PluginLayout::getUsersLayout($studentID)) && $userLayout->getID() == $layout->getID()) ? 'selected' : '' ?> ><?= $layout->getName() ?></option>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </select>
+        
+    <br><br>
+    
+    <strong $string['pluginsettings'] ?></strong><br>
+    <?php if($plugins): ?>
+        <?php foreach($plugins as $plugin): ?>
+        <?php if($plugin->getName() == 'StudentProfile'): continue; endif; ?>
+        <?php $plugin->loadStudent($studentID) ?>
+            <?= $plugin->getTitle() ?><br>
+            <small><?= $string['blockconfig:headerbg'] ?></small><br>
+            <input type='color' name='<?= $plugin->getName() ?>_bg<?= ($plugin->isCustom()) ? '_custom' : '' ?>' value='<?= $plugin->getHeaderBackgroundColour() ?>' /><br>
+            <small><?= $string['blockconfig:headerfont'] ?></small><br>
+            <input type='color' name='<?= $plugin->getName() ?>_font<?= ($plugin->isCustom()) ? '_custom' : '' ?>' value='<?= $plugin->getHeaderFontColour() ?>' /><br>
+            <br>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <?= $string['noplugins'] ?>
+    <?php endif; ?>
+
+</form>
+    
+<script type="text/javascript">
+     // If the user's browser doesn't support the "color" input type, we'll have to do it differently
+     ELBP.apply_colour_picker();     
+</script>

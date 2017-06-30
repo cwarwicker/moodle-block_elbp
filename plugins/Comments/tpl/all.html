@@ -1,0 +1,70 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<p class="elbp_right">
+    <small>
+        <?php if (elbp_has_capability('block/elbp:print_comment', $access)): ?>&nbsp; <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=all&student=<?= $obj->getStudentID() ?>" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['printall'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+    </small>
+</p>
+
+<?php if (elbp_has_capability('block/elbp:add_comment', $access)): ?>
+    <p class="elbp_centre"><button class="elbp_b" onclick="ELBP.Comments.load_display('new');return false;"><?= $string['newcomment'] ?></button></p>
+<?php endif; ?>
+    <br>
+
+    <div id="elbp_comments_output"></div>
+    
+    <?php foreach($comments as $comment): ?>
+    
+    <div id="elbp_comment_<?= $comment->getID() ?>" class="elbp_comment">
+        
+        <table class="elbp_comment_header_table" onclick="$('#comment_content_<?= $comment->getID() ?>').slideToggle();return false;">
+            
+            <tr>
+                <td class="elbp_object_icon">
+                    <img id="object_icon_comment_<?= $comment->getID() ?>" src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/<?= $comment->getResolvedImage() ?>.png" />
+                </td>
+                
+                <td class="elbp_object_name">
+                    <span class="title"><?= ($title_attribute !== false) ? $comment->getAttribute($title_attribute) : ''; ?> 
+                        <?= ($comment->isHidden()) ? '<span style="color:red;">['.$string['hidden'].']</span>' : ''; ?>
+                        &nbsp;
+                        <?= ($comment->isPublished()) ? '<span style="color:purple;">['.$string['publishedtoportal'].']</span>' : ''; ?>
+                    </span><br>
+                    <strong><?= $comment->getDate('D jS F Y') ?></strong>
+                    <br>
+                    <?= get_string('setby', 'block_elbp') ?>: <?= $comment->getSetByUserFullName() ?>, <?= $comment->getSetDate('D jS F Y') ?>
+                </td>
+                
+                
+                <?php if ($comment->getPositiveImage()): ?>
+                    <td class="elbp_object_icon">
+                        <img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Comments/pix/<?= $comment->getPositiveImage() ?>" />
+                    </td>
+                <?php endif; ?>
+                
+            </tr>
+        </table>
+        
+        <div id="comment_content_<?= $comment->getID() ?>" class="elbp_comment_hidden">
+            <div class="elbp_centre">
+                <small><?php if (elbp_has_capability('block/elbp:edit_comment', $access)): ?><a href="#" onclick="ELBP.Comments.edit_comment(<?= $comment->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/editstring', 'core') ?>" alt="" /> <?= $string['edit'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+                       <?php if (elbp_has_capability('block/elbp:delete_comment', $access)): ?>&nbsp; <a href="#" onclick="ELBP.Comments.delete_comment(<?= $comment->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/delete', 'core') ?>" alt="" /> <?= $string['delete'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+                       <?php if (elbp_has_capability('block/elbp:print_comment', $access)): ?>&nbsp; <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $comment->getID() ?>" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+                </small>
+                <br><br>
+                <?php if (elbp_has_capability('block/elbp:mark_comment_resolved', $access)): ?>
+                    <small id="resolve_link_resolve_<?= $comment->getID() ?>" style="display:<?= (!$comment->isResolved()) ? 'block' : 'none'; ?>;"><a href="#" onclick="ELBP.Comments.mark_resolved(<?= $comment->getID() ?>, 1);return false;" title="<?= $string['markincidentasresolved:desc'] ?>" >[<?= $string['markasresolved'] ?>]</a></small>
+                    <small id="resolve_link_unresolve_<?= $comment->getID() ?>" style="display:<?= ($comment->isResolved()) ? 'block' : 'none'; ?>;"><a href="#" onclick="ELBP.Comments.mark_resolved(<?= $comment->getID() ?>, 0);return false;" title="<?= $string['markincidentasunresolved:desc'] ?>" >[<?= $string['markasunresolved'] ?>]</a></small>
+                    <br><br>
+                <?php endif; ?>
+            </div>
+            <?php $comment->display() ?>
+        </div>
+        
+    </div>
+    <br><br>
+    
+    <?php endforeach; ?>
+    <?php if (!$comments): ?>
+    <p class="elbp_centre"><?= $string['noresults'] ?></p>
+    <?php endif; ?>

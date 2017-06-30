@@ -1,0 +1,43 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+       <td class="elbp_summary_title" <?php if ($obj->getSetting('plugin_icon') !== false): ?> style="background-image:url('<?= $ELBP->wwwCustomPix ?><?= $obj->getSetting('plugin_icon') ?>');" <?php else: ?> style="height:32px" <?php endif; ?>>
+            <?= $obj->getSetting('plugin_summary_title') ?>
+        </td>  
+      </tr>
+    </tbody>
+  </table>
+
+<div style="text-align:left;padding:5px;">
+    <?php if ($attributes): ?>
+
+    <table style="width:100%;" class="c">
+        <tr>
+            <?php foreach($attributes as $attribute): ?>
+                <th><?= $attribute->name ?></th>
+            <?php endforeach; ?>
+        </tr>
+        
+        <?php if ($items): ?>
+            <?php foreach($items as $item): ?>
+                <?php $obj->loadStudent( $obj->getStudentID(), $item->id, $attributes ) ?>
+                <tr id="incremental_item_<?= $item->id ?>">
+                    <?php foreach($attributes as $attribute): ?>
+                        <td>
+                            <?= $attribute->displayValue( false, true ); ?>
+                        </td>
+                    <?php endforeach; ?>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <td colspan='<?= count($attributes) ?>'><?= $string['noresults'] ?></td>
+        <?php endif; ?>
+        
+        
+    </table>
+
+    <?php endif; ?>
+    
+</div>

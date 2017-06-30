@@ -1,0 +1,123 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<h2><?= $string['generalsettings'] ?></h2>
+<p><?= $string['generalsettings:desc'] ?></p>
+<br>
+
+<?= (!empty($MSGS['errors'])) ? elbp_error_alert_box($MSGS['errors']) : '' ?>
+<?= (!empty($MSGS['success'])) ? elbp_success_alert_box($MSGS['success']) : '' ?>
+
+<form action="" method="post" enctype="multipart/form-data">
+    
+    <h3><?= $string['academicyear'] ?></h3>
+    <small><strong><?= $string['academicyearstart'] ?></strong> - <?= $string['academicyear:desc'] ?></small>
+    <br>
+    <?= get_string('enable') ?> <input type="radio" name="academic_year_enabled" value="1" <?php if (\ELBP\Setting::getSetting('academic_year_enabled') == 1): echo 'checked'; endif; ?> /> &nbsp;&nbsp; 
+    <?= get_string('disable') ?>  <input type="radio" name="academic_year_enabled" value="0"  <?php if (\ELBP\Setting::getSetting('academic_year_enabled') != 1): echo 'checked'; endif; ?> />      
+    <br>
+    <?= get_string('date') ?> <input type="text" name="academic_year_start_date" value="<?= $ELBP->getAcademicYearStartDate() ?>" class="elbp_datepicker" />
+    
+    
+    <br><br><br>
+    
+    
+    
+    <h3><?= $string['systemroles'] ?></h3>
+    <small><strong><?= $string['frontpageteacherrole'] ?></strong> - <?= $string['frontpageteacherrole:desc'] ?></small>
+    <br>
+    <input type="text" name="elbp_frontpageteacher" value="<?= \ELBP\Setting::getSetting('elbp_frontpageteacher') ?>" />
+    <br><br>
+
+    <small><strong><?= $string['personaltutorrole'] ?></strong> - <?= $string['personaltutorrole:desc'] ?></small>
+    <br>
+    <input type="text" name="elbp_personaltutor" value="<?= \ELBP\Setting::getSetting('elbp_personaltutor') ?>" />
+    <br><br>
+
+    <small><strong><?= $string['aslrole'] ?></strong> - <?= $string['aslrole:desc'] ?></small>
+    <br>
+    <input type="text" name="elbp_asl" value="<?= \ELBP\Setting::getSetting('elbp_asl') ?>" />
+    <br><br>
+    
+    <small><strong><?= $string['elbpadminrole'] ?></strong> - <?= $string['elbpadminrole:desc'] ?></small>
+    <br>
+    <input type="text" name="elbp_admin" value="<?= \ELBP\Setting::getSetting('elbp_admin') ?>" />
+    <br><br><br>
+    
+    <h3><?= $string['courses'] ?></h3>
+    <small><strong><?= $string['excludecourses'] ?></strong> - <?= $string['excludecourses:desc'] ?></small>
+    <br>
+    <input type="text" class="elbp_max" name="exclude_courses" value="<?= \ELBP\Setting::getSetting('exclude_courses') ?>" />
+    
+    <br><br><br>
+    
+
+    <h3><?= $string['appearance'] ?></h3>
+    <small><strong><?= $string['themelayout'] ?></strong> - <?= $string['themelayout:desc'] ?></small>
+    <br>
+    <select name="theme_layout">
+        <option value=""></option>
+        <?php if($themeLayouts): ?>
+            <?php foreach($themeLayouts as $layout => $info): ?>
+                <option value="<?= $layout ?>" <?= ($ELBP->getThemeLayout() == $layout) ? 'selected' : ''; ?> ><?= $layout ?></option>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </select>
+    <br><br>
+    
+    <small><strong><?= $string['dockposition'] ?></strong> - <?= $string['dockposition:desc'] ?></small>
+    <br>
+    <select name="dock_position">
+        <option value="left"><?= $string['left'] ?></option>
+        <option value="bottom" <?= ($ELBP->getDockPosition() == 'bottom') ? 'selected' : ''; ?> ><?= $string['bottom'] ?></option>
+    </select>
+    <br><br>
+    
+    <small><strong><?= $string['logo'] ?></strong> - <?= $string['logo:desc'] ?></small>
+    <br>
+    <small>
+        <?php if (is_writable($ELBP->dirCustomPix)): ?>
+            <b class='elbp_good'><?= get_string('dirwritable', 'block_elbp') ?> : <?= $ELBP->dirCustomPix ?></b>
+        <?php else : ?>
+            <b class='elbp_error'><?= get_string('dirnotwritable', 'block_elbp') ?> : <?= $ELBP->dirCustomPix ?></b>
+        <?php endif; ?>
+    </small>
+    <br>
+    <p>
+        <?php if ($ELBP->getSetting('print_logo') !== false): ?>
+            <img style="max-height:50px;" src="<?= $ELBP->wwwCustomPix . $ELBP->getSetting('print_logo') ?>" alt="<?= get_string('logo', 'block_elbp') ?>" /> &nbsp; 
+            <input type="checkbox" name="logo_delete_current" value="1" /> <?= get_string('delete') ?><br><br>
+        <?php endif; ?>
+        <input type="file" name="logo" value="" />
+    </p>
+        
+    <br><br>
+    
+    <h3><?= $string['userguides'] ?></h3>
+    
+    <small><strong><?= $string['student'] ?></strong> - <?= $string['userguide:student:desc'] ?></small>
+    <br>
+    <p>
+        <?php if ($ELBP->getSetting('student_user_guide') !== false): ?>
+            <?php if (\file_exists($CFG->dataroot . '/ELBP/' . $ELBP->getSetting('student_user_guide'))): ?>
+                <a href="<?= $CFG->wwwroot ?>/blocks/elbp/download.php?f=<?= elbp_get_data_path_code( $CFG->dataroot . '/ELBP/' . $ELBP->getSetting('student_user_guide') ) ?>" target="_blank"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/file_icons/<?= \elbp_get_file_icon( $ELBP->getSetting('student_user_guide') ) ?>" /> <?= $ELBP->getSetting('student_user_guide') ?></a>
+                <br>
+            <?php endif; ?>
+        <?php endif; ?>
+        <input type="file" name="student_user_guide" value="" />
+    </p>
+    
+    <small><strong><?= $string['staff'] ?></strong> - <?= $string['userguide:staff:desc'] ?></small>
+    <br>
+    <p>
+        <?php if ($ELBP->getSetting('staff_user_guide') !== false): ?>
+            <?php if (\file_exists($CFG->dataroot . '/ELBP/' . $ELBP->getSetting('staff_user_guide'))): ?>
+                <a href="<?= $CFG->wwwroot ?>/blocks/elbp/download.php?f=<?= elbp_get_data_path_code( $CFG->dataroot . '/ELBP/' . $ELBP->getSetting('staff_user_guide') ) ?>" target="_blank"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/file_icons/<?= \elbp_get_file_icon( $ELBP->getSetting('staff_user_guide') ) ?>" /> <?= $ELBP->getSetting('staff_user_guide') ?></a>
+                <br>
+            <?php endif; ?>
+        <?php endif; ?>
+        <input type="file" name="staff_user_guide" value="" />
+    </p>
+       
+    <p class='elbp_centre'><input type="submit" name="submitconfig" value="<?= $string['save'] ?>" /></p>
+    
+</form>

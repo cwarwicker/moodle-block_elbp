@@ -1,0 +1,134 @@
+.elbp_centre
+{
+    text-align: center;
+}
+
+div.periodical_report_overall
+{
+    width: 100%;
+    margin: auto;
+}
+
+div.periodical_report_overall > div#periodical_report_overall_info,
+div.periodical_report_overall > div#periodical_report_overall_comments
+{
+    width: 75%;
+    margin: auto;
+    margin-bottom: 0.5cm;
+    padding: 1%;
+    background-color: #FCFCFC;
+    vertical-align: top;
+}
+
+
+
+div#periodical_report_overall_info_info table
+{
+    width: 100%;
+    text-align: left;
+}
+
+div#periodical_report_overall_info_info table tr td:first-child
+{
+    font-weight: bold;
+    vertical-align: top;
+}
+
+div.periodical_report_course
+{
+
+    width: 90%;
+    margin: auto;
+    background-color: #FCFCFC;
+    margin-bottom: 30px;
+    padding: 10px 30px;
+
+}
+
+div.periodical_report_course p.title
+{
+    color: #4782B5;
+    font-weight: bold;
+    padding: 0px 30px;
+}
+
+div.periodical_report_course h3
+{
+    text-align: center;
+}
+
+div.periodical_report_course h2
+{
+    font-size: 1.2em;
+}
+
+div.periodical_report_course hr
+{
+    width: 80%;
+    margin: auto;
+}
+
+div.elbp_course_report_main_elements
+{
+    float:left;
+    width: 45%;
+    padding:2.5%;
+}
+
+div.elbp_course_report_summary_elements
+{
+    float:right;
+    width: 45%;
+    padding:2.5%;
+}
+
+table.attendance_periods_table_course_reports
+{
+    width: 80% !important;
+    margin: auto;
+    text-align: center !important;
+}
+
+table.attendance_periods_table_course_reports th, table.attendance_periods_table_course_reports td
+{
+    font-size: 9pt !important;
+    border: none !important;
+}
+
+table.attendance_periods_table_course_reports td
+{
+    font-weight: normal !important;
+}
+
+table.target_grades_table_course_reports
+{
+    width: 50% !important;
+    margin: auto;
+    text-align: left !important;
+}
+
+div.elbp_course_report_summary_elements > table.target_grades_table_course_reports
+{
+    width: 75% !important;
+}
+
+table.target_grades_table_course_reports th, table.target_grades_table_course_reports td
+{
+    font-size: 9pt !important;
+    border: none !important;
+}
+
+table.target_grades_table_course_reports td
+{
+    font-weight: normal !important;
+}
+
+div#content, td
+{
+    font-size: 8pt !important;
+}
+
+.elbp_cl
+{
+    clear: both;
+}

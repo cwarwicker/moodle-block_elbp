@@ -1,0 +1,155 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+
+<h2><?= $string['permissions'] ?></h2>
+<p><?= $string['permissions:customreport:desc'] ?></p>
+
+
+<form action="" method="post" >
+ 
+    <table id="custom_plugin_permissions">
+        
+        <tr>
+            
+            <th><?= get_string('role') ?></th>
+            
+            <th title="<?= $string['permission:view:desc'] ?>"><a href="#" onclick="toggleCheckPermission('VIEW');return false;"><?= $string['permission:view'] ?></a><br><small>[<?= $OBJ::PERMISSION_VIEW ?>]</small></th>
+            
+            <?php if($OBJ->getStructure() == 'multi' || $OBJ->getStructure() == 'incremental'): ?>
+                <th title="<?= $string['permission:add:desc'] ?>"><a href="#" onclick="toggleCheckPermission('ADD');return false;"><?= $string['permission:add'] ?></a><br><small>[<?= $OBJ::PERMISSION_ADD ?>]</small></th>
+            <?php endif; ?>
+            
+            <?php if($OBJ->getStructure() != 'int_db' && $OBJ->getStructure() != 'ext_db'): ?>
+                <th title="<?= $string['permission:editany:desc'] ?>"><a href="#" onclick="toggleCheckPermission('EDIT');return false;"><?= $string['permission:editany'] ?></a><br><small>[<?= $OBJ::PERMISSION_EDIT_ANY ?>]</small></th>
+            <?php endif; ?>
+            
+            <?php if($OBJ->getStructure() == 'multi' || $OBJ->getStructure() == 'incremental'): ?>
+                <th title="<?= $string['permission:editown:desc'] ?>"><a href="#" onclick="toggleCheckPermission('EDIT_OWN');return false;"><?= $string['permission:editown'] ?></a><br><small>[<?= $OBJ::PERMISSION_EDIT_OWN ?>]</small></th>
+                <th title="<?= $string['permission:delany:desc'] ?>"><a href="#" onclick="toggleCheckPermission('DEL');return false;"><?= $string['permission:delany'] ?></a><br><small>[<?= $OBJ::PERMISSION_DEL_ANY ?>]</small></th>
+                <th title="<?= $string['permission:delown:desc'] ?>"><a href="#" onclick="toggleCheckPermission('DEL_OWN');return false;"><?= $string['permission:delown'] ?></a><br><small>[<?= $OBJ::PERMISSION_DEL_OWN ?>]</small></th>
+            <?php endif; ?>
+            
+            <th title="<?= $string['permission:print:desc'] ?>"><a href="#" onclick="toggleCheckPermission('PRINT');return false;"><?= $string['permission:print'] ?></a><br><small>[<?= $OBJ::PERMISSION_PRINT ?>]</small></th>
+            
+        </tr>
+        
+        <tr>
+            
+            <td><?= get_string('administrator') ?></td>
+            
+            <td><input type="checkbox" readonly disabled checked /></td>
+            
+            <?php if($OBJ->getStructure() == 'multi' || $OBJ->getStructure() == 'incremental'): ?>
+                <td><input type="checkbox" readonly disabled checked /></td>
+            <?php endif; ?>
+            
+            <?php if($OBJ->getStructure() != 'int_db' && $OBJ->getStructure() != 'ext_db'): ?>
+                <td><input type="checkbox" readonly disabled checked /></td>
+            <?php endif; ?>
+            
+            <?php if($OBJ->getStructure() == 'multi' || $OBJ->getStructure() == 'incremental'): ?>
+                <td><input type="checkbox" readonly disabled checked /></td>
+                <td><input type="checkbox" readonly disabled checked /></td>
+                <td><input type="checkbox" readonly disabled checked /></td>
+            <?php endif; ?>
+            
+            <td><input type="checkbox" readonly disabled checked /></td>
+            
+        </tr>
+        
+        <?php foreach($roles as $role): ?>
+        
+        <tr>
+            
+            <td><a href="#" onclick="toggleCheckRole(<?= $role->id ?>);return false;"><?= $role->name ?> (<?= $role->shortname ?>)</a></td>
+            
+            <td><input type="checkbox" name="permissions[<?= $role->id ?>][]" value="<?= $OBJ::PERMISSION_VIEW ?>" class="ROLE_<?= $role->id ?> PERM_VIEW" <?= ($OBJ->roleHasPermission($role->id, $OBJ::PERMISSION_VIEW)) ? 'checked' : ''; ?> /></td>
+            
+            <?php if($OBJ->getStructure() == 'multi' || $OBJ->getStructure() == 'incremental'): ?>
+                <td><input type="checkbox" name="permissions[<?= $role->id ?>][]" value="<?= $OBJ::PERMISSION_ADD ?>" class="ROLE_<?= $role->id ?> PERM_ADD" <?= ($OBJ->roleHasPermission($role->id, $OBJ::PERMISSION_ADD)) ? 'checked' : ''; ?> /></td>
+            <?php endif; ?>
+            
+            <?php if($OBJ->getStructure() != 'int_db' && $OBJ->getStructure() != 'ext_db'): ?>
+                <td><input type="checkbox" name="permissions[<?= $role->id ?>][]" value="<?= $OBJ::PERMISSION_EDIT_ANY ?>" class="ROLE_<?= $role->id ?> PERM_EDIT" <?= ($OBJ->roleHasPermission($role->id, $OBJ::PERMISSION_EDIT_ANY)) ? 'checked' : ''; ?> /></td>
+            <?php endif; ?>
+                
+            <?php if($OBJ->getStructure() == 'multi' || $OBJ->getStructure() == 'incremental'): ?>
+                <td><input type="checkbox" name="permissions[<?= $role->id ?>][]" value="<?= $OBJ::PERMISSION_EDIT_OWN ?>" class="ROLE_<?= $role->id ?> PERM_EDIT_OWN" <?= ($OBJ->roleHasPermission($role->id, $OBJ::PERMISSION_EDIT_OWN)) ? 'checked' : ''; ?> /></td>
+                <td><input type="checkbox" name="permissions[<?= $role->id ?>][]" value="<?= $OBJ::PERMISSION_DEL_ANY ?>" class="ROLE_<?= $role->id ?> PERM_DEL" <?= ($OBJ->roleHasPermission($role->id, $OBJ::PERMISSION_DEL_ANY)) ? 'checked' : ''; ?> /></td>
+                <td><input type="checkbox" name="permissions[<?= $role->id ?>][]" value="<?= $OBJ::PERMISSION_DEL_OWN ?>" class="ROLE_<?= $role->id ?> PERM_DEL_OWN" <?= ($OBJ->roleHasPermission($role->id, $OBJ::PERMISSION_DEL_OWN)) ? 'checked' : ''; ?> /></td>
+            <?php endif; ?>
+            
+            <td><input type="checkbox" name="permissions[<?= $role->id ?>][]" value="<?= $OBJ::PERMISSION_PRINT ?>" class="ROLE_<?= $role->id ?> PERM_PRINT" <?= ($OBJ->roleHasPermission($role->id, $OBJ::PERMISSION_PRINT)) ? 'checked' : ''; ?> /></td>
+            
+        </tr>
+        
+        <?php endforeach; ?>
+        
+    </table>
+        
+    <input type="submit" name="submit_permissions" value="<?= $string['save'] ?>" />
+    
+</form>
+
+<br><br>
+
+<h2><?= $string['checkpermissions'] ?></h2>
+<p><?= $string['checkpermissions:customreport:desc'] ?></p>
+
+<form action="" method="post">
+    
+    <label><small><?= $string['studentusernameelbp'] ?></small></label> <input type="text" name="check_student" value="" />
+    <br>
+    <label><small><?= $string['studentusernamelooking'] ?></small></label> <input type="text" name="check_staff" value="" />
+    <br><br>
+    <input type="submit" name="submit_check_permissions" value="<?= $string['run'] ?>" />
+    
+    <br><br>
+    
+    <?php if (isset($OBJ->userrolepermissions)): ?>
+        
+        <table>
+            <tr><th><?= get_string('role') ?></th><th><?= $string['permissions'] ?></th></tr>
+
+            <?php foreach($OBJ->userrolepermissions as $roleID => $perms): ?>
+
+                <tr>
+                    <td class='b'><?= \elbp_get_role_name($roleID) ?></td>
+                </tr>
+
+                <?php if ($perms): ?>
+                    <?php foreach($perms as $perm): ?>
+                    <tr>
+                        <td></td>
+                        <td><?= $perm ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
+            <?php endforeach; ?>
+
+        </table>
+    
+    <?php endif; ?>
+    
+</form>
+
+
+
+<script>
+    
+    function toggleCheckRole(id){
+        
+        var boxes = $('.ROLE_'+id);
+        boxes.prop('checked', !boxes.prop('checked'));
+        
+    }
+    
+    function toggleCheckPermission(name){
+        
+        var boxes = $('.PERM_'+name);
+        boxes.prop('checked', !boxes.prop('checked'));
+        
+    }
+    
+</script>

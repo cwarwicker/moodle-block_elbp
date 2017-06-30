@@ -1,0 +1,90 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<h2><?= $string['datesettings'] ?></h2>
+<p><?= $string['datesettings:register:desc'] ?></p>
+
+<form action="" method="post">
+
+    <small><strong><?= $string['startdateandweek'] ?></strong> - <?= $string['startdateandweek:desc'] ?></small><br> 
+    <input type="text" class="elbp_datepicker" name="start_date" value="<?= $OBJ->getSetting('start_date'); ?>" placeholder="dd-mm-yyy" />&nbsp;&nbsp;<input type="number" name="start_week" value="<?= $OBJ->getSetting('start_week'); ?>" />
+    <br><br>
+    <small><strong><?= $string['enddateandweek'] ?></strong> - <?= $string['enddateandweek:desc'] ?></small><br> 
+    <input type="text" class="elbp_datepicker" name="end_date" value="<?= $OBJ->getSetting('end_date'); ?>" placeholder="dd-mm-yyy" />&nbsp;&nbsp;<input type="number" name="end_week" value="<?= $OBJ->getSetting('end_week'); ?>" />
+    <br><br>
+    <input type="submit" name="submitconfig" value="<?= $string['save'] ?>" />
+
+</form>
+
+<br><br>
+
+
+<h2><?= $string['valuesettings'] ?></h2>
+<p><?= $string['valuesettings:desc'] ?></p>
+
+<form action="" method="post">
+
+    <div class='elbp_centre'>
+        <a href='#' onclick='addValueRow();return false;'>
+            <img src='<?= $CFG->wwwroot ?>/blocks/elbp/pix/add_small.png' /> <?= $string['addnewrow'] ?>
+        </a>
+        <br><br>
+    </div>
+
+    <table id="elbp_register_values_table">
+        
+        <tr><th><?= $string['code'] ?></th><th><?= $string['title'] ?></th></tr>
+        
+        <?php $n = 0; ?>
+        
+        <?php if ($allValues): ?>            
+        
+            <?php foreach($allValues as $value): ?>
+            
+            <tr>
+                <td><input class="elbp_small" type="text" name="values_code[<?= $n ?>]" value="<?= $value->code ?>" /></td>
+                <td><input type="text" name="values_title[<?= $n ?>]" value="<?= $value->title ?>" /></td>
+            </tr>
+            
+            <?php $n++; ?>
+            <?php endforeach; ?>
+        
+        <?php endif; ?>
+        
+    </table>
+    
+    
+    <input type="submit" name="submit_values" value="<?= $string['save'] ?>" />
+
+</form>
+
+<br><br>
+
+
+<h2><?= $string['othersettings'] ?></h2>
+
+<form action="" method="post">
+
+    <small><strong><?= $string['displayname'] ?></strong> - <?= $string['register:displayname:desc'] ?></small><br>
+    <small><?= $string['both'] ?></small> <input type="radio" name="display_name" value="both" <?= ($settings['display_name'] == 'both' || !$settings['display_name']) ? 'checked' : ''; ?> /> &nbsp;&nbsp; 
+    <small><?= $string['coursename'] ?></small> <input type="radio" name="display_name" value="course" <?= ($settings['display_name'] == 'course') ? 'checked' : ''; ?> /> &nbsp;&nbsp; 
+    <small><?= $string['eventdesc'] ?></small> <input type="radio" name="display_name" value="event" <?= ($settings['display_name'] == 'event') ? 'checked' : ''; ?> />
+    <br><br>
+    
+    
+    <input type="submit" name="submitconfig" value="<?= $string['save'] ?>" />
+
+</form>
+
+
+<script>
+    
+    var n = <?= $n; ?>;
+    
+    function addValueRow(){
+        
+        $('#elbp_register_values_table').append('<tr><td><input class="elbp_small" type="text" name="values_code['+n+']" value="" /></td><td><input type="text" name="values_title['+n+']" value="" /></td></tr>');
+        n++;
+        
+    }
+    
+</script>

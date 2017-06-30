@@ -1,0 +1,28 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+          <td class="elbp_summary_title" style="background-image:url('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $obj->getName() ?>/pix/icon.png');">
+              <?= $string['yourfileattachments'] ?>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+
+<p><small><?= $string['lastfiveattachments'] ?></small></p>
+
+<table class="elbp_summary_table elbp_attachment_summary">
+    <tbody>
+      <?php if ($attachments): foreach($attachments as $attachment): ?>
+      <tr>
+          <td><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/file_icons/<?= elbp_get_file_icon($attachment->getFileName()) ?>" alt="<?= pathinfo($attachment->getFileName(), PATHINFO_EXTENSION); ?>" /></td>
+          <td><a href="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Attachments/download.php?id=<?= $attachment->getID() ?>" target="_blank"><?= elbp_html($attachment->getTitle()) ?></a></td>
+      </tr>
+      <?php endforeach; else: ?>
+      <tr>
+          <td style="text-align:center !important;"><?= $string['noresults'] ?></td>
+      </tr>
+      <?php endif; ?>
+    </tbody>
+  </table>

@@ -1,0 +1,45 @@
+<form action="" method="post" id="questionnaire-form">
+
+    <p class="elbp_centre"><button onclick="validateLearningStylesFormSubmission( $(this.form) );return false;" class="elbp_b"><?= $string['submit'] ?></button></p>
+    
+    <p id="elbp_learning_styles_output"></p>
+    
+<?php if ($questions): ?>
+
+<?php foreach($questions as $question): ?>
+
+<h2><?= $question->ordernum ?>) <?= $question->question ?></h2>
+
+<?php if ($question->answers): ?>
+    <?php foreach($question->answers as $answer): ?>
+        <input type="radio" name="answer_q<?= $question->id ?>" value="<?= $answer->id ?>" validation="NOT_EMPTY" /> <?= $answer->answer ?><br>
+    <?php endforeach; ?>
+<?php endif; ?>
+
+<br><br>
+
+<?php endforeach; ?>
+
+<?php endif; ?>
+
+    <p class="elbp_centre"><button onclick="validateLearningStylesFormSubmission( $(this.form) );return false;" class="elbp_b"><?= $string['submit'] ?></button></p>
+
+
+</form>
+
+
+<script>
+    
+    function validateLearningStylesFormSubmission(frm)
+    {
+        
+        if (ELBP.validate_form(frm) === true){
+            
+             ELBP.LearningStyles.save( frm );
+            
+        }
+        
+        
+    }    
+    
+</script>

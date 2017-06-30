@@ -1,0 +1,8 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<ul class="elbp_tabrow">
+    <li id="tab_link_list" class="elbp_view_link"><a id="tab_list" href="#" onclick="ELBP.Attachments.load_display('list', this);return false;"><?= $string['attachments'] ?></a></li>
+</ul>
+
+<div id="elbp_attachments_content"></div>
+<script>ELBP.Attachments.load_display('list', $('a#tab_list'));</script>

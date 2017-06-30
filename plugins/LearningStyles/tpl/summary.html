@@ -1,0 +1,66 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <td class="elbp_summary_title" style="background-image:url('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $obj->getName() ?>/pix/icon.png');">
+              <?= $string['yourlearningstyles'] ?>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+
+<br>
+
+<?php if (!$obj->userHasResults()): ?>
+
+<p class="elbp_centre"><?= $string['learningstyles:nottaken'] ?></p>
+
+<?php else: ?>
+
+<table id="learning_styles_table_summary" class="elbp_centre">
+    
+    <tr>
+        <?php foreach($styles as $style): ?>
+        <td colspan="<?= (isset($style->children) ? (count($style->children) + 1) : 1) ?>" title="<?= $style->description ?>" class="elbp_tooltip">
+            <img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/LearningStyles/pix/style_<?= $style->id ?>.png" alt="<?= $style->name ?>" /><br>
+            <b><?= $style->name ?></b><br>
+            <?php if ($scores): ?>
+                <span><?= round( ($scores[$style->id] / $scores['total']) * 100, 1 ) ?>%</span>
+            <?php endif; ?>
+        </td>
+        <?php endforeach; ?>
+    </tr>
+    
+    <tr>
+        
+        <?php foreach($styles as $style): ?>
+        
+            <?php if (isset($style->children) && $style->children): ?>
+            
+                <?php foreach($style->children as $child): ?>
+                    <td title="<?= $child->description ?>" class="elbp_tooltip">
+                        <img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/LearningStyles/pix/style_<?= $child->id ?>.png" alt="<?= $child->name ?>" /><br>
+                        <b><?= $child->name ?></b><br>
+                        <?php if ($scores): ?>
+                            <span><?= (isset($scores['total:'.$child->parent])) ? round( ($scores[$child->id] / $scores['total:'.$child->parent]) * 100, 1 ) : 0 ?>%</span>
+                        <?php endif; ?>
+                    </td>
+                <?php endforeach ;?>
+            
+            <?php else: ?>
+                <td></td>
+            <?php endif; ?>
+        
+        <?php endforeach; ?>
+        
+    </tr>
+    
+</table>
+
+<script>
+    ELBP.apply_tooltip();
+</script>
+
+
+<?php endif; ?>

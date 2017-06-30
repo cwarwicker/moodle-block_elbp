@@ -1,0 +1,27 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php if($plugins): ?>
+
+    <?php foreach($plugins as $plugin): ?>
+    
+        <div class='elbp_summary_box'>
+            <div class='elbp_summary_box_wrapper'>
+                <div id='elbp_summary_header_plugin_<?= $plugin->getNameString() ?>' class='elbp_summary_box_header' style='<?= $plugin->getHeaderStyle() ?>' title="<?= $string['open'] ?>" onclick="ELBP.load_expanded('<?= addslashes($plugin->getName()) ?>');return false;"><?= $plugin->getTitle() ?></div>
+                <div class='elbp_summary_box_content'><?= $plugin->displaySummaryBox() ?></div>
+            </div>
+            <div class='elbp_summary_box_footer' onclick="ELBP.expand(this);return false;" title="<?= $string['expand'] ?>" id="summary_footer_<?= $plugin->getID() ?>">
+                     <img src='<?= $CFG->wwwroot ?>/blocks/elbp/pix/switch_plus.gif' alt='' />
+                </div>
+        </div>
+    
+    <?php endforeach; ?>
+    
+<?php else: ?>
+
+    <p><?= $string['nopluginsingroup'] ?></p>
+
+<?php endif; ?>
+
+<script>
+    ELBP.pluginGroup = <?= $groupID ?>;    
+</script>

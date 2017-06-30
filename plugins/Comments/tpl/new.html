@@ -1,0 +1,90 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php 
+
+if (!elbp_has_capability('block/elbp:add_comment', $access)){
+    exit;
+}
+
+if ($page == 'new'){
+    if (!elbp_has_capability('block/elbp:add_comment', $access)) exit; 
+    $newedit = $string['newcomment'];
+}
+
+elseif($page == 'edit'){
+    if (!elbp_has_capability('block/elbp:edit_comment', $access)) exit; 
+    $newedit = $string['editcomment'];
+}
+
+?>
+
+<script>
+    $('.elbp_view_link').removeClass('selected');
+    
+    function validateFormSubmission(form)
+    {
+        if (ELBP.validate_form(form) == true)
+        {
+            ELBP.Comments.save(form);
+        }
+    }
+    
+</script>
+
+<form id="new_comment_form">
+
+
+<p class="elbp_centre"><button class="elbp_b" onclick="validateFormSubmission( $(this.form) );return false;"><?= $string['savecomment'] ?></button></p>
+<br>
+
+<p class="elbp_centre"><u><?= $string['instructions'] ?></u>: <?= $obj->getSetting('new_comment_instructions') ?></p>
+<br>
+<div id="new_comment_output" class="elbp_centre"></div>
+<br>
+<div class="elbp_new_comment_form">
+        <input type="hidden" name="comment_id" value="<?= $data['id'] ?>" />
+        <table class="new_comment_table">
+            <tr>
+                <th colspan="2" style='<?= $obj->getHeaderStyle() ?>'><?= $newedit ?></th>
+            </tr>
+            <tr>
+                <td><?= $string['commentdate'] ?></td>
+                <td><input type="text" name="comment_date" value="<?= $data['date'] ?>" class="elbp_datepicker" /></td>
+            </tr>
+            
+            <tr>
+                <td><?= $string['commentishidden?'] ?></td>
+                <td><input type="checkbox" name="comment_hidden" value="1" <?= ($data['ishidden']) ? 'checked' : ''; ?> /></td>
+            </tr>
+            
+            <tr>
+                <td><?= $string['commentpositive'] ?></td>
+                <td><input type="radio" name="comment_positive" value="1" <?= ($data['positive'] == 1) ? 'checked' : '' ?> /><?= $string['positive'] ?> &nbsp;&nbsp; <input type="radio" name="comment_positive" value="-1" <?= ($data['positive'] == -1) ? 'checked' : '' ?> /> <?= $string['negative'] ?> &nbsp;&nbsp; <input type="radio" name="comment_positive" value="0" <?= ($data['positive'] == 0) ? 'checked' : '' ?> /> <?= $string['na'] ?></td>
+            </tr>
+            
+            <?php if ($parentPortalInstalled): ?>
+                <tr>
+                    <td><?= $string['commentpublishedportal?'] ?></td>
+                    <td><input type="checkbox" name="comment_published_portal" value="1" <?= ($data['ispublishedportal']) ? 'checked' : ''; ?> /></td>
+                </tr>
+            <?php endif; ?>
+                        
+            <?php foreach($data['atts'] as $attribute): ?>
+            <tr>
+                <td><?= $attribute->name ?></td>
+                <td><?= $attribute->convertToFormElement() ?></td>
+            </tr>
+            <?php endforeach; ?>
+            
+            <tr>
+                <td><?= $string['commentfurtheraction'] ?></td>
+                <td><input type="checkbox" name="comment_resolved" value="0" <?= ($data['isresolved']) ? 'checked' : ''; ?> /></td>
+            </tr>
+            
+        </table>
+        
+
+</div>
+</form>
+
+<?= \ELBP\ELBPFORM::getEndCode(); ?>

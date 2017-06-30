@@ -1,0 +1,13 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<ul class="elbp_tabrow">
+    <li class="elbp_view_link" class="elbp_view_link"><a href="#" id="all_tab" onclick="ELBP.Comments.load_display('all', this);return false;"><?= $string['allcomments'] ?></a></li>
+</ul>
+
+<br>
+
+<div id="elbp_comments_content">
+    
+    <script>ELBP.Comments.load_display('all', $('#all_tab'));</script>
+    
+</div>

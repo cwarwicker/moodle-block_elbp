@@ -1,0 +1,40 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <td class="elbp_summary_title" <?php if ($obj->getSetting('plugin_icon') !== false): ?> style="background-image:url('<?= $ELBP->wwwCustomPix ?><?= $obj->getSetting('plugin_icon') ?>');" <?php else: ?> style="height:32px" <?php endif; ?>>
+            <?= $obj->getSetting('plugin_summary_title') ?>
+        </td>  
+      </tr>
+    </tbody>
+  </table>
+
+<div style="text-align:left;padding:5px;">
+    
+    <p class="elbp_centre"><small><?= $string['mostrecent'] ?></small></p>
+    
+    <?php if ($items): ?>
+    
+    <table class="elbp_summary_table">
+        
+        <?php foreach($items as $item): ?>
+        <?php $obj->loadStudent( $obj->getStudentID(), $item->id ) ?>
+        
+        <tr>
+            <?php if($obj->getSetting('title_attribute') !== false): ?>
+                <td class="elbp_centre b"><?= $obj->getAttribute( $obj->getSetting('title_attribute') ) ?></td>
+            <?php endif; ?>
+            <td class="elbp_centre"><?= date('D jS M Y', $item->settime) ?></td>
+            <td class="elbp_centre"><?= \elbp_get_fullname($item->setbyuserid) ?></td>
+        </tr>
+        
+        <?php endforeach; ?>
+        
+    </table>
+    
+    <?php else: ?>
+        <p class="elbp_centre"><?= $string['noresults'] ?></p>
+    <?php endif; ?>
+    
+</div>

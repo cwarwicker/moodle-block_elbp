@@ -1,0 +1,70 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <td class="elbp_summary_title" style="background-image:url('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $obj->getName() ?>/pix/icon.png');">
+              <?= $string['yourcoursereports'] ?>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+<?php if($obj->isPeriodicalEnabled()): ?>
+
+<p><small><?= $string['mostrecentperiodicalreports'] ?></small></p>
+
+<table class="elbp_summary_table">
+    
+    <tr>
+        <th><?= $string['name'] ?></th>
+        <th><?= $string['date'] ?></th>
+    </tr>
+    
+    <?php if($periodicalReports): ?>
+    
+        <?php foreach($periodicalReports as $periodicalReport): ?>
+        
+        <tr>
+            <td><a href="#" onclick="ELBP.CourseReports.load_periodical(<?= $periodicalReport->getID() ?>);return false;"><?= $periodicalReport->getName() ?></a></td>
+            <td><?= $periodicalReport->getCreatedDate() ?></td>
+        </tr>
+        
+        <?php endforeach; ?>
+    
+    <?php else: ?>
+    <tr>
+        <td colspan='2'><?= $string['noresults'] ?></td>
+    </tr>
+    <?php endif; ?>
+    
+</table>
+<br>
+
+<?php endif; ?>
+
+<p><small><?= $string['mostrecentcoursereports'] ?></small></p>
+
+
+<table class="elbp_summary_table">
+    
+    <tr>
+        <th><?= $string['course'] ?></th>
+        <th><?= $string['lastcoursereport'] ?></th>
+    </tr>
+    
+    <?php if($courses): ?>
+    <?php foreach($courses as $course): ?>
+    <tr>
+        <td><a href="#" onclick="ELBP.CourseReports.load_report(<?= $course->id ?>);return false;"><?= $obj->getCourseName($course) ?></a></td>
+        <td><a href="#" onclick="ELBP.CourseReports.load_report(<?= $course->id ?>, <?= $obj->getLastCourseReport($course->id)->id ?>);return false;"><?= $obj->getLastCourseReport($course->id)->reportdate ?></a></td>
+    </tr>
+    <?php endforeach ;?>
+    <?php else: ?>
+    <tr>
+        <td colspan="2" class="elbp_centre"><?= $string['noreports'] ?></td>
+    </tr>
+    <?php endif; ?>
+    
+</table>

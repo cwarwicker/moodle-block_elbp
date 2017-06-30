@@ -1,0 +1,72 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php if (!elbp_has_capability('block/elbp:add_attachment', $access)): exit; endif; ?>
+        
+    <form id="new_attachment_form" enctype="multipart/form-data">
+        <br>
+        <p class="elbp_centre"><b><?= $string['maxfilesize'] ?>:</b> <?= $obj->getMaxFileSize() ?></p>
+        <br>
+        <div id="output_messages"></div>
+        <br>
+        <table class="elbp_attachments_table">
+            <tr>
+                <td>
+                    <span><b><?= $string['filetitle'] ?></b><br>
+                    <span><?= $string['filetitle:desc'] ?></span>
+                </td>
+                <td>
+                    <input type="text" class="elbp_max" id="filetitle" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="elbp_centre">
+                     <div id="fine-uploader" style="padding-top:10px" class="elbp_centre"></div>
+                     <div id="triggerUpload" class="btn btn-primary" style="margin-top: 10px;">
+                        <i class="icon-upload icon-white"></i> Upload now
+                     </div>
+                </td>
+            </tr>
+        </table>
+
+
+    </form>
+
+<script>
+    var uploader = new qq.FineUploader({
+      debug: true,
+      element: document.getElementById('fine-uploader'),
+      request: {
+        endpoint: '<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Attachments/Upload.php',
+        params: {
+            sid: '<?= $obj->getStudentID(); ?>',
+            title: function(){
+                return $('#filetitle').val();
+            }
+        }
+      },
+      multiple: false,
+      autoUpload: false,
+      text: {
+        uploadButton: '<i class="icon-plus icon-white"></i> <?= $string['selectfile'] ?>',
+        formatProgress: '({percent}% of {total_size})'
+      },
+      failedUploadTextDisplay: {
+          mode: 'custom',
+          maxChars: 150,
+          responseProperty: 'error',
+          enableTooltip: true
+      },
+      callbacks: {
+        onComplete: function(id, filename, response){
+            if (response.success){
+                $('#filetitle').val('');
+            }
+        }
+      }
+    });
+    
+    $('#triggerUpload').click(function() {
+      uploader.uploadStoredFiles();
+    });
+  
+</script>

@@ -1,0 +1,41 @@
+<?php if (isset($forcedUninstall)): ?>
+    <?= $forcedUninstall ?>
+<?php else: ?>
+
+    <div class="elbp_confirm_box">
+
+
+
+            <h4><?= $string['uninstall'] ?> : <?= $plugin->getTitle() ?></h4>
+
+            <div>
+
+                <?php if (isset($plugin->custom)): ?>
+                    <?= $string['uninstall:affect:custom'] ?>
+                <?php else: ?>
+                    <?= $string['uninstall:affect'] ?>
+                     <br><br>
+                    <?php if ($affectedTables): ?>
+                        <?= implode("<br>", $affectedTables) ?>
+                    <?php else: ?>
+                        <?= $string['na'] ?>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+
+                <br><br>
+
+                <form action="<?= $CFG->wwwroot ?>/blocks/elbp/config.php?view=plugins" method="post" style="display:inline-block;">
+                    <input type="hidden" name="plugin_id" value="<?= $plugin->getID() ?>" />
+                    <input type="submit" name="<?= (isset($plugin->custom)) ? 'uninstall_custom_plugin' : 'uninstall_plugin'; ?>" class="btn" value="<?= $string['yes'] ?>" />
+                </form>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <form action="<?= $CFG->wwwroot ?>/blocks/elbp/config.php?view=plugins" method="post" style="display:inline-block;">
+                    <input type="submit" name="cancel" class="btn" value="<?= $string['no'] ?>" />
+                </form>
+
+            </div>
+
+    </div>
+
+<?php endif; ?>

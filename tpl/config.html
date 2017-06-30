@@ -1,0 +1,31 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<div class='elbp_config'>
+    
+    <small class='elbp_float_right' style='text-align:right;'>
+        <?= $string['build'] ?> <?= $ELBP->getPluginVersion() ?>
+        <br>
+        <?= $ELBP->printVersionCheck(); ?>
+    </small>
+    <br class="elbp_cl">
+    
+    <h1><?= $ELBP->getELBPShortName() ?></h1>
+    
+    <ul class="elbp_tabrow">
+        <?php if ($access['god']): ?>
+            <li class="<?= ($view == 'main') ? 'selected' : '' ?>"><a href="config.php?view=main"><?= $string['main'] ?></a></li>
+            <li class="<?= ($view == 'environment') ? 'selected' : '' ?>"><a href="config.php?view=environment"><?= $string['environment'] ?></a></li>
+            <li class="<?= ($view == 'settings') ? 'selected' : '' ?>"><a href="config.php?view=settings"><?= $string['settings'] ?></a></li>
+            <li class="<?= ($view == 'mis') ? 'selected' : '' ?>"><a href="config.php?view=mis"><?= $string['mis'] ?></a></li>
+            <li class="<?= ($view == 'plugins' || $view == 'uninstall') ? 'selected' : '' ?>"><a href="config.php?view=plugins"><?= $string['plugins'] ?></a></li>
+            <li class="<?= ($view == 'actions') ? 'selected' : '' ?>"><a href="config.php?view=actions"><?= $string['actions'] ?></a></li>
+            <li class="<?= ($view == 'import') ? 'selected' : '' ?>"><a href="config.php?view=import"><?= $string['import'] ?></a></li>
+        <?php endif; ?>
+        <?php if ($view == 'course'): ?>
+            <li class="<?= ($view == 'course') ? 'selected' : '' ?>"><a href="config.php?view=course"><?= $string['course'] ?></a></li>
+        <?php endif; ?>
+    </ul>
+    
+    <?php $ELBP->displayConfig($view) ?>
+            
+</div>

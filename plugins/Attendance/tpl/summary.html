@@ -1,0 +1,43 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+          <td class="elbp_summary_title" style="background-image:url('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $obj->getName() ?>/pix/icon.png');">
+              <?php foreach((array)$types as $type): ?>
+                <?= $type ?>: <?= $obj->getRecord( array("courseid"=>null, "type"=>$type, "period"=>"Total") ) ?>
+                <br>
+            <?php endforeach; ?>
+            <?= (!$types) ? $string['noatttypesfound'] : '' ?>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <th style="text-transform: uppercase;"><?= $string['course'] ?></th>
+        <?php foreach($types as $short => $full): ?>
+            <th style="text-transform: uppercase;"><?= $short ?></th>
+        <?php endforeach; ?>
+      </tr>
+      <?php if($courses): ?>
+      
+        <?php foreach((array)$courses as $course): ?>
+            
+            <tr>
+                <td><?= $obj->getCourseName($course); ?></td>
+                <?php foreach($types as $type): ?>
+                    <td style="width:25px"><?= ($course->avg[$type]) ? $course->avg[$type] : $string['na'] ?></td>
+                <?php endforeach; ?>
+            </tr>
+        
+        <?php endforeach; ?>
+      
+      <?php else: ?>
+        <tr>
+            <td colspan="3"><?= $string['noattrecordscourse'] ?></td>
+        </tr>
+      <?php endif; ?>
+    </tbody>
+  </table>

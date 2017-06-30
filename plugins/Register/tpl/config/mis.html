@@ -1,0 +1,87 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<form action="" method="post">
+<h2><?= $string['misconfig'] ?></h2>
+    
+    <small><strong><?= $string['usemoodleormis'] ?></strong> - <?= $string['usemoodleormis:desc'] ?></small><br>
+    <input type='radio' name='use_direct_mis' value='0' <?= ($OBJ->getSetting('use_direct_mis') != 1 ) ? 'checked' : '' ?> /> <?= $string['moodledatabase'] ?> &nbsp; 
+    <input type='radio' name='use_direct_mis' value='1' <?= ($OBJ->getSetting('use_direct_mis') == 1 ) ? 'checked' : '' ?> /> <?= $string['mis'] ?>
+    <br><br>
+
+    <?php if ($OBJ->getMainMIS() !== false): ?>    
+    
+    <small><strong><?= $string['mistablename'] ?></strong> - <?= $string['mistablename:desc'] ?></small><br>
+    <input type='text' name='mis_view_name' value='<?= $OBJ->getSetting('mis_view_name') ?>'  />
+    <br><br>
+    
+    <small><strong><?= $string['mispostexecute'] ?></strong> - <?= $string['mispostexecute:desc'] ?></small><br>
+    <textarea class="elbp_textarea" name='mis_post_connection_execute'><?= $OBJ->getSetting('mis_post_connection_execute') ?></textarea>
+    <br><br>
+            
+    <small><strong><?= get_string('username') ?></strong> - <?= get_string('mis:username:desc', 'block_elbp') ?></small><br>
+    <select name="mis_username_or_idnumber">
+        <option value=""></option>
+        <option value="username" <?= ($OBJ->getSetting('mis_username_or_idnumber') == 'username') ? 'selected' : ''; ?> >username</option>
+        <option value="idnumber" <?= ($OBJ->getSetting('mis_username_or_idnumber') == 'idnumber') ? 'selected' : ''; ?> >idnumber</option>
+    </select>
+    <br><br>
+    
+    <h3><?= $string['misfieldmapping'] ?></h3>
+    
+    <?php
+    
+    $fields = array(
+    
+        array("field" => "id", "name" => get_string('map:id', 'block_elbp'), "desc" => get_string('map:id:desc', 'block_elbp')),
+        array("field" => "username", "name" => get_string('map:username', 'block_elbp'), "desc" => get_string('map:username:desc', 'block_elbp')),
+        array("field" => "dayname", "name" => get_string('map:dayname', 'block_elbp'), "desc" => get_string('map:dayname:desc', 'block_elbp')),
+        array("field" => "daynumber", "name" => get_string('map:daynumber', 'block_elbp'), "desc" => get_string('map:daynumber:desc', 'block_elbp')),
+        array("field" => "course", "name" => get_string('map:course', 'block_elbp'), "desc" => get_string('map:course:desc', 'block_elbp')),
+        array("field" => "description", "name" => get_string('map:description', 'block_elbp'), "desc" => get_string('map:description:desc', 'block_elbp')),
+        array("field" => "starttime", "name" => get_string('map:starttime', 'block_elbp'), "desc" => get_string('map:starttime:desc', 'block_elbp')),
+        array("field" => "endtime", "name" => get_string('map:endtime', 'block_elbp'), "desc" => get_string('map:endtime:desc', 'block_elbp')),
+        array("field" => "week", "name" => get_string('map:week', 'block_elbp'), "desc" => get_string('map:week:desc', 'block_elbp')),
+        array("field" => "value", "name" => get_string('map:register:value', 'block_elbp'), "desc" => get_string('map:register:value:desc', 'block_elbp')),
+        
+    );
+    
+    \elbp_print_mis_mappings_table($fields, $conn, $string);
+    
+    ?>   
+    
+    <?php else: ?>
+    <p><?= $string['misnocorefound'] ?></p>
+    <?php endif; ?>
+    
+        
+    <br><br>
+    <p class='elbp_centre'><input type="submit" name="submitconfig" value="<?= get_string('save', 'block_elbp') ?>" /></p>
+</form>
+
+
+<br><br>
+<form action="" method="post">
+<h2><?= $string['mistest'] ?></h2>
+
+    <small><strong><?= get_string('username') ?></strong> - <?= $string['mistest:username:desc'] ?></small><br>
+    <input type='text' name='testusername' value='<?= isset($_POST['testusername']) ? elbp_html($_POST['testusername']) : ''; ?>'  />
+    <br><br>
+    
+    
+    <?php if (isset($MSGS['sql'])): ?>
+    <div class="elbp_code">
+        <?= \elbp_format_code($MSGS['sql'], 'sql') ?>
+    </div>
+    <?php endif; ?>
+    
+    
+    <?php if (isset($MSGS['testoutput'])): print_object($MSGS['testoutput']); endif; ?>
+
+<br><br>
+    <p class='elbp_centre'>
+        
+        <small><?= $string['mistest:debug'] ?></small><br>
+        <input type="submit" name="submitmistest_student" value="<?= $string['runtest:studentinfo'] ?>" />
+
+    </p>
+</form>

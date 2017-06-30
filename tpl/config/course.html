@@ -1,0 +1,36 @@
+<?php if (!defined('ELBP')) exit; ?>
+<?php if (!$course) exit; ?>
+
+<?= (!empty($MSGS['errors'])) ? elbp_error_alert_box($MSGS['errors']) : '' ?>
+<?= (!empty($MSGS['success'])) ? elbp_success_alert_box($MSGS['success']) : '' ?>
+
+<h2><?= $course->fullname ?> - <?= $course->shortname ?></h2>
+
+<form action="" method="post">
+
+    <small><strong><?= $string['defaultcourselayout'] ?></strong> - <?= $string['defaultcourselayout:desc'] ?></small>
+    <br>
+    <select name='plugins_layout'>
+        <option value=''><?= $string['usesitedefault'] ?></option>
+        <?php if ($layouts): ?>
+            <?php foreach($layouts as $layout): ?>
+                <option value="<?= $layout->getID() ?>" <?= ($default == $layout->getID()) ? 'selected' : '' ?> ><?= $layout->getName() ?></option>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </select>
+    <br><br>
+
+    <p><input type="submit" name="submitconfig" value="<?= $string['save'] ?>" /></p>
+    
+</form>
+
+<br><br>
+
+<p class="c">
+    <a href="<?= $CFG->wwwroot ?>/course/view.php?id=<?= $id ?>"><?= $string['backtocourse'] ?></a>
+</p>
+
+
+
+
+

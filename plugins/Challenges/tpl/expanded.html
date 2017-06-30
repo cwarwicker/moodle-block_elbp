@@ -1,0 +1,122 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<br><br>
+
+<p><?= $string['yourchallenges:desc'] ?></p>
+<br>
+<p id="challenges_output"></p>
+
+<?php if ($challenges): ?>
+
+    <?php if (\elbp_has_capability('block/elbp:add_challenge', $access)): ?>
+                
+        <div id="elbp_challenges_wrap">
+   
+            <div id="elbp_challenges_left">
+
+                <?php foreach($challenges as $challenge): ?>
+
+                    <div class="elbp_challenge">
+
+                        <?php if (!is_null($challenge->img)): ?>
+                            <img src="<?= $challenge->img ?>" class="challenge-icon" /><br>
+                        <?php endif; ?>
+
+                        <strong><?= $challenge->challenge ?></strong>
+
+                    </div>
+
+                <?php endforeach; ?>
+
+            </div>
+
+            <div id="elbp_challenges_content">
+
+                <?php foreach($challenges as $challenge): ?>
+
+                    <div class="elbp_challenge_content">
+                        
+                        <small><?= \elbp_sprintf('challengeinstruction', $challenge->challenge) ?></small>
+                        <br>
+                        <form id="challenge_form_<?= $challenge->id ?>">
+                            
+                            <?php if ($obj->getSetting('use_confidentiality') == 1 && $obj->getStudentID() == $USER->id): ?>
+                                <br>
+                                <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= $OUTPUT->pix_url('help') ?>" alt="<?= get_string('help') ?>" /> 
+                                <b><?= $string['confidentiality'] ?></b>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <?php if ($cLevels): ?>
+                                    <?php foreach($cLevels as $cLevel): ?>
+                                        <?php $sel = (isset($challenge->userChallenge->confidentialityid) && $challenge->userChallenge->confidentialityid == $cLevel->id) ? 'checked' : ''; ?>
+                                        <span title="<?= \ELBP\Confidentiality::getHelpString($cLevel->id); ?>">
+                                            <input type="radio" name="challenge_confidentiality" value="<?= $cLevel->id ?>" <?= $sel ?>  /> <?= $cLevel->name ?>
+                                        </span>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <?php endforeach; ?>
+                                    <br>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                            <br>
+                            
+                            <!-- If we are using confidentiality, then you have to be the student to edit it -->
+                            <?php if ( ($obj->getSetting('use_confidentiality') == 1 && $obj->getStudentID() == $USER->id) || $obj->getSetting('use_confidentiality') != 1 ): ?>
+                                <textarea name="challengeComments"><?= (isset($challenge->userChallenge->comments)) ? $challenge->userChallenge->comments : '' ?></textarea>
+                                <br>
+                                <input type="hidden" name="challengeID" value="<?= $challenge->id ?>" />
+                                <input type="button" class="btn" value="<?= $string['save'] ?>" onclick="ELBP.Challenges.save( $('#challenge_form_<?= $challenge->id ?>') );return false;" />
+                                <span id="challenges_output_<?= $challenge->id ?>" class="elbp_success_note"></span>
+
+                            <?php else: ?>
+                                    <?php if ($obj->getSetting('use_confidentiality') == 1 && isset($challenge->userChallenge->confidentialityid) && $CONF->meetsConfidentialityRequirement($access, $challenge->userChallenge->confidentialityid)): ?>
+                                        <textarea readonly style='height:100px;'><?= trim($challenge->userChallenge->comments) ?></textarea>
+                                    <?php else: ?>
+                                        <textarea readonly style='height:100px;'></textarea>
+                                    <?php endif; ?>
+                                
+                            <?php endif; ?>
+                            
+                        </form>
+
+                    </div>
+
+                <?php endforeach; ?>
+
+            </div>
+            
+            <br class="elbp_cl" />
+            
+        </div>
+
+
+        <br class="elbp_cl" /><br>
+
+
+    <?php else: ?>
+
+        <?php foreach($challenges as $challenge): ?>
+
+            <?php if ($challenge->userChallenge): ?>
+                <div style="float:left;width:33%;margin-bottom:30px;" class="elbp_centre">
+                    <h2><?= $challenge->challenge ?></h2>
+                    <textarea name="userChallengeComments[<?= $challenge->id ?>]" placeholder="<?= $string['optionalcomments'] ?>" style="width:80%;height:100px;" disabled><?= $challenge->userChallenge->comments ?></textarea>
+                </div>
+            <?php endif; ?>
+
+        <?php endforeach; ?>
+    
+
+    <?php endif; ?>
+    
+<?php else: ?>    
+
+    <p><?= $string['noresults'] ?></p>
+
+<?php endif; ?>
+
+<script>
+    $('.elbp_tooltip').tooltip({
+        content: function(){
+            return $(this).prop('title');
+        }
+    });
+</script>

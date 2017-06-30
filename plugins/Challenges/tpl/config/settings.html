@@ -1,0 +1,81 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<h2><?= $string['challenges'] ?></h2>
+<p><?= $string['challenges:desc'] ?></p>
+
+<form action="" method="post">
+
+<div class="elbp_centre">
+    <a href="#" onclick="addNewChallenge();return false;">
+        <img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/add_small.png"> <?= $string['addnewchallenge'] ?>
+    </a>
+    <br><br>
+</div>
+    
+    <div id="challenges_output">
+        
+        <table>
+            
+            <tr><th><?= $string['name'] ?></th><th><?= $string['icon'] ?></th></tr>
+        
+            <?php if ($challenges): ?>
+
+                <?php foreach($challenges as $challenge): ?>
+
+                <tr>
+                    <td>
+                        <input type="hidden" name="challenge_ids[<?= $n ?>]" value="<?= $challenge->id ?>" />
+                        <input type="text" name="challenges[<?= $n ?>]" placeholder="<?= $string['challenge'] ?>" value="<?= $challenge->challenge ?>" /><br><br>
+                    </td>
+                    <td>
+                        <input class="elbp_long" type="text" name="icons[<?= $n ?>]" placeholder="<?= $string['imgurl'] ?>" value="<?= $challenge->img ?>" /><br><br>
+                    </td>
+                </tr>
+                
+                <?php $n++ ?>
+
+                <?php endforeach; ?>
+
+            <?php endif; ?>
+        
+        </table>
+        
+    </div>
+    
+<br><br>
+<input type="submit" name="save_challenges" value="<?= $string['save'] ?>" />
+
+</form>
+
+
+<br><br>
+
+<h2><?= $string['settings'] ?></h2>
+
+<form action="" method="post">
+    
+    <small><strong><?= $string['confidentiality'] ?></strong> - <?= $string['useconfidentiality'] ?></small><br>
+    <input type='radio' name='use_confidentiality' value='1' <?= ($OBJ->getSetting('use_confidentiality') == 1) ? 'checked' : ''; ?> /> <label><?= $string['enable'] ?></label> &nbsp;&nbsp; 
+    <input type='radio' name='use_confidentiality' value='0' <?= ($OBJ->getSetting('use_confidentiality') != 1) ? 'checked' : ''; ?> /> <label><?= $string['disable'] ?></label>
+    <br><br>
+    
+    
+    <input type="submit" name="submitconfig" value="<?= $string['save'] ?>" />
+    
+</form>
+
+
+
+
+<script>
+    var n = <?= $n ?>;
+    
+    function addNewChallenge(){
+        
+        $('#challenges_output table').append('<tr><td><input type="text" name="challenges['+n+']" placeholder="<?= $string['challenge'] ?>" /></td><td><input type="text" name="icons['+n+']" placeholder="<?= $string['imgurl'] ?>" class="elbp_long"  /></td></tr>');
+        
+        n++;
+        
+    }
+    
+</script>

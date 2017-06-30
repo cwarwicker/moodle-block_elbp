@@ -1,0 +1,42 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php \elbp_display_attribute_creation_js($OBJ); ?>
+
+
+<h2><?= $string['attributes'] ?></h2>
+<p><?= $string['attributes:desc'] ?></p>
+
+
+<form action="" method="post" >
+ 
+    <?php \elbp_display_attribute_creation_form($OBJ); ?>
+        
+    <input type="submit" name="submit_attributes" value="<?= $string['save'] ?>" />
+    
+</form>
+
+<br><br>
+
+<h2><?= $string['titleattribute'] ?></h2>
+<p><?= $string['titleattribute:desc'] ?></p>
+
+<form action="" method="post">
+
+
+<select name="title_attribute">
+    <option value=""><?= $string['choose'] ?>...</option>
+    <?php if ($OBJ->getElementsFromAttributeString()): ?>
+        <?php foreach($OBJ->getElementsFromAttributeString() as $attribute): ?>
+        <option value="<?= $attribute->name ?>"  <?= ($OBJ->getSetting('title_attribute') == $attribute->name) ? 'selected' : ''; ?>  ><?= $attribute->name ?></option>       
+        <?php endforeach; ?>
+    <?php endif; ?>
+</select>
+
+<br><br>
+<input type="submit" name="submit_title_attribute" value="<?= $string['save'] ?>" />
+
+</form>
+
+
+
+<script>applySorting('attributes_table_tbody');</script>

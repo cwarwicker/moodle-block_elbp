@@ -1,0 +1,54 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <td class="elbp_summary_title" <?php if ($obj->getSetting('plugin_icon') !== false): ?> style="background-image:url('<?= $ELBP->wwwCustomPix ?><?= $obj->getSetting('plugin_icon') ?>');" <?php else: ?> style="height:32px" <?php endif; ?>>
+            <?= $obj->getSetting('plugin_summary_title') ?>
+        </td>  
+      </tr>
+    </tbody>
+  </table>
+
+<div style="text-align:left;padding:5px;">
+    
+    <?php if ($result): ?>
+    
+        <?php if ( $obj->getSetting('row_return_type') == 'single' ): ?>
+
+            <?php foreach($names as $name): ?>
+            
+                <strong><?= $name ?></strong><br>
+                <?= (isset($result[$name])) ? $result[$name] : '-'; ?><br><br>
+            
+            <?php endforeach; ?>
+            
+        <?php elseif( $obj->getSetting('row_return_type') == 'multiple' ): ?>
+
+            <table>
+                
+                <tr>
+                    <?php foreach($names as $name): ?>
+                        <th><?= $name ?></th>
+                    <?php endforeach; ?>
+                </tr>
+                
+                <?php foreach($result as $row): ?>
+                
+                <tr>
+                    <?php foreach($names as $name): ?>
+                        <td><?= (isset($row[$name])) ? $row[$name] : '-'; ?></td>
+                    <?php endforeach; ?>
+                </tr>
+                
+                <?php endforeach; ?>
+                
+            </table>
+        
+        <?php endif; ?>
+        
+    <?php else: ?>
+        <p class="elbp_centre"><?= $string['noresults'] ?></p>
+    <?php endif; ?>
+    
+</div>

@@ -1,0 +1,34 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <td class="elbp_summary_title" style="background-image:url('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $obj->getName() ?>/pix/icon.png');">
+              <?= $string['yourtutorials'] ?>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+
+<p><small><?= $string['mostrecenttutorials'] ?>:</small></p>
+
+<table class="elbp_summary_table">
+    <tbody>
+      
+        <?php if ($tutorials): ?>
+        <?php foreach( (array)$tutorials as $tutorial ): ?>
+        <tr>
+            <td class="elbp_centre"><a href="#" onclick="ELBP.Tutorials.load_tutorial('<?= $tutorial->getID() ?>');return false;"><?= $tutorial->getTutorialDate('D jS M Y') ?></a></td>
+            <td class="elbp_centre"><?= fullname($tutorial->getSetByUser()) ?></td>
+        </tr>
+        <?php endforeach; ?>
+        <?php else: ?>
+        <tr>
+            <td colspan="2" class="elbp_centre"><?= $string['notutorialsfound'] ?></td>
+        </tr>
+        <?php endif; ?>
+        
+    </tbody>
+  </table>
+
+  

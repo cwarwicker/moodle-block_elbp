@@ -1,0 +1,547 @@
+<?php
+/**
+ * Microsoft Access Database Manager Class
+ *
+ * Handles connections to and querying of Access databases when using an MIS connection
+ * 
+ * @copyright 2014 Bedford College
+ * @package Bedford College Electronic Learning Blue Print (ELBP)
+ * @version 1.0
+ * @author Conn Warwicker <cwarwicker@bedford.ac.uk> <conn@cmrwarwicker.com>
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ */
+namespace ELBP\MIS;
+
+/**
+ * 
+ */
+class MSAccess extends Manager {
+    
+    protected static $acceptedTypes = array(
+        'pdo_odbc'
+    ); 
+    
+    private $extension = false;
+    
+    /**
+     * Construct object
+     * @param mixed $params If null we're building dynamically with parameters. If array/object
+     * @return boolean
+     * @throws \ELBP\ELBPException
+     */
+    public function __construct($params = null) {
+        
+        if (extension_loaded('pdo_odbc')) $this->extension = 'pdo_odbc';
+                                
+        if (!$this->extension){
+            throw new \ELBP\ELBPException( get_string('mismanager', 'block_elbp'), get_string('noextension', 'block_elbp'), implode(' / ', self::$acceptedTypes), get_string('installextension', 'block_elbp') );
+            return false;
+        }
+        
+        if (is_array($params) || is_object($params)) $this->conn = $params;
+                                        
+    }
+    
+    public function wrapValue($value) {
+        return "[{$value}]";
+    }
+    
+     /**
+     * Connect to a database
+     * @param mixed $params If null we're using the connection record in the db as specified in constructor. Else we're giving details
+     */
+    public function connect($params = null){        
+        
+        $func = 'connect_'.$this->extension;
+                
+        // use connection record
+        if (is_null($params)){
+            return $this->$func($this->conn->host, $this->conn->un, $this->conn->pw, $this->conn->db);
+        }
+        else
+        {
+            return $this->$func($params['host'], $params['user'], $params['pass'], $params['db']);
+        }
+        
+    }
+    
+   
+    
+    /**
+     * Connect to Access database using PDO for ODBC
+     * @param type $host
+     * @param type $user
+     * @param type $pass
+     * @param type $db
+     */
+    private function connect_pdo_odbc($host, $user, $pass = "", $db = "")
+    {
+        
+                
+         try {
+            $DBH = new \PDO("odbc:{$host}", $user, $pass);
+            $DBH->setAttribute( \PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC );
+            $DBH->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->dbh = $DBH;
+            return $this->dbh;
+        } catch (\Exception $e){
+            if (!$this->show_conn_err){
+                $this->last_error = $e->getMessage();
+                return false;
+            }
+            echo $e->getMessage();
+            return false;
+        }
+    }
+    
+
+    
+    /**
+     * Disconnect 
+     */
+    public function disconnect(){
+        $func = 'disconnect_'.$this->extension;
+        return $this->$func();
+    }
+    
+   
+    private function disconnect_pdo()
+    {
+        $this->dbh = null;
+    }
+    
+   
+    /**
+     * Disconnect using odbc PDO
+     */
+    private function disconnect_pdo_odbc()
+    {
+        $this->disconnect_pdo();
+    }
+
+    
+    
+    
+    
+    
+    /**
+     * Run an SQL query and return a statement - to be used for things like selecting
+     * @param type $sql
+     * @param type $params
+     * @return type
+     */
+    public function query($sql, $params){
+        $this->lastSQL = $sql;
+        $func = 'query_'.$this->extension; 
+        return $this->$func($sql, $params);
+        
+    }
+    
+    /**
+     * Run SQL query using PDO
+     * @param type $sql
+     * @param type $params
+     * @return $st Statement
+     */
+    private function query_pdo($sql, $params)
+    {
+        try {
+            $st = $this->dbh->prepare($sql);        
+            $st->execute($params);
+            return $st;
+        } catch (\PDOException $e){
+            $this->last_error = $e->getMessage();
+            return false;
+        }
+    }
+    
+   
+    /**
+     * ODBC PDO
+     * @param type $sql
+     * @param type $params
+     * @return type
+     */
+    private function query_pdo_odbc($sql, $params){
+        return $this->query_pdo($sql, $params);
+    }
+    
+    
+    
+  
+    
+    
+    
+    
+    
+    
+    
+    /**
+     * Execute an SQL query and return the number of affect rows - to be used for things like updating & inserting
+     * @param type $sql
+     * @param type $params
+     * @return type
+     */
+    public function execute($sql, $params){
+        $this->lastSQL = $sql;
+        $func = 'execute_'.$this->extension;
+        return $this->$func($sql, $params);
+    }
+    
+    private function execute_pdo($sql, $params)
+    {
+        $st = $this->query($sql, $params);
+        return $st->rowCount();
+    }
+    
+    
+    
+    /**
+     * Execute an SQL query using odbc PDO
+     * @param type $sql
+     * @return type
+     */
+    private function execute_pdo_odbc($sql, $params)
+    {
+        return $this->execute_pdo($sql, $params);
+    }
+    
+    
+    
+    
+        
+    
+    
+    /**
+     * Select from a DB
+     * @param type $table
+     * @param type $where
+     * @param type $fields
+     * @param type $limit
+     */
+    public function select($table, $where = null, $fields = "*", $order = null, $limit = null){
+                        
+        $sql = "";
+        
+        $params = array();
+        
+        $sql .= " SELECT ";
+            if (!is_null($limit)) $sql .= " TOP {$limit} ";
+        $sql .= " {$fields} ";
+        
+        $sql .= ' FROM '.$this->wrapValue($table).' ';
+        
+        if (is_array($where)){
+            $sql .= " WHERE ";
+            foreach($where as $name => $value){
+                $sql .= ' '.$this->wrapValue($name).' = ? AND ';
+                $params[] = $value;
+            }
+        }
+        
+        if (preg_match("/ AND $/", $sql)){
+            $sql = substr_replace($sql, "", strrpos($sql, " AND"), strlen($sql));
+        }
+        
+        if (!is_null($order)){
+            $sql .= " ORDER BY {$order} ";
+        }
+                
+        $query = $this->query($sql, $params);
+                
+        if (!$query) return array();
+        
+        return $this->getRecordSet($query);
+        
+    }
+    
+    /**
+     * Given the result of a query, put the rows it found into a recordset
+     * @param type $query
+     * @return type
+     */
+    protected function getRecordSet($query)
+    {
+        $func = 'getRecordSet_'.$this->extension;
+        return $this->$func($query);
+    }
+    
+       
+    
+    private function getRecordSet_pdo($query)
+    {
+        $results = array();
+        while($row = $query->fetch())
+        {
+            $results[] = $row;
+        }
+        
+        // If only one, return that one object rather than an array with one element
+        //if (count($results) == 1) return $results[0];
+        
+        return $results;
+    }
+    
+   
+    
+    /**
+     * Get recordset for odbc PDO
+     * @param type $query
+     * @return type
+     */
+    private function getRecordSet_pdo_odbc($query)
+    {
+        return $this->getRecordSet_pdo($query);
+    }
+    
+    
+    
+    
+    
+
+    /**
+     * Update a table in the DB
+     * @param type $table
+     * @param type $data
+     * @param type $where
+     * @param type $limit
+     * @return boolean
+     */
+    public function update($table, $data, $where = null, $limit = null){
+        if (!is_object($data) && !is_array($data)) return false;        
+        $data = (array) $data;
+        if (!$data) return false;
+        
+        $params = array();
+        $sql = "";
+        $sql .= "UPDATE  ";
+        
+        // Limit
+        if (!is_null($limit))
+        {
+            $sql .= ' ( SELECT TOP '.$limit.' * FROM '.$this->wrapValue($table).' ) ';
+        }
+        else
+        {
+            $sql .= ' '.$this->wrapValue($table).' ';
+        }
+        
+        $sql .= "SET ";
+        
+        foreach($data as $field => $value)
+        {
+            $sql .= ' '.$this->wrapValue($field).' = ? ,';
+            $params[] = $value;
+        }
+        
+        // Strip comma
+        $sql = substr($sql, 0, strlen($sql)-1);
+        
+        // If null, we'll just be updating everything
+        if (!is_null($where))
+        {
+            
+            $sql .= " WHERE ";
+
+            foreach($where as $field => $value)
+            {
+                $sql .= ' '.$this->wrapValue($field).' = ? AND';
+                $params[] = $value;
+            }
+
+            // Strip AND
+            $sql = substr($sql, 0, strlen($sql)-3);
+        
+        }
+        
+        return $this->execute($sql, $params);
+        
+    }
+ 
+    /**
+     * Delete records from a DB table
+     * @param string $table
+     * @param array $where
+     * @param int $limit
+     * @return boolean
+     */
+    public function delete($table, $where = null, $limit = 1){
+        
+        if (!is_object($where) && !is_array($where) && !is_null($where)) return false;        
+        
+        if (is_object($where)){
+            $where = (array) $where;
+        }
+
+        
+        $params = array();
+        $sql = "";
+        
+        $sql .= "DELETE FROM ";
+        
+        // Limit
+        if (!is_null($limit))
+        {
+            $sql .= ' ( SELECT TOP '.$limit.' * FROM '.$this->wrapValue($table).' ) ';
+        }
+        else
+        {
+            $sql .= ' '.$this->wrapValue($table).' ';
+        }
+        
+        if (!is_null($where))
+        {
+            
+            $sql .= " WHERE ";
+
+            foreach($where as $field => $value)
+            {
+                $sql .= ' '.$this->wrapValue($field).' = ? AND';
+                $params[] = $value;
+            }
+
+            // Strip AND
+            $sql = substr($sql, 0, strlen($sql)-3);
+        
+        }
+        
+        // Don't think we can easily limit it here, bit awkward
+        
+        return $this->execute($sql, $params);
+        
+    }
+    
+    /**
+     * Insert records into a DB table
+     * @param type $table
+     * @param type $data
+     * @return boolean
+     */
+    public function insert($table, $data){
+        
+        if (!is_object($data) && !is_array($data)) return false;        
+        $data = (array) $data;
+        if (!$data) return false;
+        
+        $params = array();
+        $sql = "";
+        
+        $sql .= 'INSERT INTO '.$this->wrapValue($table).' ';
+        $sql .= "( ";
+            foreach($data as $field => $value)
+            {
+                $sql .= $this->wrapValue($field) . ',';
+            }
+        $sql = substr($sql, 0, strlen($sql)-1);
+        $sql .= ") ";
+        $sql .= "VALUES (";
+            foreach($data as $field => $value)
+            {
+                $sql .= "?,";
+            }
+        $sql = substr($sql, 0, strlen($sql)-1);
+        $sql .= ")";
+        
+        foreach($data as $value)
+        {
+            $params[] = $value;
+        }
+        
+        return $this->execute($sql, $params);
+        
+    }
+
+    /**
+     * Given a query result, fetch the next row of records
+     * @param type $qry
+     * @return type
+     */
+    public function fetch($qry){
+        $func = 'fetch_'.$this->extension;
+        return $this->$func($qry);
+    }
+    
+    /**
+     * Fetch row for pdo sqlsrv
+     * @param type $qry
+     * @return type
+     */
+    private function fetch_pdo($qry)
+    {
+        return $qry->fetch();
+    }
+        
+     /**
+     * Fetch row for pdo sqlsrv
+     * @param type $qry
+     * @return type
+     */
+    private function fetch_pdo_odbc($qry)
+    {
+        return $this->fetch_pdo($qry);
+    }
+    
+    
+    /**
+     * No point having different ones for extnesion, always pdo
+     * @param type $qry
+     * @return type
+     */
+    public function fetchAll($qry) {
+        return $qry->fetchAll();
+    }
+    
+    
+    
+    public function comparisonOperator(){
+        return " LIKE ";
+    }
+    
+       
+    public function convertDateSQL($field, $format) {
+        
+       return false;
+        
+    }
+    
+    /**
+     * This is assuming the date is in the format: YYYYMMDD
+     * @param type $field
+     * @param string $operator
+     * @return type
+     */
+    public function compareDatesSQL($field, $operator){
+        
+        return false;            
+        
+    }
+    
+    
+    
+    /**
+     * Get info about a specific table, or a list of tables defined by the same prefix, e.g. mdl_lbp_*
+     * @param type $tableName
+     * @param type $tablePrefix
+     */
+    public function getTableInfo($tableName = null, $tablePrefix = null){
+        
+        // Moodle doesn't support access db
+        return false;   
+        
+    }
+    
+    
+    
+}

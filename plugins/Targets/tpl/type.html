@@ -1,0 +1,94 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<p class="elbp_right">
+    <small>
+        <?php if (elbp_has_capability('block/elbp:print_all_targets', $access)): ?>&nbsp; <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=all&student=<?= $obj->getStudentID() ?>" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['printall'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+    </small>
+</p>
+
+<?php if (elbp_has_capability('block/elbp:add_target', $access)): ?>
+    <p class="elbp_centre"><button class="elbp_b" onclick="ELBP.Targets.load_display('new');return false;"><?= $string['newtarget'] ?></button></p><br>
+<?php endif; ?>
+
+<h2 class="elbp_centre"><?= $status ?> (<?= $count ?>)</h2>
+<br>
+<div class="elbp_centre">
+    <?php if ($filtering): ?>
+        <?= $string['filter'] ?>: 
+        <select id="targets_filter_status" onchange="ELBP.Targets.filter(this.value);return false;">
+            <option value=""></option>
+                <?php foreach($filtering as $filter): ?>
+                    <option value="<?= \elbp_html($filter) ?>"><?= $filter ?></option>
+                <?php endforeach; ?>
+        </select>
+    <?php endif; ?>
+</div>
+<br>
+<p id="generic_output"></p>
+<br>
+<?php foreach($targets as $target): ?>
+    
+<div id="elbp_target_id_<?= $target->getID() ?>" class="elbp_target <?= /*($target->getDeadline() <= time() && !$target->isAchieved() && !$target->isIgnored() ) ? 'elbp_target_overdue' :*/ '' ?>" <?php if ($filtering): ?> filter-attribute="<?= $target->getAttribute($obj->getSetting('target_filter_attribute')) ?>" <?php endif; ?> >
+        <table onclick="$('#target_content_<?= $target->getID() ?>').slideToggle();return false;">
+            <tr>
+                <td class="elbp_table_icon"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Targets/pix/icon.png" /></td>
+                <td class="elbp_target_name">
+                    <span class="title"><?= $target->getName() ?></span><br>
+                    <strong><?= $target->getDueOrCompleted() ?></strong>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <?= get_string('setby', 'block_elbp') ?>: <?= $target->getStaffName() ?>, <?= $target->getSetDate() ?>
+                    <br>
+                    <small><?= $target->getLateOrRemaining() ?></small>
+                </td>
+                <td class="elbp_target_bar">
+                    <div class="progress-bar <?= $target->getProgressColour() ?> stripes">
+                        <div style="width: <?= $target->getProgress() ?>%"></div>
+                    </div>
+                </td>
+                <td class="elbp_target_percent"><?= $target->getProgress() ?>%</td>
+            </tr>
+        </table>
+
+
+            
+        <div id="target_content_<?= $target->getID() ?>" class="elbp_target_hidden">
+            <br>
+            <div class="elbp_centre">
+                <small>
+                    <?php if (elbp_has_capability('block/elbp:edit_target', $access) || $target->getStaffID() == $USER->id): ?><a href="#" onclick="ELBP.Targets.edit_target(<?= $target->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/editstring', 'core') ?>" alt="" /> <?= $string['edit'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+                    <?php if (elbp_has_capability('block/elbp:delete_target', $access)): ?>&nbsp; <a href="#" onclick="ELBP.Targets.delete_target(<?= $target->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/delete', 'core') ?>" alt="" /> <?= $string['delete'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+                    <?php if (elbp_has_capability('block/elbp:print_target', $access)): ?><a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $target->getID() ?>" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+                    <?php if (elbp_has_capability('block/elbp:send_target', $access)): ?><a href="#" onclick="$('#email-to-div-<?= $target->getID() ?>').toggle();return false;"><img src="<?= $OUTPUT->pix_url('t/email', 'core') ?>" alt="" class="elbp_bottom" /> <?= $string['email'] ?></a><div id="email-to-div-<?= $target->getID() ?>" style="display:none;"><br><span id="email-error-<?= $target->getID() ?>" style="display:none;" class="validation-error"></span><span id="email-success-<?= $target->getID() ?>" style="display:none;" class="validation-success"></span><input type="text" class="elbp_max" id="email-to-addr-<?= $target->getID() ?>" placeholder="<?= $string['seperateusernamescommas'] ?>" /><img id="email-loading-img-<?= $target->getID() ?>" style="display:none;" src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/loader.gif" /><br><button class="elbp_btn_small" onclick="ELBP.Targets.forward_email(<?= $target->getID() ?>, $('#email-to-addr-<?= $target->getID() ?>').val());return false;"><?= $string['send'] ?></button></div><?php endif; ?>
+                </small>
+            </div>
+            <?php $target->display() ?>
+            <div class="elbp_centre"><small><?php if (elbp_has_capability('block/elbp:add_target_comment', $access)): ?><a href="#" onclick="$('#elbp_comment_add_<?= $target->getID() ?>').slideToggle();return false;"><img src="<?= $OUTPUT->pix_url('t/messages', 'core') ?>" alt="" /> <?= $string['addcomment'] ?></a><?php endif; ?></small></div>
+            <div id='elbp_comment_add_<?= $target->getID() ?>' class='elbp_comment_textarea' style='display:none;'>
+                <p id="elbp_comment_add_output_<?= $target->getID() ?>"></p>
+                <textarea id="add_comment_<?= $target->getID() ?>"></textarea>
+                <br><br>
+                <input type='button' class='elbp_big_button' value='<?= $string['submit'] ?>' onclick="ELBP.Targets.add_comment(<?= $target->getID() ?>, $('#add_comment_<?= $target->getID() ?>').val());return false;" />
+               <br><br>
+            </div>
+            <div id="elbp_comments_content_<?= $target->getID() ?>">
+            <p id='elbp_comment_generic_output_comment'></p>
+            <?= $target->displayComments(); ?>
+            </div>
+        </div>
+        
+    </div>
+
+<?php endforeach; ?>
+
+<?php if(!$targets): ?>
+    <?= get_string('noresults', 'block_elbp') ?>
+<?php endif; ?>
+
+
+<script>
+    <?php $num = 0; ?>
+    <?php foreach($obj->getStatuses() as $status): ?>
+    $('#statustab_<?= $status->id ?>_num').text('<?= $obj->countUserTargetsByStatus($status->id) ?>');
+    <?php $num++; ?>
+    <?php endforeach; ?>
+</script>

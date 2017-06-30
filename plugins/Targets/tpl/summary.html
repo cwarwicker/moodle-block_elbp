@@ -1,0 +1,57 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <td class="elbp_summary_title" style="background-image:url('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $obj->getName() ?>/pix/icon.png');">
+              <?= $string['yourpersonaltargets'] ?>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <?php $num = 0; ?>
+        <?php foreach($obj->getStatuses() as $status): ?> 
+        <?php if($num >= 5): echo "</tr><tr>"; $num = 0; endif; ?>
+            <td class="elbp_centre">
+                <a href="#" onclick="ELBP.Targets.load_targets(<?= $status->id ?>);return false;">
+                <img src="<?= $status->img ?>" alt="" style="width:35px;" title="<?= $status->status ?>">
+                <br>
+                <?= $obj->countUserTargetsByStatus($status->id); ?>
+                </a>
+            </td>
+        <?php $num++; ?>
+        <?php endforeach; ?>
+      </tr>
+    </tbody>
+  </table>
+<br>
+
+
+<!-- Ones that are still to be achieved -->
+<?php foreach($obj->getStatuses() as $status): ?> 
+    <?php if($status->listinsummary == 1): ?>
+    <strong><u><?= $status->status ?> <?= $string['targets'] ?></u></strong><br>
+    <table class="elbp_summary_table">
+    <thead>
+        <tr>
+            <th><?= $string['name'] ?></th>
+            <th><?= $string['deadline'] ?></th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach($obj->getUserTargets($status->id) as $target): ?>
+    <tr>
+        <td><a href="#" onclick="ELBP.Targets.load_targets(<?= $status->id ?>, <?= $target->getID() ?>);return false;"><?= $target->getName() ?></a></td>
+        <td><?= $target->getDueDate() ?></td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+    </table>
+    <br>
+    <?php endif; ?>
+ <?php endforeach; ?>

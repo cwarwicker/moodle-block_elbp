@@ -1,0 +1,32 @@
+<?php if(!defined('ELBP')) exit; ?>
+<ul class="elbp_tabrow">
+    
+    <?php $num = 0; ?>
+    <?php foreach($obj->getStatuses() as $status): ?>
+    
+        <li id="tab_link_status_<?= $status->id ?>" class="elbp_view_link"><a id="statustab_<?= $status->id ?>" href="#" onclick="ELBP.Targets.load_display('<?= $status->id ?>', this);return false;"><?= $status->status ?> (<span id="statustab_<?= $status->id ?>_num"><?= $obj->countUserTargetsByStatus($status->id) ?></span>)</a></li>
+    
+    <?php $num++; ?>
+    <?php endforeach; ?>
+        
+    
+</ul>
+
+<br>
+
+
+
+<div id="elbp_targets_content">
+    
+    <?php
+        $statuses = $obj->getStatuses();
+        $status = reset($statuses);
+    ?>
+        
+<script>
+if(ELBP.Targets.loaded_type == false && (ELBP.Targets.loaded_from == false || ELBP.Targets.loaded_from == undefined)){
+    ELBP.Targets.load_display('<?= $status->id ?>', $('#statustab_<?= $status->id ?>'));
+}
+</script>
+    
+</div>

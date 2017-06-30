@@ -1,0 +1,65 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?= (isset($saved) && $saved == true) ? elbp_success_alert_box($string['settingsupdated']) : '' ?>
+
+<form action="" method="post">
+<h2><?= get_string('blockconfig', 'block_elbp') ?></h2>
+<?php $OBJ->displayConfig() ?>
+
+<br><br>
+<h2><?= $string['additionalsupportconfig'] ?></h2>
+
+<small><strong><?= $string['instructions'] ?></strong> - <?= $string['additionalsupport:instructions:desc'] ?></small><br>
+<input class='elbp_max' type='text' name='new_session_instructions' value='<?= $OBJ->getSetting('new_session_instructions') ?>' />
+ 
+<br><br>
+<small><strong><?= $string['limitsummarylist'] ?></strong> - <?= $string['limitsummarylist:desc'] ?></small><br>
+<input class='elbp_small' type='text' name='limit_summary_list' value='<?= $OBJ->getSetting('limit_summary_list') ?>' />
+  
+       
+<br><br>
+<small><strong><?= $string['confidenceenableddisable'] ?></strong> - <?= $string['confidenceenableddisable:desc'] ?></small><br>
+<?= get_string('enable') ?> <input type="radio" name="confidence_enabled" value="1" <?php if ($OBJ->getSetting('confidence_enabled') == 1): echo 'checked'; endif; ?> /> &nbsp;&nbsp; 
+<?= get_string('disable') ?>  <input type="radio" name="confidence_enabled" value="0"  <?php if ($OBJ->getSetting('confidence_enabled') != 1): echo 'checked'; endif; ?> />      
+
+<br><br>
+<small><strong><?= $string['confidencelimit'] ?></strong> - <?= $string['confidencelimit:desc'] ?></small><br>
+<input class='elbp_small' type='text' name='limit_confidence' value='<?= $OBJ->getSetting('limit_confidence') ?>' />
+  
+       
+<br><br>
+<small><strong><?= $string['confidencetargetprogress'] ?></strong> - <?= $string['confidencetargetprogress:desc'] ?></small><br>
+<?= get_string('enable') ?> <input type="radio" name="confidence_target_progress_enabled" value="1" <?php if ($OBJ->getSetting('confidence_target_progress_enabled') == 1): echo 'checked'; endif; ?> /> &nbsp;&nbsp; 
+<?= get_string('disable') ?>  <input type="radio" name="confidence_target_progress_enabled" value="0"  <?php if ($OBJ->getSetting('confidence_target_progress_enabled') != 1): echo 'checked'; endif; ?> />      
+
+       
+       
+<br><br>
+<small><strong><?= $string['lockafterdeadline'] ?></strong> - <?= $string['additionalsupport:lockafterdeadline:desc'] ?></small><br>
+<?= get_string('yes') ?> <input type="radio" name="lock_targets_after_deadline" value="1" <?php if ($OBJ->getSetting('lock_targets_after_deadline') == 1): echo 'checked'; endif; ?> /> &nbsp;&nbsp; 
+<?= get_string('no') ?>  <input type="radio" name="lock_targets_after_deadline" value="0"  <?php if ($OBJ->getSetting('lock_targets_after_deadline') != 1): echo 'checked'; endif; ?> />      
+       
+       
+<br><br>
+<small><strong><?= $string['targetdeletion'] ?></strong> - <?= $string['targetdeletion:desc'] ?></small><br>
+<?= get_string('delete') ?> <input type="radio" name="delete_targets_on_delete" value="1" <?php if ($OBJ->getSetting('delete_targets_on_delete') == 1): echo 'checked'; endif; ?> /> &nbsp;&nbsp; 
+<?= get_string('keep') ?>  <input type="radio" name="delete_targets_on_delete" value="0"  <?php if ($OBJ->getSetting('delete_targets_on_delete') != 1): echo 'checked'; endif; ?> />      
+
+
+<br><br>
+<small><strong><?= $string['interestedparties'] ?></strong> - <?= $string['interestedparties:desc'] ?></small><br>
+<?= get_string('enable') ?> <input type="radio" name="interested_parties_enabled" value="1" <?php if ($OBJ->getSetting('interested_parties_enabled') == 1): echo 'checked'; endif; ?> /> &nbsp;&nbsp; 
+<?= get_string('disable') ?>  <input type="radio" name="interested_parties_enabled" value="0"  <?php if ($OBJ->getSetting('interested_parties_enabled') != 1): echo 'checked'; endif; ?> />      
+
+
+<br><br>
+<small><strong><?= $string['longtermaim'] ?></strong> - <?= $string['longtermaim:desc'] ?></small><br>
+<?= get_string('enable') ?> <input type="radio" name="long_term_aim_enabled" value="1" <?php if ($OBJ->getSetting('long_term_aim_enabled') == 1): echo 'checked'; endif; ?> /> &nbsp;&nbsp; 
+<?= get_string('disable') ?>  <input type="radio" name="long_term_aim_enabled" value="0"  <?php if ($OBJ->getSetting('long_term_aim_enabled') != 1): echo 'checked'; endif; ?> />      
+
+
+
+
+<br><br>
+    <p class='elbp_centre'><input type="submit" name="submitconfig" value="<?= get_string('save', 'block_elbp') ?>" /></p>
+</form>

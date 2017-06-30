@@ -1,0 +1,117 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?= (isset($saved) && $saved == true) ? elbp_success_alert_box($string['settingsupdated']) : '' ?>
+
+<script>
+function showSubSelect(type)
+{
+
+    $('.hidden_mime').css('display', 'none');
+    $('#'+type+'_mimes').css('display', 'inline-block');
+
+}
+</script>
+
+<form action="" method="post">
+<h2><?= get_string('blockconfig', 'block_elbp') ?></h2>
+<?php $ATT->displayConfig() ?>
+<h2><?= $string['attachmentsconfig'] ?></h2>
+
+<small><strong><?= $string['attachmentsconfig:maxfilesize'] ?></strong> - <?= $string['attachmentsconfig:maxfilesize:desc'] ?></small>
+<br>
+<?= $ATT->getMaxFileSize() ?>
+<br><br>
+<small><strong><?= $string['attachmentsconfig:mimetypes'] ?></strong> - <?= $string['attachmentsconfig:mimetypes:desc'] ?></small>
+<br>
+<select class='elbp_select' multiple='multiple' style='display: inline-blocks;' onchange='showSubSelect(this.value);return false;'>
+    <option value='office'><?= $string['msoffice'] ?></option>
+    <option value='image'><?= $string['imagefiles'] ?></option>
+    <option value='text'><?= $string['textfiles'] ?></option>
+    <option value='audio'><?= $string['audiofiles'] ?></option>
+    <option value='video'><?= $string['videofiles'] ?></option>
+    <option value='other'><?= $string['other'] ?></option>
+    <option value='defined'><?= $string['userdefined'] ?></option>
+</select>
+
+<!-- Office Files  -->
+<select id="office_mimes" name="allowed_mime_types[]" class="elbp_select hidden_mime" style="display: none" multiple="multiple">
+    <?php foreach($mimes['OFFICE'] as $ext => $mime): ?>
+    
+        <?php if (is_array($mime)): foreach($mime as $m): ?>
+            <option value="<?= $m ?>" <?= (in_array($m, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $m ?></option>
+        <?php endforeach; else : ?>
+            <option value="<?= $mime ?>" <?= (in_array($mime, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $mime ?></option>
+        <?php endif; ?>
+    
+    <?php endforeach; ?>
+</select>
+
+<!-- Image Files  -->
+<select id="image_mimes" name="allowed_mime_types[]" class="elbp_select hidden_mime" style="display: none" multiple="multiple">
+    <?php foreach($mimes['IMG'] as $ext => $mime): ?>
+        <?php if (is_array($mime)): foreach($mime as $m): ?>
+            <option value="<?= $m ?>" <?= (in_array($m, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $m ?></option>
+        <?php endforeach; else : ?>
+            <option value="<?= $mime ?>" <?= (in_array($mime, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $mime ?></option>
+        <?php endif; ?>   
+    <?php endforeach; ?>       
+</select>
+
+ <!-- Text Files -->
+<select id="text_mimes" name="allowed_mime_types[]" class="elbp_select hidden_mime" style="display: none" multiple="multiple">
+     <?php foreach($mimes['TXT'] as $ext => $mime): ?>
+        <?php if (is_array($mime)): foreach($mime as $m): ?>
+            <option value="<?= $m ?>" <?= (in_array($m, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $m ?></option>
+        <?php endforeach; else : ?>
+            <option value="<?= $mime ?>" <?= (in_array($mime, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $mime ?></option>
+        <?php endif; ?> 
+    <?php endforeach; ?>   
+</select>
+
+<!-- Audio Files  -->
+<select id="audio_mimes" name="allowed_mime_types[]" class="elbp_select hidden_mime" style="display: none" multiple="multiple">
+      <?php foreach($mimes['AUDIO'] as $ext => $mime): ?>
+        <?php if (is_array($mime)): foreach($mime as $m): ?>
+            <option value="<?= $m ?>" <?= (in_array($m, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $m ?></option>
+        <?php endforeach; else : ?>
+            <option value="<?= $mime ?>" <?= (in_array($mime, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $mime ?></option>
+        <?php endif; ?>
+    <?php endforeach; ?>  
+</select>
+
+ <!-- Video Files  -->
+<select id="video_mimes" name="allowed_mime_types[]" class="elbp_select hidden_mime" style="display: none" multiple="multiple">
+       <?php foreach($mimes['VIDEO'] as $ext => $mime): ?>
+        <?php if (is_array($mime)): foreach($mime as $m): ?>
+            <option value="<?= $m ?>" <?= (in_array($m, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $m ?></option>
+        <?php endforeach; else : ?>
+            <option value="<?= $mime ?>" <?= (in_array($mime, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $mime ?></option>
+        <?php endif; ?>
+    <?php endforeach; ?> 
+</select>
+
+ <!-- Other Files   -->
+<select id="other_mimes" name="allowed_mime_types[]" class="elbp_select hidden_mime" style="display: none" multiple="multiple">
+        <?php foreach($mimes['OTHER'] as $ext => $mime): ?>
+        <?php if (is_array($mime)): foreach($mime as $m): ?>
+            <option value="<?= $m ?>" <?= (in_array($m, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $m ?></option>
+        <?php endforeach; else : ?>
+            <option value="<?= $mime ?>" <?= (in_array($mime, $allowedMimes)) ? 'selected' : ''; ?> ><?= $ext ?> - <?= $mime ?></option>
+        <?php endif; ?> 
+    <?php endforeach; ?>
+</select>
+ 
+  <!-- User Defined Mime Types   -->
+<select id="defined_mimes" name="allowed_mime_types[]" class="elbp_select hidden_mime" style="display: none" multiple="multiple">
+        <?php foreach($definedMimes as $mime): ?>
+            <option value="<?= $mime ?>" <?= (in_array($mime, $allowedMimes)) ? 'selected' : ''; ?> ><?= $mime ?></option>
+    <?php endforeach; ?>
+</select>
+ 
+ <br><br>
+ <small><?= $string['attachmentsconfig:mimetypes:single'] ?></small><br>
+ <input type="text" name="allowed_mime_types[]" class="elbp_large" />
+
+    <br><br>
+    <p class='elbp_centre'><input type="submit" name="submitconfig" value="<?= get_string('save', 'block_elbp') ?>" /></p>
+</form>

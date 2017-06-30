@@ -1,0 +1,35 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_course_reports_table">
+    
+    <tr>
+        <th colspan="2"><?= $string['course'] ?></th>
+        
+        
+        <th><?= $string['lastcoursereport'] ?></th>
+        <th></th>
+    </tr>
+    
+    <?php if ($courses): ?>
+        <?php foreach($courses as $course): ?>
+        <tr>
+            <td><a href="#" onclick="ELBP.CourseReports.load_display('course', undefined, <?= $course->id ?>);return false;"><?= $course->shortname ?></a></td>
+            <td><a href="#" onclick="ELBP.CourseReports.load_display('course', undefined, <?= $course->id ?>);return false;"><?= $course->fullname ?></a></td>
+
+            <?php $lastReport = $obj->getLastCourseReport($course->id); ?>
+
+            <td><a href="#" onclick="ELBP.CourseReports.load_report_quick(<?= $course->id ?>, <?= $lastReport->id ?>);return false;"><?= $lastReport->reportdate ?></a></td>
+            <?php if(elbp_has_capability('block/elbp:add_course_report', $access)): ?>
+            <td><a href="#" onclick="ELBP.CourseReports.load_display('new', undefined, <?= $course->id ?>);return false;"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/icons/add.png" class="elbp_sm_icon" alt="<?= $string['add'] ?>" /></a></td>
+            <?php endif; ?>
+        </tr>
+        <?php endforeach ;?>
+    <?php else: ?>
+    
+    <tr>
+        <td colspan='4' class='elbp_centre'><?= $string['noresults'] ?></td>
+    </tr>
+    
+    <?php endif; ?>
+    
+</table>

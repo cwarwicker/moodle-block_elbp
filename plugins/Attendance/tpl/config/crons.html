@@ -1,0 +1,59 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<h2><?= $string['crons'] ?></h2>
+
+<p><b><?= $string['crons:note'] ?></b></p>
+
+<p><?= $string['attendance:crons:info'] ?></p>
+    
+<form action="" method="post">
+    
+    <small><strong><?= $string['enabledisable'] ?></strong> - <?= $string['cron:enableddisable:desc'] ?></small><br>
+    <input type='radio' name='cron_enabled' value='1' <?= ($ATT->getSetting('cron_enabled') == 1 ) ? 'checked' : '' ?> /> <?= $string['enable'] ?> &nbsp; 
+    <input type='radio' name='cron_enabled' value='0' <?= ($ATT->getSetting('cron_enabled') != 1 ) ? 'checked' : '' ?> /> <?= $string['disable'] ?>
+    <br><br>
+    
+    <small><strong><?= $string['timing'] ?></strong> - <?= $string['cron:timing:desc'] ?></small><br>
+    
+    <div style="float:left;">
+    
+        <select name="cron_timing_type">
+
+            <option value=""></option>
+            <option value="specific" <?= ($ATT->getSetting('cron_timing_type') == 'specific' ) ? 'selected' : '' ?> ><?= $string['cron:specifictiming'] ?></option>
+            <option value="every" <?= ($ATT->getSetting('cron_timing_type') == 'every' ) ? 'selected' : '' ?> ><?= $string['cron:everytiming'] ?></option>
+
+        </select>
+        
+    </div>
+    
+    <div style="float:left;margin-left:20px;">
+        
+        <?= $string['hour'] ?>: 
+        <select name="cron_timing_hour">
+            <?php for($h = 0; $h <= 23; $h++): ?>
+                <option value="<?= $h ?>" <?= ($ATT->getSetting('cron_timing_hour') == $h ) ? 'selected' : '' ?> ><?= ($h < 10) ? '0'.$h : $h;  ?></option>
+            <?php endfor; ?>
+        </select>
+        
+        <?= $string['minute'] ?>:
+        <select name="cron_timing_minute">
+            <?php for($m = 0; $m <= 59; $m += 5): ?>
+                <option value="<?= $m ?>" <?= ($ATT->getSetting('cron_timing_minute') == $m ) ? 'selected' : '' ?>><?= ($m < 10) ? '0'.$m : $m;  ?></option>
+            <?php endfor; ?>
+        </select>
+        
+    </div>
+        
+    <br class="elbp_cl" />
+    <br><br>
+    
+    <small><strong><?= $string['cron:import:csvlocation'] ?></strong> - <?= $string['cron:import:csvlocation:desc'] ?></small><br>
+    <input type="text" name="cron_file_location" value="<?= $ATT->getSetting('cron_file_location') ?>" class="elbp_long" />
+    <br><br>
+    
+    <br><br>
+    <p class='elbp_centre'><input type="submit" name="submitconfig" value="<?= $string['save'] ?>" /></p>
+    
+</form>
+

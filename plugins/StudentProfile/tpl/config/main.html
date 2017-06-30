@@ -1,0 +1,37 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<h2><?= get_string('blockconfig', 'block_elbp') ?></h2>
+
+<form action="" method="post">
+<?php $SP->displayConfig(); ?>
+
+<br><br>
+<h2><?= $string['extrasconfig'] ?></h2>
+
+<small><strong><?= $string['personaltutors'] ?></strong> - <?= $string['personaltutors:profile:desc'] ?></small><br>
+<input type='radio' name='show_tutors_summary' value='1' <?= ($SP->getSetting('show_tutors_summary') == 1) ? 'checked' : ''; ?> /> <label><?= $string['enable'] ?></label> &nbsp;&nbsp; 
+<input type='radio' name='show_tutors_summary' value='0' <?= ($SP->getSetting('show_tutors_summary') != 1) ? 'checked' : ''; ?> /> <label><?= $string['disable'] ?></label>
+<br><br>
+
+<small><strong><?= $string['coursetutors'] ?></strong> - <?= $string['coursetutors:profile:desc'] ?></small><br>
+<input type='radio' name='show_course_tutors_summary' value='1' <?= ($SP->getSetting('show_course_tutors_summary') == 1) ? 'checked' : ''; ?> /> <label><?= $string['enable'] ?></label> &nbsp;&nbsp; 
+<input type='radio' name='show_course_tutors_summary' value='0' <?= ($SP->getSetting('show_course_tutors_summary') != 1) ? 'checked' : ''; ?> /> <label><?= $string['disable'] ?></label>
+<br><br>
+
+
+
+<?php if( \elbp_is_block_installed('badges') ): ?>
+    <small><strong><?= $string['badges'] ?></strong> - <?= $string['badges:desc'] ?></small><br>
+    <input type='radio' name='badges_enabled' value='1' <?= ($SP->getSetting('badges_enabled') == 1) ? 'checked' : ''; ?> /> <label><?= $string['enable'] ?></label> &nbsp;&nbsp; 
+    <input type='radio' name='badges_enabled' value='0' <?= ($SP->getSetting('badges_enabled') != 1) ? 'checked' : ''; ?> /> <label><?= $string['disable'] ?></label>
+<?php endif; ?>
+
+<br><br>
+
+<small><strong><?= $string['userorid'] ?></strong> - <?= $string['userorid:desc'] ?></small><br>
+<input type='radio' name='user_or_id' value='username' <?= ($SP->getSetting('user_or_id') == 'username') ? 'checked' : ''; ?> /> <label><?= $string['username'] ?></label> &nbsp;&nbsp; 
+<input type='radio' name='user_or_id' value='idnumber' <?= ($SP->getSetting('user_or_id') == 'idnumber') ? 'checked' : ''; ?> /> <label><?= $string['idnumber'] ?></label>
+<br><br>
+
+<p class='elbp_centre'><input type="submit" name="submitconfig" value="<?= get_string('save', 'block_elbp') ?>" /></p>
+</form>

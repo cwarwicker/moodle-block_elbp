@@ -1,0 +1,43 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+          <td class="elbp_summary_title" style="background-image: url('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $obj->getName() ?>/pix/icon.png');">
+            <?= $string['yourchallenges'] ?>
+          </td>
+      </tr>
+    </tbody>
+ </table>
+
+<table class="elbp_summary_table">
+      
+    <?php if ($challenges): ?>
+    
+        <?php foreach($challenges as $challenge): ?>
+                
+            <?php if ($obj->getSetting('use_confidentiality') != 1 || ($CONF->meetsConfidentialityRequirement($access, $challenge->confidentialityid))): ?>
+
+                <tr>
+                    <td><span class="elbp_tooltip" title="<?= \elbp_html($challenge->comments, true) ?>"><?= $challenge->challenge ?></span></td>
+                    <td><?= date('D jS M Y', $challenge->dateset) ?></td>
+                </tr>
+
+            <?php endif; ?>
+        
+        <?php endforeach; ?>
+    
+    <?php else: ?>
+    
+    <tr>
+        <td class="elbp_centre"><?= $string['noresults'] ?></td>
+    </tr>
+    
+    <?php endif; ?>
+    
+    <script>
+        ELBP.apply_tooltip();
+    </script>
+    
+</table>
+

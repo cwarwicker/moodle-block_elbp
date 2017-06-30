@@ -1,0 +1,97 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php if ($obj->getMainMIS() !== false): ?>    
+    <?= $string['attendance:tracking:mis'] ?>
+    <?php exit; ?>
+<?php endif; ?>
+
+<p class="elbp_centre">
+    <small><?= $string['trackingchangesevery'] ?>: (<?= $obj->getSetting('track_days') ?>) <?= $string['days'] ?>, <?= $string['foraperiodof'] ?> (<?= $obj->getSetting('tracking_period') ?>) <?= $string['days'] ?></small>
+    <br>
+    <small><strong><?= date('d-m-Y', $obj->getTrackingFromDate()) ?> - <?= date('d-m-Y') ?></strong></small>
+</p>
+
+<div class="elbp_centre">
+    <h2><?= $string['overall'] ?></h2>
+    <br>
+    
+    <table class='elbp_att_simple_overall'>
+        
+        <tr>
+            <th></th>
+            <?php if ($types): ?>
+                <?php foreach($types as $type): ?>
+                    <th colspan="<?= (count($periods) * 2) ?>"><?= $type ?></th>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tr>
+        
+        <tr>
+            <th></th>
+            <?php if ($types): ?>
+                <?php foreach($types as $type): ?>
+                    <?php if ($periods): ?>
+                        <?php foreach($periods as $period): ?>
+                            <th><?= $period ?></th>
+                            <th></th>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tr>
+        
+        
+        <?php $end = strtotime( date('d-m-Y') . ' 23:59' ) ?>
+        <?php $unix = $obj->getTrackingFromDate() ?>
+        <?php $last = array(); ?>
+        
+        <?php while ($unix <= $end): ?>
+                    
+            <tr>
+                <td title="<?= $unix ?>"><?= date('d-m-Y', $unix) ?></td>
+                <?php if ($types): ?>
+                    <?php foreach($types as $type): ?>
+                        <?php if ($periods): ?>
+                            <?php foreach($periods as $period): ?>
+                                <?php $value = $obj->getRecordHistory( array("type"=>$type, "courseid"=>null, "period"=>$period), $unix ); ?>
+                                <td><?= $value ?></td>
+                                <td><?= (isset($last[$type . '_' . $period]) && is_numeric($last[$type . '_' . $period])) ? $obj->getTrackingDifference($last[$type . '_' . $period], $value) : '-'; ?></td>
+                                <?php $last[$type . '_' . $period] = $value; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tr>
+            
+            <?php $unix = $unix + ($trackingDays * 86400); ?>       
+        
+        <?php endwhile; ?>
+        
+        
+         <!-- End with the latest row we've got -->
+        <tr>
+            <td><?= date('d-m-Y') ?></td>
+            <?php if ($types): ?>
+                <?php foreach($types as $type): ?>
+                    <?php if ($periods): ?>
+                        <?php foreach($periods as $period): ?>
+                            <?php $value = $obj->getRecord( array("type"=>$type, "courseid"=>null, "period"=>$period) ) ?>
+                            <td><?= $value ?></td>
+                            <td><?= (isset($last[$type . '_' . $period]) && is_numeric($last[$type . '_' . $period])) ? $obj->getTrackingDifference($last[$type . '_' . $period], $value) : '-'; ?></td>
+                            <?php $last[$type . '_' . $period] = $value; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tr>
+        
+        
+    </table>
+    
+    <br><br><br>
+    
+    <img style="max-width: none !important;" id="elbp_line_overall_img" src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/89.gif" alt="" />
+    <script>ELBP.load_image('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Attendance/pix/bar/tracking/overall.php?studentID=<?= $obj->getStudentID() ?>', 'elbp_line_overall_img');</script>
+
+    
+</div>

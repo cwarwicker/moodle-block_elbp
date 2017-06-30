@@ -1,0 +1,56 @@
+<?php if ($attributes): ?>
+
+    <div class="table elbp_centre" style="max-width:80%;margin:auto;" id="incremental_all_items">
+
+        <div style='<?= $obj->getHeaderStyle() ?>'>
+            <?php foreach($attributes as $attribute): ?>
+                <div class="b"><?= $attribute->name ?></div>
+            <?php endforeach; ?>
+        </div>
+
+        <?php if ($items): ?>
+
+            <?php foreach($items as $item): ?>
+            <?php $obj->loadStudent( $obj->getStudentID(), $item->id, $attributes ) ?>
+
+                <div class="incremental_item_<?= $item->id ?>" class="<?= ( ($num % 2) == 0 ) ? 'even' : 'odd'; ?>">
+                    <?php foreach($attributes as $attribute): ?>
+                        <div id="item_<?= $item->id ?>_attribute_<?= \elbp_strip_to_plain($attribute->name) ?>">
+                            <?= $attribute->displayValue() ?>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php if ( ($item->setbyuserid == $USER->id && $obj->havePermission( $obj::PERMISSION_EDIT_OWN, $permissions )) || ($item->setbyuserid <> $USER->id && $obj->havePermission( $obj::PERMISSION_EDIT_ANY, $permissions ))): ?>
+                        <div><input type='hidden' name='itemID' value='<?= $item->id ?>' /><button class="elbp_btn_small" onclick="showEditRow( <?= $item->id ?> );return false;"><?= $string['edit'] ?></button></div>
+                    <?php endif; ?>
+                    <?php if ( ($item->setbyuserid == $USER->id && $obj->havePermission( $obj::PERMISSION_DEL_OWN, $permissions )) || ($item->setbyuserid <> $USER->id && $obj->havePermission( $obj::PERMISSION_DEL_ANY, $permissions ))): ?>
+                        <div><button class="elbp_btn_small" onclick="ELBP.Custom.delete_incremental_item('<?= $obj->getName() ?>', <?= $item->id ?>);return false;"><?= $string['delete'] ?></button></div>
+                    <?php endif; ?>
+                </div>      
+
+            <?php if ( ($item->setbyuserid == $USER->id && $obj->havePermission( $obj::PERMISSION_EDIT_OWN, $permissions )) || ($item->setbyuserid <> $USER->id && $obj->havePermission( $obj::PERMISSION_EDIT_ANY, $permissions ))): ?>
+                <form id="form_item_<?= $item->id ?>" class="incremental_item_<?= $item->id ?>_edit" class="<?= ( ($num % 2) == 0 ) ? 'even' : 'odd'; ?>" style="display:none;">
+                    <?php foreach($attributes as $attribute): ?>
+                        <div><?= $attribute->convertToFormElement( ) ?></div>
+                    <?php endforeach; ?>
+                    <div><input type='hidden' name='itemID' value='<?= $item->id ?>' /><button class="elbp_btn_small" onclick="validateFormSubmission( $('#form_item_<?= $item->id ?>') );return false;"><?= $string['save'] ?></button></div>
+                    <div><button class="elbp_btn_small" onclick="ELBP.Custom.delete_incremental_item('<?= $obj->getName() ?>', <?= $item->id ?>);return false;"><?= $string['delete'] ?></button></div>
+                </form>
+            <?php endif; ?>
+
+            <?php $num++ ?>
+                        
+            <?php endforeach; ?>
+
+        <?php endif; ?>
+
+    </div>
+
+    <?php if (!$items): ?>
+
+        <p class="elbp_centre"><?= $string['noresults'] ?></p>
+
+    <?php endif; ?>
+
+<?php endif; ?>
+
+<?= \ELBP\ELBPFORM::getEndCode(); ?>

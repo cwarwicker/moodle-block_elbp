@@ -1,0 +1,25 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<p class="elbp_centre">
+    <?php if ($obj->havePermission( $obj::PERMISSION_ADD, $permissions )): ?>
+    <button class="elbp_b" onclick="ELBP.Custom.load_display('<?= $obj->getName() ?>', 'new');return false;"><?= $string['new'] ?></button>
+    <?php endif; ?>
+</p>
+
+<br>
+
+<?php if ($obj->havePermission( $obj::PERMISSION_PRINT, $permissions )): ?>
+    <p class='elbp_right'><a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=all&student=<?= $obj->getStudentID() ?>&custom=1" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['printall'] ?></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<?php endif; ?>
+
+<div id="custom_output" class="elbp_centre"></div>
+
+<?php foreach($items as $item): ?>
+<div id="elbp_custom_item_<?= $item->id ?>" class="elbp_custom_item">
+    <?php $obj->displayMultiItem($item) ?>
+</div>
+<?php endforeach; ?>
+
+<?php if (!$items): ?>
+    <p class="elbp_centre"><?= $string['noresults'] ?></p>
+<?php endif; ?>

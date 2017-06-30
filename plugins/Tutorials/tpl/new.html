@@ -1,0 +1,210 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php 
+
+if (!elbp_has_capability('block/elbp:add_tutorial', $access)){
+    exit;
+}
+
+if ($page == 'new'){
+    if (!elbp_has_capability('block/elbp:add_tutorial', $access)) exit; 
+    $newedit = $string['newtarget'];
+}
+
+elseif($page == 'edit'){
+    if (!elbp_has_capability('block/elbp:edit_tutorial', $access)) exit; 
+    $newedit = $string['edittarget'];
+}
+
+?>
+
+<script>
+    $('.elbp_view_link').removeClass('selected');
+    
+    function validateTutorialFormSubmission(form)
+    {
+        if (ELBP.validate_form(form) == true)
+        {
+            ELBP.Tutorials.save_tutorial( form );
+        }
+    }    
+    
+    function showExistingTargets()
+    {
+        $('#existingtargets').toggle();
+    }
+    
+    
+    
+</script>
+
+<form id="new_tutorial_form">
+
+
+<p class="elbp_centre"><button class="elbp_b" onclick="validateTutorialFormSubmission( $(this.form) );return false;"><?= $string['savetutorial'] ?></button></p>
+<br>
+
+<p class="elbp_centre"><u><?= $string['instructions'] ?></u>: <?= $obj->getSetting('new_tutorial_instructions') ?></p>
+<br>
+<div id="new_tutorial_output" class="elbp_centre"></div>
+<br>
+<div class="elbp_new_tutorial_form">
+        <input type="hidden" name="tutorial_id" value="<?= $data['id'] ?>" />
+        <p class="elbp_centre"><small><?= get_string('tutorialdate', 'block_elbp') ?></small><br><input type="text" id="tutorial_date" class="elbp_datepicker" name="tutorial_date" value="<?= $data['date'] ?>" /></p>
+        <div>
+            <div class='elbp_tutorial_main_elements'>
+                <?php if ($data['atts']): ?>
+                    <?php foreach($data['atts'] as $attribute): ?>
+                        <?php if ($attribute->display == 'main'): ?>
+                        <h2><?= $attribute->name ?></h2>
+                            <div class='elbp_tutorial_attribute_content'>
+                            <?= $attribute->convertToFormElement() ?>
+                            </div>
+                            <br>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <span><?= $string['error:noattributes'] ?></span>
+                <?php endif; ?>
+            </div>
+            
+            <div class='elbp_tutorial_summary_elements'>
+                
+                <!-- Hooks -->
+                <?php if (isset($hooks['Attendance/Averages'])):?>
+                    <b><?= $ELBP->getPlugin("Attendance")->getTitle() ?></b><br><br>
+                    <table class='attendance_periods_table_course_reports'>
+                        <tr>
+                            <th></th>
+                            <?php foreach($hooks['Attendance/Averages']['periods'] as $period): ?>
+                            <th><?= $period ?></th>
+                            <?php endforeach; ?>
+                        </tr>
+                        <?php foreach($hooks['Attendance/Averages']['types'] as $type): ?>
+                        <tr>
+                            <td class="elbp_b elbp_centre"><?= $type ?></td>
+                            <?php foreach($hooks['Attendance/Averages']['values'][$type] as $p => $v): ?>
+                                <?php $name = $type . ' ' . $p; ?>
+                                <?php if (isset($data['hookAtts'][$name])): $value = ($data['hookAtts'][$name]) ? $data['hookAtts'][$name] : $string['na']; ?>
+                                <?php else: $value = $v; endif; ?>
+                                <td>
+                                    <?= ($value != '' && !isset($data['hookAtts'][$name])) ? '<input type="hidden" name="'.$name.'" value="'.$value.'" />' : ''; ?>
+                                    <?= $value ?>
+                                </td>
+                            <?php endforeach; ?>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                    <br><br>
+                <?php endif; ?>
+                <?php if (isset($hooks['Attendance/Course'])):?>
+                <table class='attendance_periods_table_course_reports'>
+                        <tr>
+                            <th><b><?php echo get_string('course', 'block_elbp'); ?></b></th>
+                            <?php foreach($hooks['Attendance/Course']['types'] as $type):?>
+                            <th><b><?= $type ?></b></th>
+                            <?php endforeach ?>
+                        </tr>
+                        <?php
+                            foreach($hooks['Attendance/Course']['values'] as $regData):?>
+                        <tr>
+                            <td>
+                               <?php
+                               $ATT = $ELBP->getPlugin("Attendance");
+                               echo $ATT->getCourseName($regData);
+                               ?>                               
+                            </td>
+                            <?php 
+                            foreach($hooks['Attendance/Course']['types'] as $type):?>
+                                <td>
+                                    <?php echo $regData->$type; ?>
+                                    <?php $name = '$type ' . $p . ':' . $regData->id; ?> 
+                                    <input type="hidden" name="<?= $name ?>" value="<?= $regData->$type ?>" />
+                                </td>
+                            <?php endforeach ?>
+                        </tr>
+                        <?php endforeach ?>
+                    </table>
+                    <br><br>
+                <?php endif; ?>
+                
+                
+                <br><br>
+                <b><?= get_string('otherattributes', 'block_elbp')?></b><br><br>
+                <table>
+                <?php if ($data['atts']): ?>
+                    <?php foreach($data['atts'] as $attribute): ?>
+                        <?php if ($attribute->display == 'side'): ?>
+                            <tr><td><?= $attribute->name ?>:</td><td><?= $attribute->convertToFormElement() ?></td></tr>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <span><?= $string['error:noattributes'] ?></span>
+                <?php endif; ?>
+                </table>
+                <br><br>
+                <?php
+                // Targets is an awkward one, it's not something you can call automatically so we'll have to test for it
+                // differently - this hooks thing is becoming a pain in the arse, may need to re-write the whole thing
+                // at some point
+                if ($obj->hasHookEnabled("Targets/Targets") && $ELBP->getPlugin("Targets")):
+                ?>
+                <b><?= $ELBP->getPlugin("Targets")->getTitle(); ?></b><br><br>
+                <p class='elbp_centre'>
+                    <button onclick='ELBP.Tutorials.add_target("<?= $obj->getTitle() ?>", "elbp_tutorial_new_targets");return false;'><?= $string['addnewtarget'] ?></button>
+                    &nbsp;&nbsp;&nbsp;
+                    <button onclick='showExistingTargets();return false;'><?= $string['addexistingtarget'] ?></button>
+                </p>
+                <p class='elbp_centre' id="existingtargets" style="display:none;">
+                    <select id="add_existing_target" onchange="ELBP.Tutorials.add_existing_target(this.value);return false;">
+                        <option value=""></option>
+                        <?php if ($existingTargets): ?>
+                            <?php foreach($existingTargets as $target): ?>
+                                <option value="<?= $target->id ?>"><?= elbp_html($target->name); ?></option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select> &nbsp;&nbsp; 
+                    <span id="loading_add_existing_target" style="display:none;">
+                        <img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/loader.gif" alt="loading" />
+                    </span>
+                </p>
+                <div>
+                    <table id='elbp_tutorial_new_targets'>
+                        <tr>
+                            <th><?= $string['date'] ?></th>
+                            <th><?= $string['targetname'] ?></th>
+                            <th><?= $string['status'] ?></th>
+                            <th><?= $string['deadline'] ?></th>
+                            <th></th>
+                        </tr>
+                        
+                        <?php if (isset($data['hookAtts']['Targets']) && !empty($data['hookAtts']['Targets'])): ?>
+                            <?php foreach((array)$data['hookAtts']['Targets'] as $targetID): ?>
+                                <?php $target = new \ELBP\Plugins\Targets\Target($targetID); ?>
+
+                                <?php if ($target->isValid()): ?>
+                                <tr id='new_added_target_id_<?= $targetID ?>' class='added_target_row'>
+                                    <td><?= $target->getSetDate() ?></td>
+                                    <td><a href='#' onclick='ELBP.Tutorials.edit_target(<?= $target->getID() ?>, "Tutorials");return false;'><?= $target->getName() ?></a></td>
+                                    <td><?= $target->getStatusName() ?></td>
+                                    <td><?= $target->getDueDate() ?></td>
+                                    <td><a href='#' onclick='ELBP.Tutorials.remove_target(<?= $target->getID() ?>, <?= $data['id'] ?>);return false;' title='<?= $string['remove'] ?>'><img src='<?= $CFG->wwwroot ?>/blocks/elbp/pix/remove.png' alt='<?= $string['remove'] ?>' /></a><input type='hidden' name='Targets' value='<?= $target->getID() ?>' /></td>
+                                </tr>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        
+                    </table>
+                </div>
+                <?php
+                endif;
+                ?>
+                
+            </div>
+            
+        </div>
+
+</div>
+</form>
+
+<?= \ELBP\ELBPFORM::getEndCode(); ?>

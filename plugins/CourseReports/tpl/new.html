@@ -1,0 +1,458 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php 
+
+if ($page == 'new'){
+    if (!elbp_has_capability('block/elbp:add_course_report', $access)) exit; 
+    $newedit = $string['newcoursereport'];
+}
+
+elseif($page == 'edit'){
+    if (!elbp_has_capability('block/elbp:edit_course_report', $access)) exit; 
+    $newedit = $string['editcoursereport'];
+}
+
+?>
+
+<script>
+    
+    $('.elbp_view_link').removeClass('selected');
+    
+    function validateCRFormSubmission(form)
+    {
+        if (ELBP.validate_form(form) == true)
+        {
+            var data = $(form).serialiseObject();
+            ELBP.CourseReports.save( data );
+        }
+    }    
+    
+    function change_course_func(cID)
+    {
+        
+        ELBP.CourseReports.load_display('new', undefined, cID);
+        
+    }
+    
+</script>
+
+<?php if(isset($data['courseID'])): ?>
+<p class="elbp_centre"><a href="#" onclick="ELBP.CourseReports.load_display('course', undefined, <?= $data['courseID'] ?>);return false;"><small>[<?= $string['returntocourse'] ?>]</small></a></p><br>
+<?php endif; ?>
+
+<form id="new_course_report_form">
+<p class="elbp_centre"><u><?= $string['instructions'] ?></u>: <?= $obj->getSetting('new_course_report_instructions') ?></p>
+<br>
+<div id="new_course_report_output" class="elbp_centre"></div>
+<br>
+
+<p class="elbp_centre"><button class="elbp_b" onclick="validateCRFormSubmission( $(this.form) );return false;"><?= $string['savereport'] ?></button></p>
+<br>
+
+<div class="elbp_new_course_report_form">
+        <input type="hidden" id="report_course" name="report_course" value="<?= $reportCourse->id ?>" />
+        <input type="hidden" name="report_id" value="<?= $data['id'] ?>" />
+
+        <table id="new_report_table">
+            <tr>
+                <th colspan="2" style='<?= $obj->getHeaderStyle() ?>'><?= $newedit ?></th>
+            </tr>
+            
+            <tr>
+                <td colspan="2" style="text-align:center !important;" id="course_name">
+                    <?= $reportCourse->shortname ?> &nbsp;&nbsp; <?= $reportCourse->fullname ?>
+                </td>
+            </tr>
+            
+            <tr>
+                <td><?= $string['course'] ?></td>
+                <td>
+                    
+                    <select id="change_course" onchange="change_course_func(this.value);return false;">
+                        
+                        <?php foreach($courses as $course): ?>
+                        <option value="<?= $course->id ?>" <?= ($course->id == $reportCourse->id) ? 'selected' : ''; ?> ><?= $course->shortname ?></option>
+                        <?php endforeach; ?>
+                        
+                    </select>
+                    
+                </td>
+            </tr>
+            
+            <tr>
+                <td><?= $string['reportdate'] ?></td>
+                <td><input type="text" id="report_date" name="report_date" class="elbp_datepicker" value="<?= $data['report_date'] ?>" validation="NOT_EMPTY" /></td>
+            </tr>
+            
+            <tr>
+                <td><?= $string['reviewdetails'] ?></td>
+                <td>         
+                                        
+                    <!-- Hooks -->
+                    <?php if (isset($hooks['Attendance/Averages'])):?>
+                        <b><?= $ELBP->getPlugin("Attendance")->getTitle() ?></b><br><br>
+                        <table class='attendance_periods_table_course_reports'>
+                            <tr>
+                                <th></th>
+                                <?php foreach($hooks['Attendance/Averages']['periods'] as $period): ?>
+                                <th><?= $period ?></th>
+                                <?php endforeach; ?>
+                            </tr>
+                            <?php foreach($hooks['Attendance/Averages']['types'] as $type): ?>
+                            <tr>
+                                <td class="elbp_b elbp_centre"><?= $type ?></td>
+                                <?php foreach($hooks['Attendance/Averages']['values'][$type] as $p => $v): ?>
+                                    <?php $avgString = get_string('average', 'block_elbp') . ' ' . $type . ' ' . $p; ?>
+                                    <?php if (isset($data[$avgString])): $value = ($data[$avgString]) ? $data[$avgString] : $string['na']; ?>
+                                    <?php else: $value = $v; endif; ?>
+                                    <td>
+                                        <?= ($value != '' && !isset($data[$avgString])) ? '<input type="hidden" name="'.$avgString.'" value="'.$value.'" />' : ''; ?>
+                                        <?= $value ?>
+                                    </td>
+                                <?php endforeach; ?>
+                            </tr>
+                            <?php endforeach; ?>
+                        </table>
+                        <br><br>
+                    <?php endif; ?>
+                    
+                    
+                    
+                    <?php if (isset($hooks['Attendance/Course'])): ?>
+                        <b><?= $ELBP->getPlugin("Attendance")->getTitle() ?></b><br><br>
+                        <table class='attendance_periods_table_course_reports'>
+                            <tr>
+                                <?php foreach($hooks['Attendance/Course']['types'] as $type): ?>
+                                <th><?= $type; ?></th>
+                                <?php endforeach; ?>
+                            </tr>
+                            
+                            <tr>
+                                <?php foreach($hooks['Attendance/Course']['types'] as $type): ?>
+                                <td>
+                                    <?php 
+                                    $avgString = $string['average'] . ' ' . $type;
+                                    $value = (isset($data['atts'][$avgString])) ? ( ($data['atts'][$avgString]) ? $data['atts'][$avgString] : $string['na'] ) : $hooks['Attendance/Course']['values'][$type] ;
+                                    ?>
+                                    <?= (!isset($data['atts'][$avgString]) && $value != '') ? '<input type="hidden" name="'.$avgString.'" value="'.$value.'" />' : ''; ?>
+                                    <?= $value; ?>
+                                </td>
+                                <?php endforeach; ?>
+                            </tr>
+                            
+                        </table>
+                        <br><br>
+                    
+                    <?php endif; ?>
+                                                            
+                    
+                    <?php if(isset($hooks['elbp_bcgt/Target Grade'])): ?>
+                    
+                        <b><?= $ELBP->getPlugin("elbp_bcgt")->getTitle() ?> - <?= get_string('targetgrade', 'block_bcgt') ?></b><br><br>
+                        
+                        <table class='target_grades_table_course_reports'>
+                            
+                            <?php if ($data['id'] > 0): ?>
+                                                        
+                                <?php if (isset($data['hookAtts']['Target Grades'])): ?>
+                                
+                                    <?php foreach((array)$data['hookAtts']['Target Grades'] as $targetGrade): ?>
+                                    
+                                        <?php
+                                        $explode = explode("|", $targetGrade);
+                                        $qual = $explode[0];
+                                        $grade = $explode[1];
+                                        ?>
+                                        
+                                        <tr>
+                                            <td><?= $qual ?></td>
+                                            <td><?= $grade ?></td>
+                                        </tr>
+                                        
+                                    <?php endforeach; ?>
+                                    
+                                <?php else: ?>
+                            
+                                    <tr>
+                                        <td colspan="2" class="elbp_centre"><?= $string['na'] ?></td>
+                                    </tr>
+                                
+                                <?php endif; ?>
+                                                    
+                            <?php else: ?>
+                            
+                                <?php foreach((array)$hooks['elbp_bcgt/Target Grade']['grades'] as $qual => $grade): ?>
+
+                                <tr>
+                                    <td><?= $qual ?></td>
+                                    <td><?= $grade ?><input type="hidden" name="Target Grades[]" value="<?= elbp_html($qual) . '|' . $grade ?>" /></td>
+                                </tr>
+
+                                <?php endforeach; ?>
+                            
+                            <?php endif; ?>
+                                                                                    
+                        </table>
+                        
+                        <br><br>
+                                                
+                    <?php endif; ?>
+                    
+                    
+                    
+                    
+                    
+                    
+                    <?php if(isset($hooks['elbp_bcgt/Weighted Target Grade'])): ?>
+                    
+                        <b><?= $ELBP->getPlugin("elbp_bcgt")->getTitle() ?> - <?= get_string('weightedtargetgrade', 'block_bcgt') ?></b><br><br>
+                        
+                        <table class='target_grades_table_course_reports'>
+                            
+                            <?php if ($data['id'] > 0): ?>
+                                                        
+                                <?php if (isset($data['hookAtts']['Weighted Target Grades'])): ?>
+                                
+                                    <?php foreach((array)$data['hookAtts']['Weighted Target Grades'] as $targetGrade): ?>
+                                    
+                                        <?php
+                                        $explode = explode("|", $targetGrade);
+                                        $qual = $explode[0];
+                                        $grade = $explode[1];
+                                        ?>
+                                        
+                                        <tr>
+                                            <td><?= $qual ?></td>
+                                            <td><?= $grade ?></td>
+                                        </tr>
+                                        
+                                    <?php endforeach; ?>
+                                    
+                                <?php else: ?>
+                            
+                                    <tr>
+                                        <td colspan="2" class="elbp_centre"><?= $string['na'] ?></td>
+                                    </tr>
+                                
+                                <?php endif; ?>
+                                                    
+                            <?php else: ?>
+                            
+                                <?php foreach((array)$hooks['elbp_bcgt/Weighted Target Grade']['grades'] as $qual => $grade): ?>
+
+                                <tr>
+                                    <td><?= $qual ?></td>
+                                    <td><?= $grade ?><input type="hidden" name="Weighted Target Grades[]" value="<?= elbp_html($qual) . '|' . $grade ?>" /></td>
+                                </tr>
+
+                                <?php endforeach; ?>
+                            
+                            <?php endif; ?>
+                                                                                    
+                        </table>
+                        
+                        <br><br>
+                                                
+                    <?php endif; ?>
+                    
+                    
+                    
+                    
+                    
+                    
+                                        
+                    <?php if(isset($hooks['elbp_bcgt/A Level Most Recent Grade'])): ?>
+                                        
+                        <b><?= $ELBP->getPlugin("elbp_bcgt")->getTitle() ?> - <?= get_string('mostrecentgrade', 'block_bcgt') ?></b><br><br>
+                        
+                        <table class='target_grades_table_course_reports'>
+                            
+                            <?php if ($data['id'] > 0): ?>
+                            
+                                <?php if (isset($data['hookAtts']['A Level Most Recent Grade'])): ?>
+                                
+                                    <?php foreach((array)$data['hookAtts']['A Level Most Recent Grade'] as $grade): ?>
+                                    
+                                        <?php
+                                        $explode = explode("|", $grade);
+                                        $qual = $explode[0];
+                                        $grade = $explode[1];
+                                        ?>
+                                        
+                                        <tr>
+                                            <td><?= $qual ?></td>
+                                            <td><?= $grade ?></td>
+                                        </tr>
+                                        
+                                    <?php endforeach; ?>
+                                    
+                                <?php else: ?>
+                            
+                                    <tr>
+                                        <td colspan="2" class="elbp_centre"><?= $string['na'] ?></td>
+                                    </tr>
+                                
+                                <?php endif; ?>
+                                                    
+                            <?php else: ?>
+                            
+                                <?php if (isset($hooks['elbp_bcgt/A Level Most Recent Grade']['grades'])): ?>
+                                    <?php foreach((array)$hooks['elbp_bcgt/A Level Most Recent Grade']['grades'] as $qual => $grade): ?>
+
+                                    <tr>
+                                        <td><?= $qual ?></td>
+                                        <td><?= $grade ?><input type="hidden" name="A Level Most Recent Grade[]" value="<?= elbp_html($qual) . '|' . $grade ?>" /></td>
+                                    </tr>
+
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="2">-</td>
+                                    </tr>
+                                <?php endif; ?>
+                            
+                            <?php endif; ?>
+                                                                                    
+                        </table>
+                        
+                        <br><br>
+                                                
+                    <?php endif; ?>
+                    
+                    
+                    <?php if(isset($hooks['elbp_bcgt/A Level Most Recent CETA'])): ?>
+                                        
+                        <b><?= $ELBP->getPlugin("elbp_bcgt")->getTitle() ?> - <?= get_string('mostrecentceta', 'block_bcgt') ?></b><br><br>
+                        
+                        <table class='target_grades_table_course_reports'>
+                            
+                            <?php if ($data['id'] > 0): ?>
+                            
+                                <?php if (isset($data['hookAtts']['A Level Most Recent CETA'])): ?>
+                                
+                                    <?php foreach((array)$data['hookAtts']['A Level Most Recent CETA'] as $grade): ?>
+                                    
+                                        <?php
+                                        $explode = explode("|", $grade);
+                                        $qual = $explode[0];
+                                        $grade = $explode[1];
+                                        ?>
+                                        
+                                        <tr>
+                                            <td><?= $qual ?></td>
+                                            <td><?= $grade ?></td>
+                                        </tr>
+                                        
+                                    <?php endforeach; ?>
+                                    
+                                <?php else: ?>
+                            
+                                    <tr>
+                                        <td colspan="2" class="elbp_centre"><?= $string['na'] ?></td>
+                                    </tr>
+                                
+                                <?php endif; ?>
+                                                    
+                            <?php else: ?>
+                            
+                                <?php if (isset($hooks['elbp_bcgt/A Level Most Recent CETA']['grades'])): ?>
+                                    <?php foreach((array)$hooks['elbp_bcgt/A Level Most Recent CETA']['grades'] as $qual => $grade): ?>
+
+                                    <tr>
+                                        <td><?= $qual ?></td>
+                                        <td><?= $grade ?><input type="hidden" name="A Level Most Recent CETA[]" value="<?= elbp_html($qual) . '|' . $grade ?>" /></td>
+                                    </tr>
+
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="2">-</td>
+
+                                    </tr>
+                                <?php endif; ?>
+                            
+                            <?php endif; ?>
+                                                                                    
+                        </table>
+                        
+                        <br><br>
+                                                
+                    <?php endif; ?>
+                    
+                    
+                                        
+                    <?php if(isset($hooks['elbp_bcgt/Units'])): ?>
+                    
+                        <b><?= $ELBP->getPlugin("elbp_bcgt")->getTitle() ?> - <?= get_string('units', 'block_bcgt') ?></b><br><br>
+                        
+                        <?php foreach((array)$hooks['elbp_bcgt/Units']['quals'] as $qual): ?>
+                        
+                            <span><?= $qual['qual'] ?></span><br>
+                                                        
+                            <?php foreach((array)$qual['units'] as $unit): ?>
+                                <?php
+                                    $checked = (isset($data['hookAtts']['Units']) && in_array($unit->get_id(), $data['hookAtts']['Units'])) ? 'checked' : '';
+                                ?>
+                                <input type="checkbox" name="Units[]" value="<?= $unit->get_id() ?>" <?= $checked ?> /> <?= $unit->get_name() ?><br>
+                            <?php endforeach; ?>
+                            
+                            <br>
+                            
+                        <?php endforeach; ?>
+                                                
+                    <?php endif; ?>
+                                                            
+                    
+                </td>
+            </tr>
+            
+            <?php if ($data['atts']): ?>
+                <?php foreach($data['atts'] as $attribute): ?>
+                <tr>
+                    <td><?= $attribute->name ?></td>
+                    <td>
+                        <div class='elbp_tutorial_attribute_content'>
+                            <?= $attribute->convertToFormElement() ?>
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            
+            <tr>
+                <td><?= $string['comments'] ?></td>
+                <td><textarea class="elbp_textarea" id="report_comments" name="comments" validation="NOT_EMPTY"><?= $data['comments'] ?></textarea></td>
+            </tr>
+            
+            <tr>
+                <td><?= $string['reviewquestions'] ?></td>
+                <td>
+                    
+                    <table class="elbp_table_no_border elbp_review_questions">
+                        
+                        <?php foreach($reviewQuestions as $question): ?>
+                        <tr>
+                            <td><?= $question->question ?></td>
+                            <td>
+                                <select name="review_questions[<?= $question->id ?>]">
+                                    <option value=""><?= $string['pleaseselect'] ?></option>
+                                    <?php foreach($reviewValues as $value): ?>
+                                    <option value="<?= $value->id ?>" <?= (isset($data['reviews'][$question->id]) && $data['reviews'][$question->id] == $value->id) ? 'selected' : ''; ?> ><?= $value->value ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        
+                    </table>
+                    
+                </td>
+            </tr>
+            
+        </table>
+        
+
+</div>
+    </form>
+
+<?= \ELBP\ELBPFORM::getEndCode(); ?>

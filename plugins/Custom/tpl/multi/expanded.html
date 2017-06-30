@@ -1,0 +1,13 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<br><br>
+
+<ul class="elbp_tabrow">
+    <li class="elbp_view_link" class="elbp_view_link"><a href="#" id="all_tab" onclick="ELBP.Custom.load_display('<?= $obj->getName() ?>', 'all', this);return false;"><?= $string['all'] ?></a></li>
+</ul>
+
+<div id="elbp_custom_content">
+    
+    <script>ELBP.Custom.load_display("<?= $obj->getName() ?>", 'all', $('#all_tab'));</script>
+    
+</div>

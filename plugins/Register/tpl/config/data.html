@@ -1,0 +1,86 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<h2><?= $string['dataimport'] ?></h2>
+
+<p><?= $string['register:dataimport:info'] ?></p>
+
+<p>
+<?php if ($importFile !== false): ?>
+    <a href="<?= $CFG->wwwroot ?>/blocks/elbp/download.php?f=<?= $importFile ?>"><?= $string['csvtemplate'] ?></a>
+<?php else: ?>
+    [[<?= $string['filenotfound'] ?>]]
+<?php endif; ?>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<?php if ($exampleFile !== false): ?>
+    <a href="<?= $CFG->wwwroot ?>/blocks/elbp/download.php?f=<?= $exampleFile ?>"><?= $string['csvexample'] ?></a>
+<?php else: ?>
+    [[<?= $string['filenotfound'] ?>]]
+<?php endif; ?>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $OBJ->getName() ?>/config.php?view=data&reload=1"><img style="vertical-align:top;" src="<?= $OUTPUT->pix_url('t/reload'); ?>" title="<?= $string['reloadcsvs'] ?>" /></a>
+
+</p>
+
+<br>
+
+<form action="" method="post" enctype="multipart/form-data">
+    
+    <input type="file" name="file" /> <input type="submit" name="submit_import" value="<?= $string['import'] ?>" />
+    
+</form>
+
+<?php if (isset($MSGS['result'])): ?>
+    
+    <?php if ($MSGS['result']['success'] === true): ?>
+        <div class='process-output-success'>
+            <?= $MSGS['result']['output'] ?>
+        </div>
+    <?php else: ?>
+        <div class='process-output-error'>
+            <?= $MSGS['result']['error'] ?>
+        </div>
+    <?php endif; ?>
+
+<?php endif; ?>
+
+
+
+<br><br>
+
+<h2><?= $string['datasettings'] ?></h2>
+
+<p><?= $string['register:datasettings:info'] ?></p>
+
+<form action="" method="post">
+    
+    <small><strong><?= $string['users']; ?></strong> - <?= $string['dataimport:users'] ?></small><br>
+    <input type='radio' name='import_create_user_if_not_exists' value='1' <?= ($OBJ->getSetting('import_create_user_if_not_exists') == 1 ) ? 'checked' : '' ?> /> <?= $string['enable'] ?> &nbsp; 
+    <input type='radio' name='import_create_user_if_not_exists' value='0' <?= ($OBJ->getSetting('import_create_user_if_not_exists') != 1 ) ? 'checked' : '' ?> /> <?= $string['disable'] ?> &nbsp; 
+    <br><br>
+    
+    <small><strong><?= $string['courses']; ?></strong> - <?= $string['dataimport:courses'] ?></small><br>
+    <input type='radio' name='import_create_course_if_not_exists' value='1' <?= ($OBJ->getSetting('import_create_course_if_not_exists') == 1 ) ? 'checked' : '' ?> /> <?= $string['enable'] ?> &nbsp; 
+    <input type='radio' name='import_create_course_if_not_exists' value='0' <?= ($OBJ->getSetting('import_create_course_if_not_exists') != 1 ) ? 'checked' : '' ?> /> <?= $string['disable'] ?> &nbsp; 
+    <br><br>
+    
+    <small><strong><?= $string['coursefield']; ?></strong> - <?= $string['dataimport:coursefield'] ?></small><br>
+    <select name='import_course_field'>
+        <option value='shortname' <?= ($OBJ->getSetting('import_course_field') == 'shortname' ) ? 'selected' : '' ?> >shortname</option>
+        <option value='idnumber' <?= ($OBJ->getSetting('import_course_field') == 'idnumber' ) ? 'selected' : '' ?> >idnumber</option>
+    </select>
+    <br><br>
+    
+    <small><strong><?= $string['userfield']; ?></strong> - <?= $string['dataimport:userfield'] ?></small><br>
+    <select name='import_user_field'>
+        <option value='username' <?= ($OBJ->getSetting('import_user_field') == 'username' ) ? 'selected' : '' ?> >username</option>
+        <option value='idnumber' <?= ($OBJ->getSetting('import_user_field') == 'idnumber' ) ? 'selected' : '' ?> >idnumber</option>
+    </select>
+    <br><br>
+    
+    <input type="submit" name="submitconfig" value="<?= $string['save'] ?>" />
+    
+</form>   

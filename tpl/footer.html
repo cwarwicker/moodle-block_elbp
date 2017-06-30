@@ -1,0 +1,13 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php if(isset($access) && elbp_has_capability('block/elbp:use_quick_tool', $access)): ?>
+    <div id='elbp_admin_blanket'>
+        <?php include 'quick_advanced.html'; ?>
+    </div>
+<?php endif; ?>
+<div id='elbp_blanket'></div>
+<div id='elbp_popup'></div>
+<div id='elbp_dialogue' title='Title'><div></div></div>
+<?php if(isset($ELBP)): ?>
+<div id='elbp_dock_<?= $ELBP->getDockPosition() ?>'><ul id='elbp_dock_list'></ul></div>
+<?php endif; ?>

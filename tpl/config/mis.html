@@ -1,0 +1,176 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?= (!empty($MSGS['errors'])) ? elbp_error_alert_box($MSGS['errors']) : '' ?>
+<?= (!empty($MSGS['success'])) ? elbp_success_alert_box($MSGS['success']) : '' ?>
+
+
+<h2><?= get_string('phpextensions', 'block_elbp') ?></h2>
+
+<table style="width:90%;" class="environmenttable">
+    
+    <tr>
+        <th style="width:95%;"><?= get_string('extension', 'block_elbp') ?></th>
+        <th style="width:5%;"><?= get_string('status') ?></th>
+    </tr>
+    <?php foreach($dbTypes as $typeName => $exts): ?>
+    <?php $n = 0; ?>
+    <tr>
+        <td colspan="2" class="elbp_bold elbp_centre"><?= $typeName ?></td>
+    </tr>
+        <?php foreach($exts as $ext): ?>
+        <?php $n++; ?>
+        <tr class="<?= (($n % 2) == 0) ? 'r0' : 'r1'; ?>">
+            <td style="text-align:left;"><?= ( extension_loaded($ext) ) ? $ext : '<a href="http://php.net/manual/'.$CFG->lang.'/ref.'.str_replace('_', '-', $ext).'.php" target="_blank">'.$ext.'</a>' ; ?></td>                
+            <td class="env_<?= (extension_loaded($ext)) ? 'good' : 'bad'; ?>"><?= (extension_loaded($ext)) ? get_string('ok') : get_string('check'); ?></td>
+        </tr>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+    
+</table>
+
+<br><br><br>
+
+<h2><?= get_string('misconnections', 'block_elbp') ?></h2>
+
+<div style="overflow:scroll;">
+    <table class="elbp_config">
+        <tr>
+            <th></th>
+            <th><?= get_string('misname', 'block_elbp') ?></th>
+            <th><?= get_string('mistype', 'block_elbp') ?></th>
+            <th><?= get_string('mishost', 'block_elbp', 'block_elbp') ?></th>
+            <th><?= get_string('misusername', 'block_elbp') ?></th>
+            <th><?= get_string('mispassword', 'block_elbp') ?></th>
+            <th><?= get_string('misdbname', 'block_elbp') ?> <small>(<?= get_string('optional', 'block_elbp') ?>)</small></th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        <tr class="small">
+            <th></th>
+            <th><?= get_string('misname:example', 'block_elbp') ?></th>
+            <th><?= get_string('mistype:example', 'block_elbp') ?></th>
+            <th><?= get_string('mishost:example', 'block_elbp', 'block_elbp') ?></th>
+            <th><?= get_string('misusername:example', 'block_elbp') ?></th>
+            <th><?= get_string('mispassword:example', 'block_elbp') ?></th>
+            <th><?= get_string('misdbname:example', 'block_elbp') ?></th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        <?php foreach((array)$connections as $connection): ?>
+        <form action='' method='post' name='edit_mis_form_<?= $connection->id ?>'>
+            <input type="hidden" name="mis_connection_id" value="<?= $connection->id ?>" />
+            <tr>
+                <td><input type="image" onclick="return ELBP.confirm_submit();" name="delete_mis_connection" src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/delete.png" title="<?= get_string('delete') ?>" /></td>
+                <td><input type="text" name="mis_name" value="<?= $connection->name ?>" /></td>
+                <td>
+                    <select name="mis_type">
+                        <option value=""></option>
+                        <option value="MySQL" <?= ($connection->type == 'MySQL') ? 'selected' : '' ?> >MySQL</option>
+                        <option value="Oracle" <?= ($connection->type == 'Oracle') ? 'selected' : '' ?> >Oracle</option>
+                        <option value="Firebird" <?= ($connection->type == 'Firebird') ? 'selected' : '' ?> >Firebird</option>
+                        <option value="MSAccess" <?= ($connection->type == 'MSAccess') ? 'selected' : '' ?> >MSAccess</option>
+                        <option value="PostgreSQL" <?= ($connection->type == 'PostgreSQL') ? 'selected' : '' ?> >PostgreSQL</option>
+                        <option value="MSSQL" <?= ($connection->type == 'MSSQL') ? 'selected' : '' ?> >MSSQL</option>
+                        <option value="SQLite" <?= ($connection->type == 'SQLite') ? 'selected' : '' ?> >SQLite</option>
+                    </select>
+                </td>
+                <td><input type="text" name="mis_host" value="<?= $connection->host ?>" /></td>
+                <td><input type="text" class="normal"  name="mis_user" value="<?= $connection->un ?>" /></td>
+                <td><input type="password" class="normal"  name="mis_pass" value="<?= $connection->pw ?>" /></td>
+                <td><input type="text" class="normal"  name="mis_dbname" value="<?= $connection->db ?>" /></td>
+                <td><input type="button" value="<?= get_string('test', 'block_elbp') ?>" onclick="ELBP.test_mis_connection( document.forms['edit_mis_form_<?= $connection->id ?>'].mis_type.value, document.forms['edit_mis_form_<?= $connection->id ?>'].mis_host.value, document.forms['edit_mis_form_<?= $connection->id ?>'].mis_user.value, document.forms['edit_mis_form_<?= $connection->id ?>'].mis_pass.value, document.forms['edit_mis_form_<?= $connection->id ?>'].mis_dbname.value, <?= $connection->id ?> );return false;" /><br><div id="elbp_config_test_conn_<?= $connection->id ?>"></div></td>
+                <td><input type="submit" value="<?= get_string('save', 'block_elbp') ?>" name="edit_mis_connection" /></td>
+            </tr>
+        </form>
+        
+        <?php endforeach; ?>
+
+    </table>
+</div>
+
+<br><br><br>
+
+<h2><?= get_string('createnewmis', 'block_elbp') ?> <a href="#" onclick="ELBP.load_helper('mis');return false;"><img class="elbp_tooltip" title="<?= get_string('help') ?>" src="<?= $OUTPUT->pix_url('help') ?>" alt="<?= get_string('help') ?>" /></a></h2>
+<form action='' method='post' name='new_mis_form'>
+    <div style="overflow:scroll;">
+        <table class="elbp_config">
+            <tr>
+                <th><?= get_string('misname', 'block_elbp') ?></th>
+                <th><?= get_string('mistype', 'block_elbp') ?></th>
+                <th><?= get_string('mishost', 'block_elbp', 'block_elbp') ?></th>
+                <th><?= get_string('misusername', 'block_elbp') ?></th>
+                <th><?= get_string('mispassword', 'block_elbp') ?></th>
+                <th><?= get_string('misdbname', 'block_elbp') ?> <small>(<?= get_string('optional', 'block_elbp') ?>)</small></th>
+                <th></th>
+            </tr>
+
+            <tr class="small">
+                <th><?= get_string('misname:example', 'block_elbp') ?></th>
+                <th><?= get_string('mistype:example', 'block_elbp') ?></th>
+                <th><?= get_string('mishost:example', 'block_elbp', 'block_elbp') ?></th>
+                <th><?= get_string('misusername:example', 'block_elbp') ?></th>
+                <th><?= get_string('mispassword:example', 'block_elbp') ?></th>
+                <th><?= get_string('misdbname:example', 'block_elbp') ?></th>
+                <th></th>
+            </tr>
+
+            <tr>
+                <td><input type="text" name="new_mis_name" value="<?= (isset($FORMVALS['new_mis_name'])) ? $FORMVALS['new_mis_name'] : '' ?>" /></td>
+                <td><select name="new_mis_type">
+                        <option value=""></option>
+                        <option value="MySQL" <?= (isset($FORMVALS['new_mis_type']) && $FORMVALS['new_mis_type'] == 'MySQL') ? 'selected' : '' ?> >MySQL</option>
+                        <option value="Oracle" <?= (isset($FORMVALS['new_mis_type']) && $FORMVALS['new_mis_type'] == 'Oracle') ? 'selected' : '' ?> >Oracle</option>
+                        <option value="Firebird" <?= (isset($FORMVALS['new_mis_type']) && $FORMVALS['new_mis_type'] == 'Firebird') ? 'selected' : '' ?> >Firebird</option>
+                        <option value="MSAccess" <?= (isset($FORMVALS['new_mis_type']) && $FORMVALS['new_mis_type'] == 'MSAccess') ? 'selected' : '' ?> >MSAccess</option>
+                        <option value="PostgreSQL" <?= (isset($FORMVALS['new_mis_type']) && $FORMVALS['new_mis_type'] == 'PostgreSQL') ? 'selected' : '' ?> >PostgreSQL</option>
+                        <option value="MSSQL" <?= (isset($FORMVALS['new_mis_type']) && $FORMVALS['new_mis_type'] == 'MSSQL') ? 'selected' : '' ?> >MSSQL</option>
+                        <option value="SQLite" <?= (isset($FORMVALS['new_mis_type']) && $FORMVALS['new_mis_type'] == 'SQLite') ? 'selected' : '' ?> >SQLite</option>
+                    </select></td>
+                <td><input type="text" name="new_mis_host" value="<?= (isset($FORMVALS['new_mis_host'])) ? $FORMVALS['new_mis_host'] : '' ?>" /></td>
+                <td><input type="text" class="normal"  name="new_mis_user" value="<?= (isset($FORMVALS['new_mis_user'])) ? $FORMVALS['new_mis_user'] : '' ?>" /></td>
+                <td><input type="password" class="normal"  name="new_mis_pass" value="<?= (isset($FORMVALS['new_mis_pass'])) ? $FORMVALS['new_mis_pass'] : '' ?>" /></td>
+                <td><input type="text" class="normal"  name="new_mis_dbname" value="<?= (isset($FORMVALS['new_mis_dbname'])) ? $FORMVALS['new_mis_dbname'] : '' ?>" /></td>
+                <td><input type="button" value="<?= get_string('test', 'block_elbp') ?>" onclick="ELBP.test_mis_connection( document.forms['new_mis_form'].new_mis_type.value, document.forms['new_mis_form'].new_mis_host.value, document.forms['new_mis_form'].new_mis_user.value, document.forms['new_mis_form'].new_mis_pass.value, document.forms['new_mis_form'].new_mis_dbname.value );return false;" /><br><div id="elbp_config_test_conn"></div></td>
+            </tr>
+
+        </table>
+    </div>
+    
+<br><br>
+<p class='elbp_centre'><input type="submit" name="submit_new_mis" value="<?= get_string('savenewmis', 'block_elbp') ?>" /></p>
+</form>
+
+<br><br><br>
+
+<h2><?= get_string('pluginmis', 'block_elbp') ?></h2>
+<p><?= get_string('pluginmis:desc', 'block_elbp') ?></p>
+
+<table class="elbp_centre">
+    <tr>
+        <th><?= get_string('plugin', 'block_elbp') ?></th>
+        <th><?= get_string('misconnection', 'block_elbp') ?></th>
+        <th></th>
+    </tr>
+
+    <?php if ($plugins): ?>
+        <?php foreach ($plugins as $plugin ): ?>
+        <form action='' method='post'>
+            <tr>
+                <td><?= $plugin->getTitle() ?></td>
+                <td>
+                    <select name="mis_connection_id">
+                        <option value=""></option>
+                        <?php foreach((array)$connections as $connection): ?>
+                            <option value="<?= $connection->id ?>" <?= ($plugin->getMainMIS() && $plugin->getMainMIS()->misid == $connection->id) ? 'selected' : '' ?> ><?= $connection->name ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <td><input type="hidden" name="<?= (isset($plugin->custom)) ? 'custom_plugin_id' : 'plugin_id'; ?>" value="<?= $plugin->getID() ?>" /><input type="submit" name="submit_assign_plugin_mis" value="<?= get_string('save', 'block_elbp') ?>" /></td>
+            </tr>
+        </form>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+</table>

@@ -1,0 +1,58 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php if (elbp_has_capability('block/elbp:add_tutorial', $access)): ?>
+    <p class="elbp_centre"><button class="elbp_b" onclick="ELBP.Tutorials.load_display('new');return false;"><?= $string['newtutorial'] ?></button></p>
+<?php endif; ?>
+    <br>
+
+    <div id="elbp_tut_output"></div>
+    
+    <?php if($tutorials): ?>
+    <?php foreach($tutorials as $tutorial): ?>
+    
+    <div id="elbp_tutorial_<?= $tutorial->getID() ?>" class="elbp_tutorial">
+        
+        <table class="elbp_tutorial_header_table" onclick="$('#tutorial_content_<?= $tutorial->getID() ?>').slideToggle();return false;">
+            <tr>
+                <td class="elbp_table_icon"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Tutorials/pix/icon.png" /></td>
+                <td class="elbp_tutorial_header">
+                    <span class="title"><?= $string['tutorial'] ?></span>
+                    <br>
+                    <strong><?= $string['set'] ?>: <?= $tutorial->getTutorialDate('D jS M Y') ?></strong>
+                    &nbsp;&nbsp;
+                    <?= $string['by'] ?> <?= $tutorial->getStaffName() ?>
+                    <?php if ($obj->hasHookEnabled("Targets/Targets")): ?>
+                    <br>
+                    <small>(<?= $tutorial->countTargets() ?> <?= $string['targetsset'] ?>)</small>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </table>
+        
+        <div id="tutorial_content_<?= $tutorial->getID() ?>" class="elbp_tutorial_hidden">
+            <div class="elbp_centre">
+                <small>
+                    <?php if (elbp_has_capability('block/elbp:edit_tutorial', $access)): ?>
+                        <a href="#" onclick="ELBP.Tutorials.edit_tutorial(<?= $tutorial->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/editstring', 'core') ?>" alt="" /> <?= $string['edit'] ?></a> &nbsp; &nbsp; &nbsp; 
+                    <?php endif; ?>
+                    
+                    <?php if (elbp_has_capability('block/elbp:delete_tutorial', $access)): ?>
+                        <a href="#" onclick="ELBP.Tutorials.delete_tutorial(<?= $tutorial->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/delete', 'core') ?>" alt="" /> <?= $string['delete'] ?></a> &nbsp; &nbsp; &nbsp; 
+                    <?php endif; ?>
+                    
+                    <?php if (elbp_has_capability('block/elbp:print_tutorial', $access)): ?>
+                        <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $tutorial->getID() ?>" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a>
+                    <?php endif; ?>
+                    
+                </small>
+                <br><br></div>
+            <?php $tutorial->display() ?>
+        </div>
+        
+    </div>
+    <br><br>
+    
+    <?php endforeach; ?>
+    <?php else: ?>
+    <p class="elbp_centre"><?= $string['noresults'] ?></p>
+    <?php endif; ?>

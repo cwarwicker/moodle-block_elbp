@@ -1,0 +1,74 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+    <?php if ($obj->getSetting('long_term_aim_enabled') == 1): ?>
+        <div class="elbp_centre">
+            <small><?= $string['longtermaim'] ?>:</small> <input type="text" id="long_term_aim" value="<?= $obj->getSetting('long_term_aim', $obj->getStudentID()) ?>" class="elbp_long" /> <button class="elbp_b" onclick="ELBP.AdditionalSupport.save_attribute('long_term_aim', $('#long_term_aim').val());return false;" style="width:75px;padding:4px;"><?= $string['save'] ?></button>
+            <br><br>
+        </div>
+    <?php endif; ?>
+    
+    <?php if (elbp_has_capability('block/elbp:add_additional_support_session', $access)): ?>
+        <p class="elbp_centre"><button class="elbp_b" onclick="ELBP.AdditionalSupport.load_display('new');return false;"><?= $string['newsupportsession'] ?></button></p>
+    <?php endif; ?>
+    <br>
+
+    <div id="elbp_additional_support_output"></div>
+    
+    
+    
+    
+    
+    <?php if($sessions): foreach($sessions as $session): ?>
+    
+    <div id="elbp_additional_support_<?= $session->getID() ?>" class="elbp_additional_support_session">
+        
+        <table class="elbp_additional_support_header_table" onclick="$('#additional_support_content_<?= $session->getID() ?>').slideToggle();return false;">
+            <tr>
+                <td class="elbp_table_icon"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/AdditionalSupport/pix/icon.png" /></td>
+                <td class="elbp_additional_support_header elbp_object_name">
+                    <span class="title"><?=  $string['additionalsupportsession'] ?></span><br>
+                    <strong><?= $string['deadline'] ?>: <?= $session->getDeadline('D jS M Y') ?></strong>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <?= get_string('setby', 'block_elbp') ?>: <?= $session->getStaffName() ?>, <?= $session->getDate('D jS M Y') ?>                    
+                    <?php if ($obj->hasHookEnabled("Targets/Targets")): ?>
+                    <br>
+                    <small><?= $session->getLateOrRemaining() ?></small>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <small>(<?= $session->countTargets() ?> <?= $string['targetsset'] ?>)</small>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </table>
+
+        <div id="additional_support_content_<?= $session->getID() ?>" class="elbp_additional_support_hidden">
+            <div class="elbp_centre">
+                <small>
+                    <?php if (elbp_has_capability('block/elbp:edit_additional_support_session', $access)): ?><a href="#" onclick="ELBP.AdditionalSupport.edit_session(<?= $session->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/editstring', 'core') ?>" alt="" /> <?= $string['edit'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+                    <?php if (elbp_has_capability('block/elbp:delete_additional_support_session', $access)): ?>&nbsp; <a href="#" onclick="ELBP.AdditionalSupport.delete_session(<?= $session->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/delete', 'core') ?>" alt="" /> <?= $string['delete'] ?></a>  &nbsp; &nbsp; &nbsp; <?php endif; ?>
+                    <?php if (elbp_has_capability('block/elbp:print_additional_support_session', $access)): ?><a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $session->getID() ?>" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a><?php endif; ?>
+                </small>
+                <br><br>
+            </div>
+            <?php $session->display() ?>
+            <br>
+            <div class="elbp_centre"><small><?php if (elbp_has_capability('block/elbp:add_additional_support_session_comment', $access)): ?><a href="#" onclick="$('#elbp_comment_add_<?= $session->getID() ?>').slideToggle();return false;"><img src="<?= $OUTPUT->pix_url('t/messages', 'core') ?>" alt="" /> <?= $string['addcomment'] ?></a> (<?= $session->countComments() ?>)<?php endif; ?></small></div>
+            <div id='elbp_comment_add_<?= $session->getID() ?>' class='elbp_comment_textarea' style='display:none;'>
+                <p id="elbp_comment_add_output_<?= $session->getID() ?>"></p>
+                <textarea id="add_comment_<?= $session->getID() ?>"></textarea>
+                <br><br>
+                <input type='button' class='elbp_big_button' value='<?= $string['submit'] ?>' onclick="ELBP.AdditionalSupport.add_comment(<?= $session->getID() ?>, $('#add_comment_<?= $session->getID() ?>').val());return false;" />
+               <br><br>
+            </div>
+            <div id="elbp_comments_content_<?= $session->getID() ?>">
+            <p id='elbp_comment_generic_output_comment'></p>
+            <?= $session->displayComments(); ?>
+            </div>
+            
+        </div>
+        
+    </div>
+    <br><br>
+    
+    <?php endforeach; else: ?>
+    <p class="elbp_centre"><?= $string['noresults'] ?></p>
+    <?php endif; ?>

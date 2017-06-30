@@ -1,0 +1,141 @@
+/**
+ * jQuery UI TinyTbl
+ * Creates a scrollable table with fixed thead, tfoot and columns
+ *
+ * Copyright (c) 2012-2014 Michael Keck <http://michaelkeck.de/>
+ * Released:  2014-01-28
+ * Version:   3.1.0
+ * License:   Dual licensed under the MIT or GPL Version 2 licenses.
+ *            http://jquery.org/license
+ * Depends:   jquery.ui.core
+ *            jquery.ui.widget
+ */
+
+/* Main Container */
+.ui-tinytbl {
+    padding: 4px;
+}
+.ui-tinytbl, .ui-tinytbl td, .ui-tinytbl th {
+    font: inherit;
+    font-size: 12px;
+}
+
+/* Content Container and Header Container */
+.ui-tinytbl .ui-widget-content,
+.ui-tinytbl .ui-widget-header {
+    border-radius: 0;
+    padding: 0;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+}
+
+/* Table */
+.ui-tinytbl-outer {
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+.ui-tinytbl-inner > tr,
+.ui-tinytbl-inner > tr > td,
+.ui-tinytbl-inner > tr > th {
+    /* Copy CSS properties */
+    border: inherit;
+    color: inherit;
+}
+.ui-tinytbl-inner > tr > td,
+.ui-tinytbl-inner > tr > th {
+    padding: 4px;
+    text-overflow: ellipsis;
+    min-width: 30px;
+}
+/* Borders horizontal */
+.ui-tinytbl-inner > tr+tr > td,
+.ui-tinytbl-inner > tr+tr > th {
+    border-top: inherit;
+    border-bottom: 0 none;
+}
+.ui-tinytbl-inner > tr:last-child > td,
+.ui-tinytbl-inner > tr:last-child > th {
+    border-bottom: inherit;
+}
+.ui-tinytbl-inner > tr:first-child > td,
+.ui-tinytbl-inner > tr:first-child > th {
+    border-top: 0 none;
+    border-bottom: 0 none;
+}
+.ui-tinytbl-inner > tr.ui-data-row-last > td,
+.ui-tinytbl-inner > tr.ui-data-row-last > th {
+    border-bottom: 0 none;
+}
+
+/* Text-Direction: LEFT */
+.ui-tinytbl-left { direction: ltr; }
+/* Borders vertical */
+.ui-tinytbl-left .ui-tinytbl-body,
+.ui-tinytbl-left .ui-tinytbl-foot,
+.ui-tinytbl-left .ui-tinytbl-head,
+.ui-tinytbl-left .ui-tinytbl-inner > tr > td + td,
+.ui-tinytbl-left .ui-tinytbl-inner > tr > td + th,
+.ui-tinytbl-left .ui-tinytbl-inner > tr > th + td,
+.ui-tinytbl-left .ui-tinytbl-inner > tr > th + th,
+.ui-tinytbl-left .ui-tinytbl-column .ui-tinytbl-inner > tr > :first-child,
+.ui-tinytbl-right .ui-tinytbl-column .ui-tinytbl-inner > tr > :last-child {
+    border-left: 0 none;
+}
+
+/* Text-Direction: RIGHT */
+.ui-tinytbl-right { direction: rtl; }
+/* Borders vertical */
+.ui-tinytbl-right .ui-tinytbl-body,
+.ui-tinytbl-right .ui-tinytbl-foot,
+.ui-tinytbl-right .ui-tinytbl-head,
+.ui-tinytbl-right .ui-tinytbl-inner > tr > td + td,
+.ui-tinytbl-right .ui-tinytbl-inner > tr > td + th,
+.ui-tinytbl-right .ui-tinytbl-inner > tr > th + td,
+.ui-tinytbl-right .ui-tinytbl-inner > tr > th + th,
+.ui-tinytbl-right .ui-tinytbl-column .ui-tinytbl-inner > tr > :first-child,
+.ui-tinytbl-left .ui-tinytbl-column .ui-tinytbl-inner > tr > :last-child {
+    border-right: 0 none;
+}
+
+
+/* Remove uggly resizable icon */
+.ui-tinytbl .ui-icon-gripsmall-diagonal-se {
+    background: transparent none !important;
+}
+
+/* Resizable */
+.ui-resizable .ui-resizable-e,
+.ui-resizable .ui-resizable-w {
+    font-size: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 10px;
+    z-index: 100;
+}
+.ui-resizable .ui-resizable-e {
+    cursor: e-resize;
+    float: right;
+    right: -8px;
+}
+.ui-resizable .ui-resizable-w {
+    cursor: w-resize;
+    float: left;
+    left: -8px;
+}
+
+/* THEME SPECIFIC */
+.ui-tinytbl-outer .ui-widget-content > tr.ui-state-hover,
+.ui-tinytbl-outer .ui-widget-content > tr.ui-state-hover > th
+.ui-tinytbl-outer .ui-widget-content > tr.ui-state-hover > td {
+
+}
+.ui-tinytbl-outer .ui-widget-header > tr.ui-state-hover,
+.ui-tinytbl-outer .ui-widget-header > tr.ui-state-hover > th
+.ui-tinytbl-outer .ui-widget-header > tr.ui-state-hover > td {
+
+}
+.ui-tinytbl-outer .ui-widget-content .ui-state-hover > td {
+    font-weight: normal;
+}

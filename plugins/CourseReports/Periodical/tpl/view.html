@@ -1,0 +1,165 @@
+<p class="elbp_centre" id="return_to_reports">
+    <a href="#" onclick="ELBP.CourseReports.load_display('periods', $('#periods_tab'));return false;"><small>[<?= $string['returntoreports'] ?>]</small></a>
+    <br><br>
+</p>
+
+<h2 class="elbp_centre" id="elbp_periodical_report_title">
+    <a href="#" onclick="ELBP.CourseReports.load_display('periodical_report', false, false, <?= $report->getID() ?>);return false;">
+        <?= $report->getName() ?>
+    </a>
+</h2>
+<p class="elbp_centre">
+    <?= $report->getCreatedDate('D jS M Y') ?>
+</p>
+<br><br>
+
+<p class="elbp_right" id='elbp_print'>
+    <small>
+        <?php if (elbp_has_capability('block/elbp:print_periodical_course_report', $access)): ?>&nbsp; <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $report->getID() ?>&student=<?= $obj->getStudentID() ?>&type=periodical" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <?php endif; ?>
+    </small>
+</p>
+
+
+<div class="periodical_report_overall">
+    
+    <div id="periodical_report_overall_info">
+            
+        <div id="periodical_report_overall_info_info">
+            
+            <table>
+                
+                <tr><td><?= get_string('fullname') ?></td><td><?= fullname($obj->getStudent()) ?> (<?= $obj->getStudent()->username ?>)</td></tr>
+                
+                <?php if ($obj->getSetting('periodical_attendance_enabled')): ?>
+                    
+                    <?php if (isset($attTypes) && $attTypes): ?>
+                    
+                        <?php foreach($attTypes as $type): ?>
+                        
+                            <?php if(isset($attDisplayPeriods[$type])): ?>
+                                
+                            <tr>
+                                <td><?= $type . ' ' . $attDisplayPeriods[$type] ?></td>
+                                <td><?= (isset($attributes[$type . ' ' . $attDisplayPeriods[$type]])) ? $attributes[$type . ' ' . $attDisplayPeriods[$type]] : '-'; ?></td>
+                            </tr>
+                            
+                            <?php endif; ?>
+                        
+                        <?php endforeach; ?>
+                    
+                    <?php endif; ?>
+                
+                <?php endif; ?>
+                
+                
+                
+                
+                <?php if ($obj->getSetting('periodical_gradetracker_enabled')): ?>
+
+                    <tr>
+                        <td><?= get_string('qualifications', 'block_bcgt') ?></td>
+                        <td>
+                            <?php if (isset($attributes['Qualifications'])): ?>
+
+                                <?php if (is_array($attributes['Qualifications'])): ?>
+
+                                    <?= implode("<br>", $attributes['Qualifications']) ?>
+
+                                <?php else: ?>
+
+                                    <?= $attributes['Qualifications'] ?>
+
+                                <?php endif; ?>
+
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td><?= get_string('targetgrades', 'block_bcgt') ?></td>
+                        <td>
+                            <?php if (isset($attributes['Target Grades'])): ?>
+
+                                <?php if (is_array($attributes['Target Grades'])): ?>
+
+                                    <?= implode("<br>", $attributes['Target Grades']) ?>
+
+                                <?php else: ?>
+
+                                    <?= $attributes['Target Grades'] ?>
+
+                                <?php endif; ?>
+
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+
+                <?php endif; ?>
+                
+                
+                
+                                
+                
+            </table>
+            
+        </div>
+        
+    </div>
+    
+    <div id="periodical_report_overall_comments">
+        
+        <strong><?= get_string('overallcomments', 'block_elbp') ?></strong><br><br>
+        <?= \elbp_html($report->getComments(), true) ?>
+        
+    </div>
+    
+</div>
+
+<div class="page-break"></div>
+
+<br><br>
+
+<?php if ($report->getCourses()): ?>
+
+    <?php foreach($report->getCourses() as $course): ?>
+    
+    <div class="periodical_report_course">
+        
+        <h3><?= $course->fullname ?> <?= ($course->shortname !== $course->fullname) ? '('.$course->shortname.')' : '' ?></h3>
+        
+        <?php $cnt = count($report->getReportsByCourse($course->id)); $n = 1; ?>
+        <?php if ($report->getReportsByCourse($course->id)): ?>
+        
+            <?php foreach($report->getReportsByCourse($course->id) as $courseReport): ?>
+            
+                <p class="title"><?= $courseReport->getDate() ?> - <?= fullname($courseReport->getSetByUser()) ?></p>
+                <?php $courseReport->display() ?>
+                <?php if ($n < $cnt): ?>
+                    <hr><br><br>
+                <?php endif; ?>
+                
+                <?php $n++ ?>
+            
+            <?php endforeach; ?>
+        
+        <?php endif; ?>
+        
+    </div>
+    <div class="page-break"></div>
+    
+    <?php endforeach; ?>
+
+<?php endif; ?>
+<!--
+
+<script>
+    var div1 = $('#periodical_report_overall_info').height();
+    var div2 = $('#periodical_report_overall_comments').height();
+    
+    if (div1 > div2){
+        $('#periodical_report_overall_comments').height(div1);
+    } else if (div2 > div1){
+        $('#periodical_report_overall_info').height(div2);
+    }
+    
+</script>-->

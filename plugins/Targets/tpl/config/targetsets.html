@@ -1,0 +1,51 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<form class="elbp_new_target_form" action="" method="post">
+<h2><?= $string['createdefaulttarget'] ?></h2>
+<p><?= $string['createforminfo'] ?></p>
+    <table id="targettable">
+        <tr hidden>
+            <td><input type='text' name='id' value="<?php if (isset($chosentarget)){echo $chosentarget->id;}?>"/></td>
+        </tr>
+        <tr hidden>
+            <td><input type='text' name='user_id' value="<?php if (isset($chosentarget)){echo $chosentarget->userid;}?>"/></td>
+        </tr>
+        <tr>
+            <td><?= $string['targetname'] ?></td>
+            <td><input type='text' name='target_name' value="<?php if (isset($chosentarget)){echo $chosentarget->name;}?>"/></td>
+        </tr>
+    <?php foreach($data['atts'] as $attribute): ?>
+        <tr>
+            <td><?= $attribute->name ?> </td>
+            <td style="width:410px;"><?= $attribute->convertToFormElement() ?></td>
+        </tr>
+    <?php endforeach; ?>
+<!--    <tr>
+        <td><?= $string['visibility'] ?></td>
+        <td><input type="radio" name="visibility" value="show" checked> <?= $string['show'] ?> <input type="radio" name="visibility" value="hide"> <?= $string['hide'] ?> </td>
+    </tr>-->
+    </table>
+<br />
+<p class='elbp_centre'><input type="submit" name="submit_target_set" value="<?= $string['save'] ?>" /></p>
+</form>
+
+
+<h2><?= $string['targets:manage'] ?></h2>
+<p><?= $string['targets:manageinfo'] ?></p>
+<table id='targettable'>
+<?php foreach($targets as $t): ?>
+
+    <tr>
+    <td> <?= $t->name ?> </td>
+    <td><a class="btn" style="color:white;font-size:10pt;padding:6px;border:0px" name='edit_set_target' href='/blocks/elbp/plugins/targets/config.php?view=targetsets&edittarget=<?= $t->id ?>'><?= $string['edit'] ?></a></td>
+    <td>
+        <form class="elbp_new_target_form" action="" method="post">
+        <input type='hidden' name='delete_id' value="<?= $t->id ?>"/> 
+        <input type="submit" name="delete_target_set" value="Delete" />
+        </form>
+    </td>
+    </tr>
+    
+<?php endforeach; ?>
+</table>
+

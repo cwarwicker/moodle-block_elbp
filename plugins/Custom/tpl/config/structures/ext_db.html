@@ -1,0 +1,104 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<form action="" method="post">
+<h2><?= $string['misconfig'] ?></h2>
+
+    <?php if ($OBJ->getMainMIS() !== false): ?>    
+    
+    <small><strong><?= $string['sqlquery'] ?></strong> - <?= $string['customplugin:extdb:sqlquery:desc'] ?></small><br>
+    <textarea class="elbp_textarea" style="width:450px;height:300px;" name="sql_query"><?= $OBJ->getSetting('sql_query') ?></textarea><br><br>
+    
+    <small><strong><?= $string['sqlquery:rowtype'] ?></strong> - <?= $string['sqlquery:rowtype:desc'] ?></small><br>
+    <input type="radio" name="row_return_type" value="single" <?= ($OBJ->getSetting('row_return_type') == 'single') ? 'checked' : ''; ?> /> <?= $string['singlerow'] ?> &nbsp; <input type="radio" name="row_return_type" value="multiple" <?= ($OBJ->getSetting('row_return_type') == 'multiple') ? 'checked' : ''; ?> /> <?= $string['multiplerows'] ?> &nbsp; 
+    <br><br><br>
+    
+    
+    <u><?= $string['misfieldmapping'] ?></u><br><br>
+    
+    <a href="#" onclick="addFieldRow();return false;"><small>[<?= $string['add'] ?>]</small></a><br>
+    
+    <div id="fields_holder">
+        
+        <?php if( $OBJ->getSetting('query_map_field') !== false && $OBJ->getSetting('query_map_name') !== false ): ?>
+        
+            <?php $fields = explode(",", $OBJ->getSetting('query_map_field')); $names = explode(",", $OBJ->getSetting('query_map_name')); ?>
+                        
+            <?php for($i = 0; $i < count($fields); $i++): ?>
+            
+                <small><strong><?= $string['field'] ?></strong> - <?= $string['customplugin:intdb:field:desc'] ?></small><br>
+                <input type='text' name='query_map_field[]' value='<?= $fields[$i] ?>' placeholder='<?= get_string('misfield', 'block_elbp') ?>' />
+                <input type='text' name='query_map_name[]' value='<?= $names[$i] ?>' placeholder='<?= get_string('name') ?>' />
+                <br><br>
+            
+            <?php endfor; ?>
+        
+        <?php else: ?>
+        
+            <small><strong><?= $string['field'] ?></strong> - <?= $string['customplugin:intdb:field:desc'] ?></small><br>
+            <input type='text' name='query_map_field[]' value='' placeholder='<?= get_string('misfield', 'block_elbp') ?>' />
+            <input type='text' name='query_map_name[]' value='' placeholder='<?= get_string('name') ?>' />
+            <br><br>
+        
+        <?php endif; ?>
+        
+    </div>
+
+    <br><br>
+    <input type="submit" name="submit_definitions" value="<?= $string['save'] ?>" />
+    
+    
+    <br><br><br>
+
+    <h2><?= $string['querytest'] ?></h2>
+    <small><strong><?= $string['querytest'] ?></strong> - <?= $string['customplugin:intdb:querytest:desc'] ?></small><br>
+    <br><br>
+    <?php if(isset($OBJ->queryTestResult) && $OBJ->queryTestNames): ?>
+        <strong><?= $string['results'] ?>:</strong><br>
+        <?php if (is_array($OBJ->queryTestResult) && is_array(reset($OBJ->queryTestResult))): ?>
+        
+            <?php foreach($OBJ->queryTestResult as $row): ?>
+            
+                <?php foreach($OBJ->queryTestNames as $name): ?>
+                    <?= $name ?>: <?= (isset($row[$name])) ? $row[$name] : '-' ?><br>
+                <?php endforeach; ?>
+                
+                <br>
+            
+            <?php endforeach; ?>
+        
+        <?php else: ?>
+        
+            <?php foreach($OBJ->queryTestNames as $name): ?>
+                <?= $name ?>: <?= (isset($OBJ->queryTestResult[$name])) ? $OBJ->queryTestResult[$name] : '-' ?><br>
+            <?php endforeach; ?>
+        
+        <?php endif; ?>
+        
+        <br><br>
+        
+    <?php endif; ?>
+    <input type="submit" name="submit_test_query" value="<?= $string['runtest'] ?>" />
+    
+    
+    
+    
+    <?php else: ?>
+        <p><?= $string['misnocorefound'] ?></p>
+    <?php endif; ?>
+    
+</form>
+
+<br><br>
+
+<script>
+function addFieldRow(){
+    
+    var html = '<small><strong><?= $string['field'] ?></strong> - <?= $string['customplugin:intdb:field:desc'] ?></small><br>';
+    html += "<input type='text' name='query_map_field[]' value='' placeholder='<?= $string['misfield'] ?>' />";
+    html += "<input type='text' name='query_map_name[]' value='' placeholder='<?= get_string('name') ?>' />";
+    html += "<br><br>";
+    
+    $('#fields_holder').append(html);    
+    
+}
+</script>

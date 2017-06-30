@@ -1,0 +1,36 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<h2 class="elbp_centre"><?= $course->shortname ?> &nbsp;&nbsp; <?= $course->fullname ?></h2>
+<br>
+<?php if (elbp_has_capability('block/elbp:add_course_report', $access)): ?>
+    <p class="elbp_centre"><button class="elbp_b" onclick="ELBP.CourseReports.load_display('new', undefined, <?= $course->id ?>);return false;"><?= $string['newcoursereport'] ?></button></p>
+<?php endif; ?>
+<br>
+<div id="course_report_output"></div>
+<br>
+<?php if ($reports): ?>
+<?php foreach($reports as $report): ?>
+
+<div id="elbp_course_report_id_<?= $report->getID() ?>" class="elbp_course_report">
+        <table onclick="$('#course_report_content_<?= $report->getID() ?>').slideToggle();return false;">
+            <tr>
+                <td class="elbp_table_icon"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/CourseReports/pix/icon.png" /></td>
+                <td class="elbp_object_name">
+                <span class="title"><?=  $string['coursereport'] ?></span><br>
+                <?= get_string('setby', 'block_elbp') ?>: <?= $report->getStaffName() ?>, <?= $report->getDate('D jS M Y') ?>                    
+                </td>
+            </tr>
+        </table>
+            
+        <div id="course_report_content_<?= $report->getID() ?>" class="elbp_course_report_hidden">
+            <br>
+            <div class="elbp_centre"><small><?php if (elbp_has_capability('block/elbp:edit_course_report', $access)): ?><a href="#" onclick="ELBP.CourseReports.load_display('edit', undefined, <?= $course->id ?>, <?= $report->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/editstring', 'core') ?>" alt="" /> <?= $string['edit'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?><?php if (elbp_has_capability('block/elbp:delete_course_report', $access)): ?>&nbsp; <a href="#" onclick="ELBP.CourseReports.delete_report(<?= $report->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/delete', 'core') ?>" alt="" /> <?= $string['delete'] ?></a><?php endif; ?> &nbsp;&nbsp;&nbsp; <?php if (elbp_has_capability('block/elbp:delete_course_report', $access)): ?>&nbsp; <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $report->getID() ?>" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a><?php endif; ?></small></div>
+            <?php $report->display() ?>
+        </div>
+        
+</div>
+
+<?php endforeach; ?>
+<?php else: ?>
+<p class="elbp_centre"><?= $string['noreports'] ?></p>
+<?php endif; ?>

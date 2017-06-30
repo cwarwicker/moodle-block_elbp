@@ -1,0 +1,14 @@
+/* 
+    Document   : rint
+    Created on : 14-Nov-2013, 10:43:16
+    Author     : Sammy Guergachi <sguergachi at gmail.com>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+div.print_target
+{
+    margin-bottom: 0.5cm;
+    padding: 1%;
+    background-color: #FCFCFC;
+}

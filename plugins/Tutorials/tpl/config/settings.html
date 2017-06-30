@@ -1,0 +1,48 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php \elbp_display_attribute_creation_js($TUT); ?>
+
+
+<script>
+
+function showHooks(pluginID)
+{
+    
+    $('.availablehooks').css('display', 'none');
+    $('#hooks_' + pluginID).slideToggle('slow');
+    
+}
+    
+</script>
+
+<h2><?= $string['tutorialattributes'] ?></h2>
+<p><?= $string['tutorialattributes:desc'] ?></p>
+
+
+<form action="" method="post">
+        
+    <?php \elbp_display_attribute_creation_form($TUT); ?>
+        
+    <input type="submit" name="submit_attributes" value="<?= $string['save'] ?>" />
+    
+</form>
+
+<br><br>
+
+<h2><?= $string['tutorialhooks'] ?></h2>
+<p><?= $string['hooks:desc'] ?></p>
+
+<?php \elbp_display_hooks_form($TUT) ?>
+
+<br><br>
+
+<h2><?= $string['newtutorialinstructions'] ?></h2>
+<p><?= $string['newtutorialinstructions:desc'] ?></p>
+
+<form action="" method="post">
+    
+    <input type="text" class="elbp_max" name="new_tutorial_instructions" value="<?= ($TUT->getSetting('new_tutorial_instructions')) ? $TUT->getSetting('new_tutorial_instructions') : ''; ?>" />
+    <br><br>
+    <input type="submit" name="submit_tutorial_instructions" value="<?= $string['save'] ?>" />
+    
+</form>

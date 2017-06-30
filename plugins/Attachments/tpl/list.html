@@ -1,0 +1,60 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php if (elbp_has_capability('block/elbp:add_attachment', $access)): ?>
+    <p class="elbp_centre"><button class="elbp_b" onclick="ELBP.Attachments.load_display('new');return false;"><?= $string['newattachment'] ?></button></p>
+<?php endif; ?>
+<br><br>
+
+<p id="attachments_output"></p>
+
+<?php if ($attachments): ?>
+
+<table id="elbp_attachments_table">
+    <tr>
+        <th></th>
+        <th><?= $string['title'] ?></th>
+        <th><?= $string['uploadedby'] ?></th>
+        <th><?= $string['dateadded'] ?></th>
+        <th><?= $string['comments'] ?></th>
+        <th><?= $string['delete'] ?></th>
+    </tr>
+    
+<?php foreach($attachments as $attachment): ?>
+
+<tr id="attachment_<?= $attachment->getID() ?>">
+    <td><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/file_icons/<?= elbp_get_file_icon($attachment->getFileName()) ?>" alt="<?= pathinfo($attachment->getFileName(), PATHINFO_EXTENSION); ?>" /></td>
+    <td><a href="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Attachments/download.php?id=<?= $attachment->getID() ?>" target="_blank"><?= elbp_html($attachment->getTitle()) ?></a></td>
+    <td><?= fullname($attachment->getUploadedBy()) ?></td>
+    <td><?= $attachment->getDate() ?></td>
+    <td><a href="#" onclick="$('#attachment_comments_<?= $attachment->getID() ?>').toggle();return false;"><?= $attachment->countComments() ?></a></td>
+    <?php if ( ($attachment->getUploadedByID() == $USER->id && elbp_has_capability('block/elbp:delete_my_attachment', $access)) || ($attachment->getUploadedByID() <> $USER->id && elbp_has_capability('block/elbp:delete_any_attachment', $access)) ): ?>
+    <td><input type="image" class="elbp_pointer" src="<?= $OUTPUT->pix_url('t/delete') ?>" onclick="ELBP.Attachments.delete_attachment(<?= $attachment->getID() ?>);return false;" /></td>
+    <?php endif; ?>
+</tr>
+
+<!-- Comments -->
+<tr id="attachment_comments_<?= $attachment->getID() ?>" style="display:none;">
+    <td colspan="6">
+        <?php if (elbp_has_capability('block/elbp:add_attachment_comment', $access)): ?>
+            <div id='elbp_comment_add_<?= $attachment->getID() ?>' class='elbp_comment_textarea'>
+                <p id="elbp_comment_add_output_<?= $attachment->getID() ?>"></p>
+                <textarea id="add_comment_<?= $attachment->getID() ?>"></textarea>
+                <br><br>
+                <input type='button' class='elbp_big_button' value='<?= $string['submit'] ?>' onclick="ELBP.Attachments.add_comment(<?= $attachment->getID() ?>, $('#add_comment_<?= $attachment->getID() ?>').val());return false;" />
+               <br><br>
+            </div>
+        <?php endif; ?>
+        <div id="elbp_comments_content_<?= $attachment->getID() ?>">
+        <p id='elbp_comment_generic_output_comment'></p>
+        <?= $attachment->displayComments(); ?>
+        </div>
+    </td>
+</tr>
+
+<?php endforeach; ?>
+
+</table>
+
+<?php else: ?>
+<p class="elbp_centre"><?= $string['noresults'] ?></p>
+<?php endif; ?>

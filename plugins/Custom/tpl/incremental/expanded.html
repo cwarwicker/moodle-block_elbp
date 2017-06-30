@@ -1,0 +1,93 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<br>
+<p id="custom_output" class="elbp_centre"></p>
+<br>
+
+<?php if (!$attributes): ?>
+    <p class="elbp_centre"><?= $string['noattributesdefined'] ?></p>
+<?php endif; ?>
+
+<?php if ($obj->havePermission( $obj::PERMISSION_PRINT, $permissions )): ?>
+    <p class='elbp_centre'><a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=all&student=<?= $obj->getStudentID() ?>&custom=1" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a></p>
+<?php endif; ?>
+
+<div id="elbp_custom_plugin" style="display:block;">
+            
+    <?php if ($obj->havePermission( $obj::PERMISSION_ADD, $permissions )): ?>
+        <div class="elbp_centre">
+            <button class="elbp_btn_small" onclick="$('form#add_incremental').toggle();return false;"><?= $string['addnewitem'] ?></button>
+        </div>
+        <br><br>
+        <form action="" method="post" id="add_incremental" style="display:none;">
+            <table class="incremental">
+                <tr style='<?= $obj->getHeaderStyle() ?>'>
+                    <th colspan="<?= count($attributes) ?>"><?= $string['addnewitem'] ?></th>
+                </tr>
+                <?php if ($attributes): ?>
+                    <tr style='<?= $obj->getHeaderStyle() ?>'>
+                        <?php foreach($attributes as $attribute): ?>
+                            <th><?= $attribute->name ?></th>
+                        <?php endforeach; ?>
+                    </tr>
+                    <tr>
+                        <?php foreach($attributes as $attribute): ?>
+                            <td><?= $attribute->convertToFormElement(false) ?></td>
+                        <?php endforeach; ?>
+                        <td class='save_td'><button class="elbp_btn_small" onclick="validateFormSubmission( $('#add_incremental') );return false;"><?= $string['save'] ?></button></td>
+                    </tr>
+                <?php endif; ?>
+            </table>
+        </form>
+    <?php endif; ?>
+    
+    <br><br>
+    
+    <div id="elbp_custom_plugin_items">
+    
+        
+    
+    </div>
+    
+    
+    
+    
+    
+</div>
+
+<script>
+    
+    function validateFormSubmission(form)
+    {
+        if (ELBP.validate_form(form) == true)
+        {
+            ELBP.Custom.save_incremental("<?= $obj->getName() ?>", form );
+            return false;
+        }
+    }    
+    
+    function showEditRow(id){
+        $('.incremental_item_'+id).hide();
+        $('.incremental_item_'+id+'_edit').show();
+    }
+    
+    function showTextRow(id){
+        $('.incremental_item_'+id).show();
+        $('.incremental_item_'+id+'_edit').hide();
+    }
+    
+    function delete_incremental_item(id){
+        ELBP.Custom.delete_incremental_item("<?= $obj->getName() ?>", id);
+    }
+    
+    function validateFormSubmissionForm(id){
+        return validateFormSubmission( $('#form_item_'+id) );
+    }
+    
+</script>
+
+<script>
+    ELBP.Custom.refresh_incremental("<?= $obj->getName() ?>");
+</script>
+
+<?= \ELBP\ELBPFORM::getEndCode(); ?>

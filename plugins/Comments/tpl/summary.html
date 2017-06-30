@@ -1,0 +1,35 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <td class="elbp_summary_title" style="background-image:url('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $obj->getName() ?>/pix/icon.png');">
+              <?= $string['comments'] ?>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+          <td colspan="2" class="elbp_centre"><small><?= $string['mostrecentcomments'] ?></small></td>
+      </tr>
+      
+      <?php foreach($comments as $comment): ?>
+      <tr>
+          <td class="elbp_centre"><a href="#" onclick="ELBP.Comments.load_comment(<?= $comment->getID() ?>);return false;"><?= $comment->getDate('D jS M Y') ?></a></td>
+          <td class="elbp_centre"><?= $comment->getAttribute($titleAttribute) ?></td>
+      </tr>
+      <?php endforeach; ?>
+      <?php if (!$comments): ?>
+      <tr>
+          <td colspan="2" class="elbp_centre"><?= $string['noresults'] ?></td>
+      </tr>
+      <?php endif; ?>
+      
+    </tbody>
+  </table>
+
+

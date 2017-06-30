@@ -1,0 +1,191 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<?php 
+
+if ($page == 'new'){
+    if (!elbp_has_capability('block/elbp:add_target', $access)) exit; 
+    $newedit = $string['newtarget'];
+}
+
+elseif($page == 'edit'){
+    if (!elbp_has_capability('block/elbp:edit_target', $access) && $data['setByID'] <> $USER->id) exit; 
+    $newedit = $string['edittarget'];
+}
+
+?>
+
+<script>
+    $('.elbp_view_link').removeClass('selected');
+    
+    function validateTargetFormSubmission(form)
+    {
+        if (ELBP.validate_form(form) == true)
+        {
+            var data = $(form).serialiseObject();
+            ELBP.Targets.save_target( form, '<?= (isset($loadedFrom)) ? $loadedFrom : ""; ?>', '<?= (isset($putInto)) ? $putInto : ""; ?>' );
+        }
+    }    
+</script>
+
+<script>
+    $('#elbp_target_progress').slider( {
+        range: "min",
+        min: 0,
+        max: 100,
+        value: <?= $data['progress'] ?>,
+        slide: function(event, ui){
+            $('#target_progress').val( ui.value );
+        }
+    } );
+</script>
+
+<script>
+    
+    var targets = <?= json_encode($targets) ?>;
+        
+    $("#target_select").change(function () {
+        var value = this.value;
+        // uncheck by default
+            $(':input.elbp_form_field[type="radio"]').prop('checked', false);
+            $(':input.elbp_form_field[type="checkbox"]').prop('checked', false);
+        if(value == '')
+        {
+            $("#target_name").val('');
+            $(':input.elbp_form_field:not([type="radio"]):not([type="checkbox"])').val('');
+        }
+        else
+        {
+            $(':input[name=target_name]').val(targets[value].name);
+
+            $(targets[value].attributes).each(function(){   
+                
+                var fieldname = this.field;
+                var attvalue = this.value;
+
+                // Find the fields
+                var fields = $(':input[name="'+fieldname+'"]');
+                
+                // Loop through checkboxes and radios to set prop
+                $(fields).each( function(){
+
+                    var type = $(this).attr('type');
+                    if (type == 'radio' || type == 'checkbox')
+                    {
+                        // If value is equal to attribute value from target set, set checked prop to that value
+                        if ($(this).val() == attvalue)
+                        {
+                            $(this).prop('checked', true);
+                        }
+                        
+                    }
+                    else
+                    {
+                        // Set the value
+                        fields.val(attvalue);
+                    }
+
+                } );
+            
+            
+                
+        }); 
+    }});
+</script>
+
+<form id="new_target_form">
+<p class="elbp_centre"><button class="elbp_b" onclick="validateTargetFormSubmission( $(this.form) );return false;"><?= $string['savetarget'] ?></button></p>
+
+<p class="elbp_centre"><u><?= $string['instructions'] ?></u>: <?= $obj->getSetting('new_target_instructions') ?></p>
+<br>
+<div id="new_target_output" class="elbp_centre"></div>
+<br>
+<div class="elbp_new_target_form">
+        <input type="hidden" name="target_id" value="<?= $data['id'] ?>" />
+
+        <table class="new_target_table">
+            <tr>
+                <th colspan="2" style='<?= $obj->getHeaderStyle() ?>'><?= $newedit ?></th>
+            </tr>
+            <tr>
+                <td><?= $string['choosenewtargetset'] ?></td>
+                <td>
+                <select id='target_select' name='target_select'>
+                <option></option>
+                
+                <?php foreach($targetsetsdropdown as $ts): ?>
+                    <option value='<?= $ts->id ?>'><?= $ts->name ?></option>
+                <?php endforeach; ?>    
+                
+                </select>
+                </td>
+            </tr>
+            <tr>
+                <td><?= $string['targetname'] ?></td>
+                <td><input type="text" id='target_name' name="target_name" value="<?= $data['name'] ?>" class="elbp_fairly_large" validation="NOT_EMPTY" maxlength="100" /></td>
+            </tr>
+                        
+            <tr>
+                <td><?= $string['targetstatus'] ?></td>
+                <td>
+                    <select name="target_status" validation="NOT_EMPTY">
+                        <?php foreach($obj->getStatuses() as $status): ?>
+                            <option value="<?= $status->id ?>" <?= ($data['status'] == $status->id) ? 'selected' : ''; ?>><?= $status->status ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>
+                        
+            <tr>
+                <td><?= $string['deadline'] ?></td>
+                <td><input type="text" id="target_deadline" name="target_deadline" class="elbp_datepicker" value="<?= $data['deadline'] ?>" validation="NOT_EMPTY,DATE" /></td>
+            </tr>
+            <tr>
+                <td><?= $string['targetprogress'] ?></td>
+                <td class="elbp_centre">
+                    <small><?= $string['progress'] ?>: <input type="text" class="elbp_progress_value" name="target_progress" id="target_progress" readonly="readonly" value="<?= $data['progress'] ?>" />%</small><br><br>
+                    <div id="elbp_target_progress" class="elbpSlider"></div>
+                </td>
+            </tr>
+            <?php if ($data['atts']): ?>
+                <?php foreach($data['atts'] as $attribute): ?>
+                <tr>
+                    <td><?= $attribute->name ?></td>
+                    <td><?= $attribute->convertToFormElement() ?></td>
+                </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </table>
+        <input type="hidden" name="setTime" value="<?= $data['setTime'] ?>">
+        
+
+</div>
+    </form>
+<script>
+    if (ELBP.Targets.tmp_deadline != undefined)
+    {
+        $('#target_deadline').val(ELBP.Targets.tmp_deadline);
+        ELBP.Targets.tmp_deadline = undefined;
+    }
+
+    
+    <?php if (isset($loadedFrom)): ?>
+        $(document).ready( function(){
+
+            // This is a hard-coded thing for Bedford College, I can't think of a way to hook this in really
+            if ( $('select[name="Target Type"]').length == 1 )
+            {
+                <?php if($loadedFrom == 'Tutorials'): ?>
+                    $('select[name="Target Type"]').val('TAP');
+                <?php elseif ($loadedFrom == 'AdditionalSupport'): ?>
+                    $('select[name="Target Type"]').val('AddSup');
+                <?php endif; ?>
+            }
+
+        });
+    <?php endif; ?>
+    
+    
+    
+</script>
+
+<?= \ELBP\ELBPFORM::getEndCode(); ?>

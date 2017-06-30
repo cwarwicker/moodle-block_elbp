@@ -1,0 +1,127 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<p class="elbp_right">
+    <small>
+        <?php if (elbp_has_capability('block/elbp:print_register', $access)): ?>&nbsp; <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=all&student=<?= $obj->getStudentID() ?>" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a> &nbsp; &nbsp; &nbsp; <?php endif; ?>
+    </small>
+</p>
+
+<p id="loading" class="elbp_centre"><img style="width:30px;" src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/loader.gif" /></p>
+
+<br><br>
+
+<div id="elbp_register_content">
+    
+    <table id="register_table">
+        
+        <thead>
+        
+        <tr>
+            <?php if ($display_name_setting == 'both' || $display_name_setting == 'course' || !$display_name_setting): ?>
+                <th class='coursetd elbp_register_freeze_col'><?= $string['course'] ?></th>
+            <?php endif; ?>
+            <?php if ($display_name_setting == 'both' || $display_name_setting == 'event' || !$display_name_setting): ?>
+                <th class='desctd elbp_register_freeze_col'><?= $string['desc'] ?></th>
+            <?php endif; ?>
+            <th class='daytd elbp_register_freeze_col'><?= $string['day'] ?></th>
+            <th class='timetd elbp_register_freeze_col'><?= $string['start'] ?></th>
+            <th class='timetd elbp_register_freeze_col'><?= $string['end'] ?></th>
+            <?php for($i = $start_week; $i <= $end_week; $i++): ?>
+                <th class='week'><?= $i; ?></th>
+            <?php endfor; ?>
+        </tr>
+        
+        </thead>
+        
+        <tbody>
+                    
+        <?php if ($events): ?>
+            <?php foreach($events as $event): ?>
+                <tr class="event_row">
+                    <?php if ($display_name_setting == 'both' || $display_name_setting == 'course' || !$display_name_setting): ?>
+                        <td class='coursetd'><?= (isset($event->courseid)) ? \elbp_get_course_fullname($event->courseid) : '-'; ?></td>
+                    <?php endif; ?>
+                    <?php if ($display_name_setting == 'both' || $display_name_setting == 'event' || !$display_name_setting): ?>
+                        <td class='desctd' title='<?= elbp_html($event->description) ?>'><?= $event->description ?></td>
+                    <?php endif; ?>
+                    <td class='daytd'><?= (isset($event->dayname)) ? $event->dayname : $event->day ?></td>
+                    <td class='timetd'><?= $event->starttime ?></td>
+                    <td class='timetd'><?= $event->endtime ?></td>
+                    
+                    <?php for($i = $start_week; $i <= $end_week; $i++): ?>
+                        <?= $obj->getUserEventValueTD($event, $i) ?>
+                    <?php endfor; ?>
+                    
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="<?= (5 + ($end_week - $start_week)) ?>"><?= $string['noresults'] ?></td>
+            </tr>
+        <?php endif; ?>
+        
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+    
+    <script>
+        
+    $(document).ready( function(){
+        
+        if ( $('tr.event_row').length > 0 ){
+            
+            $('.coursetd').css('max-width', '200px');
+            $('.coursetd').css('min-width', '200px');
+            $('.coursetd').css('width', '200px');
+            
+            $('.desctd').css('max-width', '200px');
+            $('.desctd').css('min-width', '200px');
+            $('.desctd').css('width', '200px');
+            
+            $('.timetd').css('max-width', '40px');
+            $('.timetd').css('min-width', '40px');
+            $('.timetd').css('width', '40px');
+            
+            $('.daytd').css('max-width', '85px');
+            $('.daytd').css('min-width', '85px');
+            $('.daytd').css('width', '85px');
+                    
+            setTimeout( function(){
+                
+                $('#register_table').tinytbl({
+                    'body': {
+                        'useclass': null,
+                        'autofocus':false
+                    },
+                    'head': {
+                        'useclass':null
+                    },
+                    'cols': {
+                        'frozen': $('.elbp_register_freeze_col').length
+                    },
+                    'rows': {
+                            'frozen': 1
+                    },
+                    'rtl':0,
+                    'width': '90%',
+                    'height': ''+($('#register_table').height() + 50)+''
+                });
+
+                // Fix for IE and Mozilla
+                $('#tinytbl-1').width( $('#tinytbl-1').width() + 10 );
+                
+                $('#loading').hide();
+                
+            }, 1000 );
+                                
+        } else {
+            
+            $('#loading').hide();
+            
+        }
+
+        ELBP.apply_tooltip();
+                        
+    } );
+
+    </script>

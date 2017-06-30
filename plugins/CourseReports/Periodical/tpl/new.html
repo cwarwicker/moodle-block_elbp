@@ -1,0 +1,55 @@
+<?php if (isset($report)): ?>
+<input type="hidden" name="periodical_report_id" value="<?= $report->getID() ?>" />
+<?php endif; ?>
+
+<table id='elbp_search_reports'>
+<tr>
+    <td><?= get_string('reportname', 'block_elbp') ?></td>
+    <td><input name='periodical_report_name' type='text' id='periodical_report_name' value='<?= (isset($report)) ? $report->getName() : ''; ?>'; /></td>
+</tr>
+<tr>
+    <td><?= get_string('reportstoinclude', 'block_elbp') ?></td>
+    <td>
+        <?php if (isset($allReports)): ?>
+                
+            <?php foreach($allReports as $rep): ?>
+
+            <input type='checkbox' class='periodical_report_reports' name='periodical_report_reports' value='<?= $rep->getID() ?>' <?= (array_key_exists($rep->getID(), $reports)) ? 'checked' : ''; ?> />
+            <a href='#' onclick='ELBP.save_state(<?= elbp_html($obj->getTitle())?>);ELBP.dock(<?= elbp_html($obj->getName())?>, "<?= elbp_html($obj->getTitle())?>"); ELBP.CourseReports.load_report_quick(<?= $rep->getCourseID() ?>, <?= $rep->getID() ?>)'><?= $rep->getShortDetail() ?></a><br>
+
+            <?php endforeach; ?>
+        
+        <?php elseif ($reports): ?>
+        
+            <?php foreach($reports as $rep): ?>
+            
+                <input type='checkbox' class='periodical_report_reports' name='periodical_report_reports' value='<?= $rep->getID() ?>' />
+                <a href='#' onclick='ELBP.save_state(<?= elbp_html($obj->getTitle())?>);ELBP.dock(<?= elbp_html($obj->getName())?>, "<?= elbp_html($obj->getTitle())?>"); ELBP.CourseReports.load_report_quick(<?= $rep->getCourseID() ?>, <?= $rep->getID() ?>)'><?= $rep->getShortDetail() ?></a><br>
+
+            <?php endforeach; ?>
+        
+        <?php endif; ?>
+                 
+    </td>
+</tr>
+
+<tr>
+    <td><?= get_string('overallcomments', 'block_elbp') ?></td>
+    <td><textarea name='periodical_report_comments' id='periodical_report_comments' class='elbp_textarea'><?= (isset($report)) ? $report->getComments() : ''; ?></textarea></td>
+</tr>
+
+
+<tr>
+    <td><?= get_string('status', 'block_elbp') ?></td>
+    <td>
+        <select name='periodical_report_status' id='periodical_report_status'>
+            <option value='<?= get_string('draft', 'block_elbp') ?>' <?= (isset($report) && $report->getStatus() == 'Draft') ? 'selected' : ''; ?> ><?= get_string('draft', 'block_elbp') ?></option>";
+            <option value='<?= get_string('published', 'block_elbp') ?>' <?= (isset($report) && $report->getStatus() == 'Published') ? 'selected' : ''; ?> ><?= get_string('published', 'block_elbp') ?></option>";
+        </select>
+    </td>
+</tr>
+<tr>
+    <td></td>
+    <td><button class='elbp_b' onclick='validateFormSubmission( $(this.form) );return false;'> <?= get_string('save', 'block_elbp') ?></button></td>
+</tr>
+</table>

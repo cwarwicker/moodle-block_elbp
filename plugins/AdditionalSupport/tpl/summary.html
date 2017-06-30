@@ -1,0 +1,43 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+          <td class="elbp_summary_title" style="background-image:url('<?= $CFG->wwwroot ?>/blocks/elbp/plugins/<?= $obj->getName() ?>/pix/icon.png');">
+              <?= $string['onetoonesupport'] ?>
+          </td>
+      </tr>
+    </tbody>
+  </table>
+
+<?php if ($hasAdditionalSupport): ?>
+
+<table class="elbp_summary_table">
+    <tbody>
+      <tr>
+        <td class="elbp_centre" colspan="2">
+            <small><?= $string['mostrecentadditionalsupport'] ?></small>
+        </td>
+      </tr>
+      <?php if($sessions): foreach($sessions as $session): ?>
+      <tr>
+        <td class="elbp_centre">
+            <a href="#" onclick="ELBP.AdditionalSupport.load_session(<?= $session->getID() ?>);return false;"><?= $session->getDate('D jS M Y'); ?></a>
+        </td>
+        <td class="elbp_centre">
+            <?= fullname($session->getSetByUser()); ?>
+        </td>
+      </tr>
+      <?php endforeach; else: ?>
+      <tr>
+          <td colspan="2" class="elbp_centre"><?= $string['noresults'] ?></td>
+      </tr>
+      <?php endif; ?>
+    </tbody>
+  </table>
+
+<?php else: ?>
+
+<p class="elbp_centre"><?= $string['nohaveadditionalsupport'] ?></p>
+
+<?php endif; ?>

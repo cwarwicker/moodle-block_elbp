@@ -1,0 +1,76 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+
+<div class="elbp_centre">
+    <h2><?= $string['overall'] ?></h2>
+    <br>
+    <?php if($types && $periods): ?>
+    <table class='elbp_att_simple_overall'>
+        <tr>
+            <th></th>
+            <?php foreach((array)$periods as $period): ?>
+                <th><?= $period ?></th>
+            <?php endforeach; ?>
+        </tr>
+        
+        <?php foreach((array)$types as $short => $full): ?>
+        
+            <tr>
+                <td class='elbp_bold' title='<?= $full ?>'><?= $short ?></td>
+                <?php foreach($periods as $period): ?>
+                    <td title='<?= $obj->getUpdatedDate( array("type"=>$full, "courseid"=>null, "period"=>$period) ) ?>'><?= $obj->getRecord( array("type"=>$full, "courseid"=>null, "period"=>$period) ) ?></td>
+                <?php endforeach; ?>
+            </tr>
+
+        <?php endforeach; ?>
+
+    </table>
+    <?php elseif (!$types): echo $string['noatttypesfound'] ?>
+    <?php elseif (!$periods): echo $string['noattperiodsfound'] ?>
+    <?php endif; ?>
+</div>
+
+
+<br class='elbp_cl'><br><br>
+<h2 class='elbp_centre'><?= $string['courses'] ?></h2>
+<br>
+
+<?php if ($types && $periods && $courses): ?>
+
+<table class='elbp_att_simple_courses'>
+    <tr class='elbp_att_simple_border_no_bottom'>
+        <th><?= $string['coursecode'] ?></th>
+        <th><?= $string['coursename'] ?></th>
+        <?php foreach($periods as $period): ?>
+            <th colspan='<?= count($types) ?>'><?= $period ?></th>
+        <?php endforeach; ?>
+    </tr>
+    
+    <tr class='elbp_att_simple_short_periods'>
+        <th style="border-top:none;"></th><th style="border-top:none;"></th>
+        <?php foreach($periods as $period): ?>
+            <?php foreach($types as $short => $full): ?>
+                <th title='<?= $full ?>'><small><?= $short ?></small></th>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+    </tr>
+    
+        <?php foreach($courses as $course): ?>
+            <tr>
+                <td><?= $course->shortname ?></td>
+                <td><?= $course->fullname ?></td>
+                <?php foreach($periods as $period): ?>
+                    <?php foreach($types as $type): ?>
+                    <td title='<?= $obj->getUpdatedDate( array("type"=>$type, "courseid"=>$course->id, "period"=>$period) ) ?>'><?= $obj->getRecord( array("type"=>$type, "courseid"=>$course->id, "period"=>$period) ) ?></td>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+            </tr>
+        <?php endforeach; ?>
+    
+</table>
+
+<?php elseif (!$types): echo $string['noatttypesfound'] ?>
+<?php elseif (!$periods): echo $string['noattperiodsfound'] ?>
+<?php elseif (!$courses): echo $string['noattrecordscourse'] ?>
+
+<?php endif; ?>

@@ -1,0 +1,20 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<ul class="elbp_tabrow">
+    <li class="elbp_view_link"><a href="#" id="elbp_tab" onclick="ELBP.CourseReports.load_display('courses', this);return false;"><?= $string['courses'] ?></a></li>
+    <?php if($obj->isPeriodicalEnabled()): ?>
+        <li class="elbp_view_link"><a href="#" id="periods_tab" onclick="ELBP.CourseReports.load_display('periods', this);return false;"><?= $string['periodical'] ?></a></li>
+    <?php endif; ?>
+</ul>
+
+<br>
+
+<div id="elbp_course_reports_content">
+    
+    <?php if ($params['course'] == 1): ?>
+        <script>ELBP.CourseReports.load_display('courses', $('#elbp_tab'));</script>
+    <?php else: ?>
+        <script>ELBP.CourseReports.load_display('course', <?= $params['course'] ?>, <?= $params['course'] ?>);</script>
+    <?php endif; ?>
+    
+</div>

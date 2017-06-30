@@ -1,0 +1,10 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+
+<?php if ($OBJ->getStructure() === false): ?>
+<?= $string['custompluginnostructure'] ?>
+<?php exit; ?>
+<?php endif; ?>
+
+
+<?= $this->load( $CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/config/structures/'.$OBJ->getStructure().'.html' ); ?>

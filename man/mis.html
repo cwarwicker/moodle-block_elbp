@@ -1,0 +1,195 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<div id="head">
+    <h2>MIS Connections</h2>
+</div>
+
+<div id='content'>
+    
+    <p>If you have any problems or questions in setting up an MIS connection, please contact moodlesupport@bedford.ac.uk and we will be happy to assist you.</p>
+    <br><br>
+    
+    <p><b>NOTE: </b> All MIS connection types wrap table names and field names, so that in the unlikely event that you have tables or fields with spaces in, it doesn't break the query. This may mean that you need to supply case sensitive table and field names when using some database types, such as Firebird, Postgres, etc... So it is best to work on the assumption that all field and tables names will be case sensitive.</p>
+    
+    <br>
+    <h3>Examples</h3>
+    <br><br>
+    
+    <b>MySQL</b><br>
+    <p>For MySQL connections you can just supply the hostname/ip address in the host column, a connection string is not required.</p>
+    <p>
+        Example database server details:<br>
+        Server Name/IP Address: 11.22.33.44<br>
+        Database Name: mydb<br>
+        User: root<br>
+        Password: mypass<br>
+    </p>
+    <ul>
+        <li>Name - My Connection</li>
+        <li>Type - MySQL</li>
+        <li>Host - 11.22.33.44</li>
+        <li>DB User - root</li>
+        <li>DB Password - mypass</li>
+        <li>DB Name - mydb</li>
+    </ul>
+    
+    <br><hr><br>
+    
+    
+    <b>SQL Server</b><br>
+    <p>For SQL Server connections you can specify either a connection string (varying depending on the drivers you are using), or a data source name if you have set one up on your server.</p>
+    <p>
+        Example database server details:<br>
+        (USING ODBC DRIVERS)<br>
+        Server Name/IP Address: 11.22.33.44<br>
+        Database Name: mydb<br>
+        User: root<br>
+        Password: mypass<br>
+    </p>
+    <ul>
+        <li>Name - My Connection</li>
+        <li>Type - MSSQL</li>
+        <li>Host - Driver={SQL Server};Server=11.22.33.44,1433;Database=mydb (the 1433 is the port number)</li>
+        <li>DB User - root</li>
+        <li>DB Password - mypass</li>
+        <li>DB Name - (Not required as it is in the connection string)</li>
+    </ul>
+    
+    <br>
+    <p>
+        Example database server details:<br>
+        (USING SQLSRV DRIVERS)<br>
+        Server Name & Instance/IP Address: localhost\SQLEXPRESS<br>
+        Database Name: mydb<br>
+        User: root<br>
+        Password: mypass<br>
+    </p>
+    <ul>
+        <li>Name - My Connection</li>
+        <li>Type - MSSQL</li>
+        <li>Host - localhost\SQLEXPRESS</li>
+        <li>DB User - root</li>
+        <li>DB Password - mypass</li>
+        <li>DB Name - mydb</li>
+    </ul>
+    
+    
+    <br><hr><br>
+    
+        
+    
+    <b>Microsoft Access</b><br>
+    <p>For Microsoft Access connections you can specify either a connection string (varying depending on the drivers you are using), or a data source name if you have set one up on your server.</p>
+    <p>There are some limitations to MSAccess connections in our system, in that the database file will need to be in a network location that is accessible from your Moodle server, you cannot just point to another IP address for example.</p>
+    <p>
+        Example database server details:<br>
+        Location of database file on network: L:\Databases\Test\mydb.accdb<br>
+        Database Name: mydb<br>
+        User: root<br>
+        Password: mypass<br>
+    </p>
+    <ul>
+        <li>Name - My Connection</li>
+        <li>Type - MSAccess</li>
+        <li>Host - Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=L:\\Databases\\Test\\mydb.accdb;</li>
+        <li>DB User - root</li>
+        <li>DB Password - mypass</li>
+        <li>DB Name - (Not required as it is in the connection string)</li>
+    </ul>
+    
+    <br><hr><br>
+    
+    
+    
+    
+    
+    <b>PostgreSQL</b><br>
+    <p>For PostgreSQL connections you can just supply the hostname/ip address in the host column, a connection string is not required.</p>
+    <p>
+        Example database server details:<br>
+        Host/IP Address: localhost (same server as Moodle for this example)<br>
+        Database Name: mydb<br>
+        User: root<br>
+        Password: mypass<br>
+    </p>
+    <ul>
+        <li>Name - My Connection</li>
+        <li>Type - PostgreSQL</li>
+        <li>Host - localhost</li>
+        <li>DB User - root</li>
+        <li>DB Password - mypass</li>
+        <li>DB Name - mydb</li>
+    </ul>
+    
+    
+    <br><hr><br>
+    
+    
+    
+    <b>Firebird</b><br>
+    <p>For Firebird connections you will need to specify a connection string to point towards the database file.</p>
+    <p>There are some limitations to Firebird connections in our system, in that the database file will need to be in a network location that is accessible from your Moodle server, you cannot just point to another IP address for example.</p>
+    <p>
+         Example database server details:<br>
+         Server Name/IP Address: localhost<br>
+         Location of database file on network: L:\Databases\Test\mydb.fdb<br>
+         User: SYSDBA<br>
+         Password: masterkey<br>
+     </p>
+     <ul>
+         <li>Name - My Connection</li>
+         <li>Type - Firebird</li>
+         <li>Host - L:\Databases\Test\mydb.fdb</li>
+         <li>DB User - SYSDBA</li>
+         <li>DB Password - masterkey</li>
+         <li>DB Name - localhost</li>
+     </ul>
+
+    
+    
+    <br><hr><br>
+    
+    
+    <b>Oracle</b><br>
+    <p>For Oracle connections you can just supply the hostname/ip address in the host column, a connection string is not required.</p>
+    <p>
+         Example database server details:<br>
+         Server Name/IP Address: //localhost/XE<br>
+         User: root<br>
+         Password: mypass<br>
+         Database Name: mydb<br>
+     </p>
+     <ul>
+         <li>Name - My Connection</li>
+         <li>Type - Oracle</li>
+         <li>Host - //localhost/XE</li>
+         <li>DB User - root</li>
+         <li>DB Password - mypass</li>
+         <li>DB Name - mydb</li>
+     </ul>
+    
+    
+    <br><hr><br>
+    
+    
+    <b>SQLite</b><br>
+    <p>For SQLite connections you will need to specify a connection string to point towards the database file.</p>
+    <p>There are some limitations to SQLite connections in our system, in that the database file will need to be in a network location that is accessible from your Moodle server, you cannot just point to another IP address for example.</p>
+    <p>
+         Example database server details:<br>
+         Location of database file on network: L:\Databases\Test\mydb.db<br>
+         User: root<br>
+         Password: mypass<br>
+         DB Name: mydb
+     </p>
+     <ul>
+         <li>Name - My Connection</li>
+         <li>Type - SQLite</li>
+         <li>Host - L:\Databases\Test\mydb.db</li>
+         <li>DB User - root</li>
+         <li>DB Password - mypass</li>
+         <li>DB Name -mydb (Optional) </li>
+     </ul>
+    
+    
+</div>

@@ -1,0 +1,46 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<p class="elbp_centre"><button class="elbp_b" onclick="validateTargetFormSubmission( $('#elbp_custom_plugin_form') );return false;"><?= $string['save'] ?></button></p>
+<br>
+
+<?php if (!$data): ?>
+    <p class="elbp_centre"><?= $string['noattributesdefined'] ?></p>
+<?php endif; ?>
+
+<div id="custom_output" class="elbp_centre"></div>
+
+<div id="elbp_custom_plugin_edit">
+    
+    <form id="elbp_custom_plugin_form" action="" method="post">
+        
+        <table class="custom_plugin_table">
+            <tr>
+                <th colspan="2" style='<?= $obj->getHeaderStyle() ?>'><?= $obj->getSetting('plugin_summary_title') ?></th>
+            </tr>
+            <?php foreach($data as $attribute): ?>
+            <tr>
+                <td><?= $attribute->name ?></td>
+                <td><?= $attribute->convertToFormElement(); ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+        
+        <input type="hidden" name="itemID" value="<?= $itemID ?>" />
+
+    </form>
+    
+</div>
+
+<script>
+    
+    function validateTargetFormSubmission(form)
+    {
+        if (ELBP.validate_form(form) == true)
+        {
+            ELBP.Custom.save_multi("<?= $obj->getName() ?>", form );
+        }
+    }    
+    
+</script>
+
+<?= \ELBP\ELBPFORM::getEndCode(); ?>
