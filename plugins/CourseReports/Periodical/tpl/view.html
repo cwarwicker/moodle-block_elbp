@@ -15,7 +15,7 @@
 
 <p class="elbp_right" id='elbp_print'>
     <small>
-        <?php if (elbp_has_capability('block/elbp:print_periodical_course_report', $access)): ?>&nbsp; <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $report->getID() ?>&student=<?= $obj->getStudentID() ?>&type=periodical" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <?php endif; ?>
+        <?php if (elbp_has_capability('block/elbp:print_periodical_course_report', $access)): ?>&nbsp; <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $report->getID() ?>&student=<?= $obj->getStudentID() ?>&type=periodical" target="_blank"><img src="<?= elbp_image_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <?php endif; ?>
     </small>
 </p>
 

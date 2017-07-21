@@ -1,0 +1,876 @@
+<?php
+
+/**
+ * Import data from 1.9 ilp to 2.4 ELBP
+ * 
+ * 
+ * - Get csv from MIS with students who were here last year and are still enroled on something this year
+ * (apparently can only do 2+ year courses, not students who changed course...)
+ * 
+ * - Loop through that on 1.9 and create an exprt csv of those students info
+ * 
+ * Loop through export csv on 2.4
+ *      If user already exists (imported by gt) get their id and add to user mappings table
+ *      Else, create them and add to user mappings table
+ * 
+ * Courses: Unknown yet as no child courses imported with GT as far as I can see
+ * 
+ * 
+ * Loop through targets export csv on 2.4
+ *      If user exists in mapping table with that old id, add target info for their new id
+ *      Else skip it as there's nothing we can do with it
+ * 
+ * Same goes for other export scripts
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @copyright 2013 Bedford College
+ * @package Bedford College Electronic Learning Blue Print (ELBP)
+ * @version 1.0
+ * @author Conn Warwicker <cwarwicker@bedford.ac.uk> <conn@cmrwarwicker.com>
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * 
+ */
+
+require_once '../../../config.php';
+
+require_login();
+set_time_limit(0);
+
+class ImportILPData
+{
+    
+    
+    /**
+     * We are going to need some mapping tables to lnik old ids of things to new ids, so on construct we will create these tables
+     * Since we may do the imports in stages, these tables will remain until manually removed
+     */
+    public function __construct() {
+        
+        global $DB;
+        
+        $dbman = $DB->get_manager();
+        
+        
+        // User Mappings Table
+        $table = new xmldb_table('lbp_import_mapping_users');
+        
+        $fields = array();
+        $fields[0] = new xmldb_field('id');
+        $fields[0]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        
+        $fields[1] = new xmldb_field('olduserid');
+        $fields[1]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL);
+        
+        $fields[2] = new xmldb_field('newuserid');
+        $fields[2]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL);
+        
+        foreach($fields as $field){
+            $table->addField($field);
+        }
+        
+        $table_key = new xmldb_key('primary');
+        $table_key->set_attributes(XMLDB_KEY_PRIMARY, array('id'));
+        $table->addKey($table_key);
+        
+        if (!$dbman->table_exists($table)){
+            $dbman->create_table($table);
+            itrace("~~~ Created lbp_import_mapping_users table ~~~");
+        }
+        
+        
+        
+        
+        // Target Mappings Table
+        $table = new xmldb_table('lbp_import_mapping_targets');
+        
+        $fields = array();
+        $fields[0] = new xmldb_field('id');
+        $fields[0]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        
+        $fields[1] = new xmldb_field('oldtargetid');
+        $fields[1]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL);
+        
+        $fields[2] = new xmldb_field('newtargetid');
+        $fields[2]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL);
+        
+        foreach($fields as $field){
+            $table->addField($field);
+        }
+        
+        $table_key = new xmldb_key('primary');
+        $table_key->set_attributes(XMLDB_KEY_PRIMARY, array('id'));
+        $table->addKey($table_key);
+        
+        if (!$dbman->table_exists($table)){
+            $dbman->create_table($table);
+            itrace("~~~ Created lbp_import_mapping_targets table ~~~");
+        }
+        
+        
+        
+        
+        
+        // Tutorial Mappings Table
+        $table = new xmldb_table('lbp_import_mapping_tutorials');
+        
+        $fields = array();
+        $fields[0] = new xmldb_field('id');
+        $fields[0]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        
+        $fields[1] = new xmldb_field('oldtutorialid');
+        $fields[1]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL);
+        
+        $fields[2] = new xmldb_field('newtutorialid');
+        $fields[2]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL);
+        
+        foreach($fields as $field){
+            $table->addField($field);
+        }
+        
+        $table_key = new xmldb_key('primary');
+        $table_key->set_attributes(XMLDB_KEY_PRIMARY, array('id'));
+        $table->addKey($table_key);
+        
+        if (!$dbman->table_exists($table)){
+            $dbman->create_table($table);
+            itrace("~~~ Created lbp_import_mapping_tutorials table ~~~");
+        }
+        
+        
+        
+        
+        // Target Mappings Table
+        $table = new xmldb_table('lbp_import_mapping_creports');
+        
+        $fields = array();
+        $fields[0] = new xmldb_field('id');
+        $fields[0]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        
+        $fields[1] = new xmldb_field('oldreportid');
+        $fields[1]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL);
+        
+        $fields[2] = new xmldb_field('newreportid');
+        $fields[2]->set_attributes(XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL);
+        
+        foreach($fields as $field){
+            $table->addField($field);
+        }
+        
+        $table_key = new xmldb_key('primary');
+        $table_key->set_attributes(XMLDB_KEY_PRIMARY, array('id'));
+        $table->addKey($table_key);
+        
+        if (!$dbman->table_exists($table)){
+            $dbman->create_table($table);
+            itrace("~~~ Created lbp_import_mapping_creports table ~~~");
+        }
+        
+        
+        
+        
+        
+        
+    }
+    
+    
+    public function importUsers(){
+        
+        global $CFG, $DB;
+        
+        $files = array("ilpExportUsers", "ilpExportUsers(2)", "ilpExportUsers(3)", "ilpExportUsers(4)");
+        
+        itrace("***** IMPORTING USER DATA *****");
+        
+        $n = 0;
+        
+        // Loop through exported user files
+        foreach($files as $file){
+            
+        
+            $fh = fopen($CFG->dataroot . '/'.$file.'.csv', 'r');
+
+            if ($fh){
+                    itrace("Opened {$file} for reading");
+            } else {
+                itrace("Could not open {$file}. Exiting");
+                return false;
+            }
+            
+            $row = 0;
+            
+            // Loop through user records
+            while(($data = fgetcsv($fh)) !== false){
+                
+                $row++;
+                
+                // Skip first row
+                if (!ctype_digit($data[0])) continue;
+                
+                $obj = new stdClass();
+                $obj->id = $data[0];
+                $obj->auth = $data[1];
+                $obj->confirmed = $data[2];
+                $obj->username = $data[3];
+                $obj->password = $data[4];
+                $obj->idnumber = $data[5];
+                $obj->firstname = $data[6];
+                $obj->lastname = $data[7];
+                $obj->email = $data[8];
+                $obj->dob = $data[9];
+                $obj->mode = $data[10];
+                $obj->institution = $data[11];
+                $obj->city = $data[12];
+                $obj->country = $data[13];
+                
+                if ($obj->dob == '') $obj->dob = null;
+                if ($obj->mode == '') $obj->mode = null;
+                
+                $oldID = $obj->id;
+                
+                // Do we have a user with this username?
+                $user = $DB->get_record("user", array("username" => $obj->username));
+                
+                if ($user){
+                    $newID = $user->id;
+                } else {
+                    unset($obj->id);
+                    $newID = $DB->insert_record("user", $obj);
+                }
+                
+                
+                // Add mapping
+                $map = new stdClass();
+                $map->olduserid = $oldID;
+                $map->newuserid = $newID;
+                
+                if (!$DB->get_record("lbp_import_mapping_users", array("olduserid" => $oldID))){
+                    $DB->insert_record("lbp_import_mapping_users", $map);
+                    itrace("[{$row}] Created mapping for {$obj->username} - {$obj->firstname} {$obj->lastname} [{$oldID} => {$newID}]");
+                }
+                
+                $n++;
+                
+            }
+            
+            itrace("Finished {$file}");
+            
+            
+        }
+        
+        itrace("Imported {$n} Users");
+        
+    }
+    
+    
+    /**
+     * Import target comments frmo csv
+     */
+    public function importTargetComments(){
+        
+         global $CFG, $DB;
+        
+        $files = array("ilpExportTargetComments");
+        
+        itrace("***** IMPORTING TARGET COMMENT DATA *****");
+        
+        $n = 0;
+        
+        // Loop through exported user files
+        foreach($files as $file){
+            
+        
+            $fh = fopen($CFG->dataroot . '/'.$file.'.csv', 'r');
+
+            if ($fh){
+                    itrace("Opened {$file} for reading");
+            } else {
+                itrace("Could not open {$file}. Exiting");
+                return false;
+            }
+            
+            $row = 0;
+            
+            // Loop through user records
+            while(($data = fgetcsv($fh)) !== false){
+                
+                $row++;
+                
+                // Skip first row
+                if (!ctype_digit($data[0])) continue;
+             
+                $targetID = get_target_id_from_mapping($data[1]);
+                if (!$targetID) continue;
+                
+                $userID = get_user_id_from_mapping($data[2]);
+                if (!$userID) $userID = 0;
+               
+                $obj = new stdClass();
+                $obj->targetid = $targetID;
+                $obj->userid = $userID;
+                $obj->comments = strip_data($data[3]);
+                $obj->time = $data[4];
+                $id = $DB->insert_record("lbp_target_comments", $obj);
+                $n++;
+                
+                itrace("[{$id}] Inserted Comment onto Target ID #{$targetID}");
+                
+            }
+            
+            itrace("Finished {$file}");
+            
+        }
+        
+        itrace("Imported {$n} Target Comments");
+        
+    }
+    
+    
+    
+    public function importTargets(){
+        
+        global $CFG, $DB;
+        
+        $files = array("ilpExportTargets");
+        
+        itrace("***** IMPORTING TARGET DATA *****");
+        
+        // Loop through exported user files
+        foreach($files as $file){
+            
+        
+            $fh = fopen($CFG->dataroot . '/'.$file.'.csv', 'r');
+
+            if ($fh){
+                    itrace("Opened {$file} for reading");
+            } else {
+                itrace("Could not open {$file}. Exiting");
+                return false;
+            }
+            
+            $row = 0;
+            
+            // Loop through user records
+            while(($data = fgetcsv($fh)) !== false){
+                
+                $row++;
+                
+                // Skip first row
+                if (!ctype_digit($data[0])) continue;
+                
+                
+                $studentID = get_user_id_from_mapping($data[1]);
+                if (!$studentID) continue;
+                
+                $setByUserID = get_user_id_from_mapping($data[6]);
+                if (!$setByUserID) $setByUserID = 0;
+                
+                switch($data[4])
+                {
+                    case 0:
+                        $status = 1; # TO be achieved
+                    break;
+                    case 1:
+                        $status = 3; # Achieved
+                    break;
+                    case 3:
+                        $status = 4; # Withdrawn
+                    break;
+                    case 4:
+                        $status = 2; # Partially achieved
+                    break;
+                    default:
+                        $status = 1;
+                    break;
+                }
+                
+                $obj = new stdClass();
+                $obj->studentid = $studentID;
+                $obj->courseid = 1;
+                $obj->name = substr(strip_data($data[3]), 0, 100);
+                $obj->status = $status;
+                $obj->deadline = $data[5];
+                $obj->setbyuserid = $setByUserID;
+                $obj->settime = $data[7];
+                $obj->updatedtime = $data[8];
+
+                $oldID = $data[0];
+                
+                // Insert the target
+                $targetID = $DB->insert_record("lbp_targets", $obj);
+                
+                
+                // Add the attributes
+                    $targetType = new stdClass();
+                    $targetType->targetid = $targetID;
+                    $targetType->field = 'Target Type';
+                    $targetType->value = ($data[9] == 1) ? 'TAP' : 'SAP';
+                    $DB->insert_record("lbp_target_attributes", $targetType);
+                    
+                    $targetContent = new stdClass();
+                    $targetContent->targetid = $targetID;
+                    $targetContent->field = 'Target';
+                    $targetContent->value = strip_data($data[10]);
+                    $DB->insert_record("lbp_target_attributes", $targetContent);
+                    
+                    if (isset($data[12])){
+                        $actionByTUtor = new stdClass();
+                        $actionByTUtor->targetid = $targetID;
+                        $actionByTUtor->field = 'Action By Tutor';
+                        $actionByTUtor->value = strip_data($data[12]);
+                        $DB->insert_record("lbp_target_attributes", $actionByTUtor);
+                    }
+                    
+                    if (isset($data[13])){
+                        $actionByStudent = new stdClass();
+                        $actionByStudent->targetid = $targetID;
+                        $actionByStudent->field = 'Action By Student';
+                        $actionByStudent->value = strip_data($data[13]);
+                        $DB->insert_record("lbp_target_attributes", $actionByStudent);
+                    }
+                
+                
+                // Add mapping
+                $map = new stdClass();
+                $map->oldtargetid = $oldID;
+                $map->newtargetid = $targetID;
+                
+                if (!$DB->get_record("lbp_import_mapping_targets", array("oldtargetid" => $oldID))){
+                    $DB->insert_record("lbp_import_mapping_targets", $map);
+                    itrace("[{$row}] Created mapping for Target {$oldID} => {$targetID}");
+                }
+                
+                
+            }
+            
+            itrace("Finished {$file}");
+            
+        }
+        
+    }
+    
+    
+    
+    
+    
+    public function importTutorials(){
+        
+        global $CFG, $DB;
+        
+        $files = array("ilpExportTutorials");
+        
+        itrace("***** IMPORTING TUTORIAL DATA *****");
+        
+        // Loop through exported user files
+        foreach($files as $file){
+            
+        
+            $fh = fopen($CFG->dataroot . '/'.$file.'.csv', 'r');
+
+            if ($fh){
+                    itrace("Opened {$file} for reading");
+            } else {
+                itrace("Could not open {$file}. Exiting");
+                return false;
+            }
+            
+            $row = 0;
+            
+            // Loop through user records
+            while(($data = fgetcsv($fh)) !== false){
+                
+                $row++;
+                
+                // Skip first row
+                if (!ctype_digit($data[0])) continue;
+                                                                
+                $oldID = $data[0];
+                
+                $studentID = get_user_id_from_mapping($data[1]);
+                if (!$studentID) continue;
+                
+                $setByUserID = get_user_id_from_mapping($data[3]);
+                if (!$setByUserID) $setByUserID = 0;
+                
+                $obj = new stdClass();
+                $obj->studentid = $studentID;
+                $obj->courseid = 1;
+                $obj->tutorialdate = $data[2];
+                $obj->setbyuserid = $setByUserID;
+                $obj->settime = $data[4];
+
+                // Insert the tutorial
+                $tutorialID = $DB->insert_record("lbp_tutorials", $obj);
+                
+                
+                // Now add tutorial attributes
+                    $tutorComments = new stdClass();
+                    $tutorComments->tutorialid = $tutorialID;
+                    $tutorComments->field = 'Tutor Comments';
+                    $tutorComments->value = strip_data($data[5]);
+                    $DB->insert_record("lbp_tutorial_attributes", $tutorComments);
+                    
+                    $studentComments = new stdClass();
+                    $studentComments->tutorialid = $tutorialID;
+                    $studentComments->field = 'Student Comments';
+                    $studentComments->value = strip_data($data[6]);
+                    $DB->insert_record("lbp_tutorial_attributes", $studentComments);
+                    
+                    $att7 = new stdClass();
+                    $att7->tutorialid = $tutorialID;
+                    $att7->field = 'Attendance Last 7 Days';
+                    $att7->value = strip_data($data[12]);
+                    $DB->insert_record("lbp_tutorial_attributes", $att7);
+                    
+                    $att28 = new stdClass();
+                    $att28->tutorialid = $tutorialID;
+                    $att28->field = 'Attendance Last 28 Days';
+                    $att28->value = strip_data($data[10]);
+                    $DB->insert_record("lbp_tutorial_attributes", $att28);
+                    
+                    $punc7 = new stdClass();
+                    $punc7->tutorialid = $tutorialID;
+                    $punc7->field = 'Punctuality Last 7 Days';
+                    $punc7->value = strip_data($data[13]);
+                    $DB->insert_record("lbp_tutorial_attributes", $punc7);
+                    
+                    $punc28 = new stdClass();
+                    $punc28->tutorialid = $tutorialID;
+                    $punc28->field = 'Punctuality Last 28 Days';
+                    $punc28->value = strip_data($data[11]);
+                    $DB->insert_record("lbp_tutorial_attributes", $punc28);
+                    
+                    // Targets
+                    if (!empty($data[7]))
+                    {
+                        $targetList = explode("||", $data[7]);
+                        if ($targetList)
+                        {
+                            foreach($targetList as $targetID)
+                            {
+                                $newTargetID = get_target_id_from_mapping($targetID);
+                                if (!$newTargetID) continue;
+
+                                $obj = new stdClass();
+                                $obj->tutorialid = $tutorialID;
+                                $obj->field = 'Targets';
+                                $obj->value = $newTargetID;
+                                $DB->insert_record("lbp_tutorial_attributes", $obj);
+
+                            }
+                        }
+                    }
+                
+                   
+                    // Add mapping
+                    $map = new stdClass();
+                    $map->oldtutorialid = $oldID;
+                    $map->newtutorialid = $tutorialID;
+
+                    if (!$DB->get_record("lbp_import_mapping_tutorials", array("oldtutorialid" => $oldID))){
+                        $DB->insert_record("lbp_import_mapping_tutorials", $map);
+                        itrace("[{$row}] Created mapping for Tutorial {$oldID} => {$tutorialID}");
+                    }
+                
+                
+                
+            }
+            
+            itrace("Finished {$file}");
+            
+        }
+        
+    }
+    
+    
+    
+    public function importIncidents(){
+        
+        global $CFG, $DB;
+        
+        $files = array("ilpExportConcerns");
+        
+        itrace("***** IMPORTING INCIDENTS DATA *****");
+        
+        // Loop through exported user files
+        foreach($files as $file){
+            
+        
+            $fh = fopen($CFG->dataroot . '/'.$file.'.csv', 'r');
+
+            if ($fh){
+                    itrace("Opened {$file} for reading");
+            } else {
+                itrace("Could not open {$file}. Exiting");
+                return false;
+            }
+            
+            $row = 0;
+            
+            // Loop through user records
+            while(($data = fgetcsv($fh)) !== false){
+                
+                $row++;
+                
+                // Skip first row
+                if (!ctype_digit($data[0])) continue;
+                
+                
+                $studentID = get_user_id_from_mapping($data[1]);
+                if (!$studentID) continue;
+                
+                $setByUserID = get_user_id_from_mapping($data[2]);
+                if (!$setByUserID) $setByUserID = 0;
+                
+                
+                $obj = new stdClass();
+                $obj->studentid = $studentID;
+                $obj->incidentdate = $data[4];
+                $obj->setbyuserid = $setByUserID;
+                $obj->settime = $data[4];
+                
+                
+                // Insert the incident
+                $incidentID = $DB->insert_record("lbp_incidents", $obj);
+                
+                
+                // Add the attributes
+                $att = new stdClass();
+                $att->incidentid = $incidentID;
+                $att->field = 'Category';
+                $att->value = 'Other';
+                $DB->insert_record("lbp_incident_attributes", $att);
+
+                $att = new stdClass();
+                $att->incidentid = $incidentID;
+                $att->field = 'Description';
+                $att->value = strip_data($data[6]);
+                $DB->insert_record("lbp_incident_attributes", $att);
+
+                $att = new stdClass();
+                $att->incidentid = $incidentID;
+                $att->field = 'Action Taken';
+                $att->value = '';
+                $DB->insert_record("lbp_incident_attributes", $att);
+                
+                itrace("[{$incidentID}] Inserted Incident");
+                                                    
+                
+            }
+            
+            itrace("Finished {$file}");
+            
+        }
+        
+    }
+    
+    
+    public function importAttachments(){
+        
+        global $CFG, $DB;
+        
+        $files = array("ilpExportAttachments");
+        
+        itrace("***** IMPORTING ATTACHMENTS DATA *****");
+        
+        // Loop through exported user files
+        foreach($files as $file){
+            
+        
+            $fh = fopen($CFG->dataroot . '/'.$file.'.csv', 'r');
+
+            if ($fh){
+                    itrace("Opened {$file} for reading");
+            } else {
+                itrace("Could not open {$file}. Exiting");
+                return false;
+            }
+            
+            $row = 0;
+            
+            // Loop through user records
+            while(($data = fgetcsv($fh)) !== false){
+                
+                $row++;
+                
+                // Skip first row
+                if (!ctype_digit($data[0])) continue;
+                
+                
+                $studentID = get_user_id_from_mapping($data[1]);
+                if (!$studentID) continue;
+                
+                $setByUserID = get_user_id_from_mapping($data[2]);
+                if (!$setByUserID) $setByUserID = 0;
+                
+                
+                $obj = new stdClass();
+                $obj->studentid = $studentID;
+                $obj->title = $data[3];
+                $obj->filename = $data[4];
+                $obj->dateuploaded = strtotime($data[5]);
+                $obj->uploadedby = $setByUserID;
+                
+                
+                // Insert the attachment
+                $attachmentID = $DB->insert_record("lbp_attachments", $obj);
+                
+                
+                // Will manaully have to transfer files across
+                
+                
+                itrace("[{$attachmentID}] Inserted Attachment");
+                                                    
+                
+            }
+            
+            itrace("Finished {$file}");
+            
+        }
+        
+    }
+    
+    
+    
+    public function fixAttachmentFolders(){
+        
+        
+        global $CFG, $DB;
+        
+        
+        // Loop through directories in this directory
+        if ($fh = opendir("/home/moodledata/plpattachments"))
+        {
+            
+            while (false !== ( $dir = readdir($fh) ))
+            {
+                
+                if (strpos($dir, ".") !== false) continue;
+                
+                $username = $dir;
+                                
+                // Get the user id from this user name
+                $user = $DB->get_record("user", array("username" => $username));
+                if (!$user) continue;
+                
+                // Create folder in new directory with that id
+                if (!is_dir($CFG->dataroot . '/ELBP/Attachments/' . $user->id))
+                {
+                    mkdir($CFG->dataroot . '/ELBP/Attachments/' . $user->id, 0775);
+                    itrace("Created directory: " . $CFG->dataroot . '/ELBP/Attachments/' . $user->id);
+                }
+                
+                // Get all the files in the old directory
+                if ($files = opendir("/home/moodledata/plpattachments/".$dir))
+                {
+                    
+                    while (false !== ($file = readdir($files)))
+                    {
+                        
+                        if ($file == '.' || $file == '..') continue;
+                        
+                        // Copy file to new location
+                        $source = "/home/moodledata/plpattachments/".$dir."/".$file;
+                        $dest = $CFG->dataroot . '/ELBP/Attachments/' . $user->id . '/' . $file;
+                        
+                        if (!file_exists($dest))
+                        {
+                            copy($source, $dest);
+                            itrace("Copied file to: {$dest}");
+                        }
+                        
+                    }
+                    
+                    closedir($files);
+                    
+                }
+                
+                
+            }
+            
+            closedir($fh);
+            
+        }
+        
+        
+    }
+    
+    
+    public function import()
+    {
+        $this->importUsers();
+        $this->importTargets();
+        $this->importTargetComments();
+        $this->importTutorials();
+        $this->importIncidents();
+        $this->importAttachments();
+        $this->fixAttachmentFolders();
+    }
+    
+    
+}
+
+
+
+function iflush()
+{
+    ob_end_flush(); 
+    flush();
+    ob_start();
+}
+
+
+function itrace($str)
+{
+    echo $str . "<br>";
+    iflush();
+}
+
+function strip_data($str){
+    
+    $str = strip_tags($str);
+    $str = trim($str);
+    return $str;
+    
+}
+
+function get_user_id_from_mapping($oldID){
+    global $DB;
+    $record = $DB->get_record("lbp_import_mapping_users", array("olduserid" => $oldID));
+    return ($record) ? $record->newuserid : false;
+}
+
+function get_target_id_from_mapping($oldID){
+    global $DB;
+    $record = $DB->get_record("lbp_import_mapping_targets", array("oldtargetid" => $oldID));
+    return ($record) ? $record->newtargetid : false;
+}
+
+
+
+// FIrst import users
+// Then targets
+// Then tutorials (tutorials after targets as we need to link them to targets)
+// Then course reports
+// Then incidents/concerns
+// Then attachments & copy attachments folders across
+
+
+$import = new ImportILPData();
+$import->fixAttachmentFolders();

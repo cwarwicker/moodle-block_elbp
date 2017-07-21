@@ -167,59 +167,7 @@ class ELBPForm {
                 $this->elements = $elements;
                 return $this->elements;
                 
-            } else {
-                
-                // No longer supporting legacy forms, it's only us who might have them anyway
-                return false;
-                
-                // Otherwise they are in the old format, so we need to convert them into new
-//                $OLDFORM = new \ELBP\FORM();
-//                $OLDFORM->load($this->data);
-//                $elements = $OLDFORM->getElements();
-//                if ($elements)
-//                {
-//                    
-//                    foreach($elements as $element)
-//                    {
-//                        
-//                        $newElement = new \ELBP\ELBPFormElement();
-//                        
-//                        $newElement->setName( $element['name'] );
-//                        $newElement->setType( $newElement->convertOldTypeToNew($element['type']) );
-//                        $newElement->setDisplay( $element['display'] );
-//                        $newElement->setDefault( $element['default'] );
-//                        
-//                        // If it has options, add them as well
-//                        if (isset($element['options']) &&  $element['options'])
-//                        {
-//                            foreach($element['options'] as $option)
-//                            {
-//                                $newElement->addOption( $option );
-//                            }
-//                        }
-//                        
-//                        // Used to be able to have multiple validation, so just take the first
-//                        if (isset($element['validation']) && $element['validation'])
-//                        {
-//                            $element['validation'] = \elbp_array_replace_value($element['validation'], "NOT_EMPTY", "REQUIRED");
-//                            $newElement->setValidation( $element['validation'] );
-//                        }
-//                        
-//                        $newElement->loadObject($this->obj);
-//                        
-//                        if ($this->studentID){
-//                            $newElement->setStudentID($this->studentID);
-//                        }
-//                        
-//                        $this->addElement($newElement);
-//                        
-//                    }      
-//                    
-//                }
-//                
-//                return $this->elements;
-                
-            }
+            } 
             
         } else {
             return false;
@@ -311,6 +259,10 @@ class ELBPFormElement {
         
         $this->id = \elbp_rand_str(10);
         
+    }
+    
+    public function setID($id){
+        $this->id = $id;
     }
     
     public function setName($name){
@@ -774,10 +726,10 @@ class ELBPFormElement {
                 if (!preg_match($regex, $response) && $response != '') return true;
             break;
             
-            // Numbers only
+            // Numbers only (allow decimals)
             case 'NUMBERS_ONLY':
-                $regex = "/[^0-9]/i";
-                if (!preg_match($regex, $response) && $response != '') return true;
+                $regex = "/^[0-9]+\.?[0-9]*$/i";
+                if (preg_match($regex, $response) && $response != '') return true;
             break;
             
             // Letters, spaces and numbers only
@@ -1043,7 +995,7 @@ class ELBPFormElement {
                 require_once $CFG->dirroot . '/lib/editorlib.php';
                 
                 $editor = \editors_get_preferred_editor();
-                $editor->use_editor("elbpfe_{$id}_{$this->id}", array('autoSave' => 0));
+                $editor->use_editor("elbpfe_{$id}_{$this->id}", array('autosave' => false));
                                                 
                 $output = "";
                 if ($this->instructions){
@@ -1476,13 +1428,16 @@ class ELBPFormElement {
      * @param type $params
      */
     public static function create($params){
-        
-         
+                 
         $obj = new \ELBP\ELBPFormElement();
         
         if (is_array($params))
         {
         
+            if (isset($params['id'])){
+                $obj->setID($params['id']);
+            }
+            
             if (isset($params['name'])){
                 $obj->setName($params['name']);
             }
@@ -1522,6 +1477,10 @@ class ELBPFormElement {
             }
         
         } elseif (is_object($params)){
+            
+            if (isset($params->id)){
+                $obj->setID($params->id);
+            }
             
             if (isset($params->name)){
                 $obj->setName($params->name);

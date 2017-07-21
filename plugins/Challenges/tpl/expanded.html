@@ -42,7 +42,7 @@
                             
                             <?php if ($obj->getSetting('use_confidentiality') == 1 && $obj->getStudentID() == $USER->id): ?>
                                 <br>
-                                <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= $OUTPUT->pix_url('help') ?>" alt="<?= get_string('help') ?>" /> 
+                                <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" /> 
                                 <b><?= $string['confidentiality'] ?></b>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 <?php if ($cLevels): ?>

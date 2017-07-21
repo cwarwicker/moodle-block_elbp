@@ -33,15 +33,15 @@
             <div class="elbp_centre">
                 <small>
                     <?php if (elbp_has_capability('block/elbp:edit_tutorial', $access)): ?>
-                        <a href="#" onclick="ELBP.Tutorials.edit_tutorial(<?= $tutorial->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/editstring', 'core') ?>" alt="" /> <?= $string['edit'] ?></a> &nbsp; &nbsp; &nbsp; 
+                        <a href="#" onclick="ELBP.Tutorials.edit_tutorial(<?= $tutorial->getID() ?>);return false;"><img src="<?= elbp_image_url('t/editstring', 'core') ?>" alt="" /> <?= $string['edit'] ?></a> &nbsp; &nbsp; &nbsp; 
                     <?php endif; ?>
                     
                     <?php if (elbp_has_capability('block/elbp:delete_tutorial', $access)): ?>
-                        <a href="#" onclick="ELBP.Tutorials.delete_tutorial(<?= $tutorial->getID() ?>);return false;"><img src="<?= $OUTPUT->pix_url('t/delete', 'core') ?>" alt="" /> <?= $string['delete'] ?></a> &nbsp; &nbsp; &nbsp; 
+                        <a href="#" onclick="ELBP.Tutorials.delete_tutorial(<?= $tutorial->getID() ?>);return false;"><img src="<?= elbp_image_url('t/delete', 'core') ?>" alt="" /> <?= $string['delete'] ?></a> &nbsp; &nbsp; &nbsp; 
                     <?php endif; ?>
                     
                     <?php if (elbp_has_capability('block/elbp:print_tutorial', $access)): ?>
-                        <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $tutorial->getID() ?>" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a>
+                        <a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=<?= $tutorial->getID() ?>" target="_blank"><img src="<?= elbp_image_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a>
                     <?php endif; ?>
                     
                 </small>

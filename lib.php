@@ -1104,8 +1104,8 @@ JS;
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_name"><span>-</span> <input id="attribute_row_'+numA+'_field_name_input" type="hidden" name="elementNames['+numA+']" value="" /></td>');
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_type"><span>'+type+'</span> <input id="attribute_row_'+numA+'_field_type_input" type="hidden" name="elementTypes['+numA+']" value="'+type+'" /></td>');
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_display" class="elbp_centre"><img src="{$CFG->wwwroot}/blocks/elbp/pix/icons/question.png" /> <input id="attribute_row_'+numA+'_field_display_input" type="hidden" name="elementDisplays['+numA+']" value="" /></td>');
-            $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_edit_col" class="noSort"><input type="hidden" id="attribute_row_'+numA+'_field_default_input" name="elementDefault['+numA+']" value="" /><input type="hidden" id="attribute_row_'+numA+'_field_instructions_input" name="elementInstructions['+numA+']" value="" /><a href="#" onclick="editAttribute(\''+numA+'\');return false;" title="{$string['edit']}"><img src="{$OUTPUT->pix_url('t/edit')}" /></a></td>');
-            $('#attribute_row_'+numA).append('<td><a href="#" onclick="removeField('+numA+');return false;" title="{$string['delete']}"><img src="{$OUTPUT->pix_url('t/delete')}" /></a></td>');
+            $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_edit_col" class="noSort"><input type="hidden" id="attribute_row_'+numA+'_field_default_input" name="elementDefault['+numA+']" value="" /><input type="hidden" id="attribute_row_'+numA+'_field_instructions_input" name="elementInstructions['+numA+']" value="" /><a href="#" onclick="editAttribute(\''+numA+'\');return false;" title="{$string['edit']}"><img src="{elbp_image_url('t/edit')}" /></a></td>');
+            $('#attribute_row_'+numA).append('<td><a href="#" onclick="removeField('+numA+');return false;" title="{$string['delete']}"><img src="{elbp_image_url('t/delete')}" /></a></td>');
         
             var f = {};
             f.name = '';
@@ -1733,6 +1733,14 @@ JS;
                   // Default
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_default_input').attr('name', 'elementDefault['+n+']');
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_default_input').attr('id', 'attribute_row_'+n+'_field_default_input');
+            
+                  // Old Names
+                  $(TDs[3]).children('input#attribute_row_'+old+'_field_old_name').attr('name', 'elementOldNames['+n+']');
+                  $(TDs[3]).children('input#attribute_row_'+old+'_field_old_name').attr('id', 'attribute_row_'+n+'_field_old_name');
+            
+                  // Old IDs
+                  $(TDs[3]).children('input#attribute_row_'+old+'_field_old_id').attr('name', 'elementOldIDs['+n+']');
+                  $(TDs[3]).children('input#attribute_row_'+old+'_field_old_id').attr('id', 'attribute_row_'+n+'_field_old_id');
 
                   // Options
                   $(TDs[3]).children('input.attribute_row_'+old+'_field_option_inputs').attr('name', 'elementOptions['+n+'][]');
@@ -1741,6 +1749,10 @@ JS;
                   // Validation
                   $(TDs[3]).children('input.attribute_row_'+old+'_field_validation_inputs').attr('name', 'elementValidation['+n+'][]');
                   $(TDs[3]).children('input.attribute_row_'+old+'_field_validation_inputs').attr('class', 'attribute_row_'+n+'_field_validation_inputs');
+            
+                  // Instructions
+                  $(TDs[3]).children('input#attribute_row_'+old+'_field_instructions_input').attr('name', 'elementInstructions['+n+']');
+                  $(TDs[3]).children('input#attribute_row_'+old+'_field_instructions_input').attr('id', 'attribute_row_'+n+'_field_instructions_input');
             
                   // Other
                     // cols
@@ -1925,7 +1937,7 @@ function elbp_display_attribute_creation_form($obj)
             $output .= '</thead>';
 
             $output .= '<tbody>';
-
+            
                 $numA = 0;
 
                 if ($attributes)
@@ -1940,7 +1952,8 @@ function elbp_display_attribute_creation_form($obj)
                             $output .= '<td id="attribute_row_'.$numA.'_field_display" class="elbp_centre"><img src="'.$CFG->wwwroot.'/blocks/elbp/pix/icons/'.$attribute->getDisplayIcon().'" alt="'.$attribute->display.'" title="'.$attribute->display.'" /> <input id="attribute_row_'.$numA.'_field_display_input" type="hidden" name="elementDisplays['.$numA.']" value="'.$attribute->display.'" /></td>';
 
                             $hiddenInputs = '<input type="hidden" id="attribute_row_'.$numA.'_field_default_input" name="elementDefault['.$numA.']" value="'.$attribute->default.'" />';
-                            $hiddenInputs .= '<input type="hidden" name="elementOldNames['.$numA.']" value="'.$attribute->name.'" />';
+                            $hiddenInputs .= '<input type="hidden" id="attribute_row_'.$numA.'_field_old_name" name="elementOldNames['.$numA.']" value="'.$attribute->name.'" />';
+                            $hiddenInputs .= '<input type="hidden" id="attribute_row_'.$numA.'_field_old_id" name="elementOldIDs['.$numA.']" value="'.$attribute->id.'" />';
                             
                             $optionsInputs = "";
 
@@ -2021,8 +2034,8 @@ function elbp_display_attribute_creation_form($obj)
                             
                             $hiddenInputs .= '<input type="hidden" id="attribute_row_'.$numA.'_field_instructions_input" name="elementInstructions['.$numA.']" value="'.$attribute->instructions.'" />';
 
-                            $output .= '<td id="attribute_row_'.$numA.'_field_edit_col" class="noSort">'.$hiddenInputs.'<a href="#" onclick="editAttribute(\''.$numA.'\');return false;" title="'.get_string('edit').'"><img src="'.$OUTPUT->pix_url('t/edit').'" /></a></td>';
-                            $output .= '<td class="noSort"><a href="#" onclick="removeField('.$numA.');return false;" title="'.get_string('delete').'"><img src="'.$OUTPUT->pix_url('t/delete').'" /></a></td>';
+                            $output .= '<td id="attribute_row_'.$numA.'_field_edit_col" class="noSort">'.$hiddenInputs.'<a href="#" onclick="editAttribute(\''.$numA.'\');return false;" title="'.get_string('edit').'"><img src="'.elbp_image_url('t/edit').'" /></a></td>';
+                            $output .= '<td class="noSort"><a href="#" onclick="removeField('.$numA.');return false;" title="'.get_string('delete').'"><img src="'.elbp_image_url('t/delete').'" /></a></td>';
 
                         $output .= "</tr>";
 
@@ -2274,114 +2287,135 @@ function elbp_save_attribute_script($obj)
     
     if(isset($_POST['submit_attributes'])){
                                                     
-            $form = new \ELBP\ELBPForm();
-                                                
-            $elementNames = (isset($_POST['elementNames'])) ? $_POST['elementNames'] : array();
-            $elementTypes = (isset($_POST['elementTypes'])) ? $_POST['elementTypes'] : array();
-            $elementOptions = (isset($_POST['elementOptions'])) ? $_POST['elementOptions'] : array();
-            $elementDisplays = (isset($_POST['elementDisplays'])) ? $_POST['elementDisplays'] : array();
-            $elementValidation = (isset($_POST['elementValidation'])) ? $_POST['elementValidation'] : array();
-            $elementDefault = (isset($_POST['elementDefault'])) ? $_POST['elementDefault'] : array();
-            $elementInstructions = (isset($_POST['elementInstructions'])) ? $_POST['elementInstructions'] : array();
-            $elementOther = (isset($_POST['elementOther'])) ? $_POST['elementOther'] : array();
-            $elementOldNames = (isset($_POST['elementOldNames'])) ? $_POST['elementOldNames'] : array();             
-                        
-            $keys = array_keys($elementNames);
-                                                            
-            if ($keys)
+        $form = new \ELBP\ELBPForm();
+
+        $elementNames = (isset($_POST['elementNames'])) ? $_POST['elementNames'] : array();
+        $elementTypes = (isset($_POST['elementTypes'])) ? $_POST['elementTypes'] : array();
+        $elementOptions = (isset($_POST['elementOptions'])) ? $_POST['elementOptions'] : array();
+        $elementDisplays = (isset($_POST['elementDisplays'])) ? $_POST['elementDisplays'] : array();
+        $elementValidation = (isset($_POST['elementValidation'])) ? $_POST['elementValidation'] : array();
+        $elementDefault = (isset($_POST['elementDefault'])) ? $_POST['elementDefault'] : array();
+        $elementInstructions = (isset($_POST['elementInstructions'])) ? $_POST['elementInstructions'] : array();
+        $elementOther = (isset($_POST['elementOther'])) ? $_POST['elementOther'] : array();
+        $elementOldNames = (isset($_POST['elementOldNames'])) ? $_POST['elementOldNames'] : array();   
+        $elementOldIDs = (isset($_POST['elementOldIDs'])) ? $_POST['elementOldIDs'] : array();   
+
+        $elementNames = array_map('trim', $elementNames);
+        
+        $keys = array_keys($elementNames);
+        $names = array();
+                
+        
+        if ($keys)
+        {
+            foreach($keys as $i)
             {
-                foreach($keys as $i)
+
+                $element = new \ELBP\ELBPFormElement();
+
+                // Reset variables
+                $options = false;
+                $validation = false;
+                $instructions = false;
+                $default = false;
+                $other = false;
+
+                $name = str_replace('"', '', $elementNames[$i]);
+                $origName = $name;
+                
+                $n = 1;
+                while(in_array($name, $names)){
+                    $name = $origName . " ({$n})";
+                    $n++;
+                }
+                
+                $names[] = $name;
+                
+                $type = $elementTypes[$i];
+                $display = $elementDisplays[$i];
+                if(isset($elementOptions[$i])){
+                    $options = $elementOptions[$i];
+                }
+                if(isset($elementValidation[$i]) && $elementValidation[$i]){
+                    $validation = array_filter($elementValidation[$i]);
+                }
+                if(isset($elementInstructions[$i])){
+                    $instructions = $elementInstructions[$i];
+                }
+                if(isset($elementDefault[$i])){
+                    $default = $elementDefault[$i];
+                }
+                if(isset($elementOther[$i])){
+                    $other = $elementOther[$i];
+                }
+
+                // If name or type is empty, skip it
+                if (elbp_is_empty($name) || elbp_is_empty($type)) continue;
+
+                // Must be valid type, else skip it
+                if (!$form->isSupportedType($type)) continue;
+
+
+                // Order options properly
+                if ($options)
                 {
+                    ksort($options);
+                }
 
-                    $element = new \ELBP\ELBPFormElement();
-                    
-                    // Reset variables
-                    $options = false;
-                    $validation = false;
-                    $instructions = false;
-                    $default = false;
-                    $other = false;
-                    
-                    $name = str_replace('"', '', $elementNames[$i]);
-                    $type = $elementTypes[$i];
-                    $display = $elementDisplays[$i];
-                    if(isset($elementOptions[$i])){
-                        $options = $elementOptions[$i];
-                    }
-                    if(isset($elementValidation[$i]) && $elementValidation[$i]){
-                        $validation = array_filter($elementValidation[$i]);
-                    }
-                    if(isset($elementInstructions[$i])){
-                        $instructions = $elementInstructions[$i];
-                    }
-                    if(isset($elementDefault[$i])){
-                        $default = $elementDefault[$i];
-                    }
-                    if(isset($elementOther[$i])){
-                        $other = $elementOther[$i];
-                    }
-
-                    // If name or type is empty, skip it
-                    if (elbp_is_empty($name) || elbp_is_empty($type)) continue;
-
-                    // Must be valid type, else skip it
-                    if (!$form->isSupportedType($type)) continue;
-                    
-                    
-                    // Order options properly
-                    if ($options)
+                // Order other properly
+                if ($other)
+                {
+                    foreach($other as $kType => &$arr)
                     {
-                        ksort($options);
-                    }
-                    
-                    // Order other properly
-                    if ($other)
-                    {
-                        foreach($other as $kType => &$arr)
+                        if (is_array($arr))
                         {
-                            if (is_array($arr))
-                            {
-                                ksort($arr);
-                            }
+                            ksort($arr);
                         }
                     }
-                    
-                    
-                    // Start creating the element object
-                    $element->setName($name)
-                            ->setType($type)
-                            ->setDisplay($display)
-                            ->setDefault($default)
-                            ->setOptions($options)
-                            ->setValidation($validation)
-                            ->setInstructions($instructions)
-                            ->setOther($other);
-                                        
-                    $form->addElement($element);
-                    
                 }
+
+
+                // Start creating the element object
+                $element->setName($name)
+                        ->setType($type)
+                        ->setDisplay($display)
+                        ->setDefault($default)
+                        ->setOptions($options)
+                        ->setValidation($validation)
+                        ->setInstructions($instructions)
+                        ->setOther($other);
+                
+                // Keep the existing ID
+                if (isset($elementOldIDs[$i])){
+                    $element->setID($elementOldIDs[$i]);
+                }
+
+                $form->addElement($element);
+                
             }
-                        
-            $data = $form->convertElementsToDataString();
-                                                      
-            $obj->updateSetting("attributes", $data);
-            
-            // If we have changed the name of an attribute, we need to change all the data linked to that
-            // old name
-            if (!$obj->updateChangedAttributeNames($elementNames, $elementOldNames)){
-                $MSGS['errors'] = get_string('attnamesnotoverridden', 'block_elbp');
-            }
-            
-            $MSGS['success'] = get_string('attributesupdated', 'block_elbp');
-            
-            // Reload for display
-            $obj->loadDefaultAttributes();
-            
-            return true;
-            
-            
         }
-    
+
+                
+        $data = $form->convertElementsToDataString();
+
+        $obj->updateSetting("attributes", $data);
+
+        // If we have changed the name of an attribute, we need to change all the data linked to that
+        // old name
+        if (!$obj->updateChangedAttributeNames($elementNames, $elementOldNames)){
+            $MSGS['errors'] = get_string('attnamesnotoverridden', 'block_elbp');
+        }
+
+        $MSGS['success'] = get_string('attributesupdated', 'block_elbp');
+
+        // Reload for display
+        $obj->loadDefaultAttributes();
+
+        return true;
+
+
+    }
+
 }
 
 
@@ -2665,6 +2699,18 @@ function elbp_get_username($id){
     global $DB;
     $user = $DB->get_record("user", array("id" => $id));
     return ($user) ? $user->username : false;
+}
+
+/**
+ * Get the username of a user from their id
+ * @global type $DB
+ * @param type $id
+ * @return type
+ */
+function elbp_get_user($username){
+    global $DB;
+    $user = $DB->get_record("user", array("username" => $username));
+    return $user;
 }
 
 /**
@@ -3338,4 +3384,17 @@ function elbp_implode_placeholders($array){
 function block_elbp_extend_navigation_user(navigation_node $navigation, stdClass $user)
 {
     $navigation->add(get_string('viewelbp', 'block_elbp'), new moodle_url('/blocks/elbp/view.php', array('id' => $user->id)));
+}
+
+function elbp_image_url($imagename, $component = 'moodle'){
+    
+    global $OUTPUT;
+    
+    if (method_exists($OUTPUT, 'image_url')){
+        return $OUTPUT->image_url($imagename, $component);
+    } else {
+        return $OUTPUT->pix_url($imagename, $component);
+    }
+    
+    
 }

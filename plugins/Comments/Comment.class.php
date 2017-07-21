@@ -654,10 +654,6 @@ class Comment extends \ELBP\BasePluginObject {
             $alertContent = get_string('alerts:commentadded', 'block_elbp') . 
                             $this->getInfoForEventTrigger(false);
             
-            // Student alert
-            // BEDCOLL staff wanted this turned off
-            //elbp_event_trigger_student("Incident Added", $this->Incidents->getID(), $this->studentID, $alertContent, nl2br($alertContent));
-
             // Staff alerts
             elbp_event_trigger("Comment Added", $this->Comments->getID(), $this->studentID, $alertContent, nl2br($alertContent));
             

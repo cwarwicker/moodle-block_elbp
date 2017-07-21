@@ -28,7 +28,7 @@
     <td><?= $attachment->getDate() ?></td>
     <td><a href="#" onclick="$('#attachment_comments_<?= $attachment->getID() ?>').toggle();return false;"><?= $attachment->countComments() ?></a></td>
     <?php if ( ($attachment->getUploadedByID() == $USER->id && elbp_has_capability('block/elbp:delete_my_attachment', $access)) || ($attachment->getUploadedByID() <> $USER->id && elbp_has_capability('block/elbp:delete_any_attachment', $access)) ): ?>
-    <td><input type="image" class="elbp_pointer" src="<?= $OUTPUT->pix_url('t/delete') ?>" onclick="ELBP.Attachments.delete_attachment(<?= $attachment->getID() ?>);return false;" /></td>
+    <td><input type="image" class="elbp_pointer" src="<?= elbp_image_url('t/delete') ?>" onclick="ELBP.Attachments.delete_attachment(<?= $attachment->getID() ?>);return false;" /></td>
     <?php endif; ?>
 </tr>
 

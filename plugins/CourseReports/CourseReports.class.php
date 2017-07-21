@@ -956,7 +956,7 @@ class CourseReports extends Plugin {
                     
                 }
                 
-                // SUccess message at top
+                // Success message at top
                 echo "$('#new_course_report_output').html('<div class=\"elbp_success_box\" id=\"add_course_reports_success\"></div>');";
                 echo "$('#add_course_reports_success').append('<span>".get_string('coursereportupdated', 'block_elbp')."</span><br>');";
                 
@@ -1135,7 +1135,7 @@ class CourseReports extends Plugin {
                 
                 if (!isset($params['periodical_report_id'])){
                     echo "$('#add_course_reports_success').append('<span>".get_string('reportcreated', 'block_elbp')."</span><br>');";
-                    echo "$('#elbp_list_periodical_reports').append('<tr id=\"periodical_row_".$periodical->getID()."\"><td><a href=\"#\" onclick=\"ELBP.CourseReports.load_display(\'periodical_report\', false, false, {$periodical->getID()});return false;\">".elbp_html($periodical->getName())."</a></td><td>{$periodical->getCreatedDate('M jS Y, H:i:s')}</td><td>".fullname($periodical->getCreatedByUser())."</td><td>{$periodical->getStatus()}</td><td><a href=\"#\" onclick=\"ELBP.CourseReports.edit_periodical({$periodical->getID()});return false;\" title=\"".get_string('edit')."\"><img src=\"".$OUTPUT->pix_url('t/edit')."\" /></a></td><td><a href=\"#\" onclick=\"ELBP.CourseReports.delete_periodical({$periodical->getID()});return false;\" title=\"".get_string('delete')."\"><img src=\"".$OUTPUT->pix_url('t/delete')."\" /></a></td></tr>');";
+                    echo "$('#elbp_list_periodical_reports').append('<tr id=\"periodical_row_".$periodical->getID()."\"><td><a href=\"#\" onclick=\"ELBP.CourseReports.load_display(\'periodical_report\', false, false, {$periodical->getID()});return false;\">".elbp_html($periodical->getName())."</a></td><td>{$periodical->getCreatedDate('M jS Y, H:i:s')}</td><td>".fullname($periodical->getCreatedByUser())."</td><td>{$periodical->getStatus()}</td><td><a href=\"#\" onclick=\"ELBP.CourseReports.edit_periodical({$periodical->getID()});return false;\" title=\"".get_string('edit')."\"><img src=\"".elbp_image_url('t/edit')."\" /></a></td><td><a href=\"#\" onclick=\"ELBP.CourseReports.delete_periodical({$periodical->getID()});return false;\" title=\"".get_string('delete')."\"><img src=\"".elbp_image_url('t/delete')."\" /></a></td></tr>');";
                 } else {
                     echo "$('#add_course_reports_success').append('<span>".get_string('reportupdated', 'block_elbp')."</span><br>');";
                 }

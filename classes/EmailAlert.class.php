@@ -139,6 +139,8 @@ class EmailAlert extends Alert {
             }
         }
         
+        
+        
         // Now find all the users who want email alerts for anyone on a course, that this student is on
         $ELBPDB = new \ELBP\DB();
         $courses = $ELBPDB->getStudentsCourses($studentID);
@@ -177,40 +179,61 @@ class EmailAlert extends Alert {
             }
         }
         
-        // Now find all users who want email alerts for anyone in a group, that this student is in
-        $groups = $ELBPDB->getStudentsGroups($studentID);
-        if ($groups)
+        // Now find all users who have this student as a mentee and want email alerts for this event for all of their mentees
+        $users = $ELBPDB->getTutorsOnStudent($student->id);
+        if ($users)
         {
-            foreach($groups as $group)
+            foreach($users as $user)
             {
                 
-                // FInd users who want alerts for this group
-                $users = $this->getUsersWhoWantGroupEvent($event->id, $group->id);
-                if ($users)
+                // Does this user have a setting for this alert event for the mass group "mentees"?
+                if (!isset($this->alertedUsers[$user->id]) && $this->hasUserGotMassEvent($user->id, $event->id, 'mentees'))
                 {
-                    
-                    $groupCourse = $DB->get_record("course", array("id" => $group->courseid));
-                    if (!$groupCourse) continue;
-                    
-                    $groupContent = $content;
-                    $groupHtml = $htmlContent;
 
-                    $groupContent .= "\n\n" . str_replace("%event%", $eventName, get_string('alerts:receieving:group', 'block_elbp')) . ": {$groupCourse->fullname} -> {$group->name}";
-                    $groupHtml .= "<br><br><small>" . str_replace("%event%", $eventName, get_string('alerts:receieving:group', 'block_elbp')) . ": {$groupCourse->fullname} -> {$group->name}</small>";
+                    // Build the content
+                    $courseContent = $content;
+                    $courseHtml = $htmlContent;
 
+                    $courseContent .= "\n\n" . str_replace("%event%", $eventName, get_string('alerts:receieving:mentees', 'block_elbp'));
+                    $courseHtml .= "<br><br><small>" . str_replace("%event%", $eventName, get_string('alerts:receieving:mentees', 'block_elbp'))."</small>";
+
+                    // Append
+                    $this->alertedUsers[$user->id] = true;
+
+                    // Queue the alert
+                    $this->queue("email", $user, $subject, $courseContent, $courseHtml);
                     
-                    foreach($users as $user)
-                    {
-                        // If this user has already been alerted, don't do it again
-                        if (isset($this->alertedUsers[$user->id]) && $this->alertedUsers[$user->id] == true) continue;
-                        
-                        // Append
-                        $this->alertedUsers[$user->id] = true;
-                        
-                        // Send
-                        $this->queue("email", $user, $subject, $groupContent, $groupHtml);
-                        
-                    }
+                }
+                
+            }
+        }
+        
+        
+        
+        // Now find all users who have this student as an additional support student and want email alerts for this event for all of their additional support students
+        $users = $ELBPDB->getAslOnStudent($student->id);
+        if ($users)
+        {
+            foreach($users as $user)
+            {
+                
+                // Does this user have a setting for this alert event for the mass group "mentees"?
+                if (!isset($this->alertedUsers[$user->id]) && $this->hasUserGotMassEvent($user->id, $event->id, 'addsup'))
+                {
+
+                    // Build the content
+                    $courseContent = $content;
+                    $courseHtml = $htmlContent;
+
+                    $courseContent .= "\n\n" . str_replace("%event%", $eventName, get_string('alerts:receieving:addsup', 'block_elbp'));
+                    $courseHtml .= "<br><br><small>" . str_replace("%event%", $eventName, get_string('alerts:receieving:addsup', 'block_elbp'))."</small>";
+
+                    // Append
+                    $this->alertedUsers[$user->id] = true;
+
+                    // Queue the alert
+                    $this->queue("email", $user, $subject, $courseContent, $courseHtml);
+                    
                 }
                 
             }
@@ -230,17 +253,11 @@ class EmailAlert extends Alert {
     {        
         
         global $DB;
-        
-        // This is a major performance hit if we try to do them all at once. Can take several minutes for it to finish.
-        // So rather than send them all at once, we are going to queue them to be sent by the cron job
-        
+                
         if (is_null($sentBy)){
             $sentBy = $user;
         }
-        
-        // Email user
-        email_to_user($user, $sentBy, $subject, $content, $htmlContent);
-        
+                
         // If we have a historyid to check, update the record in history with new time
         if (!is_null($historyID))
         {
@@ -252,27 +269,20 @@ class EmailAlert extends Alert {
         
         // Insert moodle message
         $data = new \stdClass();
-        $data->useridfrom = $sentBy->id;
-        $data->useridto = $user->id;
+        $data->component = 'moodle';
+        $data->name = 'instantmessage';
+        $data->userfrom = $sentBy->id;
+        $data->userto = $user->id;
         $data->subject = $subject;
         $data->fullmessage = $content;
         $data->fullmessageformat = FORMAT_MOODLE;
-        $data->fullmessagehtml = '';
+        $data->fullmessagehtml = $htmlContent;
         $data->smallmessage = $content;
         $data->notification = 0;
-        $data->timecreated = time();
-        $id = $DB->insert_record("message", $data);
         
-        $processors = get_message_processors(true);
-        if (!isset($processors['popup']) || !isset($processors['popup']->id)) return false;
-        
-        // Insert record to get it to popup as a notification
-        $data = new \stdClass();
-        $data->unreadmessageid = $id;
-        $data->processorid = $processors['popup']->id;
-        $DB->insert_record("message_working", $data);
-        
-        return true;
+        // This should send an instant message and also an email, same as the normal Moodle message system
+        return message_send($data);
+                
         
     }
     

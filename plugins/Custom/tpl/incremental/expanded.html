@@ -9,7 +9,7 @@
 <?php endif; ?>
 
 <?php if ($obj->havePermission( $obj::PERMISSION_PRINT, $permissions )): ?>
-    <p class='elbp_centre'><a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=all&student=<?= $obj->getStudentID() ?>&custom=1" target="_blank"><img src="<?= $OUTPUT->pix_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a></p>
+    <p class='elbp_centre'><a href="<?= $CFG->wwwroot ?>/blocks/elbp/print.php?plugin=<?= $obj->getID() ?>&object=all&student=<?= $obj->getStudentID() ?>&custom=1" target="_blank"><img src="<?= elbp_image_url('t/print', 'core') ?>" alt="" /> <?= $string['print'] ?></a></p>
 <?php endif; ?>
 
 <div id="elbp_custom_plugin" style="display:block;">

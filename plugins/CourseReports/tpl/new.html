@@ -103,8 +103,10 @@ elseif($page == 'edit'){
                                 <td class="elbp_b elbp_centre"><?= $type ?></td>
                                 <?php foreach($hooks['Attendance/Averages']['values'][$type] as $p => $v): ?>
                                     <?php $avgString = get_string('average', 'block_elbp') . ' ' . $type . ' ' . $p; ?>
-                                    <?php if (isset($data[$avgString])): $value = ($data[$avgString]) ? $data[$avgString] : $string['na']; ?>
+                                                                        
+                                    <?php if (isset($data['hookAtts'][$avgString])): $value = ($data['hookAtts'][$avgString]) ? $data['hookAtts'][$avgString] : $string['na']; ?>
                                     <?php else: $value = $v; endif; ?>
+                                    
                                     <td>
                                         <?= ($value != '' && !isset($data[$avgString])) ? '<input type="hidden" name="'.$avgString.'" value="'.$value.'" />' : ''; ?>
                                         <?= $value ?>
@@ -131,11 +133,22 @@ elseif($page == 'edit'){
                                 <?php foreach($hooks['Attendance/Course']['types'] as $type): ?>
                                 <td>
                                     <?php 
-                                    $avgString = $string['average'] . ' ' . $type;
-                                    $value = (isset($data['atts'][$avgString])) ? ( ($data['atts'][$avgString]) ? $data['atts'][$avgString] : $string['na'] ) : $hooks['Attendance/Course']['values'][$type] ;
+                                        $avgString = $string['average'] . ' ' . $type;
+                                        if (isset($data['hookAtts'][$avgString])):
+                                            if ($data['hookAtts'][$avgString]):
+                                                $value = $data['hookAtts'][$avgString];
+                                            else:
+                                                $value = $string['na'];
+                                            endif;
+                                        else:
+                                            $courseValue = reset($hooks['Attendance/Course']['values']);
+                                            $value = $courseValue->$type;
+                                        endif;
                                     ?>
-                                    <?= (!isset($data['atts'][$avgString]) && $value != '') ? '<input type="hidden" name="'.$avgString.'" value="'.$value.'" />' : ''; ?>
+                                    
+                                    <?= (!isset($data['hookAtts'][$avgString]) && $value != '') ? '<input type="hidden" name="'.$avgString.'" value="'.$value.'" />' : ''; ?>
                                     <?= $value; ?>
+                                    
                                 </td>
                                 <?php endforeach; ?>
                             </tr>

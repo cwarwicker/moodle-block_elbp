@@ -85,9 +85,7 @@ class Template {
                         
         if (!file_exists($template)) throw new \ELBP\ELBPException( get_string('template', 'block_elbp'), get_string('filenotfound', 'block_elbp'), $template, get_string('programming:createfileorchangepath', 'block_elbp'));
         if (!empty($this->variables)) extract($this->variables);
-        
-        $this->set("this", $this);
-        
+                
         flush();
         ob_start();
             include $template;

@@ -1,0 +1,96 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<form action='' method='post'>
+
+    <input type='hidden' name='type' value='<?= $type ?>' />
+    <input type='hidden' name='id' value='<?= $value ?>' />
+
+    <p class='elbp_centre'>
+        <strong id='alerts_div_heading'>
+            <?php if ($type == 'student'): ?>
+                <a href='<?= $CFG->wwwroot ?>/blocks/elbp/view.php?id=<?= $value ?>' target='_blank'><?= $title ?></a>
+            <?php else: ?>
+                <?= $title ?>
+            <?php endif; ?>
+        </strong>
+    </p>
+
+     <table class="table" >
+
+        <tr>
+            <td colspan="4" style="text-align:center;border-top:none;">
+                <input type="submit" name="save_settings" class="btn btn-large medium-blue" value="<?= $string['save'] ?> - <?= \elbp_html($title) ?>" />
+            </td>
+        </tr>
+
+        <tr>
+            <th><?= get_string('plugin') ?></th>
+            <th><?= $string['setting'] ?></th>
+            <th><?= $string['customvalues'] ?></th>
+            <th><?= $string['enabledisable'] ?></th>
+        </tr>
+
+        <?php foreach($ELBP->getPlugins() as $plugin): ?>
+
+            <?php if ( $events = $plugin->getAlertEvents() ): ?>
+
+                <?php foreach($events as $event): ?>
+
+                    <?php if(method_exists($plugin, '_getEventRequiredScripts_'.strtolower(str_replace(' ', '_', $event->name)))): ?>
+                        <?= call_user_func_array(array($plugin, '_getEventRequiredScripts_'.strtolower(str_replace(' ', '_', $event->name))), array($event, \ELBP\Alert::getUserAlerts($event->id, $type, $value) )); ?>
+                    <?php endif; ?>
+
+
+                    <?php if ( $userEvents = \ELBP\Alert::getUserAlerts($event->id, $type, $value) ): ?>
+                        <?php $n = 0; ?>
+                        <?php foreach($userEvents as $userEvent): ?>
+                            <tr>
+                                <td><?= $plugin->getTitle() ?></td>
+                                <td><?= $event->name ?></td>
+                                <td class="align-middle">
+                                    <?php if(method_exists($plugin, '_getEventCustomValueFormInfo_'.strtolower(str_replace(' ', '_', $event->name)))): ?>
+                                        <?= call_user_func_array(array($plugin, '_getEventCustomValueFormInfo_'.strtolower(str_replace(' ', '_', $event->name))), array($event, $userEvent, $n)); ?>
+                                    <?php else: ?>
+                                    -
+                                    <?php endif; ?>
+                                </td>
+                                <td> 
+                                    <?php if($n == 0): ?>
+                                        <input type="checkbox" name="alerts[]" value="<?= $event->id ?>" <?= (\ELBP\Alert::userWantsEventAlerts($USER->id, $event->id, $type, $value) == true) ? 'checked' : ''; ?> /> 
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php $n++; ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td><?= $plugin->getTitle() ?></td>
+                            <td><?= $event->name ?></td>
+                            <td class="align-middle">
+                                <?php if(method_exists($plugin, '_getEventCustomValueFormInfo_'.strtolower(str_replace(' ', '_', $event->name)))): ?>
+                                    <?= call_user_func_array(array($plugin, '_getEventCustomValueFormInfo_'.strtolower(str_replace(' ', '_', $event->name))), array($event, false, 0)); ?>
+                                <?php else: ?>
+                                -
+                                <?php endif; ?>
+                            </td>
+                            <td><input type="checkbox" name="alerts[]" value="<?= $event->id ?>" <?= (\ELBP\Alert::userWantsEventAlerts($USER->id, $event->id, $type, $value) == true) ? 'checked' : ''; ?> /></td>
+                        </tr>
+                    <?php endif; ?>
+
+
+
+                <?php endforeach; ?>
+
+            <?php endif; ?>
+
+        <?php endforeach; ?>
+
+        <tr>
+            <td colspan="4" style="text-align:center;">
+                <input type="submit" name="save_settings" class="btn btn-large medium-blue" value="<?= $string['save'] ?> - <?= \elbp_html($title) ?>" />
+            </td>
+        </tr>
+
+    </table>
+
+</form>

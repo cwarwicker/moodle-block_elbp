@@ -72,7 +72,13 @@ if (!$ELBP->anyPermissionsTrue($access) || !elbp_has_capability('block/elbp:add_
 if (isset($_FILES['qqfile'])){
     
     // Before we do this, let's make sure we have created the directory we want to upload to
-    $ATT->createDataDirectory( $studentID );
+    $dir = $ATT->createDataDirectory( $studentID );
+    if (!$dir){
+        $e = error_get_last();
+        $result = array('success' => false, 'error' => get_string('uploads:mkdir', 'block_elbp') . ' - ' . $e['message'] . ' - ' . $failMkDir);
+        echo json_encode($result);
+        exit;
+    }
     
     $Upload = new \ELBP\Upload();
     

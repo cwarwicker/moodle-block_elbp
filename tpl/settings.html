@@ -1,0 +1,129 @@
+<?php if(!defined('ELBP')) exit; ?>
+
+<div class='elbp_config'>
+    
+    <form action="" method="post">
+        
+        <h1><?= $string['mysettings'] ?></h1>
+        
+            <br>
+            <?= (!empty($MSGS['errors'])) ? elbp_error_alert_box($MSGS['errors']) : '' ?>
+            <?= (!empty($MSGS['success'])) ? elbp_success_alert_box($MSGS['success']) : '' ?>
+        
+        <h2><?= $string['generalsettings'] ?></h2>
+
+            <b><?= $string['tutorialautosave'] ?></b> - <?= $string['tutorialautosave:desc'] ?><br>
+            <?= $string['enable'] ?> <input type="radio" name="tutorial_autosave" value="1" <?= (\ELBP\Setting::getSetting('tutorial_autosave', $USER->id) == 1) ? 'checked' : '' ?> /> &nbsp;&nbsp; 
+            <?= $string['disable'] ?> <input type="radio" name="tutorial_autosave" value="0" <?= (\ELBP\Setting::getSetting('tutorial_autosave', $USER->id) <> 1) ? 'checked' : '' ?> />
+            
+            <br><br>
+            
+            <b><?= $string['additionalsupportautosave'] ?></b> - <?= $string['additionalsupportautosave:desc'] ?><br>
+            <?= $string['enable'] ?> <input type="radio" name="addsup_autosave" value="1" <?= (\ELBP\Setting::getSetting('addsup_autosave', $USER->id) == 1) ? 'checked' : '' ?> /> &nbsp;&nbsp; 
+            <?= $string['disable'] ?> <input type="radio" name="addsup_autosave" value="0" <?= (\ELBP\Setting::getSetting('addsup_autosave', $USER->id) <> 1) ? 'checked' : '' ?> />
+            
+            <br><br>
+            <input type="submit" name="save_settings" value="<?= $string['save'] ?>" class="btn" />
+            <br><br>
+    </form>
+
+            
+        <h2><?= $string['emailalerts'] ?></h2>
+        
+            <form action='' method='post' style='float:right;'><input type='hidden' name='clear_alerts' value='1' /><input type='submit' name='save_settings' value='<?= $string['resetalerts'] ?>' style='background:red;color:#fff;' /></form>
+            <br class='elbp_cl' />
+            
+            <ul class='elbp_inline_list'>
+                <li><a href='#' onclick="selectAlertType('course');return false;"><?= $string['bycourse'] ?></a></li>
+                <li><a href='#' onclick="selectAlertType('student');return false;"><?= $string['bystudent'] ?></a></li>
+                <li><a href='#' onclick="selectAlertType('mentees');return false;"><?= $string['allmentees'] ?></a></li>
+                <li><a href='#' onclick="selectAlertType('addsup');return false;"><?= $string['alladdsup'] ?></a></li>
+            </ul>
+        
+            <div class='elbp_centre'>
+                
+                <!-- By Course -->
+                <select class='switch_alerts' type='course'>
+                    <option value=''><?= $string['pleaseselect'] ?></option>
+                    <?php if ($userCourses): ?>
+                        <?php foreach($userCourses as $course): ?>
+                            <option value='<?= $course->id ?>'><?= $course->fullname ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+                
+                <!-- By Student -->
+                <select class='switch_alerts' type='student'>
+                    <option value=''><?= $string['pleaseselect'] ?></option>
+                    <?php if ($allStudents): ?>
+                        <?php foreach($allStudents as $student): ?>
+                            <option value='<?= $student->id ?>'><?= \fullname($student) . " ({$student->username})" ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+                            
+            </div>
+        
+            <br>
+            <div id='alerts_div'>
+                <?php if (isset($MSGS['returntype']) && isset($MSGS['returnid'])): ?>
+                    <?php $this->set('type', $MSGS['returntype'])->set('value', $MSGS['returnid'])->set('title', $MSGS['returntitle']) ?>
+                    <?= $this->load($CFG->dirroot . '/blocks/elbp/tpl/settings.table.html') ?>
+                <?php endif; ?>
+            </div>        
+                        
+            
+</div>
+
+
+<script>
+    
+    function selectAlertType(type){
+        
+        $('#alerts_div').html('');
+        
+        $('.switch_alerts').hide();
+        $('.switch_alerts').each( function(){
+            if ( $(this).attr('type') == type ){
+                $(this).show();
+            }
+        } );
+        
+        // Mentees or AddSup, just load the table
+        if (type == 'mentees' || type == 'addsup'){
+            loadAlertsTable(type);
+        }
+        
+    }
+    
+    
+    function loadAlertsTable(type, value){
+        
+        if ( (type == 'course' || type == 'student') && value == '' ){
+            $('#alerts_div').html('');
+            return;
+        }
+        
+        ELBP.ajax(null, 'get_alerts_table', {type: type, value: value}, function(data){
+            $('#alerts_div').html(data);            
+        }, function(){
+            $('#alerts_div').html('<img src="'+M.cfg.wwwroot+'/blocks/elbp/pix/loader.gif" alt="loading" />');
+        });
+        
+    }
+    
+    $(document).ready( function(){
+        
+        $('.switch_alerts').on('change', function(){
+
+            var type = $(this).attr('type');
+            var value = $(this).val();
+            
+            loadAlertsTable(type, value);            
+
+        });
+        
+    } );
+    
+    
+</script>

@@ -866,7 +866,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
                         foreach($data['periods'] as $period)
                         {
-                            $field = $type . " " . $period;
+                            $field = get_string('average', 'block_elbp') . " " . $type . " " . $period;
                             $output .= "<td>".$this->getAttribute($field)."</td>";
                         }
 

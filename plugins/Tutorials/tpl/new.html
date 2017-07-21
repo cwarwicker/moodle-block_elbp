@@ -97,8 +97,9 @@ elseif($page == 'edit'){
                     </table>
                     <br><br>
                 <?php endif; ?>
+                
                 <?php if (isset($hooks['Attendance/Course'])):?>
-                <table class='attendance_periods_table_course_reports'>
+                    <table class='attendance_periods_table_course_reports'>
                         <tr>
                             <th><b><?php echo get_string('course', 'block_elbp'); ?></b></th>
                             <?php foreach($hooks['Attendance/Course']['types'] as $type):?>
@@ -114,12 +115,24 @@ elseif($page == 'edit'){
                                echo $ATT->getCourseName($regData);
                                ?>                               
                             </td>
-                            <?php 
-                            foreach($hooks['Attendance/Course']['types'] as $type):?>
+                            <?php foreach($hooks['Attendance/Course']['types'] as $type): ?>
                                 <td>
-                                    <?php echo $regData->$type; ?>
-                                    <?php $name = '$type ' . $p . ':' . $regData->id; ?> 
-                                    <input type="hidden" name="<?= $name ?>" value="<?= $regData->$type ?>" />
+                                    <?php 
+                                        $name = $type . ' ' . $p . ':' . $regData->id;
+                                        
+                                        if (isset($data['hookAtts'][$name])):
+                                            if ($data['hookAtts'][$name]):
+                                                $value = $data['hookAtts'][$name];
+                                            else:
+                                                $value = $string['na'];
+                                            endif;
+                                        else:
+                                            $value = $regData->$type;
+                                        endif;
+                                        
+                                    ?>
+                                    <?= (!isset($data['atts'][$name]) && $value != '') ? '<input type="hidden" name="'.$name.'" value="'.$value.'" />' : ''; ?>
+                                    <?= $value; ?>
                                 </td>
                             <?php endforeach ?>
                         </tr>

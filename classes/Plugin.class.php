@@ -623,7 +623,7 @@ namespace ELBP\Plugins;
             if (!isset($settings['override_academic_year'])){
                 $settings['override_academic_year'] = 0;
             }
-            
+                                    
             foreach( (array)$settings as $setting => $value ){
                 $this->updateSetting($setting, $value);
             }
@@ -1433,11 +1433,38 @@ namespace ELBP\Plugins;
         }
         
         
+        // Summary elements
+        if (method_exists($this, 'getSummaryElements'))
+        {
+            $elements = $this->getSummaryElements();
+            if ($elements)
+            {
+                $output .= "<br>";
+                $output .= "<h2>".get_string('profilesummary', 'block_elbp')."</h2>";
+                foreach($elements as $element)
+                {
+                    $enable = ($this->isSummaryElementEnabled($element['name'], $element['component'])) ? 'checked' : '';
+                    $disable = (!$this->isSummaryElementEnabled($element['name'], $element['component'])) ? 'checked' : '';
+                    $output .= "<small><strong>".get_string($element['name'], $element['component'])."</strong><br>";
+                    $output .= "<input type='radio' name='plugin_summary_element_enabled_{$element['component']}/{$element['name']}' value='1' {$enable} /> <label>".get_string('enable')."</label>  &nbsp;";
+                    $output .= "&nbsp; <input type='radio' name='plugin_summary_element_enabled_{$element['component']}/{$element['name']}' value='0' {$disable} /> <label>".get_string('disable')."</label>";
+                    $output .= "<br><br>";
+                }
+            }
+        }
+        
         
         $output .= "<script>$(document).ready( function(){ ELBP.apply_colour_picker(); } );</script>";
         
         echo $output;
                 
+    }
+    
+    public function isSummaryElementEnabled($element, $component){
+        
+        $setting = $this->getSetting('plugin_summary_element_enabled_'.$component.'/'.$element);
+        return ($setting !== '0' && $setting !== 0);
+        
     }
     
     /**
@@ -1472,17 +1499,19 @@ namespace ELBP\Plugins;
     public function createDataDirectory($dir)
     {
        
-        global $CFG;
+        global $CFG, $failMkDir;
         
         // First check if a directory for this plugin exists - Should do as they should be created on install
         
         // Check for ELBP directory
         if (!is_dir( $CFG->dataroot . '/ELBP' )){
             if (is_writeable($CFG->dataroot)){
-                if (!mkdir($CFG->dataroot . '/ELBP', 0764, true)){
+                if (!mkdir($CFG->dataroot . '/ELBP', 0770, true)){
+                    $failMkDir = 'mkdir:'.$CFG->dataroot . '/ELBP';
                     return false;
                 }
             } else {
+                $failMkDir = 'write:' . $CFG->dataroot . '/ELBP';
                 return false;
             }
         }
@@ -1490,10 +1519,12 @@ namespace ELBP\Plugins;
         // Check for plugin directory
         if (!is_dir( $CFG->dataroot . '/ELBP/' . $this->name )){
             if (is_writeable($CFG->dataroot . '/ELBP')){
-                if (!mkdir($CFG->dataroot . '/ELBP/' . $this->name, 0764, true)){
+                if (!mkdir($CFG->dataroot . '/ELBP/' . $this->name, 0770, true)){
+                    $failMkDir = 'mkdir:'.$CFG->dataroot . '/ELBP/' . $this->name;
                     return false;
                 }
             } else {
+                $failMkDir = 'write:'.$CFG->dataroot . '/ELBP/' . $this->name;
                 return false;
             }
         }
@@ -1501,10 +1532,12 @@ namespace ELBP\Plugins;
         // Now try and make the actual dir we want
         if (!is_dir( $CFG->dataroot . '/ELBP/' . $this->name . '/' . $dir )){
             if (is_writeable($CFG->dataroot . '/ELBP/' . $this->name)){
-                if (!mkdir($CFG->dataroot . '/ELBP/' . $this->name . '/' . $dir, 0764, true)){
+                if (!mkdir($CFG->dataroot . '/ELBP/' . $this->name . '/' . $dir, 0770, true)){
+                    $failMkDir = 'mkdir:'.$CFG->dataroot . '/ELBP/' . $this->name . '/' . $dir;
                     return false;
                 }
             } else {
+                $failMkDir = 'write:'.$CFG->dataroot . '/ELBP/' . $this->name . '/' . $dir;
                 return false;
             }
         }
@@ -1574,6 +1607,20 @@ namespace ELBP\Plugins;
         return false;
     }
     
+    /**
+     * Get the alert events on this plugin
+     * @global \ELBP\Plugins\type $DB
+     * @return type
+     */
+    public function getAlertEvents(){
+        
+        global $DB;
+        
+        $alerts = $DB->get_records("lbp_alert_events", array("pluginid" => $this->id, "enabled" => 1));
+        return $alerts;
+        
+    }
+    
     
     /**
      * Instantiate a plugin object by name
@@ -1641,7 +1688,7 @@ namespace ELBP\Plugins;
                 $obj = new $namespace();
             } else {
                 if ($_SUPPRESS_ELBP_ERR !== true){
-                    throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $this->name, get_string('exception:noclass', 'block_elbp'), $namespace );
+                    throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $pluginName, get_string('exception:noclass', 'block_elbp'), $namespace );
                 }
                 return false;
             }
@@ -1674,7 +1721,7 @@ namespace ELBP\Plugins;
             
             } else {
                 if ($_SUPPRESS_ELBP_ERR !== true){
-                    throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $this->name, get_string('exception:noclass', 'block_elbp'), $namespace );
+                    throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $pluginName, get_string('exception:noclass', 'block_elbp'), $namespace );
                 }
                 return false;
             }

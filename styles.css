@@ -475,6 +475,8 @@ div#elbp_studentprofile_badges div#badges_content div.badge
     margin-bottom: 20px;
     float: left;
     background-color: inherit;
+    color: #000;
+    text-shadow: none;
 }
 
 div#elbp_studentprofile_badges div#badges_content div.badge img
@@ -1804,6 +1806,12 @@ div#elbp_register_content div.ui-tinytbl table td.timetd
     padding: 4px;
 }
 
+div#elbp_register_content div.ui-widget-content div.ui-widget-content div.ui-tinytbl-frozen,
+div#elbp_register_content div.ui-widget-content div.ui-widget-content div.ui-tinytbl-column
+{
+    min-height: 100px;
+}
+
 .tooltip-inner {
     white-space:pre-wrap;
 }
@@ -1831,6 +1839,11 @@ div#elbp_register_content div.ui-tinytbl table td.timetd
 #elbp_register_content .ui-tinytbl-foot
 {
     display: none;
+}
+
+div#elbp_register_content table th {
+    background: #0066ff;
+    color: #fff;
 }
 
 /* End Register */
@@ -2359,7 +2372,7 @@ td.elbp_object_icon img
 
 td.elbp_object_name
 {
-    width: 94%;
+    width: 88%;
     text-align: left;
     vertical-align: top;
 }
@@ -2649,12 +2662,12 @@ div#elbp_dock_bottom ul#elbp_dock_list li a.dock_plugin_name
     padding-right: 5px;
     padding-top: 5px;
     text-decoration: none;
-    color: #fff;
+    color: #fff !important;
 }
 
 div#elbp_dock_bottom ul#elbp_dock_list li a.dock_plugin_name:hover
 {
-    color: #ffff00;
+    color: #ffff00 !important;
 }
 
 div#elbp_dock_bottom ul#elbp_dock_list li a.dock_plugin_close img
@@ -4287,4 +4300,21 @@ form#my_settings input,
 form#my_settings select
 {
     font-size: 10pt;
+}
+
+ul.elbp_inline_list
+{
+    list-style-type: none;
+    text-align: center;
+}
+
+ul.elbp_inline_list li
+{
+    display: inline-block;
+    margin: 5px 10px;
+}
+
+select.switch_alerts
+{
+    display: none;
 }

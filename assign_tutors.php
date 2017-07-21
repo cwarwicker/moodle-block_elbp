@@ -32,7 +32,7 @@ $type = optional_param('type', false, PARAM_ALPHA);
 $ELBP = ELBP\ELBP::instantiate();
 $DBC = new ELBP\DB();
 
-$courseID = 1; # Front Page
+$courseID = SITEID; # Front Page
 
 // Check course context is valid
 $courseContext = context_course::instance($courseID);

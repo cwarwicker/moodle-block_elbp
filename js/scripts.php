@@ -839,7 +839,7 @@ $output = <<<JS
                             $(addselect).append('<option value="'+v+'">'+coursenames[v]+'</option>');
 
                             // Also add in a hidden input with the value, because
-                            $(hiddeninputs).append('<input type="hidden" name="'+fieldname+'" value="'+v+'" />');
+                            $(hiddeninputs).append('<input type="hidden" name="'+fieldname+'[]" value="'+v+'" />');
 
                         }
                         
@@ -928,7 +928,7 @@ $output = <<<JS
                             $(addselect).append('<option value="'+v+'">'+usernames[v]+'</option>');
 
                             // Also add in a hidden input with the value, because
-                            $(hiddeninputs).append('<input type="hidden" name="'+fieldname+'" value="'+v+'" />');
+                            $(hiddeninputs).append('<input type="hidden" name="'+fieldname+'[]" value="'+v+'" />');
 
                         }
                         
@@ -1080,8 +1080,8 @@ $output = <<<JS
                             break;
                             
                             case 'NUMBERS_ONLY':
-                                var pat = /[^0-9]/i;
-                                    if (value.match(pat) != null || value == ''){
+                                var pat = /^[0-9]+\.?[0-9]*$/i;
+                                    if (value.match(pat) == null || value == ''){
                                         if (firstEl == '') firstEl = input;
                                         errs++;
                                         $(input).addClass('elbp_red');

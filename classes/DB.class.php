@@ -516,7 +516,41 @@ class DB
         
     }
     
-    
+    /**
+     * Get all the students a tutor has, across their courses and individual assignments
+     * @param type $tutorID
+     * @return type
+     */
+    public function getAllTutorsStudents($tutorID){
+        
+        $students = array();
+        
+        // Mentees
+        $students = $students + $this->getMenteesOnTutor($tutorID);
+        
+        // Additional Support
+        $students = $students + $this->getStudentsOnAsl($tutorID);
+        
+        // Courses
+        $courses = $this->getTeachersCourses($tutorID);
+        if ($courses)
+        {
+            foreach($courses as $course)
+            {
+                $students = $students + $this->getStudentsOnCourse($course->id);
+            }
+        }
+        
+        // Sort them
+        uasort($students, function($a, $b){
+            return ( strcmp( $a->lastname, $b->lastname ) == 0 ) ?
+                     strcmp( $a->firstname, $b->firstname ) :
+                     strcmp( $a->lastname, $b->lastname ) ;
+        });
+        
+        return $students;
+
+    }
     
     
     /**
@@ -991,65 +1025,70 @@ class DB
     
     
     
+//    
+//    /**
+//     * Get the courses a personal tutor is assigned to (in the sense that they have been assigned to all students on given course)
+//     * @param int $userID
+//     */
+//    public function getTutorsAssignedCourses($userID = null)
+//    {
+//     
+//        global $USER;
+//        
+//        if (is_null($userID)) $userID = $USER->id;
+//        
+//        $sql = array();
+//        $params = array();
+//        
+//        $sql['select'] = " SELECT DISTINCT c.id, c.shortname, c.fullname ";
+//        $sql['from']   = " FROM {lbp_tutor_assignments} a ";
+//        $sql['join']   = " INNER JOIN {course} c ON c.id = a.courseid ";
+//        $sql['where']  = " WHERE a.tutorid = ? AND a.courseid IS NOT NULL ";
+//        $sql['order']  = " ORDER BY c.fullname, c.shortname ";
+//        
+//        $params[] = $userID;
+//        $fullSQL = implode(" ", $sql);
+//        
+//        $records = $this->DB->get_records_sql($fullSQL, $params);
+//        
+//        return $records;
+//        
+//    }
+//    
+//    /**
+//     * Get a list of the groups on a course, which a given tutor is assigned to
+//     * @param int $tutorID
+//     * @param int $courseID
+//     */
+//    public function getTutorsAssignedGroups($userID, $courseID)
+//    {
+//        
+//        global $USER;
+//        
+//        if (is_null($userID)) $userID = $USER->id;
+//        
+//        $sql = array();
+//        $params = array();
+//        
+//        $sql['select'] = " SELECT g.id, g.name ";
+//        $sql['from'] = "   FROM {lbp_tutor_assignments} a ";
+//        $sql['join'] = "   INNER JOIN {groups} g ON g.id = a.groupid ";
+//        $sql['where'] = "  WHERE a.tutorid = ? AND a.courseid = ? ";
+//        $sql['order'] = "  ORDER BY g.name ";
+//        
+//        $params[] = $userID;
+//        $params[] = $courseID;
+//        $fullSQL = implode(" ", $sql);
+//        
+//        $records = $this->DB->get_records_sql($fullSQL, $params);
+//                
+//        return $records;
+//    }
+//    
+//    
+//    
     
-    /**
-     * Get the courses a personal tutor is assigned to (in the sense that they have been assigned to all students on given course)
-     * @param int $userID
-     */
-    public function getTutorsAssignedCourses($userID = null)
-    {
-     
-        global $USER;
-        
-        if (is_null($userID)) $userID = $USER->id;
-        
-        $sql = array();
-        $params = array();
-        
-        $sql['select'] = " SELECT DISTINCT c.id, c.shortname, c.fullname ";
-        $sql['from']   = " FROM {lbp_tutor_assignments} a ";
-        $sql['join']   = " INNER JOIN {course} c ON c.id = a.courseid ";
-        $sql['where']  = " WHERE a.tutorid = ? AND a.courseid IS NOT NULL ";
-        $sql['order']  = " ORDER BY c.fullname, c.shortname ";
-        
-        $params[] = $userID;
-        $fullSQL = implode(" ", $sql);
-        
-        $records = $this->DB->get_records_sql($fullSQL, $params);
-        
-        return $records;
-        
-    }
     
-    /**
-     * Get a list of the groups on a course, which a given tutor is assigned to
-     * @param int $tutorID
-     * @param int $courseID
-     */
-    public function getTutorsAssignedGroups($userID, $courseID)
-    {
-        
-        global $USER;
-        
-        if (is_null($userID)) $userID = $USER->id;
-        
-        $sql = array();
-        $params = array();
-        
-        $sql['select'] = " SELECT g.id, g.name ";
-        $sql['from'] = "   FROM {lbp_tutor_assignments} a ";
-        $sql['join'] = "   INNER JOIN {groups} g ON g.id = a.groupid ";
-        $sql['where'] = "  WHERE a.tutorid = ? AND a.courseid = ? ";
-        $sql['order'] = "  ORDER BY g.name ";
-        
-        $params[] = $userID;
-        $params[] = $courseID;
-        $fullSQL = implode(" ", $sql);
-        
-        $records = $this->DB->get_records_sql($fullSQL, $params);
-                
-        return $records;
-    }
     
     /**
      * Is a given user a mentee of the teacher?

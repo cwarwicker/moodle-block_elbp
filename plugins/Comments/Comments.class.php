@@ -138,6 +138,8 @@ class Comments extends Plugin {
         return $return;
         
     }
+    
+    
         
     /**
      * Get the comments for a user
@@ -902,16 +904,12 @@ class Comments extends Plugin {
       * @param string $params
       * @return boolean
       */
-     public function massAction($action, $students, $params){
+     public function massAction($action, $students){
          
          global $CFG, $DB;
          
          $confirmed = (isset($_POST['confirmed'])) ? true : false;
-         
-         if (!isset($params['view']) || !$params['view']){
-             $params['view'] = '';
-         }
-                  
+                           
          switch($action)
          {
              
@@ -921,16 +919,15 @@ class Comments extends Plugin {
 
                  $errors = array();
                  $data2 = (isset($_POST['params'])) ? $_POST['params'] : false;
-                                  
+                                                                    
                  if ($confirmed)
                  {
                      
-                     $successMsg = '';
+                     $successMsg = array();
                      
-                     foreach($students as $studentID){
-
-                        $user = $DB->get_record("user", array("id" => $studentID));
-                        $data2['studentID'] = $studentID;
+                     foreach($students as $user){
+                        
+                        $data2['studentID'] = $user->id;
                         
                         // Parse text
                         foreach($data2 as &$d){
@@ -941,29 +938,21 @@ class Comments extends Plugin {
                         $comment->setCommentsObj($this);
                         
                         if ($comment->save()){
-                                                         
-                            $successMsg .= '<i class="icon-ok-sign"></i>' . get_string('commentaddedfor', 'block_elbp') . ": " . fullname($user) . " ({$user->username})" . "<br>";
-
+                            $successMsg[] = '<i class="fa fa-check-square"></i> ' . get_string('commentaddedfor', 'block_elbp') . ": " . fullname($user) . " ({$user->username})";
                         } else {
-                            
                             foreach($comment->getErrors() as $error){
-
-                                $errors[] = $error;
-
+                                $errors[] = '<i class="fa fa-check-square"></i> ' . $error;
                             }
-                                                        
                         }
-                       
 
                      }     
                         
                      if (!$errors){
-                         
                         return array(
                             'result' => true,
-                            'success' => $successMsg
+                            'success' => implode("<br>", $successMsg),
+                            'students' => $students
                         );
-                         
                      }
                      
                      
@@ -972,26 +961,22 @@ class Comments extends Plugin {
                  
                  
                 // Not confirmed, or errors 
-                $FORM = new \ELBP\ELBPForm();
-                //$FORM->loadStudentID($this->student->id);
-
                 $output = "";
-                $output .= get_string('students') . " : <br><br>";
                 $hidden = "";
 
-                foreach($students as $id){
-                    $output .= bcdb_get_user_name($id) . ", ";
-                    $hidden .= "<input type='hidden' name='students[]' value='{$id}' />";
+                foreach($students as $user){
+                    $output .= bcdb_get_user_name($user->id) . ", ";
+                    $hidden .= "<input type='hidden' name='students[]' value='{$user->id}' />";
                 }
 
                 $output = substr($output, 0, -2);
                 $output .= "<br><br>";
-                $output .= "<form id='massIncidentForm' action='' method='post'>{$hidden}<input type='hidden' name='students_action' value='{$this->getID()}:add_comment' />";
+                $output .= "<form id='massIncidentForm' action='' method='post'>{$hidden}<input type='hidden' name='mass_action' value='{$this->getID()}:add_comment' />";
                 
                 if ($errors){
 
                     foreach($errors as $error){
-                        $output .= "<span class='bcdb_error'>{$error}</span><br>";
+                        $output .= "<span class='elbp_error'>{$error}</span><br>";
                     }
                     
                     $output .= "<br>";
@@ -999,38 +984,39 @@ class Comments extends Plugin {
                 }
                 
                 $stickyDate = (isset($data2['comment_date'])) ? $data2['comment_date'] : $data['date'];
-                $output .= "<small>".get_string('date')."</small><br><div class='input-append date datepicker' data-date='' data-date-format='dd-mm-yyyy'><input readonly type='text' value='{$stickyDate}' class='standard' name='params[comment_date]'><button class='btn light-blue inverse date-button' type='button'><i class='icon-th'></i></button></div><br>";
+                $output .= "<small class='mini-heading'>".get_string('date')."</small><br><input readonly type='text' value='{$stickyDate}' name='params[comment_date]' class='datepicker'><br><br>";
 
                 $stickyPos = array();
                 $stickyPos['pos'] = ($data2['comment_positive'] == 1) ? 'checked' : '';
                 $stickyPos['neg'] = ($data2['comment_positive'] == -1) ? 'checked' : '';
                 $stickyPos['na'] = ($data2['comment_positive'] == 0) ? 'checked' : '';
                 
-                $output .= "<small>".get_string('commentpositive', 'block_elbp')."</small> <label class='radio inline'><input type='radio' name='params[comment_positive]' value='1' {$stickyPos['pos']} /> <small>".get_string('positive', 'block_elbp')."</small></label> <label class='radio inline'><input type='radio' name='params[incident_positive]' value='-1' {$stickyPos['neg']} /> <small>".get_string('negative', 'block_elbp')."</small></label> <label class='radio inline'><input type='radio' name='params[incident_positive]' value='0' {$stickyPos['na']} /> <small>".get_string('na', 'block_elbp')."</small></label><br><br>";
-                $output .= "<small>".get_string('commentfurtheraction', 'block_elbp')."</small> <label class='checkbox inline'><input type='checkbox' name='params[comment_resolved]' value='0' /></label><br><br>";
-                $output .= "<small>".get_string('commentpublishedportal', 'block_elbp')."</small> <label class='checkbox inline'><input type='checkbox' name='params[comment_published_portal]' value='1' /></label><br><br>";
+                $output .= "<small class='mini-heading'>".get_string('commentpositive', 'block_elbp')."</small> <div class='form-group'><label class='radio-inline'><input type='radio' name='params[comment_positive]' value='1' {$stickyPos['pos']} /> <small>".get_string('positive', 'block_elbp')."</small></label> <label class='radio-inline'><input type='radio' name='params[incident_positive]' value='-1' {$stickyPos['neg']} /> <small>".get_string('negative', 'block_elbp')."</small></label> <label class='radio-inline'><input type='radio' name='params[incident_positive]' value='0' {$stickyPos['na']} /> <small>".get_string('na', 'block_elbp')."</small></label></div>";
+                $output .= "<small class='mini-heading'>".get_string('commentfurtheraction', 'block_elbp')."</small> <br> <input type='checkbox' name='params[comment_resolved]' value='0' /><br>";
+                $output .= "<small class='mini-heading'>".get_string('commentpublishedportal', 'block_elbp')."</small> <br> <input type='checkbox' name='params[comment_published_portal]' value='1' /><br>";
                 
                 
                 foreach($data['atts'] as $attribute){
                     
-                    // Texteditor doesn't work, fix it another time
+                    // Texteditor doesn't work, fix it another time - LOL
                     if ($attribute->type == 'Moodle Text Editor'){
                         $attribute->type = 'Textbox';
                     }
                                         
-                    $output .= "<small>{$attribute->name}</small><br>";
+                    $output .= "<small class='mini-heading'>{$attribute->name}</small><br>";
                     $attribute->usersValue = (isset($data2[$attribute->name])) ? $data2[$attribute->name] : $attribute->usersValue;
                     $output .= $attribute->convertToFormElement( null, array(
                         'wrap-name' => 'params'
                     ) );
+                    
                     $output .= "<br><br>";
                     
                 }
                 
 
                 $output .= "<input type='hidden' name='confirmed' value='1' />";
-                $output .= "<button onclick='validateFormSubmission( $(this.form) );return false;' class='btn light-blue inverse' type='submit'>".get_string('add')."</button></form>";
-                $output .= "<form action='{$CFG->wwwroot}/blocks/bc_dashboard/{$params['courseID']}/elbp/mystudents/view/{$params['view']}' ><button class='btn light-blue inverse' type='submit'>".get_string('cancel')."</button></form>";
+                $output .= "<button onclick='validateFormSubmission( $(this.form) );return false;' class='btn btn-primary' type='submit'>".get_string('add')."</button> &nbsp;&nbsp; ";
+                $output .= "<a href='' class='btn btn-danger'>".get_string('cancel')."</a></form>";
 
                 $output .= "<script>
                                 function validateFormSubmission(frm)

@@ -35,7 +35,7 @@ class ELBP
 {
     
     const MAJOR_VERSION = 1;
-    const MINOR_VERSION = 1;
+    const MINOR_VERSION = 2;
     const BUILD_NUMBER = 0;
     
     private $CFG;
@@ -157,7 +157,7 @@ class ELBP
     public function getDockPosition(){
         
         $setting = \ELBP\Setting::getSetting('dock_position');
-        return ($setting) ? $setting : 'left';
+        return ($setting) ? $setting : 'bottom';
         
     }
     
@@ -2357,6 +2357,94 @@ class ELBP
         
     }
     
+    /**
+     * Save the user's settings
+     * @global \ELBP\type $USER
+     * @global \ELBP\type $MSGS
+     * @return boolean
+     */
+    public function saveUserSettings(){
+        
+        global $USER, $MSGS, $DB;
+        
+        $DBC = new \ELBP\DB();
+        
+        
+        // Resetting alerts?
+        if (isset($_POST['clear_alerts'])){
+            $DB->delete_records("lbp_alerts", array("userid" => $USER->id));
+            $MSGS['success'] = get_string('alertsdeleted', 'block_elbp');
+            return true;
+        }
+        
+        // Unset the save button
+        unset($_POST['save_settings']);
+        
+        // Standard settings
+        $settings = array('tutorial_autosave', 'addsup_autosave');
+        
+        // Loop through the settings supplied
+        foreach($settings as $setting)
+        {
+            if (isset($_POST[$setting]))
+            {
+                \ELBP\Setting::setSetting($setting, $_POST[$setting], $USER->id);
+            }
+        }
+        
+        
+        // Now alerts
+        $type = (isset($_POST['type'])) ? $_POST['type'] : false;
+        $id = (isset($_POST['id'])) ? $_POST['id'] : false;
+        
+        if (in_array($type, array('course', 'student', 'mentees', 'addsup')))
+        {
+            
+            // First delete any existing alerts for this thing
+            \ELBP\Alert::deleteUserAlerts($USER->id, $type, $id);
+            
+            // Loop through alerts            
+            if (isset($_POST['alerts']))
+            {
+                foreach($_POST['alerts'] as $eventID)
+                {
+
+                    $attributes = null;
+
+                    // See if we have any alert attributes for this event
+                    if (isset($_POST['alert_attributes'][$eventID])){
+                        $attributes = $_POST['alert_attributes'][$eventID];
+                    }
+
+                    \ELBP\Alert::updateUserAlert($USER->id, $eventID, $type, $id, 1, $attributes);
+                    
+                }
+            }
+            
+        }
+        
+        // Not a message, but can't be arsed to make another global variable
+        $MSGS['returntype'] = $type;
+        $MSGS['returnid'] = $id;
+        
+        if ($type == 'course'){
+            $course = $DBC->getCourse( array('type' => 'id', 'val' => $id) );
+            $title = $course->fullname;
+        } elseif ($type == 'student'){
+            $student = $DBC->getUser( array('type' => 'id', 'val' => $id) );
+            $title = \fullname($student) . " ({$student->username})";
+        } elseif ($type == 'mentees'){
+            $title = get_string('allmentees', 'block_elbp');
+        } elseif ($type == 'addsup'){
+            $title = get_string('alladdsup', 'block_elbp');
+        }
+        
+        $MSGS['returntitle'] = $title;
+        $MSGS['success'] = get_string('settingsupdated', 'block_elbp');
+        return true;
+                
+    }
+    
     
     
     /**
@@ -2969,11 +3057,17 @@ class ELBP
         
         $output = "";
         
+        // jQuery
+        $PAGE->requires->jquery();
+        $PAGE->requires->jquery_plugin('ui');
+        
+        
+        
         if ($simple)
         {
             
-            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/jquery-1.9.1.js'></script>";
-            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/jquery-ui-1.10.3.js'></script>";
+//            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/jquery-1.9.1.js'></script>";
+//            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/jquery-ui-1.10.3.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery.hotkeys-0.7.9.min.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js'></script>";
@@ -2992,11 +3086,11 @@ class ELBP
         else
         {
             
-            $useThemeJS = \ELBP\Setting::getSetting("use_theme_js");
-            if (!$useThemeJS || $useThemeJS == 0){
-                $PAGE->requires->js( '/blocks/elbp/js/jquery/jquery-1.9.1.js', true );
-                $PAGE->requires->js( '/blocks/elbp/js/jquery/jquery-ui-1.10.3.js', true );
-            }
+//            $useThemeJS = \ELBP\Setting::getSetting("use_theme_js");
+//            if (!$useThemeJS || $useThemeJS == 0){
+//                $PAGE->requires->js( '/blocks/elbp/js/jquery/jquery-1.9.1.js', true );
+//                $PAGE->requires->js( '/blocks/elbp/js/jquery/jquery-ui-1.10.3.js', true );
+//            }
             $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.js' );
             $PAGE->requires->js( '/blocks/elbp/js/jquery.hotkeys-0.7.9.min.js' );
             $PAGE->requires->js( '/blocks/elbp/js/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js' );
@@ -4307,6 +4401,36 @@ class ELBP
             
             \mtrace("~~ Changed field name from `title` to `name` on table lbp_custom_plugins` ~~");
             
+            
+        }
+        
+        
+        if ($oldversion < 2017052400)
+        {
+            
+            // Clear any alerts for groupid
+            $DB->delete_records_select("lbp_alerts", "groupid is not null", array());
+            
+            // Table changes
+            $table = new \xmldb_table('lbp_alerts');
+
+            // Define key gid_fk (foreign) to be dropped form lbp_alerts.
+            $key = new \xmldb_key('gid_fk', XMLDB_KEY_FOREIGN, array('groupid'), 'groups', array('id'));
+            $dbman->drop_key($table, $key);
+            
+            $field = new \xmldb_field('groupid');
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->drop_field($table, $field);
+            }
+            
+            $field = new \xmldb_field('mass', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'studentid');
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+
+            // Elbp savepoint reached.
+            \upgrade_block_savepoint(true, 2017052400, 'elbp');
+
             
         }
         

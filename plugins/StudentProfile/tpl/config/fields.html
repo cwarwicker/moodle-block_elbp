@@ -8,7 +8,7 @@
     
     function addNewProfileField(){
         numFields++;
-        $('#new_profile_fields').append('<tr id="dynamic_field_'+numFields+'"><td><input type="text" class="normal" name="new_profile_fields_field['+numFields+']" value=""/></td><td><input type="text" class="normal" name="new_profile_fields_value['+numFields+']" value=""/></td><td><input type="text" class="elbp_small" name="new_profile_fields_order['+numFields+']" value="" /></td><td><select name="profile_fields_confidentiality['+numFields+']"><?php foreach($conf->getLevels() as $level => $levelName): ?><option value="<?= $level ?>"><?= $levelName ?></option><?php endforeach; ?></select></td><td><a href="#" onclick="removeProfileField('+numFields+');return false;"><img src="<?= $OUTPUT->pix_url('t/delete') ?>" title="<?= get_string('delete') ?>" /></a></td></div>');
+        $('#new_profile_fields').append('<tr id="dynamic_field_'+numFields+'"><td><input type="text" class="normal" name="new_profile_fields_field['+numFields+']" value=""/></td><td><input type="text" class="normal" name="new_profile_fields_value['+numFields+']" value=""/></td><td><input type="text" class="elbp_small" name="new_profile_fields_order['+numFields+']" value="" /></td><td><select name="profile_fields_confidentiality['+numFields+']"><?php foreach($conf->getLevels() as $level => $levelName): ?><option value="<?= $level ?>"><?= $levelName ?></option><?php endforeach; ?></select></td><td><a href="#" onclick="removeProfileField('+numFields+');return false;"><img src="<?= elbp_image_url('t/delete') ?>" title="<?= get_string('delete') ?>" /></a></td></div>');
     }
     
     function removeProfileField(id)
@@ -39,7 +39,7 @@
         <th><?= $string['fieldname'] ?></th>
         <th><?= $string['fieldtitle'] ?></th>
         <th><?= $string['order'] ?></th>
-        <th><?= $string['confidentiality'] ?> <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= $OUTPUT->pix_url('help') ?>" alt="<?= get_string('help') ?>" /></th>
+        <th><?= $string['confidentiality'] ?> <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" /></th>
     </tr>
     
 <?php foreach( (array)$fields as $field ): ?>
@@ -55,7 +55,7 @@
             <?php endforeach; ?>
         </select>
     </td>
-    <td><input type='image' src='<?= $OUTPUT->pix_url("t/delete") ?>' onclick='return deleteProfileField(<?= $field->id ?>);' name='delete_field' title='<?= get_string('delete') ?>' /></td>
+    <td><input type='image' src='<?= elbp_image_url("t/delete") ?>' onclick='return deleteProfileField(<?= $field->id ?>);' name='delete_field' title='<?= get_string('delete') ?>' /></td>
 </tr>
 
 <?php endforeach; ?>  
@@ -78,7 +78,7 @@
         <th><?= $string['fieldname'] ?></th>
         <th><?= $string['fieldtitle'] ?></th>
         <th><?= $string['order'] ?></th>
-        <th><?= $string['confidentiality'] ?> <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= $OUTPUT->pix_url('help') ?>" alt="<?= get_string('help') ?>" /></th>
+        <th><?= $string['confidentiality'] ?> <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" /></th>
     </tr>
 </table>
 <input type="submit" name="submit_new_fields" value="<?= $string['save'] ?>" />

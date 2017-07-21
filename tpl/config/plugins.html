@@ -235,12 +235,11 @@
                     <?php endif; ?>       
                 <?php endif; ?>  
             </td>
-            <td><form action="" method="post"><input type="hidden" name="plugin_id" value="<?= $plugin->getID() ?>" /> <input type="image" src="<?= ($plugin->isEnabled()) ? $OUTPUT->pix_url('i/hide') : $OUTPUT->pix_url('i/show') ?>" name="<?= (isset($plugin->custom)) ? 'enable_disable_custom_plugin' : 'enable_disable_plugin'; ?>" title="<?= ($plugin->isEnabled()) ? $string['enabled'] : $string['disabled']; ?>" /></form></td>
+            <td><form action="" method="post"><input type="hidden" name="plugin_id" value="<?= $plugin->getID() ?>" /> <input type="image" src="<?= ($plugin->isEnabled()) ? elbp_image_url('i/hide') : elbp_image_url('i/show') ?>" name="<?= (isset($plugin->custom)) ? 'enable_disable_custom_plugin' : 'enable_disable_plugin'; ?>" title="<?= ($plugin->isEnabled()) ? $string['enabled'] : $string['disabled']; ?>" /></form></td>
             <td><a href="<?= $CFG->wwwroot ?>/<?= $plugin->getConfigPath() ?>" target="_blank"><?= $string['settings'] ?></a></td>
-<!--            <td><form action="" method="post"><input type="hidden" name="plugin_id" value="<?= $plugin->getID() ?>" /> <input type="image" src="<?= $OUTPUT->pix_url('t/delete') ?>" name="<?= (isset($plugin->custom)) ? 'uninstall_custom_plugin' : 'uninstall_plugin'; ?>" onclick="return confirm('<?= $string['areyousureuninstall'] ?>');" /></form></td>-->
-            <td><a href="<?= $CFG->wwwroot ?>/blocks/elbp/config.php?view=uninstall&<?= (isset($plugin->custom)) ? 'customplugin' : 'plugin'; ?>=<?= $plugin->getID() ?>"><img src="<?= $OUTPUT->pix_url('t/delete') ?>" alt="<?= $string['uninstall'] ?>" title="<?= $string['uninstallplugin'] ?>: <?= elbp_html($plugin->getTitle()) ?>" /></a></td>
+            <td><a href="<?= $CFG->wwwroot ?>/blocks/elbp/config.php?view=uninstall&<?= (isset($plugin->custom)) ? 'customplugin' : 'plugin'; ?>=<?= $plugin->getID() ?>"><img src="<?= elbp_image_url('t/delete') ?>" alt="<?= $string['uninstall'] ?>" title="<?= $string['uninstallplugin'] ?>: <?= elbp_html($plugin->getTitle()) ?>" /></a></td>
             <?php if(isset($plugin->custom)): ?>
-            <td><form action="" method="post"><input type="hidden" name="custom_plugin_id" value="<?= $plugin->getID() ?>" /> <input type="image" src="<?= $OUTPUT->pix_url('i/export') ?>" name="export_custom_plugin" alt="<?= $string['export'] ?>" title="<?= $string['exportcustomplugin'] ?>" /></form></td>
+                <td><form action="" method="post"><input type="hidden" name="custom_plugin_id" value="<?= $plugin->getID() ?>" /> <input type="image" src="<?= elbp_image_url('i/export') ?>" name="export_custom_plugin" alt="<?= $string['export'] ?>" title="<?= $string['exportcustomplugin'] ?>" /></form></td>
             <?php endif; ?>
         </tr>
 

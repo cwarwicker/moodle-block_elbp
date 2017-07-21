@@ -113,20 +113,7 @@ class Targets extends Plugin {
         $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Target Added", "description" => "A new target is added into the system", "auto" => 0, "enabled" => 1));
         $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Target Updated", "description" => "A target is updated (status, progress, etc...)", "auto" => 0, "enabled" => 1));
         $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Target Comment Added", "description" => "A comment is added onto a target", "auto" => 0, "enabled" => 1));
-        $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Target Deadline Passes", "description" => "A target passes its deadline without being achieved", "auto" => 0, "enabled" => 1));
-
-        
-        // Reporting elements for bc_dashboard reporting wizard
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:numtargets", "getstringcomponent" => "block_elbp"));
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:numachtargets", "getstringcomponent" => "block_elbp"));
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:numlatetargets", "getstringcomponent" => "block_elbp"));
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:avgtargets", "getstringcomponent" => "block_elbp"));
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:avgachtargets", "getstringcomponent" => "block_elbp"));
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:avglatetargets", "getstringcomponent" => "block_elbp"));
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:percentachtargets", "getstringcomponent" => "block_elbp"));
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:percentlatetargets", "getstringcomponent" => "block_elbp"));
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:percentwithtargets", "getstringcomponent" => "block_elbp"));
-        $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:targets:percentwithouttargets", "getstringcomponent" => "block_elbp"));
+        $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Target Deadline Passes", "description" => "A target passes its deadline without being achieved", "auto" => 1, "enabled" => 1));
         
         return $return;
         
@@ -158,24 +145,14 @@ class Targets extends Plugin {
         global $DB;
                         
         // [Upgrades here]
-        if ($this->version < 2013080601)
+        if ($this->version < 2017052500)
         {
-            
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:numtargets", "getstringcomponent" => "block_elbp"));
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:numachtargets", "getstringcomponent" => "block_elbp"));
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:numlatetargets", "getstringcomponent" => "block_elbp"));
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:avgtargets", "getstringcomponent" => "block_elbp"));
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:avgachtargets", "getstringcomponent" => "block_elbp"));
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:avglatetargets", "getstringcomponent" => "block_elbp"));
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:percentachtargets", "getstringcomponent" => "block_elbp"));
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:percentlatetargets", "getstringcomponent" => "block_elbp"));
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:percentwithtargets", "getstringcomponent" => "block_elbp"));
-            $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:targets:percentwithouttargets", "getstringcomponent" => "block_elbp"));
-
-            $this->version = 2013080601;
-            $this->updatePlugin();
-            \mtrace("## Inserted plugin_report_element data for plugin: {$this->title}");
-            
+            $record = $DB->get_record("lbp_alert_events", array("pluginid" => $this->id, "name" => "Target Deadline Passes"));
+            if ($record)
+            {
+                $record->auto = 1;
+                $DB->update_record("lbp_alert_events", $record);
+            }
         }
                
                 
@@ -940,8 +917,24 @@ class Targets extends Plugin {
     public function getStatuses(){
         
         $records = $this->DB->get_records_select('lbp_target_status', null, null, "ordernum ASC");
-        
         return $records;
+        
+    }
+    
+    
+    public function getStatusNames(){
+        
+        $statuses = $this->getStatuses();
+        $statusArray = array();
+        if ($statuses)
+        {
+            foreach($statuses as $status)
+            {
+                $statusArray[$status->id] = $status->status;
+            }
+        }
+        
+        return $statusArray;
         
     }
     
@@ -1458,17 +1451,16 @@ class Targets extends Plugin {
                                             WHERE a.eventid = ?
                                             AND a.value = ?", array($event->id, 1));
         
+        
         if ($userEvents)
         {
             
             $studentValues = array(); # Values of attendance from DB
             $userArray = array(); # Users from DB
             $processedStudents = array(); # Students we have got values for and alerted for each user, so as not to repeat
-            $groupArray = array();
-            $groupStudentsArray = array();
             $courseArray = array();
             $courseStudentsArray = array();
-            
+                        
             foreach($userEvents as $userEvent)
             {
                 
@@ -1486,6 +1478,8 @@ class Targets extends Plugin {
                 
                 
                 // No attributes required here
+                
+                
                 
                 // If the userEvent is for an individual student, great, let's just check their targets
                 if (!is_null($userEvent->studentid))
@@ -1518,7 +1512,9 @@ class Targets extends Plugin {
                             {
 
                                 // Has the target passed its deadline?
-                                if ($target->getDeadline() <= time())
+                                // Also, was that deadline within the last month? Otherwise we will keep getting alerts every week for targets year old if they never complete them
+                                $monthAgo = strtotime('-1 month');
+                                if ($target->getDeadline() <= time() && $target->getDeadline() >= $monthAgo)
                                 {
                                     
                                     // Check that we haven't sent this user an alert about this target recently
@@ -1575,122 +1571,8 @@ class Targets extends Plugin {
                     
                 }
                 
-                // Group
-                elseif (!is_null($userEvent->groupid))
-                {
-                    
-                    // If already used, get from array, else get from DB and put into array
-                    if (isset($groupArray[$userEvent->groupid])){
-                        $group = $groupArray[$userEvent->groupid];
-                    } else {
-                        $group = $DB->get_record("groups", array("id" => $userEvent->groupid));
-                        $groupArray[$userEvent->groupid] = $group;
-                    }
-                    
-                    if (!$group) continue;
-                                        
-                    // Find students on that group
-                    if (isset($groupStudentsArray[$group->id])){
-                        $students = $groupStudentsArray[$group->id];
-                    } else {
-                        $students = groups_get_members($group->id);
-                        $groupStudentsArray[$group->id] = $students;
-                    }
-                    
-                    if (!$students) continue;
-                    
-                    // Loop through students on group
-                    foreach($students as $student)
-                    {
-                        
-                        // If we have already processed this student for this user, continue
-                        if (isset($processedStudents[$user->id]) && 
-                           in_array($student->id, $processedStudents[$user->id])){
-                           continue;
-                        }
-
-                        
-                        // Continue only if we succeed in loading this student
-                        if ($this->loadStudent($student->id))
-                        {
-
-                            // Find all of students targets that are pending and that are passed the deadline
-                            // If we've already got the targets for this student, get from array instead of DB call
-                            if (isset($studentValues[$student->id])){
-                                $targets = $studentValues[$student->id];
-                            } else {
-                                $targets = $this->getPendingTargets();
-                                $studentValues[$student->id] = $targets;
-                            }
-
-                            
-                            if ($targets)
-                            {
-                                
-                                foreach($targets as $target)
-                                {
-
-                                    // Has the target passed its deadline?
-                                    if ($target->getDeadline() <= time())
-                                    {
-                                        
-                                        // Check that we haven't sent this user an alert about this target recently
-                                        $params = array(
-                                            "userID" => $user->id,
-                                            "studentID" => $student->id,
-                                            "eventID" => $userEvent->eventid,
-                                            "attributes" => array(
-                                                "target" => $target->getID()
-                                            )
-                                        );
-
-                                        // If this returns true that means we have sent this exact alert within the last week, so skip
-                                        $checkHistory = \ELBP\Alert::checkHistory( $params );
-                                        if ($checkHistory){
-                                            continue;
-                                        }
-
-                                        // Create the message to send
-                                        $subject = $this->title . " :: ".get_string('targetdeadline', 'block_elbp')." :: " . fullname($this->student) . " ({$this->student->username})";
-                                        $content = get_string('student', 'block_elbp') . ": " . fullname($this->student) . " ({$this->student->username})\n";
-                                        $content .= get_string('targetname', 'block_elbp') . ": " . $target->getName() . "\n" . 
-                                                    get_string('deadline', 'block_elbp') . ": " . $target->getDueDate() . "\n" . 
-                                                    get_string('late', 'block_elbp') . ": " . $target->getLateOrRemaining() . "\n\n" . 
-                                                    str_replace("%event%", $userEvent->name, get_string('alerts:receieving:group', 'block_elbp')) . ": {$group->name}";
-
-                                        // Log the history of this alert, so we don't do the exact same one tomorrow/whenever next run
-                                        $params = array(
-                                            "userID" => $user->id,
-                                            "studentID" => $this->student->id,
-                                            "eventID" => $userEvent->eventid,
-                                            "attributes" => array(
-                                                "target" => $target->getID(),
-                                            )
-                                        );
-
-                                        $historyID = \ELBP\Alert::logHistory($params);
-
-                                        // Now queue it, sending the history ID as well so we can update when actually sent
-                                        $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
-                                        $cnt++;
-                                        
-                                    }
-                                    
-                                }
-                                
-                            }
-                                                        
-                            // Append info to $processedStudents so that we don't do the same student again for this user
-                            if (!isset($processedStudents[$user->id])) $processedStudents[$user->id] = array();
-                            $processedStudents[$user->id][] = $student->id;
-
-                        }
-                        
-                    }
-                    
-                    
-                }
                 
+                               
                 // Course
                 elseif (!is_null($userEvent->courseid))
                 {
@@ -1743,8 +1625,9 @@ class Targets extends Plugin {
                                 foreach($targets as $target)
                                 {
                                     
-                                    // Has the target passed its deadline?
-                                    if ($target->getDeadline() <= time())
+                                    // Has the target passed its deadline? ANd was it due in the last month?
+                                    $monthAgo = strtotime('-1 month');
+                                    if ($target->getDeadline() <= time() && $target->getDeadline() >= $monthAgo)
                                     {
                                         
                                         // Check that we haven't sent this user an alert about this target recently
@@ -1803,107 +1686,121 @@ class Targets extends Plugin {
                     
                 }
                 
+                
+                
+                // Mentees or Additional Support
+                elseif ($userEvent->mass == 'mentees' || $userEvent->mass == 'addsup')
+                {
+                    
+                    // Find all of this user's mentees
+                    if ($userEvent->mass == 'mentees'){
+                        $students = $ELBPDB->getMenteesOnTutor($userEvent->userid);
+                    } elseif ($userEvent->mass == 'addsup'){
+                        $students = $ELBPDB->getStudentsOnAsl($userEvent->userid);
+                    }
+                                                            
+                    if ($students)
+                    {
+                        foreach($students as $student)
+                        {
+                     
+                            // If we have already processed this student for this user, continue
+                            if (isset($processedStudents[$user->id]) && 
+                               in_array($student->id, $processedStudents[$user->id])){
+                               continue;
+                            }
+                                                        
+                            // Continue only if we succeed in loading this student
+                            if ($this->loadStudent($student->id))
+                            {
+                                
+                                // Find all of students targets that are pending
+                                // And that are passed the deadline
+                                // If we've already got the targets for this student, get frmo array instead of DB call
+                                if (isset($studentValues[$this->student->id])){
+                                    $targets = $studentValues[$this->student->id];
+                                } else {
+                                    $targets = $this->getPendingTargets();
+                                    $studentValues[$this->student->id] = $targets;
+                                }
+                                
+                                if ($targets)
+                                {
+                                    foreach($targets as $target)
+                                    {
+                                        
+                                        // Has the target passed its deadline? and due in the last month?
+                                        $monthAgo = strtotime('-1 month');
+                                        if ($target->getDeadline() <= time() && $target->getDeadline() >= $monthAgo)
+                                        {
+                                            
+                                            // Check that we haven't sent this user an alert about this target recently
+                                            $params = array(
+                                                "userID" => $user->id,
+                                                "studentID" => $this->student->id,
+                                                "eventID" => $userEvent->eventid,
+                                                "attributes" => array(
+                                                    "target" => $target->getID()
+                                                )
+                                            );
+
+                                            // If this returns true that means we have sent this exact alert within the last week, so skip
+                                            $checkHistory = \ELBP\Alert::checkHistory( $params );
+                                            if ($checkHistory){
+                                                continue;
+                                            }
+                                            
+                                            // Create the message to send
+                                            $subject = $this->title . " :: ".get_string('targetdeadline', 'block_elbp')." :: " . fullname($this->student) . " ({$this->student->username})";
+                                            $content = get_string('student', 'block_elbp') . ": " . fullname($this->student) . " ({$this->student->username})\n";
+                                            $content .= get_string('targetname', 'block_elbp') . ": " . $target->getName() . "\n" . 
+                                                        get_string('deadline', 'block_elbp') . ": " . $target->getDueDate() . "\n" . 
+                                                        get_string('late', 'block_elbp') . ": " . $target->getLateOrRemaining() . "\n\n" . 
+                                                        str_replace("%event%", $userEvent->name, get_string('alerts:receieving:'.$userEvent->mass, 'block_elbp'));
+
+                                            // Log the history of this alert, so we don't do the exact same one tomorrow/whenever next run
+                                            $params = array(
+                                                "userID" => $user->id,
+                                                "studentID" => $this->student->id,
+                                                "eventID" => $userEvent->eventid,
+                                                "attributes" => array(
+                                                    "target" => $target->getID(),
+                                                )
+                                            );
+
+                                            $historyID = \ELBP\Alert::logHistory($params);
+
+                                            // Now queue it, sending the history ID as well so we can update when actually sent
+                                            $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
+                                            $cnt++;
+                                            
+                                        }
+
+                                    }
+                                }
+
+                                // Append info to $processedStudents so that we don't do the same student again for this user
+                                if (!isset($processedStudents[$user->id])) $processedStudents[$user->id] = array();
+                                $processedStudents[$user->id][] = $this->student->id;
+                            
+                            
+                            }
+                        
+                        }
+                    
+                    }
+                
+                }
+                
             }
+                
         }
         
         return $cnt;
         
     }
     
-    /**
-     * For the bc_dashboard reporting wizard - get all the data we can about Targets for these students,
-     * then return the elements that we want.
-     * @param type $students
-     * @param type $elements
-     */
-    public function getAllReportingData($students, $elements)
-    {
-        
-        global $DB;
-        
-        if (!$students || !$elements) return false;
-        
-        $data = array();
-        
-        // Some overal variables for counting
-        $totalStudents = count($students);
-        $totalStudentTargets = 0;
-        $totalStudentAchievedTargets = 0;
-        $totalStudentLateTargets = 0;
-        
-        $totalWithTargets = 0;
-        
-        
-        // Loop students and find all their targets
-        foreach($students as $student)
-        {
-            $this->loadStudent($student->id);
-            $targets = $this->getUserTargets();
-            
-            // Increment the total number of targets
-            $totalStudentTargets += count($targets);
-            
-            if ($targets)
-            {
-                
-                $totalWithTargets++;
-                
-                foreach($targets as $target)
-                {
-                    
-                    // Achieved
-                    if ($target->isAchieved()) $totalStudentAchievedTargets++;
-                    
-                    // Late
-                    if ($target->isLate()) $totalStudentLateTargets++;
-                    
-                }
-            }
-            
-        }
-        
-        // Totals
-        $data['reports:targets:numtargets'] = $totalStudentTargets;
-        $data['reports:targets:numachtargets'] = $totalStudentAchievedTargets;
-        $data['reports:targets:numlatetargets'] = $totalStudentLateTargets;
-        
-        
-        // Averages
-        $data['reports:targets:avgtargets'] = round( ($totalStudentTargets / $totalStudents), 2 );
-        $data['reports:targets:avgachtargets'] = round( ($totalStudentAchievedTargets / $totalStudents), 2 );
-        $data['reports:targets:avglatetargets'] = round( ($totalStudentLateTargets / $totalStudents), 2 );
-        
-        
-        // Percentages
-        $data['reports:targets:percentachtargets'] = ($totalStudentTargets) ? round( ($totalStudentAchievedTargets / $totalStudentTargets) * 100, 2 ) : 0;
-        $data['reports:targets:percentlatetargets'] = ($totalStudentTargets) ? round( ($totalStudentLateTargets / $totalStudentTargets) * 100, 2 ) : 0;
-        
-        $data['reports:targets:percentwithtargets'] = round( ($totalWithTargets / $totalStudents) * 100, 2 );
-        $data['reports:targets:percentwithouttargets'] = round( (($totalStudents - $totalWithTargets) / $totalStudents) * 100, 2 );
-        
-        $names = array();
-        $els = array();
-        
-        foreach($elements as $element)
-        {
-            $record = $DB->get_record("lbp_plugin_report_elements", array("id" => $element));
-            $names[] = $record->getstringname;
-            $els[$record->getstringname] = $record->getstringcomponent;
-        }
-        
-        $return = array();
-        foreach($names as $name)
-        {
-            if (isset($data[$name])){
-                $newname = \get_string($name, $els[$name]);
-                $return["{$newname}"] = $data[$name];
-            }
-        }
-        
-        return $return;
-        
-    }
-    
+   
    /**
     * Print out to simple html
     * @global type $ELBP

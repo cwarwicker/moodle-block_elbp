@@ -63,8 +63,8 @@
         <td><?= $report->getCreatedDate('M jS Y, H:i:s') ?></td>
         <td><?= fullname($report->getCreatedByUser()) ?></td>
         <td><?= elbp_html($report->getStatus()) ?></td>
-        <td><a href="#" onclick="ELBP.CourseReports.edit_periodical(<?= $report->getID() ?>);return false;" title="<?= $string['edit'] ?>"><img src="<?= $OUTPUT->pix_url('t/edit'); ?>" /></a></td>
-        <td><a href="#" onclick="ELBP.CourseReports.delete_periodical(<?= $report->getID() ?>);return false;" title="<?= $string['delete'] ?>"><img src="<?= $OUTPUT->pix_url('t/delete'); ?>" /></a></td>
+        <td><a href="#" onclick="ELBP.CourseReports.edit_periodical(<?= $report->getID() ?>);return false;" title="<?= $string['edit'] ?>"><img src="<?= elbp_image_url('t/edit'); ?>" /></a></td>
+        <td><a href="#" onclick="ELBP.CourseReports.delete_periodical(<?= $report->getID() ?>);return false;" title="<?= $string['delete'] ?>"><img src="<?= elbp_image_url('t/delete'); ?>" /></a></td>
     </tr>
     <?php endforeach; ?>
     

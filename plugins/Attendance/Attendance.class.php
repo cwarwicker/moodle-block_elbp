@@ -81,10 +81,13 @@ class Attendance extends Plugin {
             foreach($this->types as $type)
             {
                 $disp = $this->getSetting('student_summary_display_'.$type);
-                $return[] = array(
-                    'name' => $type,
-                    'value' => $this->getRecord( array("type" => $type, "period" => $disp) )
-                );
+                if ($disp)
+                {
+                    $return[] = array(
+                        'name' => $type,
+                        'value' => $this->getRecord( array("type" => $type, "period" => $disp) )
+                    );
+                }
             }
         }
                 
@@ -537,7 +540,7 @@ class Attendance extends Plugin {
             {
                 foreach($this->types as $type)
                 {
-                    if (isset($settings['student_summary_display_'.$type]) && !empty($settings['student_summary_display_'.$type]))
+                    if (isset($settings['student_summary_display_'.$type]))
                     {
                         $disp = $settings['student_summary_display_'.$type];
                         $this->updateSetting('student_summary_display_'.$type, $disp);
@@ -1247,27 +1250,14 @@ class Attendance extends Plugin {
                     foreach($types as $type){
                         $record = $this->getRecord( array("type"=>$type, "courseid"=>$courseID, "period"=>"Total") );
                         $course->$type = $record;
+                        if ($record != '-'){
+                            $found = true;
+                        }
                     }
                 }
                 $return['values'][] = $course;
                 
             }
-            if ($record != '-'){
-                $found = true;
-            }
-            
-//                if ($types)
-//                {
-//                    foreach($types as $type)
-//                    {
-//                        $record = $this->getRecord( array("type"=>$type, "courseid"=>$courseID, "period"=>"Total") );
-//                        //print_object($record);
-//                        $return['values'][$type] = $record;
-//                        if ($record != '-'){
-//                            $found = true;
-//                        }
-//                    }
-//                }
             
         }else{
             if ($types)
@@ -1504,6 +1494,8 @@ class Attendance extends Plugin {
                 
                 // So we've got the period and the value, let's continue
                 
+                
+                
                 // If the userEvent is for an individual student, great, let's just check theirs
                 if (!is_null($userEvent->studentid))
                 {
@@ -1610,129 +1602,7 @@ class Attendance extends Plugin {
                     $processedStudents[$user->id][$courseID][$period][] = $userEvent->studentid;
                     
                 }
-                
-                // Checking a whole group
-                elseif (!is_null($userEvent->groupid))
-                {
-                    
-                    $group = $DB->get_record("groups", array("id" => $userEvent->groupid));
-                    if (!$group) continue;
-                                        
-                    // Find students on that group
-                    $students = groups_get_members($group->id);
-                    if ($students)
-                    {
-                        foreach($students as $student)
-                        {
-                            
-                            // First thing's first, make sure we haven't had an alert for this exact thing recently
-                            // Use the value in Alert::history_time to define how long ago we should check, default is 1 week
-                            $params = array(
-                                "userID" => $user->id,
-                                "studentID" => $student->id,
-                                "eventID" => $userEvent->eventid,
-                                "attributes" => array(
-                                    "type" => $type,
-                                    "period" => $period
-                                )
-                            );
-
-                            if ($courseID > 0){
-                                $params['attributes']['course'] = $courseID;
-                            }
-
-                            // If this returns true that means we have sent this exact alert within the last week, so skip
-                            $checkHistory = \ELBP\Alert::checkHistory( $params );
-                            if ($checkHistory){
-                                continue;
-                            }
-                                                        
-                            
-                            // May have passed down a courseID attribute, to check against the group's course
-                            // May not, in which case checking overalls for the student
-                            // If we have already processed this student for this user, continue
-                            if (isset($processedStudents[$user->id][$courseID][$period]) && 
-                               in_array($student->id, $processedStudents[$user->id][$courseID][$period])){
-                               continue;
-                            }
-                            
-                            // Load student
-                            if ($this->loadStudent($student->id))
-                            {
                                 
-                                // If we've already got this value, get from array, else get from DB and put into the array
-                                if (isset($studentValues[$this->student->id][$courseID][$period]))
-                                {
-                                    $record = $studentValues[$this->student->id][$courseID][$period];
-                                }
-                                else
-                                {
-                                    $recordCourse = ($courseID == 0) ? null : $courseID;
-                                    $record = $this->getRecord( array("type" => $type, "period" => $period, "courseid" => $recordCourse) );
-                                    if ($record == '-') $record = false;
-                                    
-                                    if (!$record) continue; # No record found - skip
-
-                                    $record = (int)$record; # Convert to int
-
-                                    if (!isset($studentValues[$this->student->id])) $studentValues[$this->student->id] = array();
-                                    if (!isset($studentValues[$this->student->id][$courseID])) $studentValues[$this->student->id][$courseID] = array();
-                                    $studentValues[$this->student->id][$courseID][$period] = $record;
-                                }
-                                
-                                
-                                // If the record from the DB has dropped below the value we wanted to check, send the alert
-                                if ($record < $value)
-                                {
-
-                                    // I'm not sure i've even going to do SMS alerts, so for now we'll just hard code EmailAlert here
-                                    $subject = $this->title . " :: ".get_string(strtolower($type), 'block_elbp')." :: " . fullname($this->student) . " ({$this->student->username})";
-                                    $content = get_string('student', 'block_elbp') . ": " . fullname($this->student) . " ({$this->student->username})\n";
-                                    if ($courseID > 0 && $attrCourse){
-                                        $content .= get_string('course') . ": " . $attrCourse->fullname . "\n";
-                                    }
-                                    $content .= get_string('type', 'block_elbp') . ": " . get_string(strtolower($type), 'block_elbp') . "\n" . 
-                                                get_string('period', 'block_elbp') . ": " . $period . "\n" . 
-                                                get_string('alertvalue:below', 'block_elbp') . ": " . $value . "%\n" . 
-                                                get_string(strtolower($type), 'block_elbp') . ": " . $record . "%\n\n" . 
-                                                str_replace("%event%", $userEvent->name, get_string('alerts:receieving:group', 'block_elbp')) . ": {$group->name}";
-
-                                                
-                                    // Log the history of this alert, so we don't do the exact same one tomorrow/whenever next run
-                                    $params = array(
-                                        "userID" => $user->id,
-                                        "studentID" => $this->student->id,
-                                        "eventID" => $userEvent->eventid,
-                                        "attributes" => array(
-                                            "type" => $type,
-                                            "period" => $period,
-                                            "value" => $record
-                                        )
-                                    );
-                                    
-                                    if ($courseID > 0) $params['attributes']['course'] = $courseID;
-                                    
-                                    $historyID = \ELBP\Alert::logHistory($params);
-                                                
-                                    $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
-                                    $cnt++;
-
-                                }
-                                
-                                
-                            }
-                            
-                             // Append student so we don't try and get the same record again
-                             if (!isset($processedStudents[$user->id])) $processedStudents[$user->id] = array();
-                             if (!isset($processedStudents[$user->id][$courseID])) $processedStudents[$user->id][$courseID] = array();
-                             if (!isset($processedStudents[$user->id][$courseID][$period])) $processedStudents[$user->id][$courseID][$period] = array();
-                             $processedStudents[$user->id][$courseID][$period][] = $userEvent->studentid;
-
-                            
-                        }
-                    }
-                    
-                }
                 
                 
                 // CHeck a whole course
@@ -1776,7 +1646,7 @@ class Attendance extends Plugin {
                                continue;
                             }
                            
-                           // Continue only if we succeed in loading this student
+                            // Continue only if we succeed in loading this student
                             if ($this->loadStudent($student->id))
                             {
 
@@ -1847,6 +1717,132 @@ class Attendance extends Plugin {
                     }
                     
                 }
+                
+                
+                
+                // Mentees or Additional Support
+                elseif ($userEvent->mass == 'mentees' || $userEvent->mass == 'addsup')
+                {
+                                        
+                    // Find all of this user's mentees
+                    if ($userEvent->mass == 'mentees'){
+                        $students = $ELBPDB->getMenteesOnTutor($userEvent->userid);
+                    } elseif ($userEvent->mass == 'addsup'){
+                        $students = $ELBPDB->getStudentsOnAsl($userEvent->userid);
+                    }
+                                        
+                    if ($students)
+                    {
+                        foreach($students as $student)
+                        {
+                                                     
+                            // This will be NULL, as its an overall, not for a specific course, but using same code as from student bit above
+                            $recordCourse = ($courseID == 0) ? null : $courseID;
+
+                            // First thing's first, make sure we haven't had an alert for this exact thing recently
+                            // Use the value in Alert::history_time to define how long ago we should check, default is 1 week
+                            $params = array(
+                                "userID" => $user->id,
+                                "studentID" => $student->id,
+                                "eventID" => $userEvent->eventid,
+                                "attributes" => array(
+                                    "type" => $type,
+                                    "period" => $period
+                                )
+                            );
+                            
+                            // If this returns true that means we have sent this exact alert within the last week, so skip
+                            $checkHistory = \ELBP\Alert::checkHistory( $params );
+                            if ($checkHistory){
+                                continue;
+                            }
+                                                        
+                            // If we have already processed this student for this user, continue
+                            if (isset($processedStudents[$user->id][$userEvent->courseid][$period]) && 
+                               in_array($student->id, $processedStudents[$user->id][$userEvent->courseid][$period])){
+                               continue;
+                            }
+                                                        
+                            // Continue only if we succeed in loading this student
+                            if ($this->loadStudent($student->id))
+                            {
+                                
+                                // If we've already got this value, get from array, else get from DB and put into the array
+                                if (isset($studentValues[$this->student->id][$courseID][$period]))
+                                {
+                                    $record = $studentValues[$this->student->id][$courseID][$period];
+                                }
+                                else
+                                {
+                                    $recordCourse = ($courseID == 0) ? null : $courseID;
+                                    $record = $this->getRecord( array("type" => $type, "period" => $period, "courseid" => $recordCourse) );
+                                    if ($record == '-') $record = false;
+
+                                    if (!$record) continue; # No record found - skip
+
+                                    $record = (int)$record; # Convert to int
+
+                                    if (!isset($studentValues[$this->student->id])) $studentValues[$this->student->id] = array();
+                                    if (!isset($studentValues[$this->student->id][$courseID])) $studentValues[$this->student->id][$courseID] = array();
+                                    $studentValues[$this->student->id][$courseID][$period] = $record;
+                                }
+                                
+                                                                
+                                // If the record from the DB has dropped below the value we wanted to check, send the alert
+                                if ($record < $value)
+                                {
+
+                                    // I'm not sure i've even going to do SMS alerts, so for now we'll just hard code EmailAlert here
+                                    $subject = $this->title . " :: ".get_string(strtolower($type), 'block_elbp')." :: " . fullname($this->student) . " ({$this->student->username})";
+                                    $content = get_string('student', 'block_elbp') . ": " . fullname($this->student) . " ({$this->student->username})\n";
+                                    if ($courseID > 0 && $attrCourse){
+                                        $content .= get_string('course') . ": " . $attrCourse->fullname . "\n";
+                                    }
+                                    $content .= get_string('type', 'block_elbp') . ": " . get_string(strtolower($type), 'block_elbp') . "\n" . 
+                                                get_string('period', 'block_elbp') . ": " . $period . "\n" . 
+                                                get_string('alertvalue:below', 'block_elbp') . ": " . $value . "%\n" . 
+                                                get_string(strtolower($type), 'block_elbp') . ": " . $record . "%\n\n" . 
+                                                str_replace("%event%", $userEvent->name, get_string('alerts:receieving:'.$userEvent->mass, 'block_elbp'));
+
+                                    // Log the history of this alert, so we don't do the exact same one tomorrow/whenever next run
+                                    $params = array(
+                                        "userID" => $user->id,
+                                        "studentID" => $this->student->id,
+                                        "eventID" => $userEvent->eventid,
+                                        "attributes" => array(
+                                            "type" => $type,
+                                            "period" => $period,
+                                            "value" => $record
+                                        )
+                                    );
+
+                                    if ($courseID > 0){
+                                        $params['attributes']['course'] = $courseID;
+                                    }
+
+                                    $historyID = \ELBP\Alert::logHistory($params);
+
+                                    // Now queue it, sending the history ID as well so we can update when actually sent
+                                    $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
+                                    $cnt++;
+
+                                }
+
+
+                            }
+                            
+
+                            // Append student so we don't try and get the same record again
+                            if (!isset($processedStudents[$user->id])) $processedStudents[$user->id] = array();
+                            if (!isset($processedStudents[$user->id][$courseID])) $processedStudents[$user->id][$courseID] = array();
+                            if (!isset($processedStudents[$user->id][$courseID][$period])) $processedStudents[$user->id][$courseID][$period] = array();
+                            $processedStudents[$user->id][$courseID][$period][] = $student->id;
+                                                        
+                        }
+                    }
+                    
+                }
+                                
                                 
             }
         }
@@ -1903,17 +1899,17 @@ class Attendance extends Plugin {
                         newRow += '{$typeOutput}';
                     newRow += '</select>';
                     
-                    newRow += ' &nbsp;&nbsp; ';
+                    newRow += '&nbsp;';
                     
                     newRow += '<select style=\"width:35%;margin-bottom:0px;\" name=\"alert_attributes[{$event->id}]['+num+'][period]\">';
                         newRow += '{$periodOutput}';
                     newRow += '</select>';
                     
-                    newRow += ' &nbsp;&nbsp; ';
+                    newRow += '&nbsp;';
                     
                     newRow += '<input type=\"text\" style=\"width:10%;margin-bottom:0px;\" placeholder=\"%\" name=\"alert_attributes[{$event->id}]['+num+'][value]\" />';
 
-                    newRow += ' &nbsp;&nbsp;&nbsp; <a href=\"#\" onclick=\"$($(this).parents(\'tr\')[0]).remove();return false;\" title=\"".get_string('removerow', 'block_elbp')."\"><i class=\"icon-remove\"></i></a> ';
+                    newRow += '&nbsp;<a href=\"#\" onclick=\"$($(this).parents(\'tr\')[0]).remove();return false;\" title=\"".get_string('removerow', 'block_elbp')."\"><i class=\"icon-remove\"></i></a> ';
 
                 newRow += '</td>';
                 
@@ -1979,7 +1975,7 @@ class Attendance extends Plugin {
             }
         $output .= "</select>";
         
-        $output .= " &nbsp;&nbsp; ";
+        $output .= "&nbsp;";
         
         $output .= "<select style='width:35%;margin-bottom:0px;' name='alert_attributes[{$event->id}][{$num}][period]'>";
             foreach($periods as $period)
@@ -1989,16 +1985,16 @@ class Attendance extends Plugin {
             }
         $output .= "</select>";
         
-        $output .= " &nbsp;&nbsp; ";
+        $output .= "&nbsp;";
         
             $output .= "<input type='text' style='width:10%;margin-bottom:0px;' placeholder='%' name='alert_attributes[{$event->id}][{$num}][value]' value='{$userEventValue}' />";
-            $output .= " &nbsp;&nbsp; ";
+            $output .= "&nbsp;";
         
             if ($num == 0)
             {
                 $output .= "<span class='add_more'>";
                     $output .= "<a href='#' onclick='clone_drops_below_x_row( $(this) );return false;' title='".get_string('addanotherrow', 'block_elbp')."'><i class='icon-plus'></i></a>";
-                    $output .= " &nbsp;&nbsp; ";
+                    $output .= "&nbsp;&nbsp;";
                 $output .= "</span>";
             }
             
@@ -2011,91 +2007,7 @@ class Attendance extends Plugin {
     
     
     
-     /**
-     * For the bc_dashboard reporting wizard - get all the data we can about Attendance & Punctuality for these students,
-     * then return the elements that we want.
-     * @param type $students
-     * @param type $elements
-     */
-    public function getAllReportingData($students, $elements)
-    {
-        
-        global $DB;
-        
-        if (!$students || !$elements) return false;
-        
-        $data = array();
-        
-        // Some overal variables for counting
-        $totalStudents = count($students);        
-        
-        $results = array();
-        $settings = array();
-        if ($this->types)
-        {
-            foreach($this->types as $type)
-            {
-                $results[$type] = 0;
-                $settings[$type] = $this->getSetting('student_summary_display_'.$type);
-            }
-        }
-        
-          
-        // Loop students and find all their targets
-        foreach($students as $student)
-        {
-
-             $this->loadStudent($student->id);
-
-             if ($this->types)
-             {
-                foreach($this->types as $type)
-                {
-                    $record = $this->getRecord(array("type" => $type, "period" => $settings[$type]));
-                    if (is_numeric($record)){
-                        $results[$type] += $record;
-                    }
-                }
-            } 
-
-        }
-                
-        // Totals
-        if ($this->types)
-        {
-            foreach($this->types as $type)
-            {
-                $data[$type] = round($results[$type] / $totalStudents, 1);
-            }
-        }
-        
-        
-        $names = array();
-        $els = array();
-        
-        foreach($elements as $element)
-        {
-            $record = $DB->get_record("lbp_plugin_report_elements", array("id" => $element));
-            $names[] = $record->getstringname;
-            $els[$record->getstringname] = $record->getstringcomponent;
-        }
-        
-        $return = array();
-        foreach($names as $name)
-        {
-            if (isset($data[$name])){
-                if (!is_null($els[$name]) && !empty($els[$name])){
-                    $newname = \get_string($name, $els[$name]);
-                } else {
-                    $newname = $name;
-                }
-                $return["{$newname}"] = $data[$name];
-            }
-        }
-                
-        return $return;
-        
-    }
+    
     
     
     /**

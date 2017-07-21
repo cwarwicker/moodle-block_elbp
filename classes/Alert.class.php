@@ -56,7 +56,7 @@ abstract class Alert {
         $users = $DB->get_records_sql("SELECT u.*
                                         FROM {lbp_alerts} a
                                         INNER JOIN {user} u ON u.id = a.userid 
-                                        WHERE a.eventid = ? AND a.studentid = ? AND a.courseid IS NULL AND a.groupid IS NULL AND value = 1", array($eventID, $studentID));
+                                        WHERE a.eventid = ? AND a.studentid = ? AND a.courseid IS NULL AND a.mass IS NULL AND value = 1", array($eventID, $studentID));
 
         return $users;
         
@@ -76,7 +76,7 @@ abstract class Alert {
         $users = $DB->get_records_sql("SELECT u.*
                                         FROM {lbp_alerts} a
                                         INNER JOIN {user} u ON u.id = a.userid 
-                                        WHERE a.eventid = ? AND a.courseid = ? AND a.studentid IS NULL AND a.groupid IS NULL AND value = 1", array($eventID, $courseID));
+                                        WHERE a.eventid = ? AND a.courseid = ? AND a.studentid IS NULL AND a.mass IS NULL AND value = 1", array($eventID, $courseID));
         
         return $users;
         
@@ -85,22 +85,22 @@ abstract class Alert {
     }
     
     /**
-     * Get all users who want alerts for a given event, for a given group
-     * @param int $eventID
-     * @param int $groupID
+     * Check if a given user has a given mass event setting
+     * @global \ELBP\type $DB
+     * @param type $userID
+     * @param type $eventID
+     * @param type $type
+     * @return type
      */
-    protected function getUsersWhoWantGroupEvent($eventID, $groupID){
+    protected function hasUserGotMassEvent($userID, $eventID, $type){
         
         global $DB;
         
-        $users = $DB->get_records_sql(" SELECT u.*
-                                        FROM {lbp_alerts} a
-                                        INNER JOIN {user} u ON u.id = a.userid 
-                                        WHERE a.eventid = ? AND a.groupid = ? AND a.courseid IS NULL AND a.studentid IS NULL AND value = 1", array($eventID, $groupID));
+        $record = $DB->get_records_sql("SELECT * 
+                                        FROM {lbp_alerts}
+                                        WHERE userid = ? AND eventid = ? AND courseid IS NULL AND studentid IS NULL AND mass = ? AND value = 1", array($userID, $eventID, $type));
         
-        return $users;
-        
-        
+        return ($record);
         
     }
     
@@ -167,9 +167,6 @@ abstract class Alert {
                             {
                                 $cnt++;
                             }
-                        break;
-                        case 'sms':
-                            // >>BEDCOLL todo - sms alerts
                         break;
                     }
                 
@@ -394,21 +391,36 @@ abstract class Alert {
     abstract protected function send($userID, $subject, $content, $htmlContent);
     
     /**
-     * 
+     * Check if a given user wants a given alert for a given type (e.g. course, student, mass
      * @global \ELBP\type $DB
      * @param type $userID
      * @param type $eventID
-     * @param type $courseID
-     * @param type $groupID
-     * @param type $studentID
+     * @param type $type
+     * @param type $id
      * @return type
      */
-    public static function userWantsEventAlerts($userID, $eventID, $courseID = null, $groupID = null, $studentID = null)
+    public static function userWantsEventAlerts($userID, $eventID, $type, $id)
     {
         
         global $DB;
         
-        $record = $DB->get_record("lbp_alerts", array("userid" => $userID, "eventid" => $eventID, "courseid" => $courseID, "groupid" => $groupID, "studentid" => $studentID), "*", IGNORE_MULTIPLE);
+        $params = array(
+            'eventid' => $eventID,
+            'userid' => $userID,
+            'courseid' => null,
+            'studentid' => null,
+            'mass' => null
+        );
+        
+        if ($type == 'course'){
+            $params['courseid'] = $id;
+        } elseif ($type == 'student'){
+            $params['studentid'] = $id;
+        } elseif ($type == 'mentees' || $type == 'addsup'){
+            $params['mass'] = $type;
+        }
+        
+        $record = $DB->get_record("lbp_alerts", $params, "*", IGNORE_MULTIPLE);
                 
         return ($record && $record->value == 1) ? true : false;
         
@@ -426,7 +438,7 @@ abstract class Alert {
      * @param type $attributes
      * @return type
      */
-    public static function updateUserAlert($userID, $eventID, $courseID, $groupID, $studentID, $val, $attributes)
+    public static function updateUserAlert($userID, $eventID, $type, $id, $val, $attributes)
     {
         
         global $DB;
@@ -435,10 +447,19 @@ abstract class Alert {
         $obj = new \stdClass();
         $obj->userid = $userID;
         $obj->eventid = $eventID;
-        $obj->courseid = $courseID;
-        $obj->groupid = $groupID;
-        $obj->studentid = $studentID;
+        $obj->courseid = null;
+        $obj->studentid = null;
+        $obj->mass = null;
         $obj->value = $val;
+        
+        if ($type == 'course'){
+            $obj->courseid = $id;
+        } elseif ($type == 'student'){
+            $obj->studentid = $id;
+        } elseif ($type == 'mentees' || $type == 'addsup'){
+            $obj->mass = $type;
+        }
+        
         $id = $DB->insert_record("lbp_alerts", $obj);
                         
         
@@ -477,13 +498,6 @@ abstract class Alert {
                         // Create new record to use for next one
                         if ($n > 0)
                         {
-                            $obj = new \stdClass();
-                            $obj->userid = $userID;
-                            $obj->eventid = $eventID;
-                            $obj->courseid = $courseID;
-                            $obj->groupid = $groupID;
-                            $obj->studentid = $studentID;
-                            $obj->value = $val;
                             $id = $DB->insert_record("lbp_alerts", $obj);
                         }
                         
@@ -506,14 +520,76 @@ abstract class Alert {
             }
             
         }
-        
-        
-        
+                
         return $id;
         
     }
     
+    /**
+     * Get a user's events
+     * @global \ELBP\type $DB
+     * @global type $USER
+     * @param type $eventID
+     * @param type $courseID
+     * @param type $groupID
+     * @param type $studentID
+     * @return type
+     */
+    public static function getUserAlerts($eventID, $type, $id)
+    {
         
+        global $DB, $USER;
+        
+        $params = array(
+            'eventid' => $eventID,
+            'userid' => $USER->id,
+            'courseid' => null,
+            'studentid' => null,
+            'mass' => null
+        );
+        
+        if ($type == 'course'){
+            $params['courseid'] = $id;
+        } elseif ($type == 'student'){
+            $params['studentid'] = $id;
+        } elseif ($type == 'mentees' || $type == 'addsup'){
+            $params['mass'] = $type;
+        }
+        
+        return $DB->get_records("lbp_alerts", $params);
+        
+    }
+    
+    /**
+     * Delete all of a user's alerts for a given thing (course, student, mass)
+     * @global \ELBP\type $DB
+     * @param type $userID
+     * @param type $type
+     * @param type $id
+     * @return type
+     */    
+    public static function deleteUserAlerts($userID, $type, $id){
+        
+        global $DB;
+        
+        $params = array(
+            'userid' => $userID,
+            'courseid' => null,
+            'studentid' => null,
+            'mass' => null
+        );
+        
+        if ($type == 'course'){
+            $params['courseid'] = $id;
+        } elseif ($type == 'student'){
+            $params['studentid'] = $id;
+        } elseif ($type == 'mentees' || $type == 'addsup'){
+            $params['mass'] = $type;
+        }
+        
+        return $DB->delete_records("lbp_alerts", $params);
+        
+    }
     
     
 }

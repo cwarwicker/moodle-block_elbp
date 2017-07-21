@@ -336,7 +336,8 @@ switch($_POST['action'])
                 foreach($courses as $course)
                 {
                     if (isset($params['use']) && !empty($params['use'])){
-                        echo "<option value='".elbp_html($course->$params['use'])."'>{$course->shortname}: {$course->fullname}</option>";
+                        $field = $params['use'];
+                        echo "<option value='".elbp_html($course->$field)."'>{$course->shortname}: {$course->fullname}</option>";
                     } else {
                         echo "<option value='".elbp_html($course->shortname)."'>{$course->shortname}: {$course->fullname}</option>";
                     }
@@ -366,7 +367,8 @@ switch($_POST['action'])
                 foreach($courses as $course)
                 {
                     if (isset($params['use']) && !empty($params['use'])){
-                        echo "<option value='".elbp_html($course->$params['use'])."'>{$course->shortname}: {$course->fullname}</option>";
+                        $use = $params['use'];
+                        echo "<option value='".elbp_html($course->$use)."'>{$course->shortname}: {$course->fullname}</option>";
                     } else {
                         echo "<option value='".elbp_html($course->shortname)."'>{$course->shortname}: {$course->fullname}</option>";
                     }
@@ -479,6 +481,42 @@ switch($_POST['action'])
                 
     break;
 
+    
+    case 'get_alerts_table':
+        
+        $DBC = new \ELBP\DB();
+        
+        if (!in_array($params['type'], array('course', 'student', 'mentees', 'addsup'))){
+            exit;
+        }
+        
+        if ($params['type'] == 'course'){
+            $course = $DBC->getCourse( array('type' => 'id', 'val' => $params['value']) );
+            if (!$course) exit;
+            $title = $course->fullname;
+        } elseif ($params['type'] == 'student'){
+            $student = $DBC->getUser( array('type' => 'id', 'val' => $params['value']) );
+            if (!$student) exit;
+            $title = \fullname($student) . " ({$student->username})";
+        } elseif ($params['type'] == 'mentees'){
+            $title = get_string('allmentees', 'block_elbp');
+        } elseif ($params['type'] == 'addsup'){
+            $title = get_string('alladdsup', 'block_elbp');
+        }
+                
+        $ELBP = new \ELBP\ELBP();
+        $TPL = new \ELBP\Template();
+        
+        $TPL->set("ELBP", $ELBP);
+        $TPL->set("type", $params['type']);
+        $TPL->set("value", @$params['value']);
+        $TPL->set("title", $title);
+        
+        $TPL->load( $CFG->dirroot . '/blocks/elbp/tpl/settings.table.html' );
+        $TPL->display();
+        exit;
+        
+    break;
     
     
 }

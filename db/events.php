@@ -22,34 +22,62 @@
  * 
  */
 
+//
+//$handlers = array (
+//    'user_enrolled' => array (
+//        'handlerfile'      => '/blocks/elbp/lib.php',
+//        'handlerfunction'  => 'event_course_user_enrolled',
+//        'schedule'         => 'cron',
+//        'internal'         => 1,
+//    ),
+// 
+//    'user_unenrolled' => array (
+//        'handlerfile'      => '/blocks/elbp/lib.php',
+//        'handlerfunction'  => 'event_course_user_unenrolled',
+//        'schedule'         => 'cron',
+//        'internal'         => 1,
+//    ),
+//    
+//    'groups_member_added' => array (
+//        'handlerfile'      => '/blocks/elbp/lib.php',
+//        'handlerfunction'  => 'event_group_user_added',
+//        'schedule'         => 'instant',
+//        'internal'         => 1,
+//    ),
+//    
+//    'groups_member_removed' => array (
+//        'handlerfile'      => '/blocks/elbp/lib.php',
+//        'handlerfunction'  => 'event_group_user_removed',
+//        'schedule'         => 'instant',
+//        'internal'         => 1,
+//    ),
+//    
+//);
 
-$handlers = array (
-    'user_enrolled' => array (
-        'handlerfile'      => '/blocks/elbp/lib.php',
-        'handlerfunction'  => 'event_course_user_enrolled',
-        'schedule'         => 'cron',
-        'internal'         => 1,
-    ),
- 
-    'user_unenrolled' => array (
-        'handlerfile'      => '/blocks/elbp/lib.php',
-        'handlerfunction'  => 'event_course_user_unenrolled',
-        'schedule'         => 'cron',
-        'internal'         => 1,
+
+$observers = array(
+    
+    array(
+        'eventname'   => '\core\event\user_enrolment_created',
+        'callback'    => 'block_elbp_observer::eblp_user_enrolment',
+        'internal'    => false,
     ),
     
-    'groups_member_added' => array (
-        'handlerfile'      => '/blocks/elbp/lib.php',
-        'handlerfunction'  => 'event_group_user_added',
-        'schedule'         => 'instant',
-        'internal'         => 1,
+    array(
+        'eventname'   => '\core\event\user_enrolment_deleted',
+        'callback'    => 'block_elbp_observer::eblp_user_unenrolment',
+        'internal'    => false,
     ),
     
-    'groups_member_removed' => array (
-        'handlerfile'      => '/blocks/elbp/lib.php',
-        'handlerfunction'  => 'event_group_user_removed',
-        'schedule'         => 'instant',
-        'internal'         => 1,
+    array(
+        'eventname'   => '\core\event\group_member_added',
+        'callback'    => 'block_elbp_observer::elbp_group_member_added',
+        'internal'    => false,
     ),
     
+    array(
+        'eventname'   => '\core\event\group_member_removed',
+        'callback'    => 'block_elbp_observer::elbp_group_member_removed',
+        'internal'    => false,
+    ),
 );

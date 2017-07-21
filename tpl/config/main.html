@@ -79,7 +79,7 @@
                     <td><input type='text' name='progress_titles[<?= $i ?>]' value='<?= \elbp_html($manualProgressColours['titles'][$i]) ?>' placeholder='At Risk' /></td>
                     <td><input type='color' name='progress_colours[<?= $i ?>]' value='<?= \elbp_html($manualProgressColours['colours'][$i]) ?>' placeholder='#000000' /></td>
                     <td><input type='text' name='progress_desc[<?= $i ?>]' value='<?= \elbp_html($manualProgressColours['desc'][$i]) ?>' placeholder='You are at risk of failing your course' /></td>
-                    <td><a href='#' onclick='$("#elbpmanprogrow_<?= $i ?>").remove();return false;'><img src='<?= $OUTPUT->pix_url('t/delete') ?>' /></a></td>
+                    <td><a href='#' onclick='$("#elbpmanprogrow_<?= $i ?>").remove();return false;'><img src='<?= elbp_image_url('t/delete') ?>' /></a></td>
                 </tr>
             
             <?php endfor; ?>
@@ -108,7 +108,7 @@
             output += "<td><input type='text' name='progress_titles["+numProgCols+"]' value='' placeholder='At Risk' /></td>";
             output += "<td><input type='color' name='progress_colours["+numProgCols+"]' value='' placeholder='#000000' /></td>";
             output += "<td><input type='text' name='progress_desc["+numProgCols+"]' value='' placeholder='You are at risk of failing your course' /></td>";
-            output += "<td><a href='#' onclick='$(\"#elbpmanprogrow_"+numProgCols+"\").remove();return false;'><img src='<?= $OUTPUT->pix_url('t/delete') ?>' /></a></td>";
+            output += "<td><a href='#' onclick='$(\"#elbpmanprogrow_"+numProgCols+"\").remove();return false;'><img src='<?= elbp_image_url('t/delete') ?>' /></a></td>";
         output += "</tr>";
         $('#elbp_manual_progress_colours').append(output);
         

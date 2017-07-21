@@ -90,7 +90,7 @@ function showHooks(pluginID)
         <tr>
             <td><input type="text" class="elbp_large" name="review_questions[existing][<?= $question->id ?>]" value="<?= elbp_html($question->question) ?>" /></td>
             <td></td>
-            <td><a href="#" onclick="deleteRow( $(this) );return false;"><img src="<?= $OUTPUT->pix_url('t/delete') ?>" alt="<?= get_string('delete') ?>" title="<?= get_string('delete') ?>" /></a></td>
+            <td><a href="#" onclick="deleteRow( $(this) );return false;"><img src="<?= elbp_image_url('t/delete') ?>" alt="<?= get_string('delete') ?>" title="<?= get_string('delete') ?>" /></a></td>
         </tr>
         <?php endforeach; ?>
         
@@ -112,7 +112,7 @@ function showHooks(pluginID)
             <td><input type="text" class="elbp_large" name="review_values[existing][<?= $value->id ?>]" value="<?= elbp_html($value->value) ?>" /></td>
             <td><input type="text" name="review_value_scores[existing][<?= $value->id ?>]" class="elbp_small" value="<?= $value->numericvalue ?>" /></td>
             <td></td>
-            <td><a href="#" onclick="deleteRow( $(this) );return false;"><img src="<?= $OUTPUT->pix_url('t/delete') ?>" alt="<?= get_string('delete') ?>" title="<?= get_string('delete') ?>" /></a></td>
+            <td><a href="#" onclick="deleteRow( $(this) );return false;"><img src="<?= elbp_image_url('t/delete') ?>" alt="<?= get_string('delete') ?>" title="<?= get_string('delete') ?>" /></a></td>
         </tr>
         <?php endforeach; ?>
         

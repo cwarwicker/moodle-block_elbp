@@ -121,10 +121,9 @@ class block_elbp extends block_base
             
             if ($access['god'] || $access['teacher'])
             {
-                $this->content->text .= '<li><img src="'.$this->imgdir.'group_blue.png" alt="" /> <a href="'. $CFG->wwwroot . '/blocks/elbp/mystudents.php?courseid='.$COURSE->id.'">'.get_string('mystudents', 'block_elbp').'</a></li>';
-                if ($this->bc_dashboard_installed){
-                    $this->content->text .= '<li><img src="'.$this->imgdir.'settings.png" alt="" /> <a href="'. $CFG->wwwroot . '/blocks/bc_dashboard/'.$COURSE->id.'/elbp/settings">'.get_string('mysettings', 'block_elbp').'</a></li>';
-                }
+                $myStudentsLink = ($COURSE->id <> SITEID) ? 'view/course/' . $COURSE->id : '';
+                $this->content->text .= '<li><img src="'.$this->imgdir.'group_blue.png" alt="" /> <a href="'. $CFG->wwwroot . '/blocks/bc_dashboard/'.$myStudentsLink.'">'.get_string('mystudents', 'block_elbp').'</a></li>';
+                $this->content->text .= '<li><img src="'.$this->imgdir.'settings.png" alt="" /> <a href="'. $CFG->wwwroot . '/blocks/elbp/settings.php">'.get_string('mysettings', 'block_elbp').'</a></li>';
             }
             
             // User Guide
@@ -132,17 +131,10 @@ class block_elbp extends block_base
                 $this->content->text .= '<li><img src="'.$CFG->wwwroot.'/blocks/elbp/pix/file_icons/'.\elbp_get_file_icon( $this->elbp->getSetting('staff_user_guide') ).'" /> <a href="'.$CFG->wwwroot.'/blocks/elbp/download.php?f='.elbp_get_data_path_code( $CFG->dataroot . '/ELBP/' . $this->elbp->getSetting('staff_user_guide') ).'" target="_blank">'.get_string('userguide', 'block_elbp').'</a></li>';
             }
             
-            if ($access['god'] || $access['elbpadmin'] || $access['teacher'])
-            {
-                if ($this->bc_dashboard_installed){
-                    $this->content->text .= '<li><img src="'.$this->imgdir.'report.png" alt="" /> <a href="'.$CFG->wwwroot.'/blocks/bc_dashboard/'.$COURSE->id.'/elbp/reports">'.get_string('reports', 'block_elbp').'</a></li>';
-                }
-            }
-            
             if ($access['god'] || $access['elbpadmin'])
             {
                 if ($this->bc_dashboard_installed){
-                    $this->content->text .= '<li><img src="'.$this->imgdir.'admin.png" alt="" /> <a href="'.$CFG->wwwroot.'/blocks/bc_dashboard/'.$COURSE->id.'/elbp/admin">'.get_string('manager', 'block_elbp').'</a></li>';
+                    $this->content->text .= '<li><img src="'.$this->imgdir.'admin.png" alt="" /> <a href="'.$CFG->wwwroot.'/blocks/bc_dashboard/view/admin">'.get_string('manager', 'block_elbp').'</a></li>';
                 }
             }
 
@@ -162,7 +154,7 @@ class block_elbp extends block_base
             {
                 if ($COURSE->id > 0 && $COURSE->id != SITEID && ($access['elbpadmin'] || $access['teacher']))
                 {
-                    $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/admin/bedtools/groupprofile.php?cID='.$COURSE->id.'">Group Profile</a></li>';
+                    $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/local/bc/groupprofile.php?cID='.$COURSE->id.'">Group Profile</a></li>';
                 }
             }
             
@@ -224,7 +216,7 @@ class block_elbp extends block_base
             // Process automatic events, such as checking that attendance has not dropped below a given percentage or that a target hasn't passewd its deadline, etc...
             // This could potentially take a while, as people who have the alert enabled for a course means we will have to loop through all users in that course and then potentially loop through all their targets or similar
             $processed = \ELBP\Alert::processAuto();
-            mtrace("Proccessed {$processed} automated alerts");
+            mtrace("Processed {$processed} automated alerts");
             
         }
         

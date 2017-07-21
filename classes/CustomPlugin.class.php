@@ -776,6 +776,7 @@ class CustomPlugin {
         if (!$this->student) return false;
         
         return $DB->get_record("lbp_custom_plugin_items", array("id" => $itemID));
+        
     }
     
     /**
@@ -783,7 +784,7 @@ class CustomPlugin {
      * @global \ELBP\Plugins\type $DB
      * @return boolean
      */
-    private function getMultiItems()
+    public function getMultiItems()
     {
         
         global $DB;
@@ -791,6 +792,20 @@ class CustomPlugin {
         if (!$this->student) return false;
         
         return $DB->get_records("lbp_custom_plugin_items", array("studentid" => $this->student->id, "pluginid" => $this->id, "del" => 0), "settime DESC");
+        
+    }
+    
+    
+    public function getMultiItemsByAttribute($att, $value){
+        
+        global $DB;
+        
+        if (!$this->student) return false;
+        
+        return $DB->get_records_sql("select i.*
+                                    from {lbp_custom_plugin_items} i
+                                    inner join {lbp_custom_plugin_attributes} a on (a.itemid = i.id)
+                                    where i.pluginid = ? and i.studentid = ? and a.field = ? and a.value = ?", array($this->id, $this->student->id, $att, $value));
         
     }
     
@@ -1701,7 +1716,7 @@ class CustomPlugin {
         $output .= "<table id='custom_plugin_structures'>";
         
         $structure = $this->getStructure();
-        
+               
             $output .= "<tr>";
                 $output .= "<td><input type='radio' name='plugin_structure' value='single' ". ( ($structure == 'single') ? 'checked' : '' ) ." /></td>";
                 $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/report.png' alt='".get_string('singlereport', 'block_elbp')."' /></td>";
@@ -1783,10 +1798,54 @@ class CustomPlugin {
         }
         
         $output .= "<input type='file' name='plugin_icon_dock' value='' />";
+        
+        $output .= "<br><br>";
+        $output .= "<h2>".get_string('notificationconfig', 'block_elbp')."</h2>";
+        $output .= "<small>".get_string('notificationconfig:desc', 'block_elbp')."</small><br><br>";
+        
+        if ($structure == 'single' || $structure == 'multi' || $structure == 'incremental')
+        {
+
+            $enable = ($this->isNotifyEnabled()) ? 'checked' : '';
+            $disable = (!$this->isNotifyEnabled()) ? 'checked' : '';
+            
+            $output .= "<small><strong>".get_string('enabledisable', 'block_elbp')."</strong><br>";
+            $output .= "<input type='radio' name='notify_enabled' value='1' {$enable} /> <label>".get_string('enable')."</label>  &nbsp;";
+            $output .= "&nbsp; <input type='radio' name='notify_enabled' value='0' {$disable} /> <label>".get_string('disable')."</label><br><br>";
+                    
+            $output .= "<small><strong>".get_string('notificationconfig:users', 'block_elbp')."</strong> - ".get_string('notificationconfig:users:desc', 'block_elbp')."</small><br>";
+            $output .= "<input type='text' name='notify_users' value='{$this->getSetting('notify_users')}' class='elbp_max' /><br><br>";
+
+            $output .= "<small><strong>".get_string('notificationconfig:emailcontent', 'block_elbp')."</strong> - ".get_string('notificationconfig:emailcontent:desc', 'block_elbp')."</small><br>";
+            $output .= "<textarea name='notify_message'>{$this->getSetting('notify_message')}</textarea><br><br>";
+        
+        }
+        else
+        {
+            $output .= "<small>".get_string('notavailable')."</small>";
+        }
+        
               
         $output .= "<script>$(document).ready( function(){ ELBP.apply_colour_picker(); } );</script>";
         
         echo $output;
+        
+    }
+    
+    
+    public function getAttributeNameFromID($id){
+        
+        $atts = $this->getAttributesForDisplay();
+        
+        if ($atts){
+            foreach($atts as $att){
+                if ($att->id == $id){
+                    return $att->name;
+                }
+            }
+        }
+        
+        return false;
         
     }
     
@@ -1819,6 +1878,22 @@ class CustomPlugin {
         return (isset($this->studentattributes[$name])) ? $this->studentattributes[$name] : false;
     }
     
+    
+    public function hasRecords(){
+        
+        $structure = $this->getStructure();
+        
+        if ($structure == 'single'){
+            return (!empty($this->studentattributes));
+        }
+        
+        elseif ($structure == 'multi' || $structure == 'incremental'){
+            return ($this->getMultiItems());
+        }
+        
+        return false;
+        
+    }
     
     
     /**
@@ -2319,6 +2394,23 @@ class CustomPlugin {
 
         }
         
+        // Notify
+        if ($this->isNotifyEnabled())
+        {
+            $usernames = $this->getNotifyUsers();
+            if ($usernames)
+            {
+                foreach($usernames as $username)
+                {
+                    $user = \elbp_get_user($username);
+                    if ($user)
+                    {
+                        $this->notifyUser($user);
+                    }
+                }
+            }
+        }
+        
         return true;        
         
     }
@@ -2498,6 +2590,23 @@ class CustomPlugin {
             }
 
 
+        }
+        
+        // Notify
+        if ($this->isNotifyEnabled())
+        {
+            $usernames = $this->getNotifyUsers();
+            if ($usernames)
+            {
+                foreach($usernames as $username)
+                {
+                    $user = \elbp_get_user($username);
+                    if ($user)
+                    {
+                        $this->notifyUser($user);
+                    }
+                }
+            }
         }
         
         return true;        
@@ -2777,6 +2886,24 @@ class CustomPlugin {
         }
         
         $this->newItemID = $itemID;
+        
+        // Notify
+        if ($this->isNotifyEnabled())
+        {
+            $usernames = $this->getNotifyUsers();
+            if ($usernames)
+            {
+                foreach($usernames as $username)
+                {
+                    $user = \elbp_get_user($username);
+                    if ($user)
+                    {
+                        $this->notifyUser($user);
+                    }
+                }
+            }
+        }
+        
         return true;        
         
     }
@@ -3216,13 +3343,13 @@ class CustomPlugin {
             $output .= "<div class='elbp_centre'>";
                 $output .= "<small>";
                 if ( ($USER->id <> $item->setbyuserid && $this->havePermission( self::PERMISSION_EDIT_ANY, $this->userpermissions )) || ($USER->id == $item->setbyuserid && $this->havePermission( self::PERMISSION_EDIT_OWN, $this->userpermissions ))){
-                    $output .= "<a href='#' onclick='ELBP.Custom.edit_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".$OUTPUT->pix_url('t/editstring', 'core')."' alt='' /> ".get_string('edit', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
+                    $output .= "<a href='#' onclick='ELBP.Custom.edit_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/editstring', 'edit', 'core')."' alt='' /> ".get_string('edit', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
                 }
                 if ( ($USER->id <> $item->setbyuserid && $this->havePermission( self::PERMISSION_DEL_ANY, $this->userpermissions )) || ($USER->id == $item->setbyuserid && $this->havePermission( self::PERMISSION_DEL_OWN, $this->userpermissions ))){
-                    $output .= "<a href='#' onclick='ELBP.Custom.delete_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".$OUTPUT->pix_url('t/delete', 'core')."' alt='' /> ".get_string('delete', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
+                    $output .= "<a href='#' onclick='ELBP.Custom.delete_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/delete', 'delete', 'core')."' alt='' /> ".get_string('delete', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
                 }
                 if ( ($this->havePermission( self::PERMISSION_PRINT, $this->userpermissions )) ){
-                    $output .= "<a href='{$CFG->wwwroot}/blocks/elbp/print.php?plugin={$this->id}&object={$item->id}&student={$item->studentid}&custom=1' target='_blank' ><img src='".$OUTPUT->pix_url('t/print', 'core')."' alt='' /> ".get_string('print', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
+                    $output .= "<a href='{$CFG->wwwroot}/blocks/elbp/print.php?plugin={$this->id}&object={$item->id}&student={$item->studentid}&custom=1' target='_blank' ><img src='".elbp_image_url('t/print', 'core')."' alt='' /> ".get_string('print', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
                 }
                 $output .= "</small><br><br>";
             $output .= "</div>";
@@ -3908,6 +4035,132 @@ class CustomPlugin {
         
     }
     
+    public function isNotifyEnabled(){
+        $setting = $this->getSetting('notify_enabled');
+        return ($setting == 1);
+    }
+    
+    public function getNotifyUsers(){
+        
+        $return = array();
+        
+        $setting = $this->getSetting('notify_users');
+        if ($setting)
+        {
+            $emails = explode(",", $setting);
+            foreach($emails as $email)
+            {
+                $return[] = trim($email);
+            }
+        }
+        
+        return $return;
+        
+    }
+    
+    private function notifyUser($emailToUser){
+                
+        $content = $this->getSetting('notify_message') . "\n\n" . $this->getInfoForEvent();
+        
+        $Alert = new \ELBP\EmailAlert();
+        return $Alert->queue("email", $emailToUser, $this->getTitle() . ' :: ' . get_string('notification', 'block_elbp'), $content, nl2br($content));        
+        
+    }
+    
+    /**
+     * Get the content for the triggered alert emails
+     * @global \ELBP\Plugins\Comments\type $CFG
+     * @global \ELBP\Plugins\Comments\type $USER
+     * @param type $useHtml
+     * @param type $tmp
+     * @return string
+     */
+    private function getInfoForEvent()
+    {
+        global $CFG, $USER;
+            
+        $output = "";
+        
+        $output .= "\n----------\n";
+        $output .= get_string('student', 'block_elbp') . ": " . fullname($this->getStudent()) . " ({$this->getStudent()->username})\n";
+        
+        // Attributes
+        if ($this->studentattributes)
+        {
+
+            foreach($this->studentattributes as $field => $value)
+            {
+                if (is_array($value)){
+                    $value = implode(",", $value);
+                }
+                $value = preg_replace("/\n/", " ", $value);
+                $output .= $field . ": <b>" . $value . "</b>\n\n";                    
+            }
+
+        }
+
+        $output .= "----------\n";
+        $output .= get_string('updatedby', 'block_elbp') . ": " . fullname($USER) . "\n";
+        $output .= get_string('link', 'block_elbp') . ": " . "{$CFG->wwwroot}/blocks/elbp/view.php?id={$this->student->id}\n";
+        
+        return $output;
+        
+    }
+    
+    
+    public function getLastUpdated(){
+        
+        global $DB;
+        
+        $structure = $this->getStructure();
+        if ($structure == 'multi' || $structure == 'incremental'){
+            
+            $record = $DB->get_records("lbp_custom_plugin_items", array("studentid" => $this->student->id, "pluginid" => $this->id, "del" => 0), "settime DESC", "settime", 0, 1);
+            $record = reset($record);
+            return ($record) ? $record->settime : false;
+            
+        } else {
+            return false;
+        }
+        
+    }
+    
+    
+     /**
+     * Get the alert events on this plugin
+     * @global \ELBP\Plugins\type $DB
+     * @return type
+     */
+    public function getAlertEvents(){
+        return false;
+    }
+    
+    
+    
+    
+    /**
+     * Get all custom plugins for dashboard
+     * @global \ELBP\Plugins\type $DB
+     * @return type
+     */
+    public static function all(){
+        
+        global $DB;
+        
+        $return = array();
+        $records = $DB->get_records("lbp_custom_plugins", array("enabled" => 1), "name ASC");
+        
+        if ($records)
+        {
+            foreach($records as $record)
+            {
+                $return[$record->id] = $record->name;
+            }
+        }
+                
+        return $return;
+        
+    }
     
     
 }
