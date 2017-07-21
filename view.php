@@ -82,11 +82,11 @@ else
     // If course is set, put that into breadcrumb
     if ($course){
         $PAGE->navbar->add( $course->shortname , $CFG->wwwroot . "/course/view.php?id={$course->id}", navigation_node::TYPE_COURSE);
-        $PAGE->navbar->add( $ELBP->getELBPShortName() , $CFG->wwwroot . "/blocks/elbp/mystudents.php?view=course&courseid={$course->id}", navigation_node::TYPE_CUSTOM);
+        $PAGE->navbar->add( $ELBP->getELBPShortName() , $CFG->wwwroot . "/blocks/bc_dashboard/view/course/{$course->id}", navigation_node::TYPE_CUSTOM);
     }
     else
     {
-        $PAGE->navbar->add( $ELBP->getELBPShortName() , $CFG->wwwroot . "/blocks/elbp/mystudents.php", navigation_node::TYPE_CUSTOM);
+        $PAGE->navbar->add( $ELBP->getELBPShortName() , $CFG->wwwroot . "/blocks/bc_dashboard/", navigation_node::TYPE_CUSTOM);
     }
     $PAGE->navbar->add( fullname($user) . " ({$user->username})" , null, navigation_node::TYPE_CUSTOM);
 }
