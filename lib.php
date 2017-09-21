@@ -1070,6 +1070,7 @@ JS;
     }
     
     
+    $elbp_image_url = 'elbp_image_url';
     
     echo <<<JS
                 
@@ -1104,8 +1105,8 @@ JS;
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_name"><span>-</span> <input id="attribute_row_'+numA+'_field_name_input" type="hidden" name="elementNames['+numA+']" value="" /></td>');
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_type"><span>'+type+'</span> <input id="attribute_row_'+numA+'_field_type_input" type="hidden" name="elementTypes['+numA+']" value="'+type+'" /></td>');
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_display" class="elbp_centre"><img src="{$CFG->wwwroot}/blocks/elbp/pix/icons/question.png" /> <input id="attribute_row_'+numA+'_field_display_input" type="hidden" name="elementDisplays['+numA+']" value="" /></td>');
-            $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_edit_col" class="noSort"><input type="hidden" id="attribute_row_'+numA+'_field_default_input" name="elementDefault['+numA+']" value="" /><input type="hidden" id="attribute_row_'+numA+'_field_instructions_input" name="elementInstructions['+numA+']" value="" /><a href="#" onclick="editAttribute(\''+numA+'\');return false;" title="{$string['edit']}"><img src="{elbp_image_url('t/edit')}" /></a></td>');
-            $('#attribute_row_'+numA).append('<td><a href="#" onclick="removeField('+numA+');return false;" title="{$string['delete']}"><img src="{elbp_image_url('t/delete')}" /></a></td>');
+            $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_edit_col" class="noSort"><input type="hidden" id="attribute_row_'+numA+'_field_default_input" name="elementDefault['+numA+']" value="" /><input type="hidden" id="attribute_row_'+numA+'_field_instructions_input" name="elementInstructions['+numA+']" value="" /><a href="#" onclick="editAttribute(\''+numA+'\');return false;" title="{$string['edit']}"><img src="{$elbp_image_url('t/edit')}" /></a></td>');
+            $('#attribute_row_'+numA).append('<td><a href="#" onclick="removeField('+numA+');return false;" title="{$string['delete']}"><img src="{$elbp_image_url('t/delete')}" /></a></td>');
         
             var f = {};
             f.name = '';
@@ -3389,7 +3390,7 @@ function block_elbp_extend_navigation_user(navigation_node $navigation, stdClass
 function elbp_image_url($imagename, $component = 'moodle'){
     
     global $OUTPUT;
-    
+        
     if (method_exists($OUTPUT, 'image_url')){
         return $OUTPUT->image_url($imagename, $component);
     } else {

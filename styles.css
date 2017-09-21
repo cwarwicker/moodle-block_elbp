@@ -4244,6 +4244,7 @@ table.elbp_plugin_layouts th
 div.elbp_layout_plugin_name,
 div.elbp_layout_plugins_dump ul li
 {
+    height: 18px;
     font-size: 8pt;
     padding: 2px 4px;
     margin: 2px;
