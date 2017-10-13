@@ -25,8 +25,8 @@
 namespace ELBP;
 
 if(!defined('ELBP')) define('ELBP', true);
-define('REMOTE_HOST_URL', 'http://moodleportal.bedford.ac.uk');
-define('REMOTE_VERSION_URL', 'http://moodleportal.bedford.ac.uk/elbp_version.txt');
+define('REMOTE_HOST_URL', 'https://github.com/cwarwicker/moodle-block_elbp');
+define('REMOTE_VERSION_URL', 'https://github.com/cwarwicker/moodle-block_elbp/blob/master/v.txt');
 
 /**
  * 
@@ -36,7 +36,7 @@ class ELBP
     
     const MAJOR_VERSION = 1;
     const MINOR_VERSION = 2;
-    const BUILD_NUMBER = 0;
+    const BUILD_NUMBER = 1;
     
     private $CFG;
     private $DB;
@@ -767,16 +767,26 @@ class ELBP
                     $conn = \ELBP\MIS\Manager::getMoodleConnectionType();
                     
                     // Only supports MySQL at the moment, as I don't know how to replicate it with others
-                    try {
-                         $conn->connect( array('host' => $CFG->dbhost, 'user' => $CFG->dbuser, 'pass' => $CFG->dbpass, 'db' => $CFG->dbname) );
-                         // Get the information about all the ELBP tables in the Moodle database
-                         $tables = $conn->getTableInfo(null, $CFG->prefix . 'lbp_');
-                    } catch (\ELBP\ELBPException $e){
+                    if ($conn){
                         
+                        try {
+                        
+                            $conn->connect( array('host' => $CFG->dbhost, 'user' => $CFG->dbuser, 'pass' => $CFG->dbpass, 'db' => $CFG->dbname) );
+
+                            // Get the information about all the ELBP tables in the Moodle database
+                            $tables = $conn->getTableInfo(null, $CFG->prefix . 'lbp_');
+                            $TPL->set("tables", $tables);
+                            $TPL->set("purgeTables", self::getSupportDBTablesForPurging());
+                        
+                        } catch (\ELBP\ELBPException $e){
+                            
+                        }
+                        
+                    } else {                        
+                        print_error( get_string('env:mysqlonly', 'block_elbp') );                        
                     }               
                     
-                    $TPL->set("tables", $tables);
-                    $TPL->set("purgeTables", self::getSupportDBTablesForPurging());
+                    
                     
                     
                 break;

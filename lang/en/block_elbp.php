@@ -527,6 +527,7 @@ $string['enddate'] = 'End Date';
 $string['enddateandweek'] = 'End Date/Week';
 $string['enddateandweek:desc'] = 'What week number should we end at? And what date should that be?';
 $string['english'] = 'English';
+$string['env:mysqlonly'] = 'Currently only MySQL is supported for checking the Environment';
 $string['env:warning:index'] = 'This table has not been indexed. This could potentially make it quite slow to query if there are a lot of records';
 $string['env:warning:tablesize'] = 'This table is taking up quite a lot of space, you may want to consider purging it of old data to speed up query times';
 $string['environment'] = 'Environment';

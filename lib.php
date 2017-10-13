@@ -3387,14 +3387,23 @@ function block_elbp_extend_navigation_user(navigation_node $navigation, stdClass
     $navigation->add(get_string('viewelbp', 'block_elbp'), new moodle_url('/blocks/elbp/view.php', array('id' => $user->id)));
 }
 
+
+/**
+ * Get an image URL from Moodle
+ * This used to be using the normal $OUTPUT->image_url() or $OUTPUT->pix_url(), but it doesn't work in AJAX calls, as $OUTPUT is not initialised, so changed to $PAGE->theme
+ * @global type $PAGE
+ * @param type $imagename
+ * @param type $component
+ * @return type
+ */
 function elbp_image_url($imagename, $component = 'moodle'){
     
-    global $OUTPUT;
+    global $PAGE;
         
-    if (method_exists($OUTPUT, 'image_url')){
-        return $OUTPUT->image_url($imagename, $component);
+    if (method_exists($PAGE->theme, 'image_url')){
+        return $PAGE->theme->image_url($imagename, $component);
     } else {
-        return $OUTPUT->pix_url($imagename, $component);
+        return $PAGE->theme->pix_url($imagename, $component);
     }
     
     
