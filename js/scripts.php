@@ -1215,8 +1215,8 @@ $output = <<<JS
             },
             
             edit : function(section){
-                var hide = '#elbp_studentprofile_'+section+'_simple';
-                var show = '#elbp_studentprofile_'+section+'_edit';
+                var hide = '.elbp_studentprofile_'+section+'_simple';
+                var show = '.elbp_studentprofile_'+section+'_edit';
                 var link = '#elbp_studentprofile_'+section+'_edit_link';
                 
                 ELBP.hide(hide);
@@ -1231,8 +1231,8 @@ $output = <<<JS
             
             edit_return : function(section){
             
-                var hide = '#elbp_studentprofile_'+section+'_edit';
-                var show = '#elbp_studentprofile_'+section+'_simple';
+                var hide = '.elbp_studentprofile_'+section+'_edit';
+                var show = '.elbp_studentprofile_'+section+'_simple';
                 var link = '#elbp_studentprofile_'+section+'_edit_link';
                                 
                 ELBP.hide(hide);

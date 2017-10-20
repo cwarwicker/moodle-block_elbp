@@ -2803,6 +2803,7 @@ div.elbp_popup_header
 table.elbp_popup_header_table
 {
     width: 100%;
+    background-color: inherit;
 }
 
 table.elbp_popup_header_table td
