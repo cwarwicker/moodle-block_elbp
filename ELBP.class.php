@@ -36,7 +36,7 @@ class ELBP
     
     const MAJOR_VERSION = 1;
     const MINOR_VERSION = 2;
-    const BUILD_NUMBER = 1;
+    const BUILD_NUMBER = 2;
     
     private $CFG;
     private $DB;
@@ -49,8 +49,8 @@ class ELBP
     private $errorMsg;
     
     private $string;
-    public $dirCustomPix;
-    public $wwwCustomPix;
+    
+    public $dir;
     
     /**
      * Construct the global ELBP object
@@ -69,8 +69,7 @@ class ELBP
         $this->student = false;
         $this->courseID = false;
         $this->group = false;
-        $this->dirCustomPix = $CFG->dirroot . '/blocks/elbp/pix/uploads/';
-        $this->wwwCustomPix = $CFG->wwwroot . '/blocks/elbp/pix/uploads/';
+        $this->dir = $CFG->dataroot . DIRECTORY_SEPARATOR . 'ELBP';
                 
         if (is_null($options) || !isset($options['load_plugins']) || $options['load_plugins'] == true){
             
@@ -170,7 +169,7 @@ class ELBP
         
         global $CFG;
         $logo = \ELBP\Setting::getSetting('print_logo');
-        return ($logo) ? $CFG->wwwroot . '/blocks/elbp/pix/uploads/' . $logo : false;
+        return ($logo) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($CFG->dataroot . DIRECTORY_SEPARATOR . 'ELBP' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $logo) : false;
         
     }
     
@@ -1544,10 +1543,10 @@ class ELBP
             }
             
             // Resort array keys
-            $manualProgressColours['ranks'] = array_values($manualProgressColours['ranks']);
-            $manualProgressColours['titles'] = array_values($manualProgressColours['titles']);
-            $manualProgressColours['colours'] = array_values($manualProgressColours['colours']);
-            $manualProgressColours['desc'] = array_values($manualProgressColours['desc']);
+            $manualProgressColours['ranks'] = ($manualProgressColours['ranks']) ? array_values($manualProgressColours['ranks']) : null;
+            $manualProgressColours['titles'] = ($manualProgressColours['titles']) ? array_values($manualProgressColours['titles']) : null;
+            $manualProgressColours['colours'] = ($manualProgressColours['colours']) ? array_values($manualProgressColours['colours']) : null;
+            $manualProgressColours['desc'] = ($manualProgressColours['desc']) ? array_values($manualProgressColours['desc']) : null;
             
             $settings['manual_student_progress'] = serialize($manualProgressColours);
                         
@@ -1555,10 +1554,10 @@ class ELBP
             unset($settings['progress_titles']);
             unset($settings['progress_colours']);
             unset($settings['progress_desc']);
-            
+                                    
             // For every setting sent in the POST, update it
             foreach( (array)$settings as $setting => $value ){
-                $this->updateSetting($setting, $value);
+                $this->updateSetting($setting, trim($value));
             }
             
             $MSGS['success'] = get_string('settingsupdated', 'block_elbp');
@@ -1594,8 +1593,8 @@ class ELBP
                 
                 if ($currentLogo){
                     
-                    if (file_exists($this->dirCustomPix . $currentLogo)){
-                        unlink($this->dirCustomPix . $currentLogo);
+                    if (file_exists($this->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $currentLogo)){
+                        unlink($this->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $currentLogo);
                     }
                     
                     $this->deleteSetting('print_logo');
@@ -1617,6 +1616,9 @@ class ELBP
             // FILES for logo img
             if (isset($_FILES['logo']) && $_FILES['logo']['error'] == 0){
                 
+                // Make sure data directory exists
+                $this->createDataDirectory('uploads');
+                
                  $fInfo = finfo_open(FILEINFO_MIME_TYPE);
                  $mime = finfo_file($fInfo, $_FILES['logo']['tmp_name']);
                  finfo_close($fInfo);
@@ -1624,10 +1626,11 @@ class ELBP
                  $array = array('image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/pjpeg');
                  if (in_array($mime, $array))
                  {
-                      $result = move_uploaded_file($_FILES['logo']['tmp_name'], $this->dirCustomPix . $_FILES['logo']['name']);
+                      $result = move_uploaded_file($_FILES['logo']['tmp_name'], $this->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR  . $_FILES['logo']['name']);
                       if ($result)
                       {
                           $this->updateSetting('print_logo', $_FILES['logo']['name']);
+                          \elbp_create_data_path_code($this->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR  . $_FILES['logo']['name']);
                       }
                       else
                       {

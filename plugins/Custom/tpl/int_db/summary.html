@@ -3,7 +3,7 @@
 <table class="elbp_summary_table">
     <tbody>
       <tr>
-        <td class="elbp_summary_title" <?php if ($obj->getSetting('plugin_icon') !== false): ?> style="background-image:url('<?= $ELBP->wwwCustomPix ?><?= $obj->getSetting('plugin_icon') ?>');" <?php else: ?> style="height:32px" <?php endif; ?>>
+        <td class="elbp_summary_title" <?php if ($obj->getSetting('plugin_icon') !== false): ?> style="background-image:url('<?= $obj->getPrintLogo('plugin_icon') ?>');" <?php else: ?> style="height:32px" <?php endif; ?>>
             <?= $obj->getSetting('plugin_summary_title') ?>
         </td>  
       </tr>

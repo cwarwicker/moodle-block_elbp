@@ -2701,6 +2701,7 @@ div#elbp_dock_left ul#elbp_dock_list
     list-style-type: none;
     width: 100%;
     text-align: center;
+    padding: 0;
 }
 
 div#elbp_dock_left ul#elbp_dock_list li

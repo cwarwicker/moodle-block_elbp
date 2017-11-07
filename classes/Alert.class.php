@@ -149,7 +149,6 @@ abstract class Alert {
         {
             
             $EmailAlert = new \ELBP\EmailAlert();
-            // [SMS here when done it]
             
             foreach($records as $record)
             {

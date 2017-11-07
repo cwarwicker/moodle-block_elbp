@@ -75,16 +75,16 @@
     <small><strong><?= $string['logo'] ?></strong> - <?= $string['logo:desc'] ?></small>
     <br>
     <small>
-        <?php if (is_writable($ELBP->dirCustomPix)): ?>
-            <b class='elbp_good'><?= get_string('dirwritable', 'block_elbp') ?> : <?= $ELBP->dirCustomPix ?></b>
+        <?php if (is_writable($ELBP->dir)): ?>
+            <b class='elbp_good'><?= get_string('dirwritable', 'block_elbp') ?> : <?= $ELBP->dir ?></b>
         <?php else : ?>
-            <b class='elbp_error'><?= get_string('dirnotwritable', 'block_elbp') ?> : <?= $ELBP->dirCustomPix ?></b>
+            <b class='elbp_error'><?= get_string('dirnotwritable', 'block_elbp') ?> : <?= $ELBP->dir ?></b>
         <?php endif; ?>
     </small>
     <br>
     <p>
         <?php if ($ELBP->getSetting('print_logo') !== false): ?>
-            <img style="max-height:50px;" src="<?= $ELBP->wwwCustomPix . $ELBP->getSetting('print_logo') ?>" alt="<?= get_string('logo', 'block_elbp') ?>" /> &nbsp; 
+        <img style="max-height:50px;" src="<?= \ELBP\ELBP::getPrintLogo() ?>" /> &nbsp; 
             <input type="checkbox" name="logo_delete_current" value="1" /> <?= get_string('delete') ?><br><br>
         <?php endif; ?>
         <input type="file" name="logo" value="" />

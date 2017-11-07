@@ -502,7 +502,6 @@ $string['elbp:config:jquery:desc'] = 'If your theme uses jQuery check this box t
 $string['elbp:config:emailalerts'] = 'Email Alerts';
 $string['elbp:config:emailalerts:desc'] = 'Enable/Disable email alerts';
 
-
 $string['edit'] = 'Edit';
 $string['editattribute'] = 'Edit Attribute';
 $string['editcoursereport'] = 'Edit Course Report';

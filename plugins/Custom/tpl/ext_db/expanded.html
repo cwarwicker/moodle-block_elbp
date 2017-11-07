@@ -10,7 +10,7 @@
     
     <?php if ($obj->getSetting('plugin_icon') !== false): ?>
         <div id="custom_plugin_single_icon">
-            <img src="<?= $ELBP->wwwCustomPix ?><?= $obj->getSetting('plugin_icon') ?>" alt="<?= $obj->getTitle() ?>">
+            <img src="<?= $obj->getPrintLogo('plugin_icon') ?>" alt="<?= $obj->getTitle() ?>">
         </div>
     <?php endif; ?>
     

@@ -257,7 +257,7 @@ class EmailAlert extends Alert {
         if (is_null($sentBy)){
             $sentBy = $user;
         }
-                
+                        
         // If we have a historyid to check, update the record in history with new time
         if (!is_null($historyID))
         {
@@ -267,21 +267,7 @@ class EmailAlert extends Alert {
             $DB->update_record("lbp_alert_history", $data);
         }
         
-        // Insert moodle message
-        $data = new \stdClass();
-        $data->component = 'moodle';
-        $data->name = 'instantmessage';
-        $data->userfrom = $sentBy->id;
-        $data->userto = $user->id;
-        $data->subject = $subject;
-        $data->fullmessage = $content;
-        $data->fullmessageformat = FORMAT_MOODLE;
-        $data->fullmessagehtml = $htmlContent;
-        $data->smallmessage = $content;
-        $data->notification = 0;
-        
-        // This should send an instant message and also an email, same as the normal Moodle message system
-        return message_send($data);
+        return email_to_user($user, $sentBy, $subject, $content, $htmlContent);
                 
         
     }

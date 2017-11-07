@@ -522,6 +522,19 @@ class CustomPlugin {
         
     }
     
+    public function getPrintLogo($type){
+        
+        global $CFG;
+        $logo = $this->getSetting($type);
+        return ($logo) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($CFG->dataroot . DIRECTORY_SEPARATOR . 'ELBP' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $logo) : false;
+        
+        
+    }
+    
+    public function getDockIconPath(){
+        return $this->getPrintLogo('plugin_icon_dock');
+    }
+    
     /**
      * Don't need any specific PHP extensions for custom plugins
      * @return boolean
@@ -1194,19 +1207,7 @@ class CustomPlugin {
         
     }
     
-    public function getDockIconPath(){
-        
-        global $ELBP;
-        
-        $setting = $this->getSetting('plugin_icon_dock');
-        if ($setting)
-        {
-            return $ELBP->wwwCustomPix . $setting;
-        }
-        
-        return '';
-        
-    }
+    
     
     /**
      * Change the colour of the close icon based on colours selected
@@ -1288,10 +1289,11 @@ class CustomPlugin {
                  $array = array('image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/pjpeg');
                  if (in_array($mime, $array))
                  {
-                      $result = move_uploaded_file($_FILES['plugin_icon']['tmp_name'], $ELBP->dirCustomPix . $name);
+                      $result = move_uploaded_file($_FILES['plugin_icon']['tmp_name'], $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
                       if ($result)
                       {
                           $this->updateSetting('plugin_icon', $name);
+                          \elbp_create_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
                       }
                       else
                       {
@@ -1322,10 +1324,11 @@ class CustomPlugin {
                  $array = array('image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/pjpeg');
                  if (in_array($mime, $array))
                  {
-                      $result = move_uploaded_file($_FILES['plugin_icon_dock']['tmp_name'], $ELBP->dirCustomPix . $name);
+                      $result = move_uploaded_file($_FILES['plugin_icon_dock']['tmp_name'], $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
                       if ($result)
                       {
-                          $this->updateSetting('plugin_icon_dock', $name);
+                            $this->updateSetting('plugin_icon_dock', $name);
+                            \elbp_create_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
                       }
                       else
                       {
@@ -1766,16 +1769,16 @@ class CustomPlugin {
                 
         $output .= "<small><strong>".get_string('summaryconfig:icon', 'block_elbp')."</strong> - ".get_string('summaryconfig:icon:desc', 'block_elbp')."</small><br>";
         $output .= "<small>";
-            if (is_writable($ELBP->dirCustomPix)){
-                $output .= "<b class='elbp_good'>".get_string('dirwritable', 'block_elbp')." : {$ELBP->dirCustomPix}</b>";
+            if (is_writable($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads')){
+                $output .= "<b class='elbp_good'>".get_string('dirwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
             } else {
-                $output .= "<b class='elbp_error'>".get_string('dirnotwritable', 'block_elbp')." : {$ELBP->dirCustomPix}</b>";
+                $output .= "<b class='elbp_error'>".get_string('dirnotwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
             }
             
         $output .= "</small><br>";
         
         if ($this->getSetting('plugin_icon') !== false){
-            $output .= "<img src='{$ELBP->wwwCustomPix}{$this->getSetting('plugin_icon')}' alt='' style='width:64px;height:64px;' /><br>";
+            $output .= "<img src='".$this->getPrintLogo('plugin_icon')."' alt='' style='width:64px;height:64px;' /><br>";
         }
         
         $output .= "<input type='file' name='plugin_icon' value='' />";
@@ -1785,16 +1788,16 @@ class CustomPlugin {
                 
         $output .= "<small><strong>".get_string('summaryconfig:dockicon', 'block_elbp')."</strong> - ".get_string('summaryconfig:dockicon:desc', 'block_elbp')."</small><br>";
         $output .= "<small>";
-            if (is_writable($ELBP->dirCustomPix)){
-                $output .= "<b class='elbp_good'>".get_string('dirwritable', 'block_elbp')." : {$ELBP->dirCustomPix}</b>";
+            if (is_writable($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads')){
+                $output .= "<b class='elbp_good'>".get_string('dirwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
             } else {
-                $output .= "<b class='elbp_error'>".get_string('dirnotwritable', 'block_elbp')." : {$ELBP->dirCustomPix}</b>";
+                $output .= "<b class='elbp_error'>".get_string('dirnotwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
             }
             
         $output .= "</small><br>";
         
         if ($this->getSetting('plugin_icon_dock') !== false){
-            $output .= "<img src='{$ELBP->wwwCustomPix}{$this->getSetting('plugin_icon_dock')}' alt='' style='width:64px;height:64px;' /><br>";
+            $output .= "<img src='". $CFG->wwwroot . "/blocks/elbp/download.php?f=".\elbp_get_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $this->getSetting('plugin_icon_dock'))."' alt='' style='width:64px;height:64px;' /><br>";
         }
         
         $output .= "<input type='file' name='plugin_icon_dock' value='' />";
@@ -3323,7 +3326,7 @@ class CustomPlugin {
             $output .= "<tr>";
                 $output .= "<td class='elbp_object_icon'>";
                 if ($this->getSetting('plugin_icon') !== false){
-                    $output .= "<img src='{$ELBP->wwwCustomPix}{$this->getSetting('plugin_icon')}' alt='{$this->getName()}'>";
+                    $output .= "<img src='". $CFG->wwwroot . "/blocks/elbp/download.php?f=".\elbp_get_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $this->getSetting('plugin_icon'))."' alt='{$this->getName()}'>";
                 }
 
                 $output .= "<td class='elbp_object_name'>";
