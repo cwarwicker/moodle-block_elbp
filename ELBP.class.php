@@ -36,7 +36,7 @@ class ELBP
     
     const MAJOR_VERSION = 1;
     const MINOR_VERSION = 2;
-    const BUILD_NUMBER = 2;
+    const BUILD_NUMBER = 3;
     
     private $CFG;
     private $DB;

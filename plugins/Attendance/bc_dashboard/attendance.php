@@ -59,7 +59,7 @@ class attendance extends \BCDB\Report\Element {
         }
         
         $this->sql['select'] = $this->alias.'.value';
-        $this->sql['join'][] = "left join {lbp_att_punc} {$this->alias} on ({$this->alias}.studentid = user.id and {$this->alias}.type = ? and {$this->alias}.period = ? AND {$this->alias}.courseid IS NULL)";
+        $this->sql['join'][] = "left join {lbp_att_punc} {$this->alias} on ({$this->alias}.studentid = u.id and {$this->alias}.type = ? and {$this->alias}.period = ? AND {$this->alias}.courseid IS NULL)";
         $this->sql['params'][] = $type;
         $this->sql['params'][] = $period;
                         

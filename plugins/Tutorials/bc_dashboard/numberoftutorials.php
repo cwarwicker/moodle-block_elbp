@@ -30,7 +30,7 @@ class numberoftutorials extends \BCDB\Report\Element {
     public function get() {
                         
         $this->sql['select'] = "count(distinct {$this->alias}.id)";
-        $this->sql['join'][] = "left join {lbp_tutorials} {$this->alias} on ({$this->alias}.studentid = user.id and {$this->alias}.del = 0)";
+        $this->sql['join'][] = "left join {lbp_tutorials} {$this->alias} on ({$this->alias}.studentid = u.id and {$this->alias}.del = 0)";
                         
     }
     

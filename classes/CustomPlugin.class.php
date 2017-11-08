@@ -3346,10 +3346,10 @@ class CustomPlugin {
             $output .= "<div class='elbp_centre'>";
                 $output .= "<small>";
                 if ( ($USER->id <> $item->setbyuserid && $this->havePermission( self::PERMISSION_EDIT_ANY, $this->userpermissions )) || ($USER->id == $item->setbyuserid && $this->havePermission( self::PERMISSION_EDIT_OWN, $this->userpermissions ))){
-                    $output .= "<a href='#' onclick='ELBP.Custom.edit_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/editstring', 'edit', 'core')."' alt='' /> ".get_string('edit', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
+                    $output .= "<a href='#' onclick='ELBP.Custom.edit_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/editstring', 'core')."' alt='' /> ".get_string('edit', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
                 }
                 if ( ($USER->id <> $item->setbyuserid && $this->havePermission( self::PERMISSION_DEL_ANY, $this->userpermissions )) || ($USER->id == $item->setbyuserid && $this->havePermission( self::PERMISSION_DEL_OWN, $this->userpermissions ))){
-                    $output .= "<a href='#' onclick='ELBP.Custom.delete_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/delete', 'delete', 'core')."' alt='' /> ".get_string('delete', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
+                    $output .= "<a href='#' onclick='ELBP.Custom.delete_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/delete', 'core')."' alt='' /> ".get_string('delete', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
                 }
                 if ( ($this->havePermission( self::PERMISSION_PRINT, $this->userpermissions )) ){
                     $output .= "<a href='{$CFG->wwwroot}/blocks/elbp/print.php?plugin={$this->id}&object={$item->id}&student={$item->studentid}&custom=1' target='_blank' ><img src='".elbp_image_url('t/print', 'core')."' alt='' /> ".get_string('print', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";

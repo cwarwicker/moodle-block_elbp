@@ -1,4 +1,4 @@
-# Electronic Learning Blue Print (v1.2.0)
+# Electronic Learning Blue Print (v1.2.3)
 
 This plugin provides you with the Electronic Learning Blue Print block, which is an Individual Learning Plan system, which provides you with one centralised place to see all of the information relevant for a student, such as Attendance, Targets, Timetables, Registers, etc...
 

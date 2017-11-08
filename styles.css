@@ -2238,12 +2238,13 @@ div.elbp_summary_box_header
 {
     height: 24px;
     text-align: center;
-    padding-top: 6px;
+    padding-top: 3px;
     font-weight: bold;
     border-bottom: 1px solid #dedede;
     background-color: #ffffff;
     color: #000000;
     cursor: col-resize;
+    font-size: 10pt;
 }
 
 div.elbp_summary_box_header:hover
@@ -2265,7 +2266,7 @@ div.elbp_summary_box_footer
     font-size: 8pt;
     border-top: 1px solid #dedede;
     background-color: #eff0f0;
-    padding-top: 4px;
+    padding: 0;
 }
 
 div.elbp_summary_box_footer:hover

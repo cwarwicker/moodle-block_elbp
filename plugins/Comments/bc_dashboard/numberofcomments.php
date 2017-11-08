@@ -43,15 +43,15 @@ class numberofcomments extends \BCDB\Report\Element {
         // What are the joins we need?
         if ($status == 'positive' || $status == 'negative'){
             $positive = ($status == 'positive') ? 1 : -1;
-            $this->sql['join'][] = "left join {lbp_comments} {$this->alias} on ({$this->alias}.studentid = user.id and {$this->alias}.del = 0 and {$this->alias}.positive = ?)";
+            $this->sql['join'][] = "left join {lbp_comments} {$this->alias} on ({$this->alias}.studentid = u.id and {$this->alias}.del = 0 and {$this->alias}.positive = ?)";
             $this->sql['params'][] = $positive;
         } else {
-            $this->sql['join'][] = "left join {lbp_comments} {$this->alias} on ({$this->alias}.studentid = user.id and {$this->alias}.del = 0)";
+            $this->sql['join'][] = "left join {lbp_comments} {$this->alias} on ({$this->alias}.studentid = u.id and {$this->alias}.del = 0)";
         }
         
         // If percent we need to join again to get ALL, regardless of status
         if ($type == 'percent'){
-            $this->sql['join'][] = "left join {lbp_comments} {$this->alias}_2 on ({$this->alias}_2.studentid = user.id and {$this->alias}_2.del = 0)";
+            $this->sql['join'][] = "left join {lbp_comments} {$this->alias}_2 on ({$this->alias}_2.studentid = u.id and {$this->alias}_2.del = 0)";
         }
                         
     }

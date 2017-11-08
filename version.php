@@ -20,10 +20,10 @@
  * 
  */
 
-$plugin->version = 2017110700;
+$plugin->version = 2017110800;
 $plugin->requires = 2012062502;
 $plugin->cron = 3600; # Run every hour
 $plugin->component = 'block_elbp';
 $plugin->dependencies = array(
-    'block_bc_dashboard' => 2017060700
+    'block_bc_dashboard' => 2017110800
 );
