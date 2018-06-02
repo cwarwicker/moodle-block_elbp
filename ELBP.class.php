@@ -678,7 +678,7 @@ class ELBP
     public function displayConfig($view)
     {
         global $CFG, $MSGS, $FORMVALS, $OUTPUT, $PAGE;
-        
+                
         $TPL = new \ELBP\Template();
         $TPL->set("ELBP", $this);
         try {
@@ -1456,9 +1456,7 @@ class ELBP
                     //check student id exists in db
                     $stuCheck = $DB->get_record("user",array("username"=>$stuUSN),'id');
                     if($stuCheck){
-                        //print_object($stuUSN);
                         //if it does then add to the $record array
-                        #$record->stuUSN = $stuUSN;
                         $record->studentid  = $stuCheck->id;
                     }else{
                         //otherwise increase error count ($errorCount)
@@ -1471,7 +1469,6 @@ class ELBP
                     $tutCheck = $DB->get_record("user",array("username"=>$tutUSN),'id,username');
                     if($tutCheck){
                         //if it does then add to the $record array
-                        #$record->tutUSN = $tutUSN;
                         $record->tutorid  = $tutCheck->id;
                     }else{
                         //otherwise increase error count ($errorCount)
@@ -1517,7 +1514,6 @@ class ELBP
                                     
             // Checkboxes need int values
             $settings['elbp_use_gradients'] = (isset($settings['elbp_use_gradients'])) ? '1' : '0';
-            $settings['use_theme_js'] = (isset($settings['use_theme_js'])) ? '1' : '0';
             $settings['enable_email_alerts'] = (isset($settings['enable_email_alerts'])) ? '1' : '0';
             
             // Progress colours & descs will be arrays
@@ -3074,16 +3070,13 @@ class ELBP
         $PAGE->requires->jquery();
         $PAGE->requires->jquery_plugin('ui');
         
-        
-        
+        // Simple load is used outside of standard moodle renderers, e.g. print view, parent portal plugin
         if ($simple)
         {
             
-//            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/jquery-1.9.1.js'></script>";
-//            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/jquery-ui-1.10.3.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery.hotkeys-0.7.9.min.js'></script>";
-            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js'></script>";
+            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/raty/jquery.raty.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/scripts.php?studentid=" . $studID . "&courseid=" . $courseID . "&screwcaching=" . time() . "'></script>";
@@ -3099,14 +3092,9 @@ class ELBP
         else
         {
             
-//            $useThemeJS = \ELBP\Setting::getSetting("use_theme_js");
-//            if (!$useThemeJS || $useThemeJS == 0){
-//                $PAGE->requires->js( '/blocks/elbp/js/jquery/jquery-1.9.1.js', true );
-//                $PAGE->requires->js( '/blocks/elbp/js/jquery/jquery-ui-1.10.3.js', true );
-//            }
             $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.js' );
             $PAGE->requires->js( '/blocks/elbp/js/jquery.hotkeys-0.7.9.min.js' );
-            $PAGE->requires->js( '/blocks/elbp/js/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js' );
+            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js' );
             $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.js' );
             $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/raty/jquery.raty.js' );
             $PAGE->requires->js( '/blocks/elbp/js/scripts.php?studentid=' . $studID . '&courseid=' . $courseID . '&screwcaching=' . time() );
@@ -3139,9 +3127,9 @@ class ELBP
         {
             
             $output = "";
-            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/css/start/jquery-ui-1.10.3.custom.min.css' />";
+            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/css/start/jquery-ui.min.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.css' />";
-            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' />";
+            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/raty/jquery.raty.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/css/application.css' />";
@@ -3151,9 +3139,9 @@ class ELBP
         else
         {
         
-            $PAGE->requires->css( '/blocks/elbp/js/jquery/css/start/jquery-ui-1.10.3.custom.min.css' );
+            $PAGE->requires->css( '/blocks/elbp/js/jquery/css/start/jquery-ui.min.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.css' );
-            $PAGE->requires->css( '/blocks/elbp/js/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' );
+            $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/raty/jquery.raty.css' );
             $PAGE->requires->css( '/blocks/elbp/css/application.css' );

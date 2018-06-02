@@ -137,33 +137,37 @@ class ELBPForm {
      * @return string
      */
     public function convertElementsToDataString(){
-                
+                        
         if ($this->elements) return "elbpform:" . json_encode($this->elements);
         else return "";
         
     }
     
     public function convertDataStringToElements(){
-        
+                
         if ($this->data){
             
             // If stored in new form
             if ( preg_match("/^elbpform:/", $this->data) ){
+                
                 $this->data = str_replace("elbpform:", "", $this->data);
                 $elementsArray = \json_decode($this->data);
                 $elements = array();
-                
+                                
                 foreach($elementsArray as $element)
                 {
+                    
                     $el = \ELBP\ELBPFormElement::create($element);
                     $el->loadObject($this->obj);
                     
                     if ($this->studentID){
                         $el->setStudentID($this->studentID);
                     }
+                    
                     $elements[] = $el;
+                    
                 }
-                
+                                
                 $this->elements = $elements;
                 return $this->elements;
                 
@@ -665,7 +669,7 @@ class ELBPFormElement {
         
         // If we can't validate this element type, or the validation type is invalid, there is nothing to
         // pass, so return true
-        if(!$this->canHaveValidation() || !$this->validation || !$type || $type == ''){
+        if (!$this->canHaveValidation() || !$this->validation || !$type || $type == ''){
             return true;
         }
                 
@@ -679,7 +683,7 @@ class ELBPFormElement {
             if ($this->type == 'Checkbox' && $type == "MIN_LENGTH"){
                 return ( count($response) >= $val );
             }
-            
+                        
             foreach($response as $value){
                 
                 if (!$this->validateResponse($value, $type)){
@@ -699,10 +703,13 @@ class ELBPFormElement {
         // Trim whitespace from the ends
         $response = trim($response);
         
-        
+        \elbp_pn("response: {$response}");
+        \elbp_pn($this->options);
+                        
         // If the element has options, and the response sent is not in the options array, return false
-        if ($this->options)
+        if ($this->options && !empty($this->options))
         {
+            \elbp_pn("has");
             if (!in_array($response, $this->options))
             {
                 return false;
@@ -715,7 +722,6 @@ class ELBPFormElement {
             
             // Just must contain something, other than just whitespace
             case 'REQUIRED':
-            case 'NOT_EMPTY': // legacy
                 $regex = "/.+/";
                 if (preg_match($regex, $response) && $response != '') return true;
             break;

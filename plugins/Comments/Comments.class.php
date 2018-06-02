@@ -89,8 +89,11 @@ class Comments extends Plugin {
     public function getPositiveIconImage(){
         
         global $CFG;
+        
         $img = $this->getSetting('positive_icon');
-        return ($img && file_exists($CFG->dirroot . '/blocks/elbp/plugins/Comments/pix/' . $img)) ? $img : 'positive.png';
+        $path = $this->getDataRoot() . '/custom_pix/'.$img;
+        
+        return ($img && file_exists($path)) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($path) : $CFG->wwwroot . '/blocks/elbp/plugins/Comments/pix/positive.png';
         
     }
     
@@ -102,23 +105,14 @@ class Comments extends Plugin {
     public function getNegativeIconImage(){
          
         global $CFG;
+        
         $img = $this->getSetting('negative_icon');
-        return ($img && file_exists($CFG->dirroot . '/blocks/elbp/plugins/Comments/pix/' . $img)) ? $img : 'negative.png';
+        $path = $this->getDataRoot() . '/custom_pix/'.$img;
+        
+        return ($img && file_exists($path)) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($path) : $CFG->wwwroot . '/blocks/elbp/plugins/Comments/pix/negative.png';
         
     }
-    
-    /**
-     * Get the comment categories
-     * @return type
-     */
-    public function getCategories()
-    {
         
-        $categories = explode("\n", $this->getSetting('comment_categories'));
-        return $categories;
-        
-    }
-    
     public function getUserCommentsPublishedToPortal($limit = null){
         
         $comments = $this->getUserComments($limit);
@@ -374,12 +368,9 @@ class Comments extends Plugin {
         $settings = array();
         $settings['limit_summary_list'] = 5;
         $settings['attributes'] = '';
-        $settings['incident_title_attribute'] = 'Category';
+        $settings['comment_title_attribute'] = 'Category';
         $settings['block_progress_bars_enabled'] = 1;
-        $settings['attributes'] = '[[Select: |name = "Category"| |label = "Category"| |options = {name = "Academic Performance", value = "Academic Performance"}{name = "Behaviour", value = "Behaviour"}{name = "Attendance", value = "Attendance"}{name = "Punctuality", value = "Punctuality"}{name = "Other", value = "Other"}|| |validation = {type = "NOT_EMPTY"}| |display = "main"]]
-[[Textbox: |name = "Description"| |label = "Description"|| |validation = {type = "NOT_EMPTY"}| |display = "main"]]
-[[Textbox: |name = "Action Taken"| |label = "Action Taken"|| |display = "main"]]';
-        
+        $settings['attributes'] = 'elbpform:[{"id":"eeJzUAqSj4","name":"Category","type":"Select","display":"main","default":"","instructions":"","options":["Academic Performance","Attendance","Attitude","Behaviour","Effort","Punctuality","Other"],"validation":["REQUIRED"],"other":[],"studentID":false,"usersValue":false,"obj":null},{"id":"1xfv295bzU","name":"Comment","type":"Moodle Text Editor","display":"main","default":"","instructions":"","options":false,"validation":["REQUIRED"],"other":[],"studentID":false,"usersValue":false,"obj":null},{"id":"WUeQq8jx9K","name":"Action Taken","type":"Moodle Text Editor","display":"main","default":"","instructions":"Describe any action which was taken in relation to this Comment","options":false,"validation":[],"other":[],"studentID":false,"usersValue":false,"obj":null}]';
         
         // Not 100% required on install, so don't return false if these fail
         foreach ($settings as $setting => $value){
@@ -389,6 +380,9 @@ class Comments extends Plugin {
         // Alert events
         $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Comment Added", "description" => "A new comment is added into the system", "auto" => 0, "enabled" => 1));
         $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Comment Updated", "description" => "A comment is updated", "auto" => 0, "enabled" => 1));
+        
+        // Create custom pix directory
+        $this->createDataDirectory('custom_pix');
         
         return $return;
         
@@ -662,7 +656,7 @@ class Comments extends Plugin {
                 if (!elbp_has_capability('block/elbp:add_comment', $access)) return false;                
                                 
                 $comment = new \ELBP\Plugins\Comments\Comment($params);
-                $comment->setCommentsObj($this);
+                $comment->setCommentsObj($this);                
                 
                 // If the record exists, check to make sure the student ID on it is the same as the one we specified
                 if ($comment->getID() > 0 && $comment->getStudentID() <> $params['studentID']) return false;
@@ -792,14 +786,7 @@ class Comments extends Plugin {
         
         global $CFG, $MSGS;
       
-        if (isset($settings['saveCategories'])){
-            $settings['comment_categories'] = implode("\n", $settings['comment_categories']);
-            $this->updateSetting('comment_categories', $settings['comment_categories']);
-            $MSGS['success'] = get_string('categoriesupdated', 'block_elbp');
-            return true;
-        }
-        
-        elseif(isset($_POST['submit_attributes']))
+        if(isset($_POST['submit_attributes']))
         {
             \elbp_save_attribute_script($this);
             return true;
@@ -816,22 +803,25 @@ class Comments extends Plugin {
         
         elseif (isset($_POST['submit_icons']))
         {
-            
+                        
             // Positive
             if (isset($_FILES['positive_icon']) && $_FILES['positive_icon']['error'] == 0){
                 
                  $fInfo = finfo_open(FILEINFO_MIME_TYPE);
                  $mime = finfo_file($fInfo, $_FILES['positive_icon']['tmp_name']);
                  finfo_close($fInfo);
+                 
+                 $ext = pathinfo($_FILES['positive_icon']['name'], PATHINFO_EXTENSION);
+                 $name = 'positive.'.$ext;
                 
                  $array = array('image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/pjpeg');
                  if (in_array($mime, $array))
                  {
-                      $_FILES['positive_icon']['name'] = "custom/" . $_FILES['positive_icon']['name'];
-                      $result = move_uploaded_file($_FILES['positive_icon']['tmp_name'], $CFG->dirroot . '/blocks/elbp/plugins/Comments/pix/' . $_FILES['positive_icon']['name']);
+                      $result = move_uploaded_file($_FILES['positive_icon']['tmp_name'], $this->getDataRoot() . '/custom_pix/'.$name);
                       if ($result)
                       {
-                          $this->updateSetting('positive_icon', $_FILES['positive_icon']['name']);
+                          $this->updateSetting('positive_icon', $name);
+                          $this->createDataPathCode($this->getDataRoot() . '/custom_pix/'.$name);
                       }
                       else
                       {
@@ -852,15 +842,18 @@ class Comments extends Plugin {
                  $fInfo = finfo_open(FILEINFO_MIME_TYPE);
                  $mime = finfo_file($fInfo, $_FILES['negative_icon']['tmp_name']);
                  finfo_close($fInfo);
+                 
+                 $ext = pathinfo($_FILES['negative_icon']['name'], PATHINFO_EXTENSION);
+                 $name = 'negative.'.$ext;
                 
                  $array = array('image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/pjpeg');
                  if (in_array($mime, $array))
                  {
-                      $_FILES['negative_icon']['name'] = "custom/" . $_FILES['negative_icon']['name'];
-                      $result = move_uploaded_file($_FILES['negative_icon']['tmp_name'], $CFG->dirroot . '/blocks/elbp/plugins/Comments/pix/' . $_FILES['negative_icon']['name']);
+                      $result = move_uploaded_file($_FILES['negative_icon']['tmp_name'], $this->getDataRoot() . '/custom_pix/'.$name);
                       if ($result)
                       {
-                          $this->updateSetting('negative_icon', $_FILES['negative_icon']['name']);
+                          $this->updateSetting('negative_icon', $name);
+                          $this->createDataPathCode($this->getDataRoot() . '/custom_pix/'.$name);
                       }
                       else
                       {

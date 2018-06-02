@@ -43,10 +43,10 @@
 <p><?= $string['commenticons:desc'] ?></p>
 
 <small>
-    <?php if (is_writable($CFG->dirroot . '/blocks/elbp/plugins/Comments/pix/custom/')): ?>
-        <b class='elbp_good'><?= get_string('dirwritable', 'block_elbp') ?> : <?= $CFG->dirroot . '/blocks/elbp/plugins/Comments/pix/custom/' ?></b>
+    <?php if (is_writable($OBJ->getDataRoot() . '/custom_pix/')): ?>
+        <b class='elbp_good'><?= get_string('dirwritable', 'block_elbp') ?> : <?= $OBJ->getDataRoot() . '/custom_pix/' ?></b>
     <?php else : ?>
-        <b class='elbp_error'><?= get_string('dirnotwritable', 'block_elbp') ?> : <?= $CFG->dirroot . '/blocks/elbp/plugins/Comments/pix/custom/' ?></b>
+        <b class='elbp_error'><?= get_string('dirnotwritable', 'block_elbp') ?> : <?= $OBJ->getDataRoot() . '/custom_pix/' ?></b>
     <?php endif; ?>
 </small>
 <br><br>
@@ -56,14 +56,14 @@
     <table>
         <tr>
             <td><strong><?= $string['positive'] ?></strong></td>
-            <td><img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Comments/pix/<?= $OBJ->getPositiveIconImage() ?>" style="width:50px;" /></td>
+            <td><img src="<?= $OBJ->getPositiveIconImage() ?>" style="width:50px;" /></td>
             <td><input type="file" name="positive_icon" /></td>
 
         </tr>
         <tr>
 
             <td><strong><?= $string['negative'] ?></strong></td>
-            <td><img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Comments/pix/<?= $OBJ->getNegativeIconImage() ?>" style="width:50px;" /></td>
+            <td><img src="<?= $OBJ->getNegativeIconImage() ?>" style="width:50px;" /></td>
             <td><input type="file" name="negative_icon" /></td>
 
         </tr>

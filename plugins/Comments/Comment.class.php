@@ -530,7 +530,7 @@ class Comment extends \ELBP\BasePluginObject {
         
         // Loop through defined attributes and check if we have that submitted. Then validate it if needed
         $allAttributes = $this->Comments->getElementsFromAttributeString();
-                
+                        
         if ($allAttributes)
         {
                         
@@ -538,7 +538,7 @@ class Comment extends \ELBP\BasePluginObject {
             {
                 
                 $value = (isset($this->attributes[$definedAttribute->name])) ? $this->attributes[$definedAttribute->name] : '';
-                
+                                
                 if (!empty($definedAttribute->validation))
                 {
                     foreach($definedAttribute->validation as $validation)

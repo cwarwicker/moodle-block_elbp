@@ -206,6 +206,7 @@ abstract class Manager {
         {
             
             case 'mysqli':
+            case 'mariadb';
                 $type = 'MySQL';
             break;
             

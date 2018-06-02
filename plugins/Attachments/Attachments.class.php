@@ -115,7 +115,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
      */
     public function getAllowedMimeTypes(){
         
-        return explode("\n", $this->getSetting('allowed_mime_types'));
+        return explode(";", $this->getSetting('allowed_mime_types'));
         
     }
     
@@ -205,11 +205,11 @@ class Attachments extends \ELBP\Plugins\Plugin {
      */
     public function saveConfig($settings)
     {
-                
+                        
         // Since we only have one row in lbp_settings for each setting, we'll have to implode the mime types and explode them again in php later on
-        $mimes = implode("\n", $settings['allowed_mime_types']);
+        $mimes = implode(";", array_filter($settings['allowed_mime_types']));
         $settings['allowed_mime_types'] = $mimes;
-        
+                
         parent::saveConfig($settings);
         return true;
         
@@ -229,7 +229,15 @@ class Attachments extends \ELBP\Plugins\Plugin {
         
         // This is a core ELBP plugin, so the extra tables it requires are handled by the core ELBP install.xml
         
-
+        // Default settings
+        $settings = array();
+        $settings['allowed_mime_types'] = 'application/msword;application/excel;application/vnd.ms-excel;application/mspowerpoint;application/powerpoint;application/vnd.ms-powerpoint;application/x-mspowerpoint;application/vnd.openxmlformats-officedocument.wordprocessingml.document;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;application/vnd.openxmlformats-officedocument.presentationml.presentation;text/plain;text/richtext;application/rtf;application/x-rtf;application/pdf';
+        
+        // Not 100% required on install, so don't return false if these fail
+        foreach ($settings as $setting => $value){
+            $DB->insert_record("lbp_settings", array("pluginid" => $pluginID, "setting" => $setting, "value" => $value));
+        }
+        
         return $return;
         
     }

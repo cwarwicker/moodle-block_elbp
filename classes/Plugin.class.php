@@ -1486,6 +1486,18 @@ namespace ELBP\Plugins;
         return '';
     }
     
+    /**
+     * Get the path to the root of this plugin in the data directory
+     * @global array $CFG
+     * @return type
+     */
+    public function getDataRoot()
+    {
+        global $CFG;
+        return $CFG->dataroot . '/ELBP/' . $this->name;
+    }
+    
+    
     /** 
      * Create directory in Moodledata to store files
      * Will create the directory in: /moodledata/ELBP/%pluginname%/$dir
@@ -1517,27 +1529,27 @@ namespace ELBP\Plugins;
         }
         
         // Check for plugin directory
-        if (!is_dir( $CFG->dataroot . '/ELBP/' . $this->name )){
+        if (!is_dir( $this->getDataRoot() )){
             if (is_writeable($CFG->dataroot . '/ELBP')){
-                if (!mkdir($CFG->dataroot . '/ELBP/' . $this->name, 0770, true)){
-                    $failMkDir = 'mkdir:'.$CFG->dataroot . '/ELBP/' . $this->name;
+                if (!mkdir($this->getDataRoot(), 0770, true)){
+                    $failMkDir = 'mkdir:'.$this->getDataRoot();
                     return false;
                 }
             } else {
-                $failMkDir = 'write:'.$CFG->dataroot . '/ELBP/' . $this->name;
+                $failMkDir = 'write:'.$this->getDataRoot();
                 return false;
             }
         }
         
         // Now try and make the actual dir we want
-        if (!is_dir( $CFG->dataroot . '/ELBP/' . $this->name . '/' . $dir )){
-            if (is_writeable($CFG->dataroot . '/ELBP/' . $this->name)){
-                if (!mkdir($CFG->dataroot . '/ELBP/' . $this->name . '/' . $dir, 0770, true)){
-                    $failMkDir = 'mkdir:'.$CFG->dataroot . '/ELBP/' . $this->name . '/' . $dir;
+        if (!is_dir( $this->getDataRoot() . '/' . $dir )){
+            if (is_writeable($this->getDataRoot())){
+                if (!mkdir($this->getDataRoot() . '/' . $dir, 0770, true)){
+                    $failMkDir = 'mkdir:'.$this->getDataRoot() . '/' . $dir;
                     return false;
                 }
             } else {
-                $failMkDir = 'write:'.$CFG->dataroot . '/ELBP/' . $this->name . '/' . $dir;
+                $failMkDir = 'write:'. $this->getDataRoot() . '/' . $dir;
                 return false;
             }
         }
