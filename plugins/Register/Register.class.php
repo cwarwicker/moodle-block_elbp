@@ -229,14 +229,43 @@ class Register extends Plugin {
      */
     public function install()
     {
-        $return = true;
-        $return = $return && $this->createPlugin();
+
+        $this->id = $this->createPlugin();
+        $return = true && $this->id;
         
         // This is a core ELBP plugin, so the extra tables it requires are handled by the core ELBP install.xml
         
         
         // Settings
         $this->updateSetting("day_number_format", "w");
+        
+        // Attendance Codes
+        $this->updateSetting("value_key_#", "Planned Whole/Partial School Closure");
+        $this->updateSetting("value_key_/", "Present");
+        $this->updateSetting("value_key_\\", "Present");
+        $this->updateSetting("value_key_B", "Approved Off-Site Activity");
+        $this->updateSetting("value_key_C", "Authorised Leave of Absence");
+        $this->updateSetting("value_key_D", "Dual Registered");
+        $this->updateSetting("value_key_E", "Excluded");
+        $this->updateSetting("value_key_G", "Unauthorised Holiday");
+        $this->updateSetting("value_key_H", "Authorised Holiday");
+        $this->updateSetting("value_key_I", "Illness");
+        $this->updateSetting("value_key_J", "Interview");
+        $this->updateSetting("value_key_L", "Late");
+        $this->updateSetting("value_key_M", "Medical or Dental Appointment");
+        $this->updateSetting("value_key_N", "Reason for Absence Not Yet Provided");
+        $this->updateSetting("value_key_O", "Unauthorised Absence");
+        $this->updateSetting("value_key_P", "Approved Sporting Activity");
+        $this->updateSetting("value_key_R", "Religious Observance");
+        $this->updateSetting("value_key_S", "Study Leave");
+        $this->updateSetting("value_key_T", "Traveller Absence");
+        $this->updateSetting("value_key_U", "Arrived After Registration Closed");
+        $this->updateSetting("value_key_V", "Educational Visit/Trip");
+        $this->updateSetting("value_key_W", "Work Experience");
+        $this->updateSetting("value_key_X", "Not Required to Be In School");
+        $this->updateSetting("value_key_Y", "Unable to Attend Due to Exceptional Circumstances");
+        $this->updateSetting("value_key_Z", "Pupil Not On Admission Register");
+                
         
         return $return;
     }
@@ -845,7 +874,7 @@ class Register extends Plugin {
             
             if (!array_key_exists($username, $validUsernames)){
                 
-                $user = $DB->get_record("user", array($userField => $username, "deleted" => 0), "id, username, idnumber, firstname, lastname");
+                $user = $DB->get_record("user", array($userField => $username, "deleted" => 0));
                 if ($user){
                     $validUsernames[$username] = $user;
                 } else {
@@ -1413,10 +1442,8 @@ class Register extends Plugin {
      * @return string|boolean
      */
     public function createTemplateImportCsv($reload = false){
-        
-        global $CFG;
-        
-        $file = $CFG->dataroot . '/ELBP/' . $this->name . '/templates/template.csv';
+                
+        $file = $this->getDataRoot() . '/templates/template.csv';
         $code = $this->createDataPathCode($file);
         
         // If it already exists and we don't want to reload it, just return
@@ -1454,9 +1481,9 @@ class Register extends Plugin {
      */
     public function createExampleImportCsv($reload = false){
         
-        global $CFG, $DB;
+        global $DB;
                 
-        $file = $CFG->dataroot . '/ELBP/' . $this->name . '/templates/example.csv';
+        $file = $this->getDataRoot() . '/templates/example.csv';
         $code = $this->createDataPathCode($file);
         
         // If it already exists and we don't want to reload it, just return

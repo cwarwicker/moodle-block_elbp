@@ -29,7 +29,7 @@ $DBC = new ELBP\DB();
 
 $view = optional_param('view', 'main', PARAM_ALPHA);
 
-$access = $ELBP->getCoursePermissions(1);
+$access = $ELBP->getCoursePermissions(SITEID);
 if (!$access['god']){
     print_error( get_string('invalidaccess', 'block_elbp') );
 }

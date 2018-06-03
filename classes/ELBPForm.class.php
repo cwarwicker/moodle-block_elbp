@@ -702,14 +702,10 @@ class ELBPFormElement {
         
         // Trim whitespace from the ends
         $response = trim($response);
-        
-        \elbp_pn("response: {$response}");
-        \elbp_pn($this->options);
-                        
+                                
         // If the element has options, and the response sent is not in the options array, return false
         if ($this->options && !empty($this->options))
         {
-            \elbp_pn("has");
             if (!in_array($response, $this->options))
             {
                 return false;

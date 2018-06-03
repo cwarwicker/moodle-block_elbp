@@ -41,7 +41,16 @@
     <small><strong><?= $string['elbpadminrole'] ?></strong> - <?= $string['elbpadminrole:desc'] ?></small>
     <br>
     <input type="text" name="elbp_admin" value="<?= \ELBP\Setting::getSetting('elbp_admin') ?>" />
-    <br><br><br>
+    <br><br>
+    
+    <?php if( !\ELBP\Setting::getSetting('elbp_frontpageteacher') || !\ELBP\Setting::getSetting('elbp_personaltutor') || !\ELBP\Setting::getSetting('elbp_asl') || !\ELBP\Setting::getSetting('elbp_admin') ): ?>
+        <span><?= $string['missingroles'] ?></span><br>
+        <a href="<?= $CFG->wwwroot ?>/blocks/elbp/admin/createroles.php" target="_blank" class="btn btn-primary"><?= $string['autocreate'] ?></a>
+        <br><br>
+    <?php endif; ?>
+    
+    
+    <br>
     
     <h3><?= $string['courses'] ?></h3>
     <small><strong><?= $string['excludecourses'] ?></strong> - <?= $string['excludecourses:desc'] ?></small>

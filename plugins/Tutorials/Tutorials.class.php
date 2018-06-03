@@ -86,9 +86,8 @@ class Tutorials extends Plugin {
         
         global $DB;
         
-        $return = true;
         $pluginID = $this->createPlugin();
-        $return = $return && $pluginID;
+        $return = true && $pluginID;
         
         // This is a core ELBP plugin, so the extra tables it requires are handled by the core ELBP install.xml
         
@@ -97,8 +96,7 @@ class Tutorials extends Plugin {
         $settings = array();
         $settings['new_tutorial_instructions'] = 'Make sure you enter some comments and at least 1 Target for each tutorial';
         $settings['tutorials_limit_summary_list'] = 5;
-        $settings['attributes'] = '[[Textbox: |name = "Tutor Comments"| |label = "Tutor Comments"|| |validation = {type = "NOT_EMPTY"}| |display = "main"]]
-[[Textbox: |name = "Student Comments"| |label = "Student Comments"|| |validation = {type = "NOT_EMPTY"}| |display = "main"]]';
+        $settings['attributes'] = 'elbpform:[{"id":"YctQ2uudxH","name":"Tutor Comments","type":"Moodle Text Editor","display":"main","default":"","instructions":"","options":false,"validation":["REQUIRED"],"other":[],"studentID":false,"usersValue":false,"obj":null},{"id":"FzkTy12JV5","name":"Student Comments","type":"Moodle Text Editor","display":"main","default":"","instructions":"","options":false,"validation":[false],"other":[],"studentID":false,"usersValue":false,"obj":null}]';
         
         // Not 100% required on install, so don't return false if these fail
         foreach ($settings as $setting => $value){

@@ -1841,10 +1841,10 @@ div#elbp_register_content div.ui-widget-content div.ui-widget-content div.ui-tin
     display: none;
 }
 
-div#elbp_register_content table th {
+/*div#elbp_register_content table th {
     background: #0066ff;
     color: #fff;
-}
+}*/
 
 /* End Register */
 
@@ -2832,7 +2832,7 @@ div#elbp_popup_content table
     font-size: 10pt;
 }
 
-div#elbp_popup_content table td
+div#elbp_popup_content table:not(.ui-tinytbl-outer) td
 {
     padding: 0.5em;
 }

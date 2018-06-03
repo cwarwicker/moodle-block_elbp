@@ -20,10 +20,6 @@
             <td style="width:410px;"><?= $attribute->convertToFormElement() ?></td>
         </tr>
     <?php endforeach; ?>
-<!--    <tr>
-        <td><?= $string['visibility'] ?></td>
-        <td><input type="radio" name="visibility" value="show" checked> <?= $string['show'] ?> <input type="radio" name="visibility" value="hide"> <?= $string['hide'] ?> </td>
-    </tr>-->
     </table>
 <br />
 <p class='elbp_centre'><input type="submit" name="submit_target_set" value="<?= $string['save'] ?>" /></p>
@@ -37,7 +33,7 @@
 
     <tr>
     <td> <?= $t->name ?> </td>
-    <td><a class="btn" style="color:white;font-size:10pt;padding:6px;border:0px" name='edit_set_target' href='/blocks/elbp/plugins/targets/config.php?view=targetsets&edittarget=<?= $t->id ?>'><?= $string['edit'] ?></a></td>
+    <td><a class="btn" name='edit_set_target' href='/blocks/elbp/plugins/targets/config.php?view=targetsets&edittarget=<?= $t->id ?>'><?= $string['edit'] ?></a></td>
     <td>
         <form class="elbp_new_target_form" action="" method="post">
         <input type='hidden' name='delete_id' value="<?= $t->id ?>"/> 

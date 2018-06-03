@@ -81,7 +81,7 @@ elseif($page == 'edit'){
             
             <tr>
                 <td><?= $string['reportdate'] ?></td>
-                <td><input type="text" id="report_date" name="report_date" class="elbp_datepicker" value="<?= $data['report_date'] ?>" validation="NOT_EMPTY" /></td>
+                <td><input type="text" id="report_date" name="report_date" class="elbp_datepicker" value="<?= $data['report_date'] ?>" validation="DATE" /></td>
             </tr>
             
             <tr>
@@ -434,7 +434,7 @@ elseif($page == 'edit'){
             
             <tr>
                 <td><?= $string['comments'] ?></td>
-                <td><textarea class="elbp_textarea" id="report_comments" name="comments" validation="NOT_EMPTY"><?= $data['comments'] ?></textarea></td>
+                <td><textarea class="elbp_textarea" id="report_comments" name="comments" validation="REQUIRED"><?= $data['comments'] ?></textarea></td>
             </tr>
             
             <tr>

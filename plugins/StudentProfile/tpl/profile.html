@@ -5,26 +5,28 @@
         <tr>
             <td class='elbp_studentprofile_column elbp_studentprofile_column_pic'>
                 <strong><?= strtoupper(fullname($student)) ?></strong><br>
-                <small>(<?= $user_or_id ?>)</small><br>
+                <small><?= $user_or_id ?></small><br>
                 <?= $picture ?><br>
                 <small><a href="mailto:<?= $student->email ?>"><?= $student->email ?></a></small>
             </td>
 
             <td class='elbp_studentprofile_column_1'><br></td>
 
-            <td class='elbp_studentprofile_column elbp_studentprofile_column_details'>
-                <div id='elbp_studentprofile_details'>
-                    <strong><?= get_string('studentdetails', 'block_elbp') ?></strong>
-                    <br><br>
-                    <?= $details ?>
-                    <br>
-                        <?php if( ($access['user'] || \elbp_has_capability('block/elbp:change_others_profile', $access) ) && $obj->getSetting('allow_profile_editing') == 1):?>
-                            <div class='elbp_studentprofile_edit_link'><a id='elbp_studentprofile_details_edit_link' href='#' onclick='ELBP.StudentProfile.edit("details");return false;'>[<?= get_string('edit') ?>]</a></div>
-                        <?php endif; ?>
-                </div>
-            </td>
+            <?php if ($details != ''): ?>
+                <td class='elbp_studentprofile_column elbp_studentprofile_column_details'>
+                    <div id='elbp_studentprofile_details'>
+                        <strong><?= get_string('studentdetails', 'block_elbp') ?></strong>
+                        <br><br>
+                        <?= $details ?>
+                        <br>
+                            <?php if( ($access['user'] || \elbp_has_capability('block/elbp:change_others_profile', $access) ) && $obj->getSetting('allow_profile_editing') == 1):?>
+                                <div class='elbp_studentprofile_edit_link'><a id='elbp_studentprofile_details_edit_link' href='#' onclick='ELBP.StudentProfile.edit("details");return false;'>[<?= get_string('edit') ?>]</a></div>
+                            <?php endif; ?>
+                    </div>
+                </td>
 
-            <td class='elbp_studentprofile_column_1'><br></td>
+                <td class='elbp_studentprofile_column_1'><br></td>
+            <?php endif; ?>
 
             <td class='elbp_studentprofile_column elbp_studentprofile_column_info'>
                 <div id='elbp_studentprofile_info'>

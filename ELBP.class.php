@@ -35,8 +35,8 @@ class ELBP
 {
     
     const MAJOR_VERSION = 1;
-    const MINOR_VERSION = 2;
-    const BUILD_NUMBER = 3;
+    const MINOR_VERSION = 3;
+    const BUILD_NUMBER = 0;
     
     private $CFG;
     private $DB;
@@ -2804,7 +2804,7 @@ class ELBP
         }
         
         // Are we an ELBP Administrator?
-        // This checks if they are an elbp_admin on the front page course (id 1)
+        // This checks if they are an elbp_admin on the front page course (SITEID)
         if (has_capability('block/elbp:elbp_admin', $frontPageContext, $user)) {
             $access['elbpadmin'] = true ;
             $access['context'][] = $frontPageContext;
@@ -2826,15 +2826,8 @@ class ELBP
             }
         }
         
-//        // Are we a personal tutor of the student?
-//        // See if we have the view_elbp capability on the context of the student themself
-//        if (has_capability('block/elbp:view_elbp',$userContext, $user)) {
-//            $access['tutor'] = true;
-//            $access['context'][] = $userContext;
-//        }
-        
-        // ^ That was just...wrong. Needs to actually check if they are the PT, as other roles might
-        // be given that capability then it just gets confusing
+
+        // Are they a personal tutor of the student?
         if ($this->ELBPDB->hasTutorSpecificMentee($userID, $user))
         {
             $access['tutor'] = true;
