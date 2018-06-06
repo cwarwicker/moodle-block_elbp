@@ -3782,6 +3782,16 @@ div.elbp_student_progress_bar
 table.student-progress-definitions th
 {
     text-align: left;
+    background: #1a4636;
+    color: #fff;
+    border: 1px solid #B2B2B2;
+    padding: 4px;
+}
+
+table.student-progress-definitions td
+{
+    border: 1px solid #B2B2B2;
+    padding: 4px;
 }
 
 span.elbp-arrow

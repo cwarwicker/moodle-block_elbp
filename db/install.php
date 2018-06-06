@@ -44,6 +44,7 @@ function xmldb_block_elbp_install()
     
     // Create MoodleData directory
     \elbp_create_data_directory('install');
+    \elbp_create_data_directory('uploads');
     
     return true;
     

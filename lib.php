@@ -459,7 +459,6 @@ function elbp_get_comment_css($width)
 
 /**
  * Convert a max_filesize value to an int of bytes
- * I'll be honest with you, I can't remember how this works, and looking at it I have no idea... But it doess
  * @param type $val e.g. 128M
  * @return int e.g. ..
  */
@@ -468,6 +467,8 @@ function return_bytes_from_upload_max_filesize($val)
     
     $val = trim($val);
     $last = strtolower($val[strlen($val)-1]);
+    $val = (int)$val;
+    
     switch($last) {
         case 'g':
             $val *= 1024;

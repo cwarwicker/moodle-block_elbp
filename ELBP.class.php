@@ -2893,9 +2893,9 @@ class ELBP
         
         // If userID is still null, return false
         if (is_null($userID) || $userID <= 0){
-			$this->errorMsg = get_string('user', 'block_elbp');
-			return false;
-		}
+            $this->errorMsg = get_string('user', 'block_elbp');
+            return false;
+        }
         
         $siteContext = \context_system::instance();
         $userContext = \context_user::instance($userID);
@@ -4724,6 +4724,11 @@ class ELBP
                         $desc = \elbp_html($options['desc'][$i]);
                         $trans = ($currentRank != $rank) ? 'elbp_progress_traffic_light_trans' : '';
                         $display = ($currentRank == $rank) ? 'inline-block' : 'none';
+                        
+                        // Don't show the other ones if they can't edit it
+                        if ($currentRank != $rank && !\elbp_has_capability('block/elbp:update_student_manual_progress', $access)){
+                            continue;
+                        }
                         
                         // Get slightly darker/lighter colour, based on this colour
                         $colour2 = \elbp_get_gradient_colour($colour);

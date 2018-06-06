@@ -1422,7 +1422,7 @@ namespace ELBP\Plugins;
         
         // Overall student progress definitions
         $setting = \ELBP\Setting::getSetting('enable_student_progress_bar');
-        if ($setting == 1 && $this->supportsStudentProgress())
+        if ($setting == 'calculated' && $this->supportsStudentProgress())
         {
             
             $output .= "<br><br>";
