@@ -26,11 +26,7 @@ function xmldb_block_elbp_install()
 {
     
     global $DB;
-    
-    // Roles - Personal Tutor, Additional Support Lecturer
-    // Not going to auto create these, will just be in the documentation to duplicate teacher role and create these
-    
-    
+     
     
     // Confidentiality levels
     $DB->insert_record("lbp_confidentiality", array("id" => 1, "name" => "GLOBAL"));
@@ -48,6 +44,7 @@ function xmldb_block_elbp_install()
     
     // Create MoodleData directory
     \elbp_create_data_directory('install');
+    \elbp_create_data_directory('uploads');
     
     return true;
     

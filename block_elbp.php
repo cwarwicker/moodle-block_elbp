@@ -96,7 +96,7 @@ class block_elbp extends block_base
                 $this->content->text .= '<li><hr></li>';
                 
                 // If overall progress bar is enabled, put that here
-                if ($this->elbp->getSetting('enable_student_progress_bar') == 1)
+                if ($this->elbp->getSetting('enable_student_progress_bar') == 'calculated')
                 {
                     $this->elbp->loadStudent($USER->id);
                     $this->content->text .= '<li>'.$this->elbp->getStudentProgressBar(false).'</li>';

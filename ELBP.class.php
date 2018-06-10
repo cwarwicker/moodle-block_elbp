@@ -35,8 +35,8 @@ class ELBP
 {
     
     const MAJOR_VERSION = 1;
-    const MINOR_VERSION = 2;
-    const BUILD_NUMBER = 3;
+    const MINOR_VERSION = 4;
+    const BUILD_NUMBER = 0;
     
     private $CFG;
     private $DB;
@@ -678,7 +678,7 @@ class ELBP
     public function displayConfig($view)
     {
         global $CFG, $MSGS, $FORMVALS, $OUTPUT, $PAGE;
-        
+                
         $TPL = new \ELBP\Template();
         $TPL->set("ELBP", $this);
         try {
@@ -1456,9 +1456,7 @@ class ELBP
                     //check student id exists in db
                     $stuCheck = $DB->get_record("user",array("username"=>$stuUSN),'id');
                     if($stuCheck){
-                        //print_object($stuUSN);
                         //if it does then add to the $record array
-                        #$record->stuUSN = $stuUSN;
                         $record->studentid  = $stuCheck->id;
                     }else{
                         //otherwise increase error count ($errorCount)
@@ -1471,7 +1469,6 @@ class ELBP
                     $tutCheck = $DB->get_record("user",array("username"=>$tutUSN),'id,username');
                     if($tutCheck){
                         //if it does then add to the $record array
-                        #$record->tutUSN = $tutUSN;
                         $record->tutorid  = $tutCheck->id;
                     }else{
                         //otherwise increase error count ($errorCount)
@@ -1517,7 +1514,6 @@ class ELBP
                                     
             // Checkboxes need int values
             $settings['elbp_use_gradients'] = (isset($settings['elbp_use_gradients'])) ? '1' : '0';
-            $settings['use_theme_js'] = (isset($settings['use_theme_js'])) ? '1' : '0';
             $settings['enable_email_alerts'] = (isset($settings['enable_email_alerts'])) ? '1' : '0';
             
             // Progress colours & descs will be arrays
@@ -2808,7 +2804,7 @@ class ELBP
         }
         
         // Are we an ELBP Administrator?
-        // This checks if they are an elbp_admin on the front page course (id 1)
+        // This checks if they are an elbp_admin on the front page course (SITEID)
         if (has_capability('block/elbp:elbp_admin', $frontPageContext, $user)) {
             $access['elbpadmin'] = true ;
             $access['context'][] = $frontPageContext;
@@ -2830,15 +2826,8 @@ class ELBP
             }
         }
         
-//        // Are we a personal tutor of the student?
-//        // See if we have the view_elbp capability on the context of the student themself
-//        if (has_capability('block/elbp:view_elbp',$userContext, $user)) {
-//            $access['tutor'] = true;
-//            $access['context'][] = $userContext;
-//        }
-        
-        // ^ That was just...wrong. Needs to actually check if they are the PT, as other roles might
-        // be given that capability then it just gets confusing
+
+        // Are they a personal tutor of the student?
         if ($this->ELBPDB->hasTutorSpecificMentee($userID, $user))
         {
             $access['tutor'] = true;
@@ -2904,9 +2893,9 @@ class ELBP
         
         // If userID is still null, return false
         if (is_null($userID) || $userID <= 0){
-			$this->errorMsg = get_string('user', 'block_elbp');
-			return false;
-		}
+            $this->errorMsg = get_string('user', 'block_elbp');
+            return false;
+        }
         
         $siteContext = \context_system::instance();
         $userContext = \context_user::instance($userID);
@@ -3074,16 +3063,13 @@ class ELBP
         $PAGE->requires->jquery();
         $PAGE->requires->jquery_plugin('ui');
         
-        
-        
+        // Simple load is used outside of standard moodle renderers, e.g. print view, parent portal plugin
         if ($simple)
         {
             
-//            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/jquery-1.9.1.js'></script>";
-//            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/jquery-ui-1.10.3.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery.hotkeys-0.7.9.min.js'></script>";
-            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js'></script>";
+            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/raty/jquery.raty.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/scripts.php?studentid=" . $studID . "&courseid=" . $courseID . "&screwcaching=" . time() . "'></script>";
@@ -3099,14 +3085,9 @@ class ELBP
         else
         {
             
-//            $useThemeJS = \ELBP\Setting::getSetting("use_theme_js");
-//            if (!$useThemeJS || $useThemeJS == 0){
-//                $PAGE->requires->js( '/blocks/elbp/js/jquery/jquery-1.9.1.js', true );
-//                $PAGE->requires->js( '/blocks/elbp/js/jquery/jquery-ui-1.10.3.js', true );
-//            }
             $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.js' );
             $PAGE->requires->js( '/blocks/elbp/js/jquery.hotkeys-0.7.9.min.js' );
-            $PAGE->requires->js( '/blocks/elbp/js/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js' );
+            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js' );
             $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.js' );
             $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/raty/jquery.raty.js' );
             $PAGE->requires->js( '/blocks/elbp/js/scripts.php?studentid=' . $studID . '&courseid=' . $courseID . '&screwcaching=' . time() );
@@ -3139,9 +3120,9 @@ class ELBP
         {
             
             $output = "";
-            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/css/start/jquery-ui-1.10.3.custom.min.css' />";
+            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/css/start/jquery-ui.min.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.css' />";
-            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' />";
+            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/raty/jquery.raty.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/css/application.css' />";
@@ -3151,9 +3132,9 @@ class ELBP
         else
         {
         
-            $PAGE->requires->css( '/blocks/elbp/js/jquery/css/start/jquery-ui-1.10.3.custom.min.css' );
+            $PAGE->requires->css( '/blocks/elbp/js/jquery/css/start/jquery-ui.min.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.css' );
-            $PAGE->requires->css( '/blocks/elbp/js/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' );
+            $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/raty/jquery.raty.css' );
             $PAGE->requires->css( '/blocks/elbp/css/application.css' );
@@ -4743,6 +4724,11 @@ class ELBP
                         $desc = \elbp_html($options['desc'][$i]);
                         $trans = ($currentRank != $rank) ? 'elbp_progress_traffic_light_trans' : '';
                         $display = ($currentRank == $rank) ? 'inline-block' : 'none';
+                        
+                        // Don't show the other ones if they can't edit it
+                        if ($currentRank != $rank && !\elbp_has_capability('block/elbp:update_student_manual_progress', $access)){
+                            continue;
+                        }
                         
                         // Get slightly darker/lighter colour, based on this colour
                         $colour2 = \elbp_get_gradient_colour($colour);

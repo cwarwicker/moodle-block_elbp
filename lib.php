@@ -459,7 +459,6 @@ function elbp_get_comment_css($width)
 
 /**
  * Convert a max_filesize value to an int of bytes
- * I'll be honest with you, I can't remember how this works, and looking at it I have no idea... But it doess
  * @param type $val e.g. 128M
  * @return int e.g. ..
  */
@@ -468,6 +467,8 @@ function return_bytes_from_upload_max_filesize($val)
     
     $val = trim($val);
     $last = strtolower($val[strlen($val)-1]);
+    $val = (int)$val;
+    
     switch($last) {
         case 'g':
             $val *= 1024;
@@ -538,10 +539,10 @@ function get_common_mime_types($type = 'ALL')
     $office = array(
                 
                    '.doc' => 'application/msword',
-                   '.xls' => array('application/excel', 'application/vnd.ms-excel'),
-                   '.ppt' => array('application/mspowerpoint', 'application/powerpoint', 'application/vnd.ms-powerpoint', 'application/x-mspowerpoint'),
                    '.docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                   '.xls' => array('application/excel', 'application/vnd.ms-excel'),
                    '.xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                   '.ppt' => array('application/mspowerpoint', 'application/powerpoint', 'application/vnd.ms-powerpoint', 'application/x-mspowerpoint'),
                    '.pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
                     
             );
@@ -2107,12 +2108,12 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
         $output .= "</optgroup>";
 
     $output .= "</select>";
-    $output .= "<br><br><br>";
+    $output .= "<br><br>";
 
     // Name
     $output .= "<h3>".get_string('name', 'block_elbp')."</h3>";
     $output .= "<input type='text' id='field_settings_name' class='elbp_95' value='{$element->name}' />";
-    $output .= "<br><br><br>";
+    $output .= "<br><br>";
 
     // Display
     $output .= "<h3>".get_string('display', 'block_elbp')."</h3>";
@@ -2121,7 +2122,7 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
         $output .= "<option value='main' ".( ($element->display == 'main') ? 'selected' : '' )." >".get_string('mainelement', 'block_elbp')."</option>";
         $output .= "<option value='side' ".( ($element->display == 'side') ? 'selected' : '' )." >".get_string('sideelement', 'block_elbp')."</option>";
     $output .= "</select>";
-    $output .= "<br><br><br>";
+    $output .= "<br><br>";
     
     // Options
     if ($element->canHaveOptions())
@@ -2148,7 +2149,7 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
         
         $output .= "</div>";
         
-        $output .= "<br><br><br>";
+        $output .= "<br><br>";
         
     }
     
@@ -2236,7 +2237,7 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
 
         $output .= "<h3>".get_string('defaultvalue', 'block_elbp')."</h3>";
         $output .= "<textarea id='field_settings_default'>{$default}</textarea>";
-        $output .= "<br><br><br>";
+        $output .= "<br><br>";
     
     }
     
@@ -2258,7 +2259,7 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
             }
 
         $output .= "</select>";
-        $output .= "<br><br><br>";
+        $output .= "<br><br>";
         
     }
     
@@ -2266,7 +2267,7 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
     // Instructions label
     $output .= "<h3>".get_string('instructions', 'block_elbp')."</h3>";
     $output .= "<input type='text' id='field_settings_instructions' class='elbp_95' value='{$element->instructions}' />";
-    $output .= "<br><br><br>";
+    $output .= "<br><br>";
     
         
     return $output;
@@ -2300,12 +2301,12 @@ function elbp_save_attribute_script($obj)
         $elementOther = (isset($_POST['elementOther'])) ? $_POST['elementOther'] : array();
         $elementOldNames = (isset($_POST['elementOldNames'])) ? $_POST['elementOldNames'] : array();   
         $elementOldIDs = (isset($_POST['elementOldIDs'])) ? $_POST['elementOldIDs'] : array();   
-
+        
         $elementNames = array_map('trim', $elementNames);
         
         $keys = array_keys($elementNames);
         $names = array();
-                
+                        
         
         if ($keys)
         {
@@ -2334,33 +2335,47 @@ function elbp_save_attribute_script($obj)
                 
                 $type = $elementTypes[$i];
                 $display = $elementDisplays[$i];
+                
                 if(isset($elementOptions[$i])){
                     $options = $elementOptions[$i];
                 }
+                
                 if(isset($elementValidation[$i]) && $elementValidation[$i]){
                     $validation = array_filter($elementValidation[$i]);
                 }
+                
                 if(isset($elementInstructions[$i])){
                     $instructions = $elementInstructions[$i];
                 }
+                
                 if(isset($elementDefault[$i])){
                     $default = $elementDefault[$i];
                 }
+                
                 if(isset($elementOther[$i])){
                     $other = $elementOther[$i];
                 }
 
                 // If name or type is empty, skip it
-                if (elbp_is_empty($name) || elbp_is_empty($type)) continue;
+                if (elbp_is_empty($name) || elbp_is_empty($type)){
+                    continue;
+                }
 
                 // Must be valid type, else skip it
-                if (!$form->isSupportedType($type)) continue;
-
+                if (!$form->isSupportedType($type)){
+                    continue;
+                }
 
                 // Order options properly
                 if ($options)
                 {
+                    
+                    // Sort them by key
                     ksort($options);
+                    
+                    // Then re-index to sort out issue with missing indexes, if any options have been removed
+                    $options = array_values($options);
+                    
                 }
 
                 // Order other properly
@@ -2370,11 +2385,16 @@ function elbp_save_attribute_script($obj)
                     {
                         if (is_array($arr))
                         {
+                            
+                            // Sort them by key
                             ksort($arr);
+                            
+                            // Then re-index to sort out issue with missing indexes, if any options have been removed
+                            $arr = array_values($arr);
+                            
                         }
                     }
                 }
-
 
                 // Start creating the element object
                 $element->setName($name)
@@ -2398,7 +2418,7 @@ function elbp_save_attribute_script($obj)
 
                 
         $data = $form->convertElementsToDataString();
-
+                
         $obj->updateSetting("attributes", $data);
 
         // If we have changed the name of an attribute, we need to change all the data linked to that

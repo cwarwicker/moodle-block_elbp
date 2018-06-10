@@ -1075,7 +1075,8 @@ class CustomPlugin {
         $DB->delete_records("lbp_custom_plugin_items", array("pluginid" => $this->id));
         $DB->delete_records("lbp_custom_plugin_mis", array("pluginid" => $this->id));
         $DB->delete_records("lbp_custom_plugin_permission", array("pluginid" => $this->id));
-        $DB->delete_records("lbp_custom_plugin_settings", array("pluginid" => $this->id));
+        $DB->delete_records("lbp_custom_plugin_settings", array("pluginid" => $this->id)); 
+        
         return true;
         
     }
@@ -3768,7 +3769,7 @@ class CustomPlugin {
      */
     public function exportXML(){
         
-        global $CFG, $DB;
+        global $ELBP, $DB;
         
         $settings = $DB->get_records("lbp_custom_plugin_settings", array("pluginid" => $this->id, "userid" => null));
         $permissions = $this->getPermissions();
@@ -3804,28 +3805,37 @@ class CustomPlugin {
         }
         
 
-        // Icon
+        // Icons
         $array = array('bmp', 'gif', 'jpeg', 'jpg', 'png', 'tiff');
         $icon = false;
         
         foreach($array as $ext){
             
-            $path = $CFG->dirroot . '/blocks/elbp/pix/uploads/custom_plugin_icon-' . $this->id . '.' . $ext;
+            // Plugin icon
+            $path = $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'.DIRECTORY_SEPARATOR.'custom_plugin_icon-' . $this->id . '.' . $ext;
             if (file_exists($path)){
 
                 $type = pathinfo($path, PATHINFO_EXTENSION);
                 $data = file_get_contents($path);
                 $icon = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                $xml->addChild('icon', $icon);                
+
+            }
+            
+            // Dock icon
+            $path = $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'.DIRECTORY_SEPARATOR.'custom_plugin_icon_dock-' . $this->id . '.' . $ext;
+            if (file_exists($path)){
+
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $dock = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                $xml->addChild('dockIcon', $dock);                
+
 
             }
             
         }
-        
-        if ($icon){
-            $xml->addChild('icon', $icon);
-        }
                 
-        
         return $xml;
         
     }
@@ -3837,7 +3847,7 @@ class CustomPlugin {
      */
     public static function createFromXML($file){
         
-        global $CFG;
+        global $ELBP;
         
         // CHeck file exists
         if (!file_exists($file)){
@@ -3924,9 +3934,22 @@ class CustomPlugin {
             
             $icon = (string)$xml->icon;
             $ext = \elbp_get_image_ext_from_base64($icon);
-            $path = $CFG->dirroot . '/blocks/elbp/pix/uploads/custom_plugin_icon-' . $plugin->getID() . '.' . $ext;
+            $path = $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'.DIRECTORY_SEPARATOR.'custom_plugin_icon-' . $plugin->getID() . '.' . $ext;
             \elbp_save_base64_image($icon, $path);
             $plugin->updateSetting('plugin_icon', 'custom_plugin_icon-' . $plugin->getID() . '.' . $ext);
+            \elbp_create_data_path_code($path);
+            
+        }
+        
+        // Dock Icon
+        if (isset($xml->dockIcon)){
+            
+            $icon = (string)$xml->dockIcon;
+            $ext = \elbp_get_image_ext_from_base64($icon);
+            $path = $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'.DIRECTORY_SEPARATOR.'custom_plugin_icon_dock-' . $plugin->getID() . '.' . $ext;
+            \elbp_save_base64_image($icon, $path);
+            $plugin->updateSetting('plugin_icon_dock', 'custom_plugin_icon_dock-' . $plugin->getID() . '.' . $ext);
+            \elbp_create_data_path_code($path);
             
         }
         

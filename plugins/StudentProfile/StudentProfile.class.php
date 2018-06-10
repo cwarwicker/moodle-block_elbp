@@ -483,11 +483,11 @@ class StudentProfile extends Plugin {
         });
         
         
-        if ($this->getSetting("user_or_id") == 'idnumber') {
-            $user_or_id = $this->student->idnumber;
+        if ($this->getSetting("user_or_id") == 'idnumber' && $this->student->idnumber != '') {
+            $user_or_id = "(".$this->student->idnumber.")";
         }
         else {
-            $user_or_id = $this->student->username;
+            $user_or_id = "(".$this->student->username.")";
         }
        
         
@@ -915,9 +915,9 @@ class StudentProfile extends Plugin {
                 // Correct params are set?
                 if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID'])) return false;
                 
-                // We have the permission to do this?
+                // Do we have permission to edit this? - Are they the student themselves, or have the capability?
                 $access = $ELBP->getUserPermissions($params['studentID']);
-                if (!$access['user']) return false;
+                if (!$access['user'] && !\elbp_has_capability('block/elbp:change_others_profile', $access)) return false;
                 
                 // Remove studentID from params
                 unset($params['studentID']);

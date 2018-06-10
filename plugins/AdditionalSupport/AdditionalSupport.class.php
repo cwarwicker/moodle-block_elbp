@@ -105,9 +105,8 @@ class AdditionalSupport extends Plugin {
         
         global $DB;
         
-        $return = true;
         $pluginID = $this->createPlugin();
-        $return = $return && $pluginID;
+        $return = true && $pluginID;
         
         // This is a core ELBP plugin, so the extra tables it requires are handled by the core ELBP install.xml
         
@@ -117,17 +116,18 @@ class AdditionalSupport extends Plugin {
         $settings['limit_summary_list'] = 5;
         $settings['confidence_enabled'] = 1;
         $settings['limit_confidence'] = 5;
-        $settings['delete_targets_on_delete'] = 1;
+        $settings['confidence_target_progress_enabled'] = 1;
         $settings['lock_targets_after_deadline'] = 1;
-        $settings['interested_parties_enabled'] = 1;
-        $settings['attributes'] = '[[Textbox: |name = "Description"| |label = "Description"|| |validation = {type = "NOT_EMPTY"}| |display = "main"]]';
+        $settings['delete_targets_on_delete'] = 1;
+        $settings['interested_parties_enabled'] = 0;
+        $settings['long_term_aim_enabled'] = 1;
+        $settings['attributes'] = 'elbpform:[{"id":"SS4RH6Z919","name":"Session Information","type":"Moodle Text Editor","display":"main","default":"","instructions":"Enter the details of what was discussed in the Additional Support session here","options":false,"validation":["REQUIRED"],"other":[],"studentID":false,"usersValue":false,"obj":null}]';
         
         // Not 100% required on install, so don't return false if these fail
         foreach ($settings as $setting => $value){
             $DB->insert_record("lbp_settings", array("pluginid" => $pluginID, "setting" => $setting, "value" => $value));
         }
  
-        
         // Alert events
         $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Additional Support Session Added", "description" => "A new additional support session is added into the system", "auto" => 0, "enabled" => 1));
         $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Additional Support Session Comment Added", "description" => "A comment is added onto a additional support session", "auto" => 0, "enabled" => 1));

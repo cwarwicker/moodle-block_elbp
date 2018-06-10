@@ -1,0 +1,15 @@
+Default Fields:
+
+- Category (select):
+    - Academic Performance
+    - Attendance
+    - Attitude
+    - Behaviour
+    - Effort
+    - Punctuality
+    - Other
+- Comment/Description (text)
+- Action Taken (text)
+
+
+elbpform:[{"id":"eeJzUAqSj4","name":"Category","type":"Select","display":"side","default":"","instructions":"","options":["Academic Performance","Attendance","Attitude","Behaviour","Effort","Punctuality","Other"],"validation":["REQUIRED"],"other":[],"studentID":false,"usersValue":false,"obj":null},{"id":"1xfv295bzU","name":"Comment","type":"Moodle Text Editor","display":"main","default":"","instructions":"","options":false,"validation":["REQUIRED"],"other":[],"studentID":false,"usersValue":false,"obj":null},{"id":"WUeQq8jx9K","name":"Action Taken","type":"Moodle Text Editor","display":"main","default":"","instructions":"Describe any action which was taken in relation to this Comment","options":false,"validation":[],"other":[],"studentID":false,"usersValue":false,"obj":null}]

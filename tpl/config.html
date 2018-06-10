@@ -14,8 +14,8 @@
     <ul class="elbp_tabrow">
         <?php if ($access['god']): ?>
             <li class="<?= ($view == 'main') ? 'selected' : '' ?>"><a href="config.php?view=main"><?= $string['main'] ?></a></li>
-            <li class="<?= ($view == 'environment') ? 'selected' : '' ?>"><a href="config.php?view=environment"><?= $string['environment'] ?></a></li>
             <li class="<?= ($view == 'settings') ? 'selected' : '' ?>"><a href="config.php?view=settings"><?= $string['settings'] ?></a></li>
+            <li class="<?= ($view == 'environment') ? 'selected' : '' ?>"><a href="config.php?view=environment"><?= $string['environment'] ?></a></li>
             <li class="<?= ($view == 'mis') ? 'selected' : '' ?>"><a href="config.php?view=mis"><?= $string['mis'] ?></a></li>
             <li class="<?= ($view == 'plugins' || $view == 'uninstall') ? 'selected' : '' ?>"><a href="config.php?view=plugins"><?= $string['plugins'] ?></a></li>
             <li class="<?= ($view == 'actions') ? 'selected' : '' ?>"><a href="config.php?view=actions"><?= $string['actions'] ?></a></li>

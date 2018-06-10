@@ -77,9 +77,8 @@ class Targets extends Plugin {
         
         global $CFG, $DB;
         
-        $return = true;
         $pluginID = $this->createPlugin();
-        $return = $return && $pluginID;
+        $return = true && $pluginID;
         
         // This is a core ELBP plugin, so the extra tables it requires are handled by the core ELBP install.xml
         
@@ -88,8 +87,7 @@ class Targets extends Plugin {
         $settings = array();
         $settings['block_progress_bars_enabled'] = 1;
         $settings['external_target_name_hover_attribute'] = 'Target';
-        $settings['attributes'] = '[[Select: |name = "Target Type"| |label = "Target Type"| |options = {name = "N/A", value = "N/A"}{name = "TAP", value = "TAP"}{name = "SAP", value = "SAP"}{name = "AddSup", value = "AddSup"}|| |validation = {type = "NOT_EMPTY"}| |display = "side"]]
-[[Textbox: |name = "Target"| |label = "Target"|| |validation = {type = "NOT_EMPTY"}| |display = "main"]]';
+        $settings['attributes'] = 'elbpform:[{"id":"qqWp2nmH8d","name":"Target Type","type":"Select","display":"side","default":"","instructions":"","options":["TAP","SAP","AddSupp"],"other":[],"studentID":false,"usersValue":false,"obj":null},{"id":"P923NN4Ayp","name":"Target","type":"Moodle Text Editor","display":"main","default":"","instructions":"","options":false,"validation":["REQUIRED"],"other":[],"studentID":false,"usersValue":false,"obj":null}]';
         $settings['target_set_100_progress_when_achieved'] = 1;
         $settings['target_set_achieved_when_100_progress'] = 1;
         $settings['new_target_instructions'] = 'Please ensure targets are SMART: Specific, Measurable, Achieveable, Realistic, Time-bound';

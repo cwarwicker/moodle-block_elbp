@@ -7,7 +7,7 @@
     <ul class="elbp_tabrow">
         <li class="<?= ($view == '' || $view == 'main') ? 'selected' : '' ?>"><a href="config.php"><?= $string['main'] ?></a></li>
         <li class="<?= ($view == 'settings') ? 'selected' : '' ?>"><a href="config.php?view=settings"><?= $string['settings'] ?></a></li>
-        <li class="<?= ($view == 'targetsets') ? 'selected' : '' ?>"><a href="config.php?view=targetsets"><?= $string['targetsets'] ?></a></li>
+        <!--<li class="<?= ($view == 'targetsets') ? 'selected' : '' ?>"><a href="config.php?view=targetsets"><?= $string['targetsets'] ?></a></li>-->
     </ul>
     
     <?= (!empty($MSGS['errors'])) ? elbp_error_alert_box($MSGS['errors']) : '' ?>

@@ -61,19 +61,19 @@
                             <!-- If we are using confidentiality, then you have to be the student to edit it -->
                             <?php if ( ($obj->getSetting('use_confidentiality') == 1 && $obj->getStudentID() == $USER->id) || $obj->getSetting('use_confidentiality') != 1 ): ?>
                                 <textarea name="challengeComments"><?= (isset($challenge->userChallenge->comments)) ? $challenge->userChallenge->comments : '' ?></textarea>
-                                <br>
+                                <br><br>
                                 <input type="hidden" name="challengeID" value="<?= $challenge->id ?>" />
                                 <input type="button" class="btn" value="<?= $string['save'] ?>" onclick="ELBP.Challenges.save( $('#challenge_form_<?= $challenge->id ?>') );return false;" />
                                 <span id="challenges_output_<?= $challenge->id ?>" class="elbp_success_note"></span>
-
                             <?php else: ?>
                                     <?php if ($obj->getSetting('use_confidentiality') == 1 && isset($challenge->userChallenge->confidentialityid) && $CONF->meetsConfidentialityRequirement($access, $challenge->userChallenge->confidentialityid)): ?>
                                         <textarea readonly style='height:100px;'><?= trim($challenge->userChallenge->comments) ?></textarea>
                                     <?php else: ?>
                                         <textarea readonly style='height:100px;'></textarea>
                                     <?php endif; ?>
-                                
                             <?php endif; ?>
+                            
+                            <br>
                             
                         </form>
 

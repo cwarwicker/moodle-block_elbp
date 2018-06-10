@@ -54,13 +54,13 @@
             <?php foreach ($dir_plugins as $plugin): ?>
                 $('#plugin_name').append('<option value="<?= $plugin ?>"><?= $plugin ?></option>');
             <?php endforeach; ?>
-            $('#plugin_name').css('display', 'block');
+            $('#plugin_name').css('display', 'inline-block');
             $('#other_plugin_name').css('display', 'none');
         }
         else if(type == 'external'){
             $('#plugin_name').css('display', 'none');
             $('#plugin_name').html('');
-            $('#mod_or_block').css('display', 'block');
+            $('#mod_or_block').css('display', 'inline-block');
             $('#other_plugin_name').css('display', 'none');
         }
     }
@@ -78,7 +78,7 @@
             <?php foreach ($dir_blocks as $plugin): ?>
                 $('#plugin_name').append('<option value="<?= $plugin ?>"><?= $plugin ?></option>');
             <?php endforeach; ?>
-            $('#plugin_name').css('display', 'block');
+            $('#plugin_name').css('display', 'inline-block');
             $('#other_plugin_name').css('display', 'none');
         }
         else if(type == 'mod'){
@@ -86,23 +86,23 @@
             <?php foreach ($dir_mods as $plugin): ?>
                 $('#plugin_name').append('<option value="<?= $plugin ?>"><?= $plugin ?></option>');
             <?php endforeach; ?>
-            $('#plugin_name').css('display', 'block');
+            $('#plugin_name').css('display', 'inline-block');
             $('#other_plugin_name').css('display', 'none');
         }
         else if(type == 'other'){
             $('#plugin_name').html('');
             $('#plugin_name').css('display', 'none');
             $('select#plugin_name').css('display', 'none');
-            $('#other_plugin_name').css('display', 'block');
+            $('#other_plugin_name').css('display', 'inline-block');
             load_submit_button('');
         }
     }
     
     function load_submit_button(name){
-        $('#install_file_msg').css('display', 'block');
+        $('#install_file_msg').css('display', 'inline-block');
         plugin_name = name;
         $('#file_name').text( rebuild_dir() );
-        $('#submit_td').css('display', 'block');
+        $('#submit_td').css('display', 'inline-block');
     }
     
     function retype_file_name(name){
@@ -142,7 +142,7 @@
 </script>
 
 <form action="" method="post">
-<table>    
+<table id="elbp_install_plugins">    
     
     <tr>
         <td>

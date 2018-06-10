@@ -1098,9 +1098,8 @@ class Attendance extends Plugin {
         
         global $DB;
         
-        $return = true;
         $this->id = $this->createPlugin();
-        $return = $return && $this->id;
+        $return = true && $this->id;
         
         // This is a core ELBP plugin, so the extra tables it requires are handled by the core ELBP install.xml
         
@@ -2261,16 +2260,21 @@ class Attendance extends Plugin {
         $processed = array();       
         $errorCnt = 0;
         
-        $trackEvery = $this->getSetting('track_days');
-        if (!$trackEvery || $trackEvery < 1){
-            return array('success' => false, 'error' => get_string('attendance:import:notrackevery', 'block_elbp'));
+        // Is tracking enabled?
+        if ($this->isTrackingEnabled())
+        {
+        
+            $trackEvery = $this->getSetting('track_days');
+            if (!$trackEvery || $trackEvery < 1){
+                return array('success' => false, 'error' => get_string('attendance:import:notrackevery', 'block_elbp'));
+            }
+
+            // If we are tracking changes every 7 days for example, this would be a unix timestamp
+            // for 00:00:00 7 days ago, so we could then compare the unix timestamp of the last tracking
+            // update for each user, then we can update only those whose last tracking update was before this
+            $lastTrackUnix = strtotime("-{$trackEvery} days 00:00:00", $time);
+        
         }
-        
-        // If we are tracking changes every 7 days for example, this would be a unix timestamp
-        // for 00:00:00 7 days ago, so we could then compare the unix timestamp of the last tracking
-        // update for each user, then we can update only those whose last tracking update was before this
-        $lastTrackUnix = strtotime("-{$trackEvery} days 00:00:00", $time);
-        
         
         
         // Which field are we looking at?
