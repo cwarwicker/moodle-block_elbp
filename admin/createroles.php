@@ -55,8 +55,9 @@ if (!$ELBP->getSetting('elbp_frontpageteacher')){
         // Set the role contexts
         set_role_contextlevels($id, array(CONTEXT_COURSE));
         
-        // Update the block/elbp:view_elbp capability
+        // Update the block/elbp:view_elbp capability and block/bc_dashboard:view_bc_dashboard
         assign_capability('block/elbp:view_elbp', CAP_ALLOW, $id, $systemContext);
+        assign_capability('block/bc_dashboard:view_bc_dashboard', CAP_ALLOW, $id, $systemContext);
         
         // Update elbp setting
         $ELBP->updateSetting('elbp_frontpageteacher', $shortname);
@@ -149,9 +150,10 @@ if (!$ELBP->getSetting('elbp_admin')){
         // Set the role contexts
         set_role_contextlevels($id, array(CONTEXT_COURSE));
         
-        // Update the block/elbp:view_elbp capability
+        // Update the block/elbp:view_elbp capability & view_bc_dashboard
         assign_capability('block/elbp:elbp_admin', CAP_ALLOW, $id, $systemContext);
-        
+        assign_capability('block/bc_dashboard:view_bc_dashboard', CAP_ALLOW, $id, $systemContext);
+
         // Update the elbp setting
         $ELBP->updateSetting('elbp_admin', $shortname);
         
