@@ -36,7 +36,7 @@ class ELBP
     
     const MAJOR_VERSION = 1;
     const MINOR_VERSION = 4;
-    const BUILD_NUMBER = 0;
+    const BUILD_NUMBER = 1;
     
     private $CFG;
     private $DB;
@@ -832,29 +832,7 @@ class ELBP
                     
                 break;
             
-                case 'import':
-                    
-                    // Import config
-                    global $MSGS, $TPL, $OUTPUT;
-                    $reload = (bool)optional_param('reload', 0, PARAM_INT);
-
-                    $TPL->set("view", 'import');
-                    $TPL->set("MSGS", $MSGS);
-
-                    // Create directory for template csvs
-                    $this->createDataDirectory('templates');
-
-                    // If template csv doesn't exist, create it, otherwise get the file path
-                    $importFile = $this->createTemplateImportCsv($reload);
-                    $TPL->set("importFile", $importFile);
-
-                    // If example csv doesn't exist, create it, otherwise get the file path
-                    $exampleFile = $this->createExampleImportCsv($reload);
-                    $TPL->set("exampleFile", $exampleFile);
-
-                    
-                    
-                break;
+                
             
                 case 'course':
                     
@@ -1338,22 +1316,7 @@ class ELBP
     
     
     
-    /**
-     * Save User Import configuration and run POST scripts
-     * @global \ELBP\type $MSGS
-     * @global \ELBP\type $DB
-     * @return boolean
-     */
-    private function saveConfigImport()
-    {
-        global $DB,$MSGS;
-        // Import file
-        if (isset($_FILES['link_csv']) && isset($_POST['import_link_csv']) && !$_FILES['link_csv']['error']){
-            $result = $this->runImport($_FILES['link_csv']);
-            $MSGS['result'] = $result;
-            return true;
-        }
-    }
+    
     
     /**
      * Save the course config settings

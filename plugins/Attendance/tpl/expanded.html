@@ -1,7 +1,7 @@
 <?php if(!defined('ELBP')) exit; ?>
 <ul class="elbp_tabrow">
     <li class="elbp_view_link selected"><a href="#"  onclick="ELBP.Attendance.load_display('simple', this);return false;"><?= $string['simple'] ?></a></li>
-    <!--<li class="elbp_view_link"><a href="#" onclick="ELBP.Attendance.load_display('bar', this);return false;"><?= $string['barchart'] ?></a></li>-->
+    <li class="elbp_view_link"><a href="#" onclick="ELBP.Attendance.load_display('bar', this);return false;"><?= $string['barchart'] ?></a></li>
     <?php if($ATT->isTrackingEnabled()): ?>
         <li class="elbp_view_link"><a href="#" onclick="ELBP.Attendance.load_display('tracking', this);return false;"><?= $string['tracking'] ?></a></li>
     <?php endif; ?>

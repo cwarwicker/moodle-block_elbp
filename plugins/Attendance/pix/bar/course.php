@@ -9,7 +9,6 @@
  * @author Conn Warwicker <cwarwicker@bedford.ac.uk> <conn@cmrwarwicker.com>
  * 
  */
-die('Temporarily disabled');
 
 require_once '../../../../../../config.php';
 require_once '../../../../lib.php';
