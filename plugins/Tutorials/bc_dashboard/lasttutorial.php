@@ -46,12 +46,12 @@ class lasttutorial extends \BCDB\Report\Element {
         
         $field = $this->getAliasName();
         $max = 0;
-        
+                
         // Loop through the users
         foreach($results as $row)
         {
 
-            if ($row->$field > $max){
+            if ($row[$field] > $max){
                 $max = $row[$field];
             }
         }
