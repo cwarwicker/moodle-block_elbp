@@ -47,7 +47,7 @@
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 <?php if ($cLevels): ?>
                                     <?php foreach($cLevels as $cLevel): ?>
-                                        <?php $sel = (isset($challenge->userChallenge->confidentialityid) && $challenge->userChallenge->confidentialityid == $cLevel->id) ? 'checked' : ''; ?>
+                                        <?php $sel = ( (isset($challenge->userChallenge->confidentialityid) && $challenge->userChallenge->confidentialityid == $cLevel->id) || (!isset($challenge->userChallenge->confidentialityid) && $cLevel->id == ELBP_CONFIDENTIALITY_GLOBAL) ) ? 'checked' : ''; ?>
                                         <span title="<?= \ELBP\Confidentiality::getHelpString($cLevel->id); ?>">
                                             <input type="radio" name="challenge_confidentiality" value="<?= $cLevel->id ?>" <?= $sel ?>  /> <?= $cLevel->name ?>
                                         </span>

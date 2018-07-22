@@ -20,7 +20,7 @@
                     <?php if ($lastDay <> $event->daynum): ?>
                         <b><?= $event->day ?></b><br><br>
                     <?php endif; ?>
-                    <?= $event->description ?>
+                    <?= $event->description ?> :: <?= $event->starttime ?> - <?= $event->endtime ?>
                 </td>
             </tr>
         <?php $lastDay = $event->daynum; ?>

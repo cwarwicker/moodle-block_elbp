@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/elbp/db" VERSION="20170524" COMMENT="XMLDB file for Moodle blocks/elbp"
+<XMLDB PATH="blocks/elbp/db" VERSION="20180720" COMMENT="XMLDB file for Moodle blocks/elbp"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -42,6 +42,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="ne_indx" UNIQUE="false" FIELDS="name, enabled"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="lbp_plugin_groups" COMMENT="The groupings of plugins into tabs">
       <FIELDS>
@@ -857,6 +860,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="ne_indx" UNIQUE="false" FIELDS="name, enabled"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="lbp_custom_plugin_attributes" COMMENT="Default comment for the table, please edit me">
       <FIELDS>
@@ -1062,7 +1068,11 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="uid_fk" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="ud_indx" UNIQUE="false" FIELDS="userid, deleted"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="lbp_target_set_attributes" COMMENT="Default comment for the table, please edit me">
       <FIELDS>
@@ -1073,7 +1083,11 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="tsid_fk" TYPE="foreign" FIELDS="targetsetid" REFTABLE="lbp_target_sets" REFFIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="changeme" UNIQUE="false" FIELDS=""/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="lbp_plugin_layouts" COMMENT="Default comment for the table, please edit me">
       <FIELDS>
@@ -1085,6 +1099,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="ne_indx" UNIQUE="false" FIELDS="name, enabled"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="lbp_plugin_group_plugins" COMMENT="Default comment for the table, please edit me">
       <FIELDS>

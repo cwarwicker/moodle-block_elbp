@@ -1,24 +1,32 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Core ELBP class
- * 
- * @copyright 2014 Bedford College
- * @package Bedford College Electronic Learning Blue Print (ELBP)
- * @version 1.0
- * @author Conn Warwicker <cwarwicker@bedford.ac.uk> <conn@cmrwarwicker.com>
- * 
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Electronic Learning Blue Print
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
+ * reports, qualification progress, etc... as well as unlimited custom sections.
+ * 
+ * @package     block_elbp
+ * @copyright   2017-onwards Conn Warwicker
+ * @author      Conn Warwicker <conn@cmrwarwicker.com>
+ * @link        https://github.com/cwarwicker/moodle-block_elbp
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
 
@@ -2768,7 +2776,7 @@ class ELBP
         
         // Are we an ELBP Administrator?
         // This checks if they are an elbp_admin on the front page course (SITEID)
-        if (has_capability('block/elbp:elbp_admin', $frontPageContext, $user)) {
+        if (has_capability('block/elbp:elbp_admin', $frontPageContext, $user, false)) {
             $access['elbpadmin'] = true ;
             $access['context'][] = $frontPageContext;
         }
@@ -2781,7 +2789,7 @@ class ELBP
             foreach($studentsCourses as $studentsCourse)
             {
                 $courseContext = \context_course::instance($studentsCourse->id);
-                if (has_capability('block/elbp:view_elbp', $courseContext, $user)) {
+                if (has_capability('block/elbp:view_elbp', $courseContext, $user, false)) {
                     $access['teacher'] = true;
                     $access['context'][] = $courseContext;
                     break; // Stop the loop, one is enough if it's successful
@@ -2798,7 +2806,7 @@ class ELBP
         }
         
         // Other tutors or roles
-        if (has_capability('block/elbp:view_elbp', $userContext, $user)) {
+        if (has_capability('block/elbp:view_elbp', $userContext, $user, false)) {
             $access['other'] = true;
             $access['context'][] = $userContext;
         }
@@ -2811,7 +2819,6 @@ class ELBP
                 $access['context'] = false;
             }
         }
-        
         
         // Finally, are the the user ourselves?
         if ($userID == $user){
@@ -2862,7 +2869,8 @@ class ELBP
         
         $siteContext = \context_system::instance();
         $userContext = \context_user::instance($userID);
-        
+        $frontPageContext = \context_course::instance(SITEID);
+
         if (!$userContext){
             $this->errorMsg = get_string('user', 'block_elbp');
             return false;
@@ -2903,12 +2911,12 @@ class ELBP
         // Check if we're a teacher on the course (editing or non-editing)
         if(isset($courseContext)){
             
-            if (has_capability('block/elbp:view_elbp',$courseContext)) {
+            if (has_capability('block/elbp:view_elbp', $courseContext, $USER, false)) {
                 $access['teacher'] = true;
                 if (!isset($access['context'])) $access['context'] = $courseContext;
             }
             
-            if (has_capability('block/elbp:elbp_admin',$courseContext)) {
+            if (has_capability('block/elbp:elbp_admin', $courseContext, $USER, false) || has_capability('block/elbp:elbp_admin', $frontPageContext, $USER, false)) {
                 $access['elbpadmin'] = true;
                 if (!isset($access['context'])) $access['context'] = $courseContext;
             }
