@@ -43,8 +43,8 @@ class ELBP
 {
     
     const MAJOR_VERSION = 1;
-    const MINOR_VERSION = 4;
-    const BUILD_NUMBER = 2;
+    const MINOR_VERSION = 5;
+    const BUILD_NUMBER = 0;
     
     private $CFG;
     private $DB;

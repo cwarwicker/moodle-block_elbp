@@ -212,4 +212,8 @@ if ($results['errors']){
     echo "</div>";
 }
 
+if (!$results['success'] && !$results['errors']){
+    echo "Leave me alone";
+}
+
 echo $OUTPUT->footer();
