@@ -387,7 +387,7 @@ $string['customplugin:intdb:settings:desc'] = 'Here you can define the query and
 $string['customplugin:intdb:sqlquery:desc'] = 'This is the SQL query which will be run on your Moodle database to gather the data for the report. To include php variable values in the query, use the following mappings:<br>User ID: %uid%, Username: %uname%, User ID Number: %idnum%<br>Course ID: %cid%, Course Shortname: %cshort%, Course ID Number: %cidnum%';
 $string['customplugin:intdb:field:desc'] = 'To reference a field returned in the SQL query, it must be mapped to a meaningful name. E.g. the query might return "fname", but you might want that to be displayed as "Full Name", etc...';
 $string['customplugin:intdb:querytest:desc'] = 'To test the query you will need to replace any placeholders in your query with actual values, e.g. replace "%uid%" whereever you have it with an actual user id, for testing purposes.';
-$string['customplugin:extdb:sqlquery:desc'] = 'This is the SQL query which will be run on your external database to gather data for the report. To include php variable values in the query, use the following mappings:<br>User ID: %uid%, Username: %uname%, User ID Number: %idnum<br>Course ID: %cid%, Course Shortname: %cshort%, Course ID Number: %cidnum%';
+$string['customplugin:extdb:sqlquery:desc'] = 'This is the SQL query which will be run on your external database to gather data for the report. To include php variable values in the query, use the following mappings:<br>User ID: %uid%, Username: %uname%, User ID Number: %idnum%<br>Course ID: %cid%, Course Shortname: %cshort%, Course ID Number: %cidnum%';
 $string['customplugin:db:rule:desc'] = 'You can define rules so that only certain aspects of the data returned are displayed, based on the rules you set.';
 $string['customvalues'] = 'Custom Values';
 
@@ -1210,6 +1210,8 @@ $string['singlerow'] = 'Single Row';
 $string['size'] = 'Size';
 $string['shortname'] = 'Shortname';
 $string['specialfields'] = 'Special Fields';
+$string['specificcoursecategories'] = 'Specific Course Categories';
+$string['specificcoursecategories:desc'] = 'If you only want courses from certain categories to show up when a student\'s courses are listed, you can specify those categories here. Courses from all other categories will not be shown. <b>Note:</b> This will not filter down from parent categories, so you will need to select every individual category that you want to be included, not just the top level category.';
 $string['specificuser'] = 'Specific User';
 $string['sqlquery'] = 'SQL Query';
 $string['sqlquery:rowtype'] = 'Row Type';

@@ -106,14 +106,13 @@ class SQLite extends Manager {
         // Assuming $host is just a path to the file
         if (!file_exists($host))
         {
-            echo "SQLSTATE[HY000] Unable to open database file.";
+            echo "SQLSTATE[HY000] Unable to open database file: {$host}.";
             return false;
         }
                 
          try {
             $str = "sqlite:{$host}";
-            if ($db != "") $str .= ";dbname={$db}";
-            $DBH = new \PDO($str, $user, $pass);
+            $DBH = new \PDO($str);
             $DBH->setAttribute( \PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC );
             $DBH->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             $this->dbh = $DBH;

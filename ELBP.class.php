@@ -685,7 +685,7 @@ class ELBP
      */
     public function displayConfig($view)
     {
-        global $CFG, $MSGS, $FORMVALS, $OUTPUT, $PAGE;
+        global $CFG, $MSGS, $FORMVALS, $OUTPUT, $PAGE, $DBC;
                 
         $TPL = new \ELBP\Template();
         $TPL->set("ELBP", $this);
@@ -739,7 +739,13 @@ class ELBP
                 case 'settings':
                     
                     ksort($PAGE->theme->layouts);
+                    $categories = \coursecat::make_categories_list();
+                    $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
+                    
                     $TPL->set("themeLayouts", $PAGE->theme->layouts);
+                    $TPL->set("categories", $categories);
+                    $TPL->set("includedCategories", $includedCategories);
+                    
                     
                 break;
                 
@@ -1552,6 +1558,9 @@ class ELBP
            
             // Remove so doesn't get put into lbp_settings
             unset($settings['submitconfig']);
+            
+            // Specific course categories
+            $settings['specific_course_cats'] = implode(",", $settings['specific_course_cats']);
                         
             // Checkboxes need int values
             if (isset($settings['logo_delete_current'])){

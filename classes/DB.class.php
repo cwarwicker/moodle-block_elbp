@@ -132,11 +132,13 @@ class DB
      
         $params = array();
         
-        $excludeCourses = \ELBP\Setting::getSetting('exclude_courses');
-        $excludeCourses = explode(",", $excludeCourses);
-                
+        $excludeCourses = explode(",", \ELBP\Setting::getSetting('exclude_courses'));
+        $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
+
         $exclude = array();
+        $categories = array();
         
+        // Get ids of valid courses to exclude
         if ($excludeCourses){
             
             // Check the courses provided are valid
@@ -157,6 +159,23 @@ class DB
             $excludeSQL = "";
         }
         
+        // Get ids of valid categories to specify
+        if ($includedCategories){
+            foreach($includedCategories as $catID){
+                $category = $this->DB->get_record("course_categories", array("id" => $catID));
+                if ($category){
+                    $categories[] = $category->id;
+                }
+            }
+        }
+        
+        if ($categories){
+            $categorySQL = " AND c.category IN (".implode(',', $categories).") ";
+        } else {
+            $categorySQL = "";
+        }
+                
+        
         $sql = "SELECT
                     DISTINCT c.*
                 FROM
@@ -172,6 +191,7 @@ class DB
                 AND
                     r.roleid = ?
                 {$excludeSQL}     
+                {$categorySQL}  
                 ORDER BY
                     c.shortname ASC";
                                             
@@ -225,11 +245,12 @@ class DB
         $params[] = $userID;
         $params[] = CONTEXT_COURSE;
         
-        $excludeCourses = \ELBP\Setting::getSetting('exclude_courses');
-        $excludeCourses = explode(",", $excludeCourses);
-                
+        $excludeCourses = explode(",", \ELBP\Setting::getSetting('exclude_courses'));
+        $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
+
         $exclude = array();
-        
+        $categories = array();
+                        
         if ($excludeCourses){
             
             // Check the courses provided are valid
@@ -249,6 +270,25 @@ class DB
         } else {
             $excludeSQL = "";
         }
+        
+        
+        // Get ids of valid categories to specify
+        if ($includedCategories){
+            foreach($includedCategories as $catID){
+                $category = $this->DB->get_record("course_categories", array("id" => $catID));
+                if ($category){
+                    $categories[] = $category->id;
+                }
+            }
+        }
+        
+        if ($categories){
+            $categorySQL = " AND c.category IN (".implode(',', $categories).") ";
+        } else {
+            $categorySQL = "";
+        }
+        
+        
         
         
         // Role SQL
@@ -289,6 +329,8 @@ class DB
                     u.id = ? AND cx.contextlevel = ? 
                                         
                 {$excludeSQL}   
+                    
+                {$categorySQL}
                     
                 {$roleSQL}
 
