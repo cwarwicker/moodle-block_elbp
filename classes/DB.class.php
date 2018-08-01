@@ -1,36 +1,32 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * ELBP DB class
- * 
- * This class defines various database methods we're going to be reusing. 
- * This should make it a bit easier than building up whole queries each time we want to do something.
- * 
- * The kind of queries it has include:
- * 
- * - get a course from an id
- * - get courses on a user
- * - get users on a course
- * - etc...
- * 
- * I don't use this as much as I should
- * 
- * @copyright 2014 Bedford College
- * @package Bedford College Electronic Learning Blue Print (ELBP)
- * @version 1.0
- * @author Conn Warwicker <cwarwicker@bedford.ac.uk> <conn@cmrwarwicker.com>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Electronic Learning Blue Print
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
+ * reports, qualification progress, etc... as well as unlimited custom sections.
+ * 
+ * @package     block_elbp
+ * @copyright   2017-onwards Conn Warwicker
+ * @author      Conn Warwicker <conn@cmrwarwicker.com>
+ * @link        https://github.com/cwarwicker/moodle-block_elbp
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
 
@@ -136,11 +132,13 @@ class DB
      
         $params = array();
         
-        $excludeCourses = \ELBP\Setting::getSetting('exclude_courses');
-        $excludeCourses = explode(",", $excludeCourses);
-                
+        $excludeCourses = explode(",", \ELBP\Setting::getSetting('exclude_courses'));
+        $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
+
         $exclude = array();
+        $categories = array();
         
+        // Get ids of valid courses to exclude
         if ($excludeCourses){
             
             // Check the courses provided are valid
@@ -161,6 +159,23 @@ class DB
             $excludeSQL = "";
         }
         
+        // Get ids of valid categories to specify
+        if ($includedCategories){
+            foreach($includedCategories as $catID){
+                $category = $this->DB->get_record("course_categories", array("id" => $catID));
+                if ($category){
+                    $categories[] = $category->id;
+                }
+            }
+        }
+        
+        if ($categories){
+            $categorySQL = " AND c.category IN (".implode(',', $categories).") ";
+        } else {
+            $categorySQL = "";
+        }
+                
+        
         $sql = "SELECT
                     DISTINCT c.*
                 FROM
@@ -176,6 +191,7 @@ class DB
                 AND
                     r.roleid = ?
                 {$excludeSQL}     
+                {$categorySQL}  
                 ORDER BY
                     c.shortname ASC";
                                             
@@ -227,12 +243,14 @@ class DB
         
         $params = array();
         $params[] = $userID;
+        $params[] = CONTEXT_COURSE;
         
-        $excludeCourses = \ELBP\Setting::getSetting('exclude_courses');
-        $excludeCourses = explode(",", $excludeCourses);
-                
+        $excludeCourses = explode(",", \ELBP\Setting::getSetting('exclude_courses'));
+        $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
+
         $exclude = array();
-        
+        $categories = array();
+                        
         if ($excludeCourses){
             
             // Check the courses provided are valid
@@ -252,6 +270,25 @@ class DB
         } else {
             $excludeSQL = "";
         }
+        
+        
+        // Get ids of valid categories to specify
+        if ($includedCategories){
+            foreach($includedCategories as $catID){
+                $category = $this->DB->get_record("course_categories", array("id" => $catID));
+                if ($category){
+                    $categories[] = $category->id;
+                }
+            }
+        }
+        
+        if ($categories){
+            $categorySQL = " AND c.category IN (".implode(',', $categories).") ";
+        } else {
+            $categorySQL = "";
+        }
+        
+        
         
         
         // Role SQL
@@ -289,9 +326,11 @@ class DB
                 INNER JOIN
                     {user} u ON u.id = r.userid
                 WHERE
-                    u.id = ?
+                    u.id = ? AND cx.contextlevel = ? 
                                         
                 {$excludeSQL}   
+                    
+                {$categorySQL}
                     
                 {$roleSQL}
 
@@ -299,7 +338,7 @@ class DB
                     c.fullname";
                             
         $records = $this->DB->get_records_sql($sql, $params);
-                
+                        
         return $records;
         
     }

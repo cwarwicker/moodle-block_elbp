@@ -1,24 +1,32 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
+ * Electronic Learning Blue Print
+ *
+ * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
+ * reports, qualification progress, etc... as well as unlimited custom sections.
  * 
- * Form to assign tutors to courses of mentees or individual mentees
- * 
- * We recommend using the bc_dashboard block which should have been supplied with the elbp block.
- * In which case, this form will probably not be used much, as staff will then be able to assign
- * themselves to users.
- * 
- * Assign personal tutors to:
- *  - Courses
- *  - Course Groups
- *  - Individual Students
- * 
- * All links to students are stored in role_assignments, so that capabilities can be used
- * All links to courses/groups are stored in lbp_tutor_assignments so that their list can be filtered by courses & groups
- * 
- * @copyright 2014 Bedford College
- * @package Bedford College Electronic Learning Blue Print (ELBP)
- * @version 1.0
- * @author Conn Warwicker <cwarwicker@bedford.ac.uk> <conn@cmrwarwicker.com>
+ * @package     block_elbp
+ * @copyright   2017-onwards Conn Warwicker
+ * @author      Conn Warwicker <conn@cmrwarwicker.com>
+ * @link        https://github.com/cwarwicker/moodle-block_elbp
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
 

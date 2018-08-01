@@ -1,6 +1,8 @@
-# Electronic Learning Blue Print (v1.4.0)
+# Electronic Learning Blue Print (v1.4.2)
 
 This plugin provides you with the Electronic Learning Blue Print block, which is an Individual Learning Plan system, which provides you with one centralised place to see all of the information relevant for a student, such as Attendance, Targets, Timetables, Registers, etc...
+
+![](https://image.ibb.co/deKKOo/screenshot.png)
 
 
 Features
@@ -9,7 +11,7 @@ The PLP is feature-rich and allows you to customise almost every aspect of it, s
 
 Some of these features include:
 
-* 10 Built-in plugins
+* 9 Built-in plugins
 	* Attendance & Punctuality
 	* Register
 	* Targets
@@ -20,10 +22,9 @@ Some of these features include:
 	* Challenges
 	* Learning Styles
 	* Additional Support
-	* BKSB Live
 	* Timetable
 	
-* 2 Additional plugins when you use our Grade Tracker block
+* 2 Additional plugins when you use the Grade Tracker block
 	* Grade Tracker
 	* Prior Learning
 
@@ -44,12 +45,12 @@ Some of these features include:
 	* SQLite
 	
 * Email Alerts - Set up custom alerts to suit your particular needs, based on PLP events, against whole courses, course groups or individual students.
-* Report - See overview reports and build up your own custom reports which can be exported to Excel or saved into the system for later comparisons. (Requires the bc_dashboard block)
+* Report - See overview reports and build up your own custom reports which can be exported to Excel or saved into the system for later comparisons. 
 
 Requirements
 ------------
 - PHP 5.6 or higher
-- Moodle 3.1 or higher
+- Moodle 3.1, 3.2, 3.3 or 3.4
 - block_bc_dashboard installed
 
 Installation
@@ -58,6 +59,10 @@ Installation
 - Extract the files 
 - Rename the folder inside "moodle-block_elbp-master" to just "elbp".
 - Place the "elbp" folder inside the /blocks directory of your Moodle site and run through the normal plugin installation procedure, then you can add the block to a course page.
+
+User Guide
+------------
+[Please see the Wiki](https://github.com/cwarwicker/moodle-block_elbp/wiki)
 
 Licence
 ------------

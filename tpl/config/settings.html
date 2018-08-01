@@ -49,10 +49,22 @@
         <br><br>
     <?php endif; ?>
     
-    
     <br>
     
     <h3><?= $string['courses'] ?></h3>
+    <small><strong><?= $string['specificcoursecategories'] ?></strong> - <?= $string['specificcoursecategories:desc'] ?></small>
+    <br>
+    <select multiple="multiple" name="specific_course_cats[]">
+        <?php if ($categories): ?>
+            <?php foreach($categories as $catID => $category): ?>
+                <option value="<?= $catID ?>" <?= (in_array($catID, $includedCategories)) ? 'selected' : '' ?> ><?= $category ?></option>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </select>
+    
+    
+    <br><br>
+    
     <small><strong><?= $string['excludecourses'] ?></strong> - <?= $string['excludecourses:desc'] ?></small>
     <br>
     <input type="text" class="elbp_max" name="exclude_courses" value="<?= \ELBP\Setting::getSetting('exclude_courses') ?>" />

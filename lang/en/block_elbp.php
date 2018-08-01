@@ -1,23 +1,32 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
- * ELBP core language file - English (British)
- * 
- * @copyright 2014 Bedford College
- * @package Bedford College Electronic Learning Blue Print (ELBP)
- * @version 1.0
- * @author Conn Warwicker <cwarwicker@bedford.ac.uk> <conn@cmrwarwicker.com>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Electronic Learning Blue Print
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
+ * reports, qualification progress, etc... as well as unlimited custom sections.
+ * 
+ * @package     block_elbp
+ * @copyright   2017-onwards Conn Warwicker
+ * @author      Conn Warwicker <conn@cmrwarwicker.com>
+ * @link        https://github.com/cwarwicker/moodle-block_elbp
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
 
@@ -286,12 +295,12 @@ $string['confidentiality'] = 'Confidentiality';
 $string['confidentiality:help'] = 'Confidentiality levels allow you to choose who can and cannot see certain things.';
 $string['confidentiality:global:help:pp'] = 'GLOBAL: All staff and your parents/guardians can see this.';
 $string['confidentiality:global:help'] = 'GLOBAL: All staff could see this.';
-$string['confidentiality:restricted:help:pp'] = 'RESTRICTED: Only Course tutors, Personal tutors and your parents/guardians can see this.';
+$string['confidentiality:restricted:help:pp'] = 'RESTRICTED: Only your Course tutors, Personal tutors and parents/guardians can see this.';
 $string['confidentiality:restricted:help'] = 'RESTRICTED: Only Course tutors and Personal tutors can see this.';
 $string['confidentiality:private:help:pp'] = 'PRIVATE: Only you and your parents/guardians can see this.';
 $string['confidentiality:private:help'] = 'PRIVATE: Only you can see this.';
-$string['confidentiality:personal:help:pp'] = 'PERSONAL: Only you and your Personal Tutors can see this, NOT your parents/guardians.';
-$string['confidentiality:personal:help'] = 'PERSONAL: Only you and your Personal Tutors can see this.';
+$string['confidentiality:personal:help:pp'] = 'PERSONAL: Only you and your Personal Tutors can see this, NOT your parents/guardians and NOT your Course tutors.';
+$string['confidentiality:personal:help'] = 'PERSONAL: Only you and your Personal Tutors can see this, NOT your Course tutors.';
 
 
 $string['confidentiality:noaccess'] = 'You do not meet the Confidentiality requirements to view this.';
@@ -378,7 +387,7 @@ $string['customplugin:intdb:settings:desc'] = 'Here you can define the query and
 $string['customplugin:intdb:sqlquery:desc'] = 'This is the SQL query which will be run on your Moodle database to gather the data for the report. To include php variable values in the query, use the following mappings:<br>User ID: %uid%, Username: %uname%, User ID Number: %idnum%<br>Course ID: %cid%, Course Shortname: %cshort%, Course ID Number: %cidnum%';
 $string['customplugin:intdb:field:desc'] = 'To reference a field returned in the SQL query, it must be mapped to a meaningful name. E.g. the query might return "fname", but you might want that to be displayed as "Full Name", etc...';
 $string['customplugin:intdb:querytest:desc'] = 'To test the query you will need to replace any placeholders in your query with actual values, e.g. replace "%uid%" whereever you have it with an actual user id, for testing purposes.';
-$string['customplugin:extdb:sqlquery:desc'] = 'This is the SQL query which will be run on your external database to gather data for the report. To include php variable values in the query, use the following mappings:<br>User ID: %uid%, Username: %uname%, User ID Number: %idnum<br>Course ID: %cid%, Course Shortname: %cshort%, Course ID Number: %cidnum%';
+$string['customplugin:extdb:sqlquery:desc'] = 'This is the SQL query which will be run on your external database to gather data for the report. To include php variable values in the query, use the following mappings:<br>User ID: %uid%, Username: %uname%, User ID Number: %idnum%<br>Course ID: %cid%, Course Shortname: %cshort%, Course ID Number: %cidnum%';
 $string['customplugin:db:rule:desc'] = 'You can define rules so that only certain aspects of the data returned are displayed, based on the rules you set.';
 $string['customvalues'] = 'Custom Values';
 
@@ -1201,6 +1210,8 @@ $string['singlerow'] = 'Single Row';
 $string['size'] = 'Size';
 $string['shortname'] = 'Shortname';
 $string['specialfields'] = 'Special Fields';
+$string['specificcoursecategories'] = 'Specific Course Categories';
+$string['specificcoursecategories:desc'] = 'If you only want courses from certain categories to show up when a student\'s courses are listed, you can specify those categories here. Courses from all other categories will not be shown. <b>Note:</b> This will not filter down from parent categories, so you will need to select every individual category that you want to be included, not just the top level category.';
 $string['specificuser'] = 'Specific User';
 $string['sqlquery'] = 'SQL Query';
 $string['sqlquery:rowtype'] = 'Row Type';

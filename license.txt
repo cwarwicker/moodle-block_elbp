@@ -1,4 +1,3 @@
-<?php
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,40 +28,3 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-
-class Anon {
-    
-    /**
-     * Call dynamically created methods
-     * @param type $name
-     * @param type $arguments
-     * @return type
-     */
-    public function __call($name, $arguments) {
-        if (isset($this->$name) && $this->$name instanceof Closure){
-            return call_user_func_array($this->$name, $arguments);
-        }
-    }
-    
-    /**
-     * Print out info on object
-     * @return string
-     */
-    public function __toString() {
-        
-        $properties = get_class_vars( get_class($this) );
-        $output = "";
-        
-        if ($properties)
-        {
-            foreach($properties as $prop => $val)
-            {
-                $output .= $prop . ": " . $val . "<br>";
-            }
-        }
-        
-        return $output;
-        
-    }
-    
-}
