@@ -1085,9 +1085,6 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="tsid_fk" TYPE="foreign" FIELDS="targetsetid" REFTABLE="lbp_target_sets" REFFIELDS="id"/>
       </KEYS>
-      <INDEXES>
-        <INDEX NAME="changeme" UNIQUE="false" FIELDS=""/>
-      </INDEXES>
     </TABLE>
     <TABLE NAME="lbp_plugin_layouts" COMMENT="Default comment for the table, please edit me">
       <FIELDS>
