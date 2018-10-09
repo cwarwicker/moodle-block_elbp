@@ -3065,19 +3065,21 @@ class ELBP
         else
         {
             
-            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.js' );
-            $PAGE->requires->js( '/blocks/elbp/js/jquery.hotkeys-0.7.9.min.js' );
-            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js' );
-            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.js' );
-            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/raty/jquery.raty.js' );
-            $PAGE->requires->js( '/blocks/elbp/js/scripts.php?studentid=' . $studID . '&courseid=' . $courseID . '&screwcaching=' . time() );
+//            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.js' );
+//            $PAGE->requires->js( '/blocks/elbp/js/jquery.hotkeys-0.7.9.min.js' );
+//            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js' );
+//            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.js' );
+//            $PAGE->requires->js( '/blocks/elbp/js/jquery/plugins/raty/jquery.raty.js' );
+//            $PAGE->requires->js( '/blocks/elbp/js/scripts.php?studentid=' . $studID . '&courseid=' . $courseID . '&screwcaching=' . time() );
+//            
+//            // Loop through plugins & load javascript for them as well
+//            if ($this->plugins){        
+//                foreach ( $this->plugins as $plugin){
+//                    $plugin->loadJavascript();
+//                }
+//            }
             
-            // Loop through plugins & load javascript for them as well
-            if ($this->plugins){        
-                foreach ( $this->plugins as $plugin){
-                    $plugin->loadJavascript();
-                }
-            }
+            $PAGE->requires->js_call_amd('block_elbp/scripts', 'init', array());
             
         }
         
