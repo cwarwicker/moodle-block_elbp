@@ -33,7 +33,6 @@
 namespace ELBP;
 
 require_once $CFG->dirroot.'/course/lib.php';
-require_once $CFG->dirroot.'/lib/coursecatlib.php';
 
 class ELBPForm {
     
@@ -1259,7 +1258,7 @@ class ELBPFormElement {
                         // Category
                         $output .= "<select class='cat_picker' onchange='ELBP.course_picker.choose_category(this.value, this, \"{$use}\");return false;'>";
                         $output .= "<option value=''>".get_string('choosecategory', 'block_elbp')."...</option>";
-                            $cats = \coursecat::make_categories_list();
+                            $cats = \core_course_category::make_categories_list();
                             asort($cats);
                             if ($cats)
                             {

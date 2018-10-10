@@ -219,7 +219,7 @@ $string['bystudent'] = 'By Student';
 // C
 $string['calculatedprogress'] = 'Calculated Progress';
 $string['cancel'] = 'Cancel';
-$string['cannotassigntoself'] = 'You cannot assign a user to themself';
+$string['cannotassigntoself'] = 'You cannot assign yourself to yourself';
 $string['cantconnect'] = 'Cannot Connect';
 $string['cantpluginobject'] = 'Cannot instantiate plugin object with given parameter';
 $string['capability'] = 'Capability';

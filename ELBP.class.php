@@ -739,7 +739,7 @@ class ELBP
                 case 'settings':
                     
                     ksort($PAGE->theme->layouts);
-                    $categories = \coursecat::make_categories_list();
+                    $categories = \core_course_category::make_categories_list();
                     $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
                     
                     $TPL->set("themeLayouts", $PAGE->theme->layouts);
@@ -889,7 +889,7 @@ class ELBP
     {
         elbp_log(LOG_MODULE_ELBP, LOG_ELEMENT_ELBP_SETTINGS, LOG_ACTION_ELBP_SETTINGS_UPDATED_SETTING, $userID, array(
             "setting" => $setting,
-            "value" => $value
+            "value" => (is_null($value)) ? '' : $value
         ));
         return \ELBP\Setting::setSetting($setting, $value, $userID);
     }
@@ -1560,7 +1560,7 @@ class ELBP
             unset($settings['submitconfig']);
             
             // Specific course categories
-            $settings['specific_course_cats'] = implode(",", $settings['specific_course_cats']);
+            $settings['specific_course_cats'] = @implode(",", $settings['specific_course_cats']);
                         
             // Checkboxes need int values
             if (isset($settings['logo_delete_current'])){

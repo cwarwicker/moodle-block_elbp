@@ -36,6 +36,7 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 // Need to be logged in to view this page
 require_login();
 
+
 $ELBP = ELBP\ELBP::instantiate();
 $ELBP->loadStudent(null);
 $ELBP->loadCourse(null);
@@ -76,9 +77,14 @@ $PAGE->set_url($CFG->wwwroot . '/blocks/elbp/config.php');
 $PAGE->set_title( $ELBP->getELBPFullName() . ' ::: ' . get_string('config', 'block_elbp') );
 $PAGE->set_heading( get_string('config', 'block_elbp') );
 $PAGE->set_cacheable(true);
+
+
+
 $PAGE->set_pagelayout( $ELBP->getThemeLayout() );
 $ELBP->loadJavascript();
 $ELBP->loadCSS();
+
+
 
 // If course is set, put that into breadcrumb
 $PAGE->navbar->add( $ELBP->getELBPFullName(), null);
