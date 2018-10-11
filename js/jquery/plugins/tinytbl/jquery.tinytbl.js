@@ -12,7 +12,29 @@
  */
 
 
-(function($) {
+(function (factory) {
+    if ( typeof define === 'function' && define.amd ) {
+        // AMD. Register as an anonymous module.
+        define(['jquery', 'jqueryui'], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS style for Browserify
+        module.exports = factory(require('jquery'));
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+}(function($) {
+
+    /**
+     * global counter for TinyTbl objects
+     * @type {Object}
+     */
+    var tinytables = {
+        added: 0,   // counter added TinyTables
+        removed: 0, // counter removed TinyTables
+        timers: {}
+    };
+
     /**
      * Get scrollbar size
      * @return  {Number} scrollbar
@@ -28,21 +50,6 @@
         }
         return window['scrollbar'];
     };
-
-})(jQuery);
-
-(function($) {
-
-    /**
-     * global counter for TinyTbl objects
-     * @type {Object}
-     */
-    var tinytables = {
-        added: 0,   // counter added TinyTables
-        removed: 0, // counter removed TinyTables
-        timers: {}
-    };
-
 
     $.widget('ui.tinytbl', {
 
@@ -983,4 +990,5 @@
 
     });
 
-})(jQuery);
+}));
+

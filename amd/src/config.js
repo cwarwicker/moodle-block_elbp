@@ -1,10 +1,14 @@
 define([], function () {
     window.requirejs.config({
         paths: {
-            "minicolors": M.cfg.wwwroot + '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors'
+            "minicolors": M.cfg.wwwroot + '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors',
+            "raty":       M.cfg.wwwroot + '/blocks/elbp/js/jquery/plugins/raty/jquery.raty',
+            "tinytbl":    M.cfg.wwwroot + '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.tinytbl',
         },
         shim: {
-            'moment': {exports: 'minicolors'}
+            'minicolors': {exports: 'minicolors'},
+            'raty': {exports: 'raty'},
+            'tinytbl': {exports: 'tinytbl'},
         }
     });
 });

@@ -209,5 +209,5 @@ if (!$layout){
 echo $OUTPUT->footer();
 
 if (isset($group) && $group){
-    echo "<script>$(document).ready( function(){ELBP.load('group', {$group->id});} );</script>";
+//    echo "<script>$(document).ready( function(){ELBP.load('group', {$group->id});} );</script>";
 }

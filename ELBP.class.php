@@ -3079,7 +3079,7 @@ class ELBP
 //                }
 //            }
             
-            $PAGE->requires->js_call_amd('block_elbp/scripts', 'init', array());
+            $PAGE->requires->js_call_amd('block_elbp/scripts', 'loadGroup', array('test'));
             
         }
         
@@ -3104,8 +3104,7 @@ class ELBP
             $output = "";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/css/start/jquery-ui.min.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.css' />";
-            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' />";
-            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.css' />";
+            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/tinytbl/jquery.tinytbl.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/raty/jquery.raty.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/css/application.css' />";
             return $output;
@@ -3116,8 +3115,7 @@ class ELBP
         
             $PAGE->requires->css( '/blocks/elbp/js/jquery/css/start/jquery-ui.min.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.css' );
-            $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/fineuploader-3.5.0.css' );
-            $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.css' );
+            $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.tinytbl.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/raty/jquery.raty.css' );
             $PAGE->requires->css( '/blocks/elbp/css/application.css' );
         
