@@ -3079,7 +3079,7 @@ class ELBP
 //                }
 //            }
             
-            $PAGE->requires->js_call_amd('block_elbp/scripts', 'loadGroup', array('test'));
+            $PAGE->requires->js_call_amd('block_elbp/scripts', 'init');
             
         }
         

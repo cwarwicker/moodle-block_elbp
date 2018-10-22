@@ -33,6 +33,7 @@
 require '../../../config.php';
 require '../lib.php';
 
+
 set_time_limit(0); # On localhost some things can take a while to run, so add this here
 
 // Require login unless we are logged in from Parent Portal
@@ -50,12 +51,60 @@ if (isset($_POST['plugin']) && $_POST['plugin']){
     exit;
 }
 
-$params = $_POST['params'];
+$params = @$_POST['params'];
 
 // Not a plugin specific, so let's check what it is
 switch($_POST['action'])
 {
-    
+
+
+    case 'get_initial_state':
+
+        // Dock position
+        $dockPosition = $ELBP->getDockPosition();
+
+        // Moodle version
+        $version = $CFG->version;
+
+        // Plugin icons
+        $icons = "";
+        if ($ELBP->getPlugins())
+        {
+            foreach($ELBP->getPlugins() as $plugin)
+            {
+                if ($plugin->isCustom())
+                {
+                    $name = $plugin->getName();
+                    $name = str_replace(" ", "_", $name);
+                    $icons .= "ELBP.pluginIcons['{$name}'] = '{$plugin->getDockIconPath()}';\n";
+                }
+                else
+                {
+                    $icons .= "ELBP.pluginIcons['{$plugin->getName()}'] = '{$plugin->getDockIconPath()}';\n";
+                }
+            }
+        }
+
+        // Reload group on close popup
+        $reloadOnUnPop = ($CFG->debug >= 32767) ? true : false;
+
+        // Load strings
+        $strings = json_encode( get_string_manager()->load_component_strings('block_elbp', $CFG->lang, true) );
+
+        echo <<<JS
+[ELBP:JS]
+ELBP.dockPosition = '{$dockPosition}';
+ELBP.moodleVersion = '{$CFG->version}';
+ELBP.reloadOnUnPop = {$reloadOnUnPop};
+ELBP.strings = $strings;
+{$icons}
+[/ELBP:JS]
+JS;
+
+            exit;
+
+    break;
+
     // This is for loading an HTML template into some content, e.g. loading the list of plugins in a group
     case 'load_template':
         

@@ -65,6 +65,15 @@ if (!$ELBP->anyPermissionsTrue($access)){
     print_error( get_string('nopermissionsuser', 'block_elbp') );
 }
 
+// Get plugin groups
+$layout = \ELBP\PluginLayout::getUsersLayout($userID, $courseID);
+$groups = array();
+$group = false;
+if ($layout){
+    $groups = $DBC->getPluginGroups($layout->getID());
+    $group = reset($groups);
+}
+
 $ELBP->loadStudent($userID);
 $ELBP->loadCourse($courseID);
 
@@ -78,6 +87,9 @@ $PAGE->set_cacheable(true);
 $PAGE->set_pagelayout( $ELBP->getThemeLayout() );
 $ELBP->loadCSS();
 $ELBP->loadJavascript();
+
+$PAGE->requires->js_call_amd('block_elbp/scripts', 'view', array($userID, $courseID, $group));
+
 
 // Student breadcrumb
 if ($access['user'])
@@ -166,14 +178,6 @@ try {
 
 $TPL = new ELBP\Template();
 
-// Get plugin groups
-$layout = \ELBP\PluginLayout::getUsersLayout($userID, $courseID);
-$groups = array();
-if ($layout){
-    $groups = $DBC->getPluginGroups($layout->getID());
-    $group = reset($groups);
-}
-
 $TPL->set("layout", $layout);
 $TPL->set("groups", $groups);
 
@@ -207,7 +211,3 @@ if (!$layout){
 }
 
 echo $OUTPUT->footer();
-
-if (isset($group) && $group){
-//    echo "<script>$(document).ready( function(){ELBP.load('group', {$group->id});} );</script>";
-}
