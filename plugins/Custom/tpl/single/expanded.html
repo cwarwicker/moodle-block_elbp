@@ -69,12 +69,14 @@
             <tr>
                 <th colspan="2" style='<?= $obj->getHeaderStyle() ?>'><?= $obj->getSetting('plugin_summary_title') ?></th>
             </tr>
-            <?php foreach($attributes as $attribute): ?>
-            <tr>
-                <td><?= $attribute->name ?></td>
-                <td><?= $attribute->convertToFormElement(); ?></td>
-            </tr>
-            <?php endforeach; ?>
+            <?php if ($attributes): ?>
+                <?php foreach($attributes as $attribute): ?>
+                    <tr>
+                        <td><?= $attribute->name ?></td>
+                        <td><?= $attribute->convertToFormElement(); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </table>
         
     </form>

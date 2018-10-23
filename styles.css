@@ -1816,6 +1816,11 @@ div#elbp_register_content div.ui-widget-content div.ui-widget-content div.ui-tin
     white-space:pre-wrap;
 }
 
+.tooltip
+{
+    z-index: 3001 !important;
+}
+
 
 .ui-tinytbl-inner-register
 {
@@ -1876,7 +1881,7 @@ div.elbp_challenge
 {
     padding: 20px 0px;
     text-align: center;
-    height: 160px;
+    height: 180px;
     border-bottom: 1px solid #fff;
 }
 
@@ -2634,7 +2639,7 @@ div#elbp_dock_bottom
     position: fixed;
     bottom: 0px;
     left: 0px;
-    z-index: 101;
+    z-index: 2001;
 }
 
 div#elbp_dock_bottom ul#elbp_dock_list
@@ -2692,7 +2697,7 @@ div#elbp_dock_left
     position: fixed;
     top: 0px;
     left: 0px;
-    z-index: 101;
+    z-index: 2001;
 }
 
 div#elbp_dock_left ul#elbp_dock_list
@@ -2777,12 +2782,12 @@ div#elbp_dialogue
 
 div#elbp_popup
 {
-    position: absolute; /* Changed from fixed */
+    position: fixed; /* Changed from fixed */
     z-index: 2001;
     background-color: #ffffff;
     border: 1px solid #dedede;
-    left: 5%;
-    top: 5%;
+    left: 10%;
+    top: 10%;
     display: none;
     overflow: auto;
 }
@@ -3880,7 +3885,7 @@ div.elbp_att_form_fields ul.fields li
     float: left;
     padding: 5px 0px;
     margin-bottom: 20px;
-    height: 20px;
+    height: 40px;
     padding-top: 14px;
     padding-left: 4px;
     border-radius: 4px;

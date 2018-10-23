@@ -132,6 +132,16 @@ function elbp_html($str, $nl2br=false)
 }
 
 /**
+ * Convert an HTML break tag back into a newline character
+ * @param $str
+ * @return mixed
+ */
+function elbp_br2nl($str){
+    $str = str_replace("<br>", "\n", $str);
+    return $str;
+}
+
+/**
  * Get a success message
  * @param type $msg
  * @return type

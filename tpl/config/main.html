@@ -47,7 +47,7 @@
     <p><?= $string['studentprogressbar:desc'] ?></p>    
     
     <small><strong><?= $string['studentprogressbar'] ?></strong> - <?= $string['enabledisable'] ?></small><br>
-    <!--<input type='radio' name='enable_student_progress_bar' value='calculated' disabled <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') == 'calculated') ? 'checked' : '' ?> /> <?= $string['calculatedprogress'] ?> - FEATURE IS BEING RE-WRITTEN AND WILL BE BACK SOON<br>-->
+    <input type='radio' name='enable_student_progress_bar' value='calculated' disabled <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') == 'calculated') ? 'checked' : '' ?> /> <?= $string['calculatedprogress'] ?> - FEATURE IS BEING RE-WRITTEN AND WILL BE BACK IN A LATER VERSION<br>
     <input type='radio' name='enable_student_progress_bar' value='manual' <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') == 'manual') ? 'checked' : '' ?> /> <?= $string['manualprogress'] ?><br>
     <input type='radio' name='enable_student_progress_bar' value='none' <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') != 'calculated' && \ELBP\Setting::getSetting('enable_student_progress_bar') != 'manual' ) ? 'checked' : '' ?> /> <?= $string['none'] ?><br>
     <br>       

@@ -508,9 +508,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     ELBP.resize_popup = function(){
 
         // Height & Width of popup so we can use explode effect
-        let div = $('#elbp_popup').parents('#page-content');
-        let screenWidth = ($(div).width() / 100) * 90;
-        let screenHeight = ($(div).height() / 100) * 90;
+        let screenWidth = ($(window).width() / 100) * 80;
+        let screenHeight = ($(window).height() / 100) * 80;
         $('#elbp_popup').css('height', screenHeight);
         $('#elbp_popup').css('width', screenWidth);
 
@@ -1304,16 +1303,1095 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     };
 
 
+    // STUDENT PROFILE PLUGIN
+
+    ELBP.StudentProfile = {
+
+        // Show the edit link on the student details & student info boxes - on hover
+        edit_link : function(parent, display){
+            $(parent).find('.elbp_studentprofile_edit_link').css('display', display);
+        },
+
+        edit : function(section){
+
+            let hide = 'elbp_studentprofile_'+section+'_simple';
+            let show = 'elbp_studentprofile_'+section+'_edit';
+            let link = '#elbp_studentprofile_'+section+'_edit_link';
+
+            ELBP.hide('.'+hide+', #'+hide);
+            ELBP.show('.'+show+', #'+show);
+
+
+            $(link).text(ELBP.strings['save']);
+            $(link).attr('onclick', 'ELBP.StudentProfile.save("'+section+'");return false;');
+
+            // Cancel link
+            $(link).after('<a href="#" id="cancel_link_'+section+'" onclick="ELBP.StudentProfile.edit_return(\''+section+'\');$(this).remove();return false;">['+ELBP.strings['cancel']+']</a>');
+
+        },
+
+        edit_return : function(section){
+
+            let hide = 'elbp_studentprofile_'+section+'_edit';
+            let show = 'elbp_studentprofile_'+section+'_simple';
+            let link = '#elbp_studentprofile_'+section+'_edit_link';
+
+            ELBP.hide('.'+hide+', #'+hide);
+            ELBP.show('.'+show+', #'+show);
+
+            $(link).text(ELBP.strings['edit']);
+            $(link).attr('onclick', 'ELBP.StudentProfile.edit("'+section+'");return false;');
+
+        },
+
+        return_details : function(params){
+
+            // Set the simple values to the same that were just submitted in the edit form
+            if (params){
+                $.each(params, function(key, val){
+                    let element = '#elbp_studentprofile_details_simple_'+key;
+                    $(element).text(val);
+                });
+            }
+
+        },
+
+        return_info : function(info){
+            $('#elbp_studentprofile_info_simple').html(info);
+        },
+
+        save : function(section){
+
+            if (section == "details")
+            {
+
+                let values = $('.elbp_studentprofile_details_edit_values');
+                let params = {};
+                $.each(values, function(){
+                    let key = this.name;
+                    params[key] = this.value;
+                });
+
+                params.studentID = ELBP.studentID;
+
+                ELBP.StudentProfile.update_details(params);
+
+            }
+            else if(section == "info")
+            {
+
+                // Are we using iframes or not? Moodle 2.7+ doesn't, but previous versions do
+                let info = '';
+                if ($('#student_info_textarea_ifr').length > 0){
+                    info = $('#student_info_textarea_ifr').contents().find('body').html();
+                } else if ( $('#student_info_textareaeditable').length > 0 ) {
+                    info = $('#student_info_textareaeditable').html();
+                } else {
+                    info = $('#student_info_textarea').val();
+                }
+
+                let params = {
+                    studentID: ELBP.studentID,
+                    info: info,
+                    element: 'student_info_textarea'
+                };
+
+                ELBP.StudentProfile.update_info(params);
+
+            }
+
+            $('#cancel_link_'+section).remove();
+
+        },
+
+        update_details : function(params){
+            ELBP.ajax("StudentProfile", "update_details", params, function(d){
+                ELBP.StudentProfile.edit_return("details");
+                ELBP.StudentProfile.return_details(params);
+                eval(d);
+                $('#student_profile_output').html('');
+            }, function(){
+                $('#student_profile_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        },
+
+        update_info : function(params){
+            ELBP.ajax("StudentProfile", "update_info", params, function(){
+                ELBP.StudentProfile.edit_return("info");
+                ELBP.StudentProfile.return_info(params.info);
+                $('#student_profile_output').html('');
+            }, function(){
+                $('#student_profile_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        }
+
+
+    };
+
+    // Attendance Plugin
+    ELBP.Attendance = {
+
+        // Load a display type, e.g. tabular, bar chart, etc...
+        load_display: function(type, el){
+            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID };
+            ELBP.ajax("Attendance", "load_display_type", params, function(d){
+                $('#elbp_attendance_content').html(d);
+                ELBP.set_view_link(el);
+            }, function(d){
+                $('#elbp_attendance_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        }
+
+    };
+
+
+    // Timetable Plugin
+    ELBP.Timetable = {
+
+        // Load a display type
+        load_display: function(type, el){
+            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID };
+            ELBP.ajax("elbp_timetable", "load_display_type", params, function(d){
+                $('#elbp_timetable_content').html(d);
+                ELBP.set_view_link(el);
+            }, function(d){
+                $('#elbp_timetable_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        },
+
+        // Load colour setting dialogue box
+        load_colour_settings: function(){
+
+            let opt = {
+                buttons: {
+                    "Save": function() {
+                        ELBP.Timetable.save_colour_settings();
+                        $(this).dialog("close");
+                    },
+                    "Close": function() {
+                        $(this).dialog("close");
+                    }
+                },
+                height: 400
+            };
+
+            let params = { student: ELBP.studentID };
+
+            ELBP.ajax("elbp_timetable", "load_colours_form", params, function(d){
+                ELBP.dialogue(ELBP.strings['changecolours'], d, opt);
+            });
+
+
+        },
+
+        save_colour_settings: function(){
+
+            let colours = {
+                MON: $('#monday_colour').val(),
+                TUE: $('#tuesday_colour').val(),
+                WED: $('#wednesday_colour').val(),
+                THU: $('#thursday_colour').val(),
+                FRI: $('#friday_colour').val(),
+                SAT: $('#saturday_colour').val(),
+                SUN: $('#sunday_colour').val(),
+                student: ELBP.studentID
+            };
+
+            ELBP.ajax("elbp_timetable", "save_colours_form", colours, function(){
+
+                // Update all the colours on the screen
+                $('.elbp_timetable_monday').css('background-color', colours['MON']);
+                $('.elbp_timetable_monday a').css('background-color', colours['MON']);
+                ELBP.Timetable.update_font_colour('.elbp_timetable_monday', colours['MON']);
+
+                $('.elbp_timetable_tuesday').css('background-color', colours['TUE']);
+                $('.elbp_timetable_tuesday a').css('background-color', colours['TUE']);
+                ELBP.Timetable.update_font_colour('.elbp_timetable_tuesday', colours['TUE']);
+
+                $('.elbp_timetable_wednesday').css('background-color', colours['WED']);
+                $('.elbp_timetable_wednesday a').css('background-color', colours['WED']);
+                ELBP.Timetable.update_font_colour('.elbp_timetable_wednesday', colours['WED']);
+
+                $('.elbp_timetable_thursday').css('background-color', colours['THU']);
+                $('.elbp_timetable_thursday a').css('background-color', colours['THU']);
+                ELBP.Timetable.update_font_colour('.elbp_timetable_thursday', colours['THU']);
+
+                $('.elbp_timetable_friday').css('background-color', colours['FRI']);
+                $('.elbp_timetable_friday a').css('background-color', colours['FRI']);
+                ELBP.Timetable.update_font_colour('.elbp_timetable_friday', colours['FRI']);
+
+                $('.elbp_timetable_saturday').css('background-color', colours['SAT']);
+                $('.elbp_timetable_saturday a').css('background-color', colours['SAT']);
+                ELBP.Timetable.update_font_colour('.elbp_timetable_saturday', colours['SAT']);
+
+                $('.elbp_timetable_sunday').css('background-color', colours['SUN']);
+                $('.elbp_timetable_sunday a').css('background-color', colours['SUN']);
+                ELBP.Timetable.update_font_colour('.elbp_timetable_sunday', colours['SUN']);
+
+            });
+
+        },
+
+        update_font_colour: function(cl, bg){
+
+            ELBP.ajax("elbp_timetable", "get_font_colour", {background: bg}, function(d){
+                $(cl).css('color', d);
+                $(cl + ' a').css('color', d);
+            });
+
+        },
+
+        load_calendar: function(cal, link, params){
+
+            if(typeof link != 'undefined' && link != null){
+                $('#elbp_tt_type li a').removeClass('sel');
+                $(link).addClass('sel');
+            }
+
+            let add = 0;
+            let today = false;
+
+            if(typeof params != 'undefined' && typeof params['add'] != 'undefined'){
+                if (params['add'] == 'today'){
+                    today = true;
+                }
+                else
+                {
+                    add = params['add'];
+                }
+            }
+
+            ELBP.ajax("elbp_timetable", "load_calendar", {student: ELBP.studentID, type: cal, format: true, add: add}, function(d){
+                $('#elbp_tt_content').html(d);
+
+                // If we have defined the add and it's 0, then we've pressed "Today" to colour today when we're done
+                if (today){
+                    $('.elbp_today').css('background-color', '#FBFFB7');
+                    $('.elbp_today').css('color', '#000000');
+                }
+
+                // Apply tooltips if applicable
+                ELBP.apply_tooltip();
+
+            }, function(d){
+                $('#elbp_tt_content').html('<div class="elbp_centre"><img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" /></div>');
+            });
+
+        },
+
+        week: function(add){
+            ELBP.Timetable.load_calendar('week', null, {add: add});
+        },
+
+        day: function(add){
+            ELBP.Timetable.load_calendar('day', null, {add: add});
+        },
+
+        month: function(add){
+            ELBP.Timetable.load_calendar('month', null, {add: add});
+        },
+
+        year: function(add){
+            ELBP.Timetable.load_calendar('year', null, {add: add});
+        },
+
+        popup_class_info: function(id, day){
+
+            var info = $('#class_info_'+id).html();
+            info = "<div class='day_number'>"+day+"</div>" +  info;
+            ELBP.dialogue(ELBP.strings['lessoninfo'], info);
+
+        }
+
+    };
+
+
+    // Tutorials Plugin
+    ELBP.Tutorials = {
+
+        // Load a display type
+        load_display: function(type, el){
+            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax("Tutorials", "load_display_type", params, function(d){
+                $('#elbp_tutorials_content').html(d);
+                ELBP.set_view_link(el);
+            }, function(d){
+                $('#elbp_tutorials_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        },
+
+        // Load a particular tutorial from thye summary view
+        load_tutorial: function(tutorialID){
+
+            ELBP.load_expanded('Tutorials', function(){
+                setTimeout("$('#tutorial_content_"+tutorialID+"').slideDown();$('div#elbp_popup').scrollTop(0);$('div#elbp_popup').animate({ scrollTop: ($('#elbp_tutorial_"+tutorialID+"').offset().top - $('#elbp_tutorial_"+tutorialID+"').height()) }, 2000);", 1000);
+            });
+
+        },
+
+        // Load up the Add Target form, then when we submit it, bring us back to the TUtorial form and add that target into it as well as restoring the state we left in
+        add_target: function(pluginTitle){
+
+            ELBP.save_state('Tutorials');
+            ELBP.dock("Tutorials", pluginTitle);
+            ELBP.Targets.loaded_from = "Tutorials";
+            ELBP.load_expanded('Targets', function(){
+                ELBP.Targets.load_display('new', undefined, undefined, 'Tutorials', 'elbp_tutorial_new_targets');
+            });
+
+        },
+
+        // Edit a target in a tutoria;
+        edit_target: function(id, pluginTitle){
+
+            ELBP.save_state('Tutorials');
+            ELBP.dock("Tutorials", pluginTitle);
+            ELBP.Targets.loaded_from = "Tutorials";
+
+            ELBP.load_expanded('Targets', function(){
+                ELBP.Targets.edit_target(id, 'Tutorials', 'elbp_tutorial_new_targets');
+            });
+
+        },
+
+        add_existing_target: function(id){
+
+            $('#loading_add_existing_target').show();
+            let params = { targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax("Tutorials", "get_target_row", params, function(d){
+                $('#elbp_tutorial_new_targets').append(d);
+                $('#loading_add_existing_target').hide();
+            });
+
+        },
+
+        // Remove a target from the tutorial
+        remove_target: function(targetID, tutorialID){
+
+            let confirm = window.confirm(ELBP.strings['areyousureremovetarget']);
+            if (confirm){
+
+                // If no tutorial ID specified, must be new tutorial that hasn't been saved yet, so just remove from screen and it won't get added to tutorial
+                if (tutorialID == undefined){
+                    $('#new_added_target_id_'+targetID).remove();
+                }
+
+                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, tutorialID: tutorialID, targetID: targetID };
+
+                ELBP.ajax("Tutorials", "remove_target", params, function(d){
+                    eval(d);
+                });
+
+            }
 
 
 
+        },
+
+        save_tutorial: function(form){
+
+            let data = form.serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax("Tutorials", "save_tutorial", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#new_tutorial_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        edit_tutorial: function(id){
+
+            let params = { type: "edit", tutorialID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax("Tutorials", "load_display_type", params, function(d){
+                $('#elbp_tutorials_content').html(d);
+            }, function(d){
+                $('#elbp_tutorials_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        delete_tutorial: function(id){
+
+            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            if (confirm){
+                var params = { studentID: ELBP.studentID, courseID: ELBP.courseID, tutorialID: id };
+                ELBP.ajax("Tutorials", "delete_tutorial", params, function(d){
+                    eval(d);
+                });
+            }
+
+        },
+
+        auto_save:  function(){
+
+            var data = $('#new_tutorial_form').serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID, auto: 1});
+
+            ELBP.ajax("Tutorials", "save_tutorial", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#new_tutorial_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        }
+
+    };
 
 
+    // Attachments Plugin
+    ELBP.Attachments = {
+
+        // Load a display type
+        load_display: function(type, el){
+            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax("Attachments", "load_display_type", params, function(d){
+                $('#elbp_attachments_content').html(d);
+                ELBP.set_view_link(el);
+            }, function(d){
+                $('#elbp_attachments_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        },
+
+        delete_attachment: function(id){
+
+            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            if (confirm){
+
+                let data = {id: id, studentID: ELBP.studentID, courseID: ELBP.courseID};
+
+                ELBP.ajax("Attachments", "delete", data, function(d){
+                    eval(d);
+                }, function(d){
+                    $('#attachments_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+                });
+
+            }
+
+        },
+
+        add_comment: function(id, comment, parentID){
+
+            let params = { id: id, comment: comment, parentID: parentID };
+            ELBP.ajax("Attachments", "add_comment", params, function(d){
+                eval(d);
+            });
+
+        },
+
+        delete_comment: function(id){
+
+            let params = { id: id };
+            ELBP.ajax("Attachments", "delete_comment", params, function(d){
+                eval(d);
+            });
+
+        }
 
 
+    };
 
 
+    // Course Reports plugin
+    ELBP.CourseReports = {
 
+        // Load a display type
+        load_display: function(type, el, courseIDForReport, reportID, callBack){
+            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID, courseIDForReport: courseIDForReport, reportID: reportID }
+            ELBP.ajax("CourseReports", "load_display_type", params, function(d){
+                $('#elbp_course_reports_content').html(d);
+                ELBP.set_view_link(el);
+                if (callBack){
+                    callBack();
+                }
+            }, function(d){
+                $('#elbp_course_reports_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        },
+
+        save: function(data){
+
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax("CourseReports", "save_report", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#new_course_report_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        load_report: function(cID, id)
+        {
+
+            let tmpID = ELBP.courseID;
+            ELBP.courseID = cID;
+            ELBP.load_expanded('CourseReports');
+            ELBP.courseID = tmpID;
+
+        },
+
+        load_report_quick: function(cid, id){
+
+            ELBP.CourseReports.load_display('course', undefined, cid, undefined, function(){
+                $('div#elbp_popup').scrollTop(0); // First we scroll right to the top
+                let top = $('#course_report_content_'+id).offset().top - $('#course_report_content_'+id).height();
+                $('#course_report_content_'+id).slideDown();
+                $('div#elbp_popup').animate({ scrollTop: top }, 2000);
+            });
+
+        },
+
+        delete_report: function(id){
+
+            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            if (confirm){
+
+                let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, reportID: id};
+                ELBP.ajax("CourseReports", "delete_report", params, function(d){
+                    eval(d);
+                });
+
+            }
+
+        },
+
+        search: function(from, to){
+
+            if (from == '' || to == '') return false;
+
+            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, dateFrom: from, dateTo: to};
+
+            ELBP.ajax("CourseReports", "search", params, function(d){
+                $('#elbp_periodical_output').html(d);
+            }, function(d){
+                $('#elbp_periodical_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        save_periodical: function(data){
+
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax("CourseReports", "save_periodical", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_periodical_saving_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        edit_periodical: function(id){
+
+            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, reportID: id};
+
+            ELBP.ajax("CourseReports", "edit_periodical", params, function(d){
+                $('#elbp_periodical_output').html(d);
+            }, function(d){
+                $('#elbp_periodical_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        delete_periodical: function(id){
+
+            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, reportID: id};
+
+            ELBP.ajax("CourseReports", "delete_periodical", params, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_periodical_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        load_periodical: function(id){
+
+            ELBP.load_expanded('CourseReports', function(){
+                $(document).ready( function(){
+                    setTimeout("ELBP.CourseReports.load_display('periodical_report', false, false, "+id+");", 2500);
+                } );
+            });
+
+        }
+
+    };
+
+
+    // Comments
+    ELBP.Comments = {
+
+        // Load a display type
+        load_display: function(type, el){
+            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax("Comments", "load_display_type", params, function(d){
+                $('#elbp_comments_content').html(d);
+                ELBP.set_view_link(el);
+            }, function(d){
+                $('#elbp_comments_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        },
+
+        save: function(form){
+
+            let data = form.serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax("Comments", "save_comment", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#new_comment_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        edit_comment: function(id){
+
+            let params = { type: "edit", commentID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax("Comments", "load_display_type", params, function(d){
+                $('#elbp_comments_content').html(d);
+            }, function(d){
+                $('#elbp_comments_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        delete_comment: function(id){
+
+            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            if (confirm){
+                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, commentID: id };
+                ELBP.ajax("Comments", "delete_comment", params, function(d){
+                    eval(d);
+                }, function(d){
+                    $('#elbp_comments_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+                });
+            }
+
+
+        },
+
+        // Load a particular tutorial from thye summary view
+        load_comment: function(id){
+
+            ELBP.load_expanded('Comments', function(){
+                setTimeout("$('#comment_content_"+id+"').slideDown();$('div#elbp_popup').scrollTop(0);$('div#elbp_popup').animate({ scrollTop: ($('#elbp_comment_"+id+"').offset().top - $('#elbp_comment_"+id+"').height()) }, 2000);", 1000);
+            });
+
+        },
+
+        // Mark comment as resolved
+        mark_resolved: function(id, val){
+
+            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, commentID: id, val: val};
+
+            ELBP.ajax("Comments", "mark_resolved", params, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#elbp_comments_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        }
+
+
+    };
+
+
+    // Additional Support Plugin
+    ELBP.AdditionalSupport = {
+
+        // Load a display type
+        load_display: function(type, el){
+            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax("AdditionalSupport", "load_display_type", params, function(d){
+                $('#elbp_additional_support_content').html(d);
+                ELBP.set_view_link(el);
+            }, function(d){
+                $('#elbp_additional_support_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        },
+
+
+        // Load up the Add Target form, then when we submit it, bring us back to the Addiiotnal Support form and add that target into it as well as restoring the state we left in
+        add_target: function(pluginTitle){
+
+            ELBP.save_state('AdditionalSupport');
+            ELBP.dock("AdditionalSupport", pluginTitle);
+            ELBP.Targets.loaded_from = "AdditionalSupport";
+
+            ELBP.load_expanded('Targets', function(){
+                ELBP.Targets.load_display('new', undefined, undefined, 'AdditionalSupport', 'elbp_additional_support_new_targets');
+            });
+
+        },
+
+        // Edit a target in a tutoria;
+        edit_target: function(id, pluginTitle){
+
+            ELBP.save_state('AdditionalSupport');
+            ELBP.dock("AdditionalSupport", pluginTitle);
+            ELBP.Targets.loaded_from = "AdditionalSupport";
+
+            ELBP.load_expanded('Targets', function(){
+                ELBP.Targets.edit_target(id, 'AdditionalSupport', 'elbp_additional_support_new_targets');
+            });
+
+        },
+
+        // Remove a target from the tutorial
+        remove_target: function(targetID, sessionID){
+
+            let confirm = window.confirm(ELBP.strings['areyousureremovetarget']);
+            if (confirm){
+
+                // If no sessionID specified, must be new sessoin that hasn't been saved yet, so just remove from screen and it won't get added to session
+                if (sessionID == undefined){
+                    $('#new_added_target_id_'+targetID).remove();
+                }
+
+                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: sessionID, targetID: targetID };
+
+                ELBP.ajax("AdditionalSupport", "remove_target", params, function(d){
+                    eval(d);
+                });
+
+            }
+
+        },
+
+        save: function(form){
+
+            let data = form.serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax("AdditionalSupport", "save", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#new_additional_support_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        // Load a particular tutorial from thye summary view
+        load_session: function(id){
+
+            ELBP.load_expanded('AdditionalSupport', function(){
+
+                setTimeout("$('#additional_support_content_"+id+"').show();$('div#elbp_popup').scrollTop(0);$('div#elbp_popup').animate({ scrollTop: ($('#elbp_additional_support_"+id+"').offset().top - $('#elbp_additional_support_"+id+"').height()) }, 2000);", 1000);
+
+            });
+
+        },
+
+        edit_session: function(id){
+
+            let params = { type: "edit", sessionID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax("AdditionalSupport", "load_display_type", params, function(d){
+                $('#elbp_additional_support_content').html(d);
+            }, function(d){
+                $('#elbp_additional_support_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        delete_session: function(id){
+
+            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            if (confirm){
+                var params = { studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: id };
+                ELBP.ajax("AdditionalSupport", "delete", params, function(d){
+                    $('#elbp_popup').scrollTop(0);
+                    eval(d);
+                });
+            }
+
+
+        },
+
+        update_target_confidence: function(type, value, sessionID, targetID){
+
+            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: sessionID, targetID: targetID, type: type, value: value};
+
+            ELBP.ajax("AdditionalSupport", "update_target_confidence", params, function(d){
+                eval(d);
+            }, function(d){
+                $('#additional_support_target_output_session_'+sessionID).html('<img src="'+ELBP.wwww+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+
+        update_target_status: function(statusID, targetID, sessionID){
+
+            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: sessionID, targetID: targetID, statusID: statusID};
+
+            ELBP.ajax("AdditionalSupport", "update_target_status", params, function(d){
+                eval(d);
+            }, function(d){
+                $('#additional_support_target_output_session_'+sessionID).html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        add_comment: function(id, comment, parentID){
+
+            if (comment == '') return;
+
+            let params = { sessionID: id, comment: comment, parentID: parentID };
+            ELBP.ajax("AdditionalSupport", "add_comment", params, function(d){
+                eval(d);
+                $('#elbp_additional_support_content input[type="button"]').removeAttr('disabled');
+            }, function(d){
+                if (parentID != undefined){
+                    $('#elbp_comment_add_output_comment_'+parentID).html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+                } else {
+                    $('#elbp_comment_add_output_'+id).html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+                }
+
+                $('#elbp_additional_support_content input[type="button"]').attr('disabled', 'disabled');
+
+            });
+
+        },
+
+        delete_comment: function(sessionID, commentID){
+
+            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            if (confirm){
+                let params = { sessionID: sessionID, commentID: commentID };
+                ELBP.ajax("AdditionalSupport", "delete_comment", params, function(d){
+                    eval(d);
+                }, function(d){
+                    $('#elbp_comment_add_output_'+sessionID).html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+                });
+            }
+
+        },
+
+        save_attribute: function(attribute, value){
+
+            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, attribute: attribute, value: value};
+
+            ELBP.ajax("AdditionalSupport", "save_attribute", params, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_additional_support_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        add_existing_target: function(id){
+
+            if ( $('#new_added_target_id_'+id).length == 0 ){
+                $('#loading_add_existing_target').show();
+                let params = { targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+                ELBP.ajax("AdditionalSupport", "get_target_row", params, function(d){
+                    $('#elbp_additional_support_new_targets').append(d);
+                    $('#loading_add_existing_target').hide();
+                });
+            }
+
+        },
+
+        auto_save:  function(){
+
+            let data = $('#new_additional_support_form').serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID, auto: 1});
+
+            ELBP.ajax("AdditionalSupport", "save", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#new_additional_support_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        }
+
+
+    };
+
+
+    // Challenges Plugin
+    ELBP.Challenges = {
+
+        save: function(form){
+
+            let data = form.serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax("Challenges", "save", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#challenges_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+
+        }
+
+    };
+
+
+    // Learning Styles Plugin
+    ELBP.LearningStyles = {
+
+        // Load a display type
+        load_display: function(type){
+            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax("LearningStyles", "load_display_type", params, function(d){
+                $('#elbp_learning_styles_content').html(d);
+            }, function(d){
+                $('#elbp_learning_styles_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        },
+
+        save: function(form){
+
+            let data = form.serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax("LearningStyles", "save", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#elbp_learning_styles_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        }
+
+
+    };
+    
+    
+    // Custom Plugins
+    ELBP.Custom = {
+
+        // Load a display type
+        load_display: function(plugin, type, el){
+            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax(plugin, "load_display_type", params, function(d){
+                $('#elbp_custom_content').html(d);
+                ELBP.set_view_link(el);
+            }, function(d){
+                $('#elbp_custom_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+        },
+
+
+        save_single: function(plugin, form){
+
+            let data = form.serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax(plugin, "save_single", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#custom_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        save_incremental: function(plugin, form){
+
+            let data = form.serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax(plugin, "save_incremental", data, function(d){
+                eval(d);
+                ELBP.Custom.refresh_incremental(plugin);
+                $(form)[0].reset();
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#custom_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        delete_incremental_item: function(plugin, id){
+
+            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            if (confirm){
+
+                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, itemID: id };
+                ELBP.ajax(plugin, "delete_incremental_item", params, function(d){
+                    eval(d);
+                    ELBP.Custom.refresh_incremental(plugin);
+                }, function(d){
+                    $('#elbp_popup').scrollTop(0);
+                    $('#custom_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+                });
+
+            }
+
+
+        },
+
+        refresh_incremental: function(plugin){
+
+            let params = { studentID: ELBP.studentID, courseID: ELBP.courseID };
+            ELBP.ajax(plugin, "refresh_incremental", params, function(d){
+                $('#elbp_custom_plugin_items').html( d );
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#elbp_custom_plugin_items').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        save_multi: function(plugin, form){
+
+            let data = form.serialiseObject();
+            $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
+
+            ELBP.ajax(plugin, "save_multi", data, function(d){
+                eval(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#custom_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+        delete_item: function(plugin, id){
+
+            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            if (confirm){
+
+                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, itemID: id };
+                ELBP.ajax(plugin, "delete_item", params, function(d){
+                    eval(d);
+                }, function(d){
+                    $('#elbp_popup').scrollTop(0);
+                    $('#custom_output').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+                });
+
+            }
+
+
+        },
+
+        edit_item: function(plugin, id){
+
+            let params = { type: "edit", itemID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            ELBP.ajax(plugin, "load_display_type", params, function(d){
+                $('#elbp_custom_content').html(d);
+            }, function(d){
+                $('#elbp_popup').scrollTop(0);
+                $('#elbp_custom_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
+            });
+
+        },
+
+
+    };
 
 
 
@@ -1561,13 +2639,16 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
     $(document).keydown(function(e){
 
+        // Centre popup
         if (e.keyCode in keyMap){
             keyMap[e.keyCode] = true;
             if (keyMap[16] && keyMap[17] && keyMap[220] && $('#elbp_popup').css('display') != 'none'){
-                $('#elbp_popup').css('top', '5%').css('left', '5%');
+                $('#elbp_popup').css('top', '10%').css('left', '10%');
+                ELBP.resize_popup();
             }
         }
 
+        // Bring up command line
         if (e.keyCode in keyMapAdvanced){
 
             keyMapAdvanced[e.keyCode] = true;
@@ -1583,11 +2664,13 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         }
 
+        // Clear all popups and blankets
         if (e.keyCode in keyMapClear){
             keyMapClear[e.keyCode] = true;
             if (keyMapClear[16] && keyMapClear[17] && keyMapClear[13]){
                 $('#elbp_popup').hide();
                 ELBP.hide('#elbp_blanket');
+                $('body').css('overflow', 'auto');
             }
         }
 
@@ -1609,6 +2692,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     });
 
 
+    // Command line inputs
     $('#cmd_input #input').keydown( function(e){
 
         if (e.keyCode == 38){

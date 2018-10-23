@@ -22,7 +22,7 @@
     
     <tr>
         <?php foreach($styles as $style): ?>
-        <td colspan="<?= (isset($style->children) ? (count($style->children) + 1) : 1) ?>" title="<?= $style->description ?>" class="elbp_tooltip">
+        <td colspan="<?= (isset($style->children) ? (count($style->children) + 1) : 1) ?>" title="<?= \elbp_br2nl($style->description) ?>" class="elbp_tooltip">
             <img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/LearningStyles/pix/style_<?= $style->id ?>.png" alt="<?= $style->name ?>" /><br>
             <b><?= $style->name ?></b><br>
             <?php if ($scores): ?>
@@ -39,7 +39,7 @@
             <?php if (isset($style->children) && $style->children): ?>
             
                 <?php foreach($style->children as $child): ?>
-                    <td title="<?= $child->description ?>" class="elbp_tooltip">
+                    <td title="<?= \elbp_br2nl($child->description) ?>" class="elbp_tooltip">
                         <img src="<?= $CFG->wwwroot ?>/blocks/elbp/plugins/LearningStyles/pix/style_<?= $child->id ?>.png" alt="<?= $child->name ?>" /><br>
                         <b><?= $child->name ?></b><br>
                         <?php if ($scores): ?>

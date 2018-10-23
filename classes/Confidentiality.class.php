@@ -165,7 +165,7 @@ class Confidentiality {
             $strings[ELBP_CONFIDENTIALITY_PRIVATE] = get_string('confidentiality:private:help:pp', 'block_elbp');
             $strings[ELBP_CONFIDENTIALITY_PERSONAL] = get_string('confidentiality:personal:help:pp', 'block_elbp');
 
-            }
+        }
         else
         {
             
@@ -189,7 +189,7 @@ class Confidentiality {
         }
         else
         {
-            return implode("\n\n<br><br>", $strings);
+            return implode("\n\n", $strings);
         }
         
     }

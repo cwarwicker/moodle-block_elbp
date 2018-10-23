@@ -288,7 +288,7 @@ JS;
     break;
     
     case 'load_my_settings':
-                
+
         $userID = (isset($params['userID'])) ? $params['userID'] : false;
         
         // If we are trying to change the settings of another user, make sure we can
@@ -320,13 +320,14 @@ JS;
     break;
 
     case 'save_my_settings':
-        
+
         $data = $params['data'];
-        $userID = (isset($params['userID'])) ? $params['userID'] : false;
-        $access = $ELBP->getUserPermissions($userID);
-        
+
+        $userID = (isset($params['userID'])) ? $params['userID'] : $params['student'];
         if ($userID){
-            
+
+            $access = $ELBP->getUserPermissions($userID);
+
             if (!elbp_has_capability('block/elbp:change_others_settings', $access)){
                 exit;
             }
