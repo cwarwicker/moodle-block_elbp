@@ -2415,7 +2415,9 @@ class ELBP
         // Not a message, but can't be arsed to make another global variable
         $MSGS['returntype'] = $type;
         $MSGS['returnid'] = $id;
-        
+
+        $title = '';
+
         if ($type == 'course'){
             $course = $DBC->getCourse( array('type' => 'id', 'val' => $id) );
             $title = $course->fullname;
@@ -3203,6 +3205,7 @@ class ELBP
        return $hooks;
         
     }
+
     
     /**
      * Calculate the student's progress for all the plugins

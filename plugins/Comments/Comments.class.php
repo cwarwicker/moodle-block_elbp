@@ -32,6 +32,8 @@
 
 namespace ELBP\Plugins;
 
+use ELBP\ELBP;
+
 require_once 'Comment.class.php';
 
 /**
@@ -910,7 +912,8 @@ class Comments extends Plugin {
      public function massAction($action, $students){
          
          global $CFG, $DB;
-         
+
+         $ELBP = new ELBP();
          $confirmed = (isset($_POST['confirmed'])) ? true : false;
                            
          switch($action)
@@ -996,8 +999,12 @@ class Comments extends Plugin {
                 
                 $output .= "<small class='mini-heading'>".get_string('commentpositive', 'block_elbp')."</small> <div class='form-group'><label class='radio-inline'><input type='radio' name='params[comment_positive]' value='1' {$stickyPos['pos']} /> <small>".get_string('positive', 'block_elbp')."</small></label> <label class='radio-inline'><input type='radio' name='params[incident_positive]' value='-1' {$stickyPos['neg']} /> <small>".get_string('negative', 'block_elbp')."</small></label> <label class='radio-inline'><input type='radio' name='params[incident_positive]' value='0' {$stickyPos['na']} /> <small>".get_string('na', 'block_elbp')."</small></label></div>";
                 $output .= "<small class='mini-heading'>".get_string('commentfurtheraction', 'block_elbp')."</small> <br> <input type='checkbox' name='params[comment_resolved]' value='0' /><br>";
-                $output .= "<small class='mini-heading'>".get_string('commentpublishedportal', 'block_elbp')."</small> <br> <input type='checkbox' name='params[comment_published_portal]' value='1' /><br>";
-                
+
+                $parentPortalInstalled = $ELBP->getPlugin("elbp_portal");
+                $parentPortalInstalled = ($parentPortalInstalled) ? true : false;
+                if ($parentPortalInstalled) {
+                    $output .= "<small class='mini-heading'>" . get_string('commentpublishedportal', 'block_elbp') . "</small> <br> <input type='checkbox' name='params[comment_published_portal]' value='1' /><br>";
+                }
                 
                 foreach($data['atts'] as $attribute){
                     

@@ -1,8 +1,9 @@
-/** min **/
 define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block_elbp/tinytbl', 'block_elbp/fileupload'], function($, ui, miniColors, raty, tinytbl, fileupload) {
        
     // Raty image path
-    $.fn.raty.defaults.path = M.cfg.wwwroot + '/blocks/elbp/js/jquery/plugins/raty/images';
+    if ($.fn.raty !== undefined) {
+        $.fn.raty.defaults.path = M.cfg.wwwroot + '/blocks/elbp/js/jquery/plugins/raty/images';
+    }
 
     var client = {};
     var ELBP = {};

@@ -130,7 +130,7 @@ class block_elbp extends block_base
             
             if ($access['god'] || $access['teacher'])
             {
-                $myStudentsLink = ($COURSE->id <> SITEID) ? 'view/course/' . $COURSE->id : '';
+                $myStudentsLink = ($COURSE->id <> SITEID) ? 'index.php?Qs=/view/course/' . $COURSE->id : '';
                 $this->content->text .= '<li><img src="'.$this->imgdir.'group_blue.png" alt="" /> <a href="'. $CFG->wwwroot . '/blocks/bc_dashboard/'.$myStudentsLink.'">'.get_string('mystudents', 'block_elbp').'</a></li>';
                 $this->content->text .= '<li><img src="'.$this->imgdir.'settings.png" alt="" /> <a href="'. $CFG->wwwroot . '/blocks/elbp/settings.php">'.get_string('mysettings', 'block_elbp').'</a></li>';
             }
@@ -139,34 +139,28 @@ class block_elbp extends block_base
             if ($this->elbp->getSetting('staff_user_guide') && (\file_exists($CFG->dataroot . '/ELBP/' . $this->elbp->getSetting('staff_user_guide')))){
                 $this->content->text .= '<li><img src="'.$CFG->wwwroot.'/blocks/elbp/pix/file_icons/'.\elbp_get_file_icon( $this->elbp->getSetting('staff_user_guide') ).'" /> <a href="'.$CFG->wwwroot.'/blocks/elbp/download.php?f='.elbp_get_data_path_code( $CFG->dataroot . '/ELBP/' . $this->elbp->getSetting('staff_user_guide') ).'" target="_blank">'.get_string('userguide', 'block_elbp').'</a></li>';
             }
-            
+
+            // WLBP Manager link
             if ($access['god'] || $access['elbpadmin'])
             {
                 if ($this->bc_dashboard_installed){
-                    $this->content->text .= '<li><img src="'.$this->imgdir.'admin.png" alt="" /> <a href="'.$CFG->wwwroot.'/blocks/bc_dashboard/view/admin">'.get_string('manager', 'block_elbp').'</a></li>';
+                    $this->content->text .= '<li><img src="'.$this->imgdir.'admin.png" alt="" /> <a href="'.$CFG->wwwroot.'/blocks/bc_dashboard/index.php?Qs=/view/admin">'.get_string('manager', 'block_elbp').'</a></li>';
                 }
             }
 
+            // Assign Tutors, Configuration links
             if ($access['god'])
             {
                 $this->content->text .= '<li><img src="'.$this->imgdir.'contact_add.png" alt="" /> <a href="'.$this->www . 'assign_tutors.php' .'">'.get_string('assignroles', 'block_elbp').'</a></li>';
                 $this->content->text .= '<li><img src="'.$this->imgdir.'settings.png" alt="" /> <a href="'.$this->www.'config.php">'.get_string('config', 'block_elbp').'</a></li>';
             }
-            
+
+            // Course settings link
             if ($COURSE->id > 0 && $COURSE->id <> SITEID && \has_capability('block/elbp:edit_course_settings', $access['context']))
             {
                 $this->content->text .= '<li><img src="'.$this->imgdir.'settings.png" alt="" /> <a href="'.$this->www.'config.php?view=course&id='.$COURSE->id.'">'.get_string('coursesettings', 'block_elbp').'</a></li>';
             }
-            
-            // Bedford college only. I'll make this for everyone else when I have the time (lololololololololol)
-            if (isset($CFG->moodleinstance))
-            {
-                if ($COURSE->id > 0 && $COURSE->id != SITEID && ($access['elbpadmin'] || $access['teacher']))
-                {
-                    $this->content->text .= '<li><a href="'.$CFG->wwwroot.'/local/bc/groupprofile.php?cID='.$COURSE->id.'">Group Profile</a></li>';
-                }
-            }
-            
+
         }
                 
         $this->content->text .= '</ul>';

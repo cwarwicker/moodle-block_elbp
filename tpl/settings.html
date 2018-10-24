@@ -66,7 +66,7 @@
         
             <br>
             <div id='alerts_div'>
-                <?php if (isset($MSGS['returntype']) && isset($MSGS['returnid'])): ?>
+                <?php if (isset($MSGS['returntype']) && isset($MSGS['returnid']) && $MSGS['returntype']): ?>
                     <?php $this->set('type', $MSGS['returntype'])->set('value', $MSGS['returnid'])->set('title', $MSGS['returntitle']) ?>
                     <?= $this->load($CFG->dirroot . '/blocks/elbp/tpl/settings.table.html') ?>
                 <?php endif; ?>
