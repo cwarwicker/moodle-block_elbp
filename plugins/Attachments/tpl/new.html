@@ -1,72 +1,75 @@
 <?php if(!defined('ELBP')) exit; ?>
 
 <?php if (!elbp_has_capability('block/elbp:add_attachment', $access)): exit; endif; ?>
-        
-    <form id="new_attachment_form" enctype="multipart/form-data">
-        <br>
-        <p class="elbp_centre"><b><?= $string['maxfilesize'] ?>:</b> <?= $obj->getMaxFileSize() ?></p>
-        <br>
-        <div id="output_messages"></div>
-        <br>
-        <table class="elbp_attachments_table">
-            <tr>
-                <td>
-                    <span><b><?= $string['filetitle'] ?></b><br>
-                    <span><?= $string['filetitle:desc'] ?></span>
-                </td>
-                <td>
-                    <input type="text" class="elbp_max" id="filetitle" />
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="elbp_centre">
-                     <div id="fine-uploader" style="padding-top:10px" class="elbp_centre"></div>
-                     <div id="triggerUpload" class="btn btn-primary" style="margin-top: 10px;">
-                        <i class="icon-upload icon-white"></i> Upload now
-                     </div>
-                </td>
-            </tr>
-        </table>
+
+<p class="elbp_centre"><b><?= $string['maxfilesize'] ?>:</b> <?= $obj->getMaxFileSize() ?></p>
+<br>
+<div id="output_messages" class="elbp_centre"></div>
+<br>
+
+<p class="elbp_centre">
+    <span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span><?= $string['selectfile'] ?></span>
+        <!-- The file input field used as target for the file upload widget -->
+        <input id="fileupload" type="file" name="file">
+    </span>
+</p>
+<br>
+<div id="dropzone" class="file-drop-zone"><?= $string['uploads:dropfileshere'] ?></div>
+<br>
+
+<!-- The global progress bar -->
+<div class="elbp_progress">
+    <div id="progress" class="elbp_progress progress-bar green stripes" style="display:none;">
+        <div id="progress-amount" style="width:0;"></div>
+    </div>
+</div>
+<!-- The container for the uploaded files -->
+<div id="files" class="files"></div>
 
 
-    </form>
+
+
 
 <script>
-    var uploader = new qq.FineUploader({
-      debug: true,
-      element: document.getElementById('fine-uploader'),
-      request: {
-        endpoint: '<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Attachments/Upload.php',
-        params: {
-            sid: '<?= $obj->getStudentID(); ?>',
-            title: function(){
-                return $('#filetitle').val();
+    $(function () {
+        'use strict';
+
+        let url = '<?= $CFG->wwwroot ?>/blocks/elbp/plugins/Attachments/Upload.php';
+
+        $('#fileupload').fileupload({
+            url: url,
+            dataType: 'json',
+            formData: {sid: '<?= $obj->getStudentID(); ?>'},
+            dropZone: $('#dropzone'),
+            send: function(e, data){
+                $('#progress').show();
+            },
+            done: function (e, data) {
+
+                if (data.result.success === true){
+                    $('#output_messages').html('<div class="elbp_success_box"><span>'+ELBP.strings['uploaded']+': '+data.result.title+'</span></div>');
+                } else {
+                    $('#output_messages').html('<div class="elbp_err_box"><span>'+data.result.error+'</span></div>');
+                }
+
+                $('#progress').hide();
+                $('#progress-amount').css('width', 0);
+
+            },
+            fail: function(e, data){
+                $('#output_messages').html('<div class="elbp_err_box"><span>'+ELBP.strings['uploads:unknownerror']+'</span></div>');
+            },
+            progressall: function (e, data) {
+                let progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#progress-amount').css(
+                    'width',
+                    progress + '%'
+                );
             }
-        }
-      },
-      multiple: false,
-      autoUpload: false,
-      text: {
-        uploadButton: '<i class="icon-plus icon-white"></i> <?= $string['selectfile'] ?>',
-        formatProgress: '({percent}% of {total_size})'
-      },
-      failedUploadTextDisplay: {
-          mode: 'custom',
-          maxChars: 150,
-          responseProperty: 'error',
-          enableTooltip: true
-      },
-      callbacks: {
-        onComplete: function(id, filename, response){
-            if (response.success){
-                $('#filetitle').val('');
-            }
-        }
-      }
+        }).prop('disabled', !$.support.fileInput)
+            .parent().addClass($.support.fileInput ? undefined : 'disabled');
     });
-    
-    $('#triggerUpload').click(function() {
-      uploader.uploadStoredFiles();
-    });
-  
+
 </script>

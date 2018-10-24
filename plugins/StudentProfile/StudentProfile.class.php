@@ -435,7 +435,6 @@ class StudentProfile extends Plugin {
         if ( $this->getSetting('badges_enabled') == 1 && !isset($params['noBadges']) ){
             
             require_once $CFG->dirroot . '/lib/badgeslib.php';
-            $eLearningBadges = array();
             $badgeArray = \badges_get_user_badges($this->student->id);
             
             usort($badgeArray, function($a, $b){
@@ -444,40 +443,12 @@ class StudentProfile extends Plugin {
             
             if ($badgeArray){
                 
-                foreach($badgeArray as $badge){
-                    
-                    if (!is_null($badge->courseid)){
-                    
-                        // Is it an eLearning badge? If so, we don't want to display them all
-                        if ( preg_match("/ \[eLearn_[0-9]+_[0-9]+\]/", $badge->name)){
+                foreach($badgeArray as $badge) {
 
-                            $course = get_course($badge->courseid);
+                    $badgeObj = new \badge($badge->id);
+                    $badgeObj->hash = $badge->uniquehash;
+                    $badges[$badge->id] = $badgeObj;
 
-                            if (!array_key_exists($badge->courseid, $eLearningBadges)){
-                                $eLearningBadges[$badge->courseid] = new \stdClass();
-                                $eLearningBadges[$badge->courseid]->course = $course;
-                                $eLearningBadges[$badge->courseid]->hours = array();
-                            }
-
-                            // Strip out eLearn code from name
-                            $badge->name = preg_replace("/ \[eLearn_[0-9]+_[0-9]+\]/", "", $badge->name);
-                            $eLearningBadges[$badge->courseid]->hours[] = $badge->name;                        
-
-                        } else {
-
-                            $badgeObj = new \badge($badge->id);
-                            $badgeObj->hash = $badge->uniquehash;
-                            $badges[$badge->id] = $badgeObj;
-
-                        }
-                    
-                    }
-                    else{
-                        $badgeObj = new \badge($badge->id);
-                        $badgeObj->hash = $badge->uniquehash;
-                        $badges[$badge->id] = $badgeObj;
-                    }
-                    
                 }
                 
             }
@@ -510,7 +481,6 @@ class StudentProfile extends Plugin {
             ->set("student_summary", $student_summary)
             ->set("access", $access)
             ->set("badges", $badges)
-            ->set("eLearningBadges", (isset($eLearningBadges) ? $eLearningBadges : false))
             ->set("hideBadges", $hideBadges)
             ;
                 

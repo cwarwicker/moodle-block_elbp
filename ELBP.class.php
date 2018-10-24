@@ -3049,7 +3049,6 @@ class ELBP
             
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery.hotkeys-0.7.9.min.js'></script>";
-            $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/jquery.fineuploader-3.5.0/jquery.fineuploader-3.5.0.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/tinytbl/jquery.ui.tinytbl.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/raty/jquery.raty.js'></script>";
             $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/blocks/elbp/js/scripts.php?studentid=" . $studID . "&courseid=" . $courseID . "&screwcaching=" . time() . "'></script>";
@@ -3117,6 +3116,7 @@ class ELBP
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.tinytbl.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/raty/jquery.raty.css' );
+            $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/fileupload/jquery.fileupload.css' );
             $PAGE->requires->css( '/blocks/elbp/css/application.css' );
         
         }

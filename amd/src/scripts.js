@@ -1,5 +1,5 @@
 /** min **/
-define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block_elbp/tinytbl'], function($, ui, miniColors, raty, tinytbl) {
+define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block_elbp/tinytbl', 'block_elbp/fileupload'], function($, ui, miniColors, raty, tinytbl, fileupload) {
        
     // Raty image path
     $.fn.raty.defaults.path = M.cfg.wwwroot + '/blocks/elbp/js/jquery/plugins/raty/images';
@@ -618,6 +618,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         $('#switch_user_users').find('option').remove();
         $('#switch_user_users').css('display', 'none');
+        $('#find_other_user').css('display', 'none');
 
         if (param == ''){
             return false;
@@ -1322,7 +1323,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             ELBP.show('.'+show+', #'+show);
 
 
-            $(link).text(ELBP.strings['save']);
+            $(link).text('['+ELBP.strings['save']+']');
             $(link).attr('onclick', 'ELBP.StudentProfile.save("'+section+'");return false;');
 
             // Cancel link
@@ -2395,6 +2396,60 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
 
 
+    // Badges
+    ELBP.toggleBadges = function(){
+
+        if ( $('#badges_content').length > 0 )
+        {
+
+            $('#badges_content').slideToggle();
+
+            if ( $('#toggle-badges').length > 0 )
+            {
+
+                let src = $('#toggle-badges').attr('src');
+                if (src.indexOf('switch_plus') > 0){
+                    src = src.replace('switch_plus', 'switch_minus');
+                    ELBP.addCookie('hide_elbp_badges', 0);
+                } else {
+                    src = src.replace('switch_minus', 'switch_plus');
+                    ELBP.addCookie('hide_elbp_badges', 1);
+                }
+
+                $('#toggle-badges').attr('src', src);
+
+            }
+
+        }
+
+    };
+
+    ELBP.getCookie = function(cookie){
+
+        let c = document.cookie.split(' ');
+        let cookies = {};
+        for (i in c){
+            let split = c[i].split("=");
+            let k = split[0];
+            let v = split[1];
+            v = v.replace(';', '');
+            cookies[k] = v;
+        }
+
+        return cookies[cookie];
+
+    };
+
+    ELBP.addCookie = function(cookie, value){
+
+        let str = "";
+        str += (cookie + "=" + value);
+        document.cookie = str;
+
+    };
+
+
+
 
     // Bind events
     ELBP.bind = function(){
@@ -2407,8 +2462,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
 
         // Destroy and reapply datepickers
-        $('.elbp_datepicker').datepicker('destroy');
         $('.elbp_datepicker').removeClass('hasDatepicker');
+        $('.elbp_datepicker').datepicker('destroy');
 
         $('.elbp_datepicker').datepicker( {dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true} );
         $('.elbp_datepicker_no_past').datepicker( {dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, minDate: 0} );
@@ -2532,6 +2587,15 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             $(this).attr('src', src.replace('close_tiny_hover.png', 'close_tiny.png'));
         } );
 
+        // Check for cookie to hide badges
+        if ( ELBP.getCookie('hide_elbp_badges') == 1 ){
+            if ( $('#toggle-badges').length > 0 ){
+                let src = $('#toggle-badges').attr('src');
+                src = src.replace('switch_minus', 'switch_plus');
+                $('#toggle-badges').attr('src', src);
+            }
+        }
+
         // Traffic light click to view
         $('.elbp_progress_traffic_light').off('click');
         $('.elbp_progress_traffic_light').on('click', function(){
@@ -2581,12 +2645,23 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         );
 
 
+        // Drag and drop file uploads
+        $('.file-drop-zone').off('dragenter');
+        $('.file-drop-zone').on('dragenter', function(e){
+            $(this).addClass('in');
+        });
 
-
-
+        $('.file-drop-zone').off('dragleave dragend');
+        $('.file-drop-zone').on('dragleave  dragend', function(e){
+            $(this).removeClass('in');
+        });
 
 
     };
+
+
+
+
 
 
 

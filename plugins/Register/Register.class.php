@@ -1553,13 +1553,13 @@ class Register extends Plugin {
             $user = $DB->get_record("user", array("id" => $userID, "deleted" => 0));
             if ($user)
             {
-                
+
                 $data = array();
                 $data[] = $user->$userField;
-                
+
                 $rand = mt_rand(1,2);
                 if ($rand == 1){
-                    
+
                     $courseID = mt_rand(1, $cntCourses);
                     $course = $DB->get_record("course", array("id" => $courseID));
                     if ($course)
@@ -1570,42 +1570,50 @@ class Register extends Plugin {
                     {
                         $data[] = 'FakeCourse101';
                     }
-                    
-                    
+
+
                 } else {
                     // No course code specified
                     $data[] = '';
                 }
-                
+
                 $data[] = strtoupper(\elbp_generate_random_string(6, true));
                 $data[] = 'Some Description';
-                
+
                 $dayNum = mt_rand(1,7);
                 $data[] = $this->getDayName($dayNum);
                 $data[] = $dayNum;
-                
-                $hour = mt_rand(1,15);
-                if ($hour < 10) $hour = "0".$hour;
-                
-                $min = $mins[array_rand($mins)];
-                
-                $data[] = ''.$hour.$min.'';
-                
-                $hour = mt_rand(1,15);
-                if ($hour < 10) $hour = "0".$hour;
-                
-                $min = $mins[array_rand($mins)];
-                
-                $data[] = ''.$hour.$min.'';
-                
+
+
+
+                $startHour = mt_rand(8,17);
+                if ($startHour < 10) $startHour = "0".$startHour;
+
+                $startMin = $mins[array_rand($mins)];
+                $data[] = ''.$startHour.$startMin.'';
+
+
+
+                $endHour = mt_rand(9,18);
+                if ($endHour < 10) $endHour = "0".$endHour;
+
+                while($endHour <= $startHour){
+                    $endHour++;
+                }
+
+                $endMin = $mins[array_rand($mins)];
+                $data[] = ''.$endHour.$endMin.'';
+
+
+
                 $data[] = mt_rand(1,52);
                 $data[] = $values[array_rand($values)];
-                                
+
                 fputcsv($fh, $data);
-                
-                
+
+
             }
-            
+
         }
         
         

@@ -59,13 +59,6 @@ if (!isset($_POST['sid']) || !ctype_digit($_POST['sid'])){
     exit;
 }
 
-// FIle title?
-if (!isset($_POST['title']) || empty($_POST['title'])){
-    $result = array('success' => false, 'error' => get_string('uploads:titlenotset', 'block_elbp'));
-    echo json_encode($result);
-    exit;
-}
-
 $studentID = (int)$_REQUEST['sid'];
 $ATT->loadStudent($studentID);
 
@@ -78,8 +71,8 @@ if (!$ELBP->anyPermissionsTrue($access) || !elbp_has_capability('block/elbp:add_
 }
 
 // Upload the file, if it's been sent
-if (isset($_FILES['qqfile'])){
-    
+if (isset($_FILES['file'])){
+
     // Before we do this, let's make sure we have created the directory we want to upload to
     $dir = $ATT->createDataDirectory( $studentID );
     if (!$dir){
@@ -92,8 +85,8 @@ if (isset($_FILES['qqfile'])){
     $Upload = new \ELBP\Upload();
     
     // If there was a problem uploading the temporary file - stop
-    if ($_FILES['qqfile']['error'] > 0){
-        $Upload->setFile( $_FILES['qqfile'] );    
+    if ($_FILES['file']['error'] > 0){
+        $Upload->setFile( $_FILES['file'] );
         $result = array('success' => false, 'error' => $Upload->getUploadErrorCodeMessage());
         echo json_encode($result);
         exit;
@@ -102,15 +95,16 @@ if (isset($_FILES['qqfile'])){
     $Upload->setMimeTypes( $ATT->getAllowedMimeTypes() );
     $Upload->setUploadDir( $CFG->dataroot . '/ELBP/Attachments/'.$studentID.'/' );
     $Upload->setMaxSize( $ATT->getMaxFileSize() );
-    $Upload->setFile( $_FILES['qqfile'] );    
+    $Upload->setFile( $_FILES['file'] );
     
     $result = $Upload->doUpload();
     $result['uploadName'] = $Upload->filename;
+    $result['title'] = $_FILES['file']['name'];
     
     // If OK, store in DB
     if ($Upload->getResult()){
         
-        if (!$ATT->insertAttachment($_POST['title'], $Upload->filename)){
+        if (!$ATT->insertAttachment($_FILES['file']['name'], $Upload->filename)){
             $result = array('success' => false, 'error' => get_string('errors:couldnotinsertrecord', 'block_elbp'));
         }
         

@@ -58,25 +58,16 @@
 </div>
 <?php endif; ?>
 
-<?php if ($badges || $eLearningBadges): ?>
+<?php if ($badges): ?>
 <br>
 <div id='elbp_studentprofile_badges'>
     <div id="badges_title">
         <?= get_string('coursebadges', 'badges') ?>
-        <a href="#" onclick="toggleBadges();return false;">
+        <a href="#" onclick="ELBP.toggleBadges();return false;">
             <img id="toggle-badges" src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/switch_minus.gif" />
         </a>
     </div>
     <div id="badges_content" style="<?= ($hideBadges) ? 'display:none;' : '' ?>">
-        
-        <?php if ($eLearningBadges): ?>
-            <?php foreach($eLearningBadges as $badge): ?>
-                <div class="badge" title="">
-                    <img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/badge.php?v=<?= count($badge->hours) ?>&b=eLearning" alt="<?= $badge->course->fullname ?>" class="activebadge" /><br>
-                    <small title="<?= implode(', ', $badge->hours) ?>"><b><?= $badge->course->fullname ?> (<?= count($badge->hours) ?>)</b></small>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
         
         <?php if ($badges): ?>
             <?php foreach($badges as $badge): ?>

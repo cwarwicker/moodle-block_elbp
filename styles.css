@@ -740,11 +740,11 @@ table#status_table
 }
 
 .progress-bar {
-	background-color: #F5F5F5;
+	background-color: #F5F5F5 !important;
 	height: 25px;
 	padding: 5px;
 	margin: 0;
-        position: relative;
+    position: relative;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	border-radius: 5px;
@@ -777,15 +777,15 @@ li .progress-bar
 
 
 /* Progress bars on block */
-.block_elbp .blue div, .elbp_target_bar .blue div {
+.block_elbp .blue div, .elbp_target_bar .blue div, .elbp_progress .blue div {
 	background-color: #34c2e3;   
 }
 
-.block_elbp .red div, .elbp_target_bar .red div {
+.block_elbp .red div, .elbp_target_bar .red div, .elbp_progress .red div {
 	background-color: #E33434; 
 }
 
-.block_elbp .orange div, .elbp_target_bar .orange div {
+.block_elbp .orange div, .elbp_target_bar .orange div, .elbp_progress .orange div {
 	  background-color: #fecf23;
 	  background-image: -webkit-gradient(linear, left top, left bottom, from(#fecf23), to(#fd9215));
 	  background-image: -webkit-linear-gradient(top, #fecf23, #fd9215);
@@ -795,7 +795,7 @@ li .progress-bar
 	  background-image: linear-gradient(top, #fecf23, #fd9215);  
 }	
 
-.block_elbp .green div, .elbp_target_bar .green div {
+.block_elbp .green div, .elbp_target_bar .green div, .elbp_progress .green div {
 	  background-color: #a5df41;
 	  background-image: -webkit-gradient(linear, left top, left bottom, from(#a5df41), to(#4ca916));
 	  background-image: -webkit-linear-gradient(top, #a5df41, #4ca916);
@@ -805,7 +805,7 @@ li .progress-bar
 	  background-image: linear-gradient(top, #a5df41, #4ca916);  
 }
 
-.block_elbp .stripes div, .elbp_target_bar .stripes div {
+.block_elbp .stripes div, .elbp_target_bar .stripes div, .elbp_progress .stripes div {
 	-webkit-background-size: 30px 30px;
 	-moz-background-size: 30px 30px;
 	background-size: 30px 30px;			
@@ -3303,6 +3303,11 @@ select.elbp_select_small
     background-color: #039 \9;
 }
 
+.btn-success
+{
+    background-image: none;
+}
+
 .icon-upload {
     background-position: -144px -24px;
 }
@@ -4115,14 +4120,20 @@ table.elbp_matrix_display th, table.elbp_matrix_display tr td:first-child
     background-color: #fff;
 }
 
-.qq-upload-button
+div.file-drop-zone
 {
-    margin: 0 !important;
+    border: 4px dashed #2ba4ce;
+    height: 100px;
+    width: 80%;
+    margin: auto;
+    padding: 35px;
+    text-align: center;
+    background: #fff;
 }
 
-table.elbp_attachments_table .qq-upload-button
+div.file-drop-zone.in
 {
-    margin: auto !important;
+    background: #f1f1f1;
 }
 
 table#plugin_groups td
