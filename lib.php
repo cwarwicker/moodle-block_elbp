@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2017-onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,14 +27,14 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
 
 require_once $CFG->dirroot . '/blocks/elbp/ELBP.class.php';
 
 // Find all classes in /classes and include them
 foreach( glob("{$CFG->dirroot}/blocks/elbp/classes/*.class.php") as $file ){
-    require_once $file;    
+    require_once $file;
 }
 
 
@@ -45,10 +45,10 @@ foreach( glob("{$CFG->dirroot}/blocks/elbp/classes/*.class.php") as $file ){
  */
 function append_query_string($url, $qs)
 {
- 
+
     $seperator = ( parse_url($url, PHP_URL_QUERY) == null ) ? '?' : '&amp;' ;
     return $url . $seperator . $qs;
-    
+
 }
 
 /**
@@ -58,11 +58,11 @@ function append_query_string($url, $qs)
 function query_string_to_array($qs)
 {
     $parse = parse_url($qs);
-    
+
     if (!isset($parse['query'])) return array();
-    
+
     parse_str($parse['query'], $elements);
-    
+
     return $elements;
 }
 
@@ -73,20 +73,20 @@ function query_string_to_array($qs)
 function array_to_query_string($array)
 {
     if (!$array) return "";
-    
+
     $output = "";
     $cnt = count($array);
     $num = 0;
-    
+
     foreach($array as $key => $val)
     {
         $num++;
         $output .= "{$key}={$val}";
         if ($num < $cnt) $output .= "&";
     }
-        
+
     return $output;
-    
+
 }
 
 /**
@@ -97,15 +97,15 @@ function array_to_query_string($array)
  */
 function strip_from_query_string($element, $qs)
 {
-    
+
     $array = query_string_to_array($qs);
     if (isset($array[$element])) unset($array[$element]);
-    
+
     $parts = explode("?", $qs);
-    $url = $parts[0] . "?" . array_to_query_string($array); 
-    
+    $url = $parts[0] . "?" . array_to_query_string($array);
+
     return $url;
-    
+
 }
 
 /**
@@ -116,13 +116,13 @@ function strip_from_query_string($element, $qs)
  */
 function elbp_html($str, $nl2br=false)
 {
-    
+
     if (is_array($str)){
         return implode(", ", $str);
     }
-    
+
     $str = htmlspecialchars($str, ENT_QUOTES);
-    if ($nl2br){ 
+    if ($nl2br){
         $str = nl2br($str);
         // Now remove actual new line characters incase they are still there (has been noted in some instances)
         $str = str_replace("\n", "", $str);
@@ -307,13 +307,13 @@ function elbp_hex_to_rgb( $colour ) {
  */
 function elbp_calc_font_colour($r, $g, $b)
 {
-    
+
     $r = $r / 255;
     $g = $g / 255;
     $b = $b / 255;
-    
+
     return ( (0.213 * $r) + (0.715 * $g) + (0.072 * $b) < 0.5 ) ? '#fff': '#000' ;
-    
+
 }
 
 
@@ -347,32 +347,32 @@ function elbp_convert_version($version)
  * @param type $capability
  */
 function elbp_has_capability($capability, $access){
-    
+
     global $USER, $DB;
-    
+
     if (!$access) return false;
     if (!isset($access['context']) || !$access['context']) return false;
-                
+
     $cap = $DB->get_record("capabilities", array("name" => $capability));
     if (!$cap) return false;
-    
+
     // First check if we have set a specific capability value for this user
     $userCap = $DB->get_record("lbp_user_capabilities", array("userid" => $USER->id, "capabilityid" => $cap->id));
-    
+
     // We do have a user capability record, so check what the value is
     if ($userCap)
     {
         if ($userCap->value == 1) return true; // ALLOW, so return true without checking role capabilities
         elseif ($userCap->value == 0) return false; // PROHIBIT, so return false without checking role capabilities
     }
-    
+
     // Loop through all our relevant contexts and if we have the capability for any of them, return true
     foreach ($access['context'] as $context){
         if (has_capability($capability, $context) ) return true;
     }
-    
+
     return false;
-    
+
 }
 
 /**
@@ -387,9 +387,9 @@ function elbp_has_capability($capability, $access){
  */
 function elbp_log($module, $element, $action, $studentID = null, $params = false)
 {
-    
+
     global $DB, $USER;
-    
+
     $obj = new \stdClass();
     $obj->userid = $USER->id;
     $obj->module = $module;
@@ -397,14 +397,14 @@ function elbp_log($module, $element, $action, $studentID = null, $params = false
     $obj->action = $action;
     $obj->studentid = $studentID;
     $obj->time = time();
-    
+
     if ( ($logID = $DB->insert_record("lbp_logs", $obj)) )
     {
-        
+
         // Now params (attributes)
         if ($params)
         {
-            
+
             foreach($params as $field => $value)
             {
                 $obj = new \stdClass();
@@ -413,11 +413,11 @@ function elbp_log($module, $element, $action, $studentID = null, $params = false
                 $obj->value = $value;
                 $DB->insert_record("lbp_log_attributes", $obj);
             }
-            
+
         }
-        
+
     }
-    
+
 }
 
 /**
@@ -427,9 +427,9 @@ function elbp_log($module, $element, $action, $studentID = null, $params = false
  */
 function elbp_get_comment_css($width)
 {
-    
+
     $mod = ($width % 8);
-        
+
     // Use the width of the note to determine the colour, so that threading of comments creates different colours as it goes
     switch($mod)
     {
@@ -473,7 +473,7 @@ function elbp_get_comment_css($width)
     $css->mod = $mod;
 
     return $css;
-    
+
 }
 
 /**
@@ -483,11 +483,11 @@ function elbp_get_comment_css($width)
  */
 function return_bytes_from_upload_max_filesize($val)
 {
-    
+
     $val = trim($val);
     $last = strtolower($val[strlen($val)-1]);
     $val = (int)$val;
-    
+
     switch($last) {
         case 'g':
             $val *= 1024;
@@ -498,7 +498,7 @@ function return_bytes_from_upload_max_filesize($val)
     }
 
     return $val;
-    
+
 }
 
 /**
@@ -508,12 +508,12 @@ function return_bytes_from_upload_max_filesize($val)
  * @return type
  */
 function convert_bytes_to_hr($bytes, $precision = 2)
-{	
+{
 	$kilobyte = 1024;
 	$megabyte = $kilobyte * 1024;
 	$gigabyte = $megabyte * 1024;
 	$terabyte = $gigabyte * 1024;
-	
+
 	if (($bytes >= 0) && ($bytes < $kilobyte)) {
 		return $bytes . ' B';
 
@@ -554,64 +554,64 @@ function elbp_get_file_extension($filename)
  */
 function get_common_mime_types($type = 'ALL')
 {
-    
+
     $office = array(
-                
+
                    '.doc' => 'application/msword',
                    '.docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                    '.xls' => array('application/excel', 'application/vnd.ms-excel'),
                    '.xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                    '.ppt' => array('application/mspowerpoint', 'application/powerpoint', 'application/vnd.ms-powerpoint', 'application/x-mspowerpoint'),
                    '.pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                    
+
             );
-    
+
     $img = array(
                 '.jpg .jpeg' => 'image/jpeg',
                 '.png' => 'image/png',
                 '.gif' => 'image/gif',
                 '.bmp' => array('image/bmp', 'image/x-windows-bmp'),
             );
-    
+
     $txt = array(
-                
+
                 '.txt' => 'text/plain',
-                '.rtf' => array('text/richtext', 'application/rtf', 'application/x-rtf'),
-                
+                '.rtf' => array('text/richtext', 'application/rtf', 'application/x-rtf', 'text/rtf'),
+
             );
-    
+
     $audio = array(
-                
+
                 '.mp3' => array('audio/mpeg', 'audio/mp3'),
                 '.wav' => array('audio/wav', 'audio/x-wav')
-            );  
-    
+            );
+
     $video = array(
-                
+
                 '.mpg' => 'video/mpeg',
                 '.mov' => 'video/quicktime',
                 '.avi' => array('video/avi', 'video/msvideo', 'video/x-msvideo'),
                 '.flv' => 'video/x-flv',
                 '.wmv' => 'video/x-ms-wmv'
-                
+
             );
-    
+
     $other = array(
-                
+
                 '.csv' => 'text/csv',
                 '.zip .tgz .gz' => array('application/x-compressed', 'application/x-zip-compressed', 'application/zip', 'multipart/x-zip'),
                 '.pdf' => 'application/pdf'
-                
+
             );
-    
+
     if ($type == 'ALL'){
-        
+
         return array($office, $img, $txt, $audio, $video, $other);
-        
+
     }
     else
     {
-        
+
         switch($type)
         {
 
@@ -635,7 +635,7 @@ function get_common_mime_types($type = 'ALL')
 
             case 'AUDIO':
 
-                return $audio;   
+                return $audio;
 
             break;
 
@@ -653,42 +653,42 @@ function get_common_mime_types($type = 'ALL')
 
 
         }
-        
+
     }
-    
-    
-    
-    
+
+
+
+
 }
 
 /**
  * Generate a random string to be used for activation codes, salts, etc...
  * @param int $length
  * @param bool $alphaNumericOnly If true only a-z0-9 characters will be used
- * @return array 
+ * @return array
  */
 function elbp_generate_random_string($length=10, $alphaNumericOnly=false)
 {
-    
+
     $chars = " _?!@#~ 23456789 _?!@#~ AzBbCcDdEeFfGgHhJjKkMmNn _?!@#~ PpQqRrSsTtUuVvWwXxYyZz _?!@#~ 23456789 _?!@#~ ";
-    
+
     if ($alphaNumericOnly){
         $chars = preg_replace("/[^a-z0-9]/i", "", $chars);
     }
-    
+
     $l = strlen($chars) - 1;
-    
+
     $output = "";
     for($i = 0; $i < $length; $i++)
     {
-        
+
         $r = mt_rand(0, $l);
         $output .= $chars[$r];
-        
+
     }
-    
+
     return $output;
-    
+
 }
 
 /**
@@ -698,22 +698,22 @@ function elbp_generate_random_string($length=10, $alphaNumericOnly=false)
  */
 function elbp_get_file_icon($filename)
 {
-        
+
     $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        
+
     switch($ext)
     {
-        
+
         case 'pdf':
             $img = 'page_white_acrobat.png';
         break;
-    
+
         case 'csv':
         case 'xls':
         case 'xlsx':
             $img = 'page_white_excel.png';
         break;
-    
+
         case 'png':
         case 'jpg':
         case 'jpeg':
@@ -721,50 +721,50 @@ function elbp_get_file_icon($filename)
         case 'gif':
             $img = 'page_white_picture.png';
         break;
-    
+
         case 'ppt':
         case 'pptx':
             $img = 'page_white_powerpoint.png';
         break;
-    
+
         case 'txt':
-        case 'rtf':    
+        case 'rtf':
             $img = 'page_white_text.png';
         break;
-    
+
         case 'doc':
         case 'docx':
             $img = 'page_white_word.png';
         break;
-    
+
         case 'zip':
         case 'gz':
-        case 'tgz':    
+        case 'tgz':
             $img = 'page_white_zip.png';
         break;
-    
+
         case 'mp3':
         case 'wav':
-        case 'ra':    
+        case 'ra':
             $img = 'music.png';
         break;
-    
+
         case 'avi':
         case 'mov':
         case 'wmv':
         case 'flv':
-        case 'mpg':    
+        case 'mpg':
             $img = 'film.png';
         break;
-        
+
         default:
             $img = 'page_white.png';
         break;
-        
+
     }
-    
+
     return $img;
-    
+
 }
 
 /**
@@ -813,7 +813,7 @@ function elbp_convert_rgb_hsl($r, $g, $b) {
  */
 function elbp_convert_hsl_rgb($h, $s, $v)
 {
-    
+
     if($s == 0) {
         $r = $g = $B = $v * 255;
     } else {
@@ -833,9 +833,9 @@ function elbp_convert_hsl_rgb($h, $s, $v)
         $r = $var_R * 255;
         $g = $var_G * 255;
         $B = $var_B * 255;
-    }    
+    }
     return array($r, $g, $B);
-    
+
 }
 
 /**
@@ -846,18 +846,18 @@ function elbp_convert_hsl_rgb($h, $s, $v)
  * @return type
  */
 function elbp_convert_rgb_opposite($r, $g, $b){
-    
+
     $r -= 255;
     if ($r < 0) $r = -($r);
-    
+
     $g -= 255;
     if ($g < 0) $g = -($g);
-    
+
     $b -= 255;
     if ($b < 0) $b = -($b);
-    
+
     return array($r, $g, $b);
-    
+
 }
 
 /**
@@ -866,7 +866,7 @@ function elbp_convert_rgb_opposite($r, $g, $b){
  * @return type
  */
 function elbp_convert_hex_opposite($hex){
-    
+
     $rgb = elbp_hex_to_rgb($hex);
     $new = elbp_convert_rgb_opposite($rgb['red'], $rgb['green'], $rgb['blue']);
     $hex = elbp_rgb_to_hex($new[0], $new[1], $new[2]);
@@ -895,15 +895,15 @@ function elbp_rgb_to_hex($r, $g, $b)
  */
 function elbp_get_gradient_colour($hex)
 {
-    
+
     // Get RGB from hex code
     $rgb = elbp_hex_to_rgb($hex);
-    
+
     // Convert that RGB to HSL(HSV)
     $hsl = elbp_convert_rgb_hsl($rgb['red'], $rgb['green'], $rgb['blue']);
-    
+
     // If lightest is > 0.25 make it darker, otherwise make it ligher
-    
+
     if ($hsl[2] >= 0.25){
         $diff = $hsl[2] * 0.9;
     } else {
@@ -913,15 +913,15 @@ function elbp_get_gradient_colour($hex)
             $diff = $hsl[2] * 1.5;
         }
     }
-        
+
     // Use the new HSL values to convert it back to RGB
     $newRGB = elbp_convert_hsl_rgb($hsl[0], $hsl[1], $diff);
-    
+
     // Now finally convert that new RGB value back into a hex code
     $hex = elbp_rgb_to_hex($newRGB[0], $newRGB[1], $newRGB[2]);
-    
+
     return $hex;
-    
+
 }
 
 /**
@@ -929,24 +929,24 @@ function elbp_get_gradient_colour($hex)
  */
 function elbp_switch_user_bar()
 {
-    
+
     global $CFG, $USER, $DBC; // ELBP DB class - common queries
-    
+
     $id = optional_param('id', null, PARAM_INT);
     $cID = optional_param('cID', null, PARAM_TEXT);
-    
+
     $output = "";
     $output .= "<div class='elbp_float_left'><form onsubmit='ELBP.switch_search_user( $(\"#search_other_student\").val() );return false;'><small>";
         $output .= get_string('switchuser', 'block_elbp') . " &nbsp;";
         $output .= "<select id='switch_user_select' onchange='ELBP.switch_users( this.value );return false;'>";
             $output .= "<option value=''></option>";
-            
+
             $sel = '';
             if ($cID == 'mentees') $sel = 'selected';
             $output .= "<option value='mentees' {$sel}>".get_string('mentees', 'block_elbp')."</option>";
-            
+
             $courseIDs = array();
-            
+
             // List courses user has access to
             $courses = $DBC->getTeachersCourses($USER->id);
             if ($courses)
@@ -959,14 +959,14 @@ function elbp_switch_user_bar()
                     $courseIDs[] = $course->id;
                 }
             }
-            
+
         $sel = '';
         $output .= "<option value='other' {$sel}>".get_string('other', 'block_elbp')."</option>";
-        
+
         $output .= "</select>";
         $output .= " &nbsp;&nbsp; ";
         $output .= "<span id='switch_users_loading'></span>";
-        
+
         $students = false;
         $style = 'display:none;';
 
@@ -982,16 +982,16 @@ function elbp_switch_user_bar()
             $students = $DBC->getStudentsOnCourse($cID);
             $style = '';
         }
-        
+
         if ($cID == 'other')
         {
-            
-            
-            
+
+
+
         }
         else
         {
-            
+
             $output .= "<select id='switch_user_users' style='{$style}' onchange='ELBP.switch_user( this.value, $(\"#switch_user_select\").val() );return false;'>";
 
                 if ($students)
@@ -1010,19 +1010,19 @@ function elbp_switch_user_bar()
 
 
             $output .= "</select>";
-            
+
         }
-                    
-        
+
+
     $output .= "</small></form></div>";
-    
+
 //    $output .= "<div class='elbp_float_right'>";
 //        $output .= "<img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/color_swatch.png' style='width:16px;' title='".get_string('changetheme', 'block_elbp')."' alt='".get_string('changetheme', 'block_elbp')."' />";
 //    $output .= "</div>";
-    
-    
+
+
     return $output;
-    
+
 }
 
 /**
@@ -1033,13 +1033,13 @@ function elbp_switch_user_bar()
  */
 function elbp_display_attribute_creation_js($obj)
 {
- 
+
     global $CFG, $OUTPUT;
-    
+
     $FORM = new ELBP\ELBPForm();
     $FORM->load( $obj->getDefaultAttributes() );
     $elements = $FORM->getElements();
-    
+
     $string = array();
     $string['mainelement'] = get_string('mainelement', 'block_elbp');
     $string['sideelement'] = get_string('sideelement', 'block_elbp');
@@ -1051,25 +1051,25 @@ function elbp_display_attribute_creation_js($obj)
     $string['delete'] = get_string('delete');
     $string['nofields'] = get_string('nofieldselected', 'block_elbp');
     $string['nofieldsdesc'] = get_string('nofieldselected:desc', 'block_elbp');
-        
-    echo '       
+
+    echo '
         <script>
 
         var ELBPFORM = {
             fields: []
-        }; 
-        
+        };
+
         ';
-    
+
     $numA = 0;
-    
+
     if ($elements)
     {
         foreach($elements as $element)
         {
-            
+
             echo <<<JS
-            
+
                 var f = {};
                 f.name = '{$element->getJsSafeName()}';
                 f.type = '{$element->type}';
@@ -1081,53 +1081,53 @@ function elbp_display_attribute_creation_js($obj)
                 f.other = {};
                 {$element->getJsSafeOther()}
                 ELBPFORM.fields[{$numA}] = f;
-            
+
 JS;
-                                    
+
             $numA++;
-            
+
         }
     }
-    
-    
+
+
     $elbp_image_url = 'elbp_image_url';
-    
+
     echo <<<JS
-                
+
         var numA = {$obj->countAttributes()};
-        
+
         function resetSettingsTab(){
-        
+
             $('#field_settings').html("<div class='elbp_err_box'><h2>{$string['nofields']}</h2><br><p>{$string['nofieldsdesc']}</p></div>");
-        
+
         }
-        
+
         function showAttributeTab(tab){
-        
+
             $('#elbp_attributes_table tr').removeClass('active');
             $('.elbp_att_form_fields ul#nav li a').removeClass('active');
             $('.elbp_att_form_fields div#field_fields').hide();
             $('.elbp_att_form_fields div#field_settings').hide();
             $('.elbp_att_form_fields div#field_'+tab).show();
-        
+
             if (tab == 'fields'){
                 $('#fieldstab').addClass('active');
                 resetSettingsTab();
             } else if (tab == 'settings'){
                 $('#settingstab').addClass('active');
             }
-        
+
         }
-        
+
         function addAttribute(type){
-            
+
             $('#elbp_attributes_table tbody').append('<tr id="attribute_row_'+numA+'"></tr>');
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_name"><span>-</span> <input id="attribute_row_'+numA+'_field_name_input" type="hidden" name="elementNames['+numA+']" value="" /></td>');
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_type"><span>'+type+'</span> <input id="attribute_row_'+numA+'_field_type_input" type="hidden" name="elementTypes['+numA+']" value="'+type+'" /></td>');
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_display" class="elbp_centre"><img src="{$CFG->wwwroot}/blocks/elbp/pix/icons/question.png" /> <input id="attribute_row_'+numA+'_field_display_input" type="hidden" name="elementDisplays['+numA+']" value="" /></td>');
             $('#attribute_row_'+numA).append('<td id="attribute_row_'+numA+'_field_edit_col" class="noSort"><input type="hidden" id="attribute_row_'+numA+'_field_default_input" name="elementDefault['+numA+']" value="" /><input type="hidden" id="attribute_row_'+numA+'_field_instructions_input" name="elementInstructions['+numA+']" value="" /><a href="#" onclick="editAttribute(\''+numA+'\');return false;" title="{$string['edit']}"><img src="{$elbp_image_url('t/edit')}" /></a></td>');
             $('#attribute_row_'+numA).append('<td><a href="#" onclick="removeField('+numA+');return false;" title="{$string['delete']}"><img src="{$elbp_image_url('t/delete')}" /></a></td>');
-        
+
             var f = {};
             f.name = '';
             f.type = type;
@@ -1139,30 +1139,30 @@ JS;
             f.other = {};
 
             ELBPFORM.fields[numA] = f;
-            
+
             numA++;
-    
+
         }
-            
+
         function editAttribute(num){
-         
+
             var attribute = ELBPFORM.fields[num];
             if (attribute == undefined) return false;
-            
+
             // Create tmp options array to remove any that are now undefined, if we deleted them
             var tmpOptions = [];
             $(attribute.options).each( function(i, v){
-            
+
                 if (v !== undefined){
                     tmpOptions.push(v);
                 }
-   
+
             } );
-            
+
             attribute.options = tmpOptions;
-            
+
             if (attribute.other !== undefined){
-            
+
                 if (attribute.other.cols !== undefined){
                     // Same for any cols/rows in other
                     var tmpCols = [];
@@ -1173,7 +1173,7 @@ JS;
                     } );
                     attribute.other.cols = tmpCols;
                 }
-                
+
                 if (attribute.other.rows !== undefined){
                     var tmpRows = [];
                     $(attribute.other.rows).each( function(i, v){
@@ -1183,118 +1183,118 @@ JS;
                     } );
                     attribute.other.rows = tmpRows;
                 }
-            
+
             }
-            
+
             $('#elbp_attributes_table tr').removeClass('active');
-            
+
             $('#elbp_att_overlay').show();
-            
+
             $.post(M.cfg.wwwroot + '/blocks/elbp/js/ajaxHandler.php', {
                 action: 'edit_plugin_attribute',
                 params: attribute,
                 num: num
             }, function(data){
-                            
+
                 // Load into settings bit
                 $('#field_settings').html(data);
-            
+
                 // Switch to settings tab
                 showAttributeTab('settings');
-            
+
                 // Apply bindings
                 applySettingsBindings();
-            
+
                 // Recalculate option numbers
                 reCalculateOptionNumbers(num);
-            
+
                 // Select table row
                 $('#attribute_row_'+num).addClass('active');
-            
-                // Hide loader                
+
+                // Hide loader
                 $('#elbp_att_overlay').hide();
-            
+
             });
-            
+
         }
-            
-            
+
+
         function applySettingsBindings(){
-            
+
             var num = $('#field_settings_dynamic_num').val();
-            
+
             // Type
             $('#field_settings_type').unbind('change');
             $('#field_settings_type').change( function(){
-                
+
                 var value = $(this).val();
-            
+
                 // Change the value in the hidden input
                 $('#attribute_row_'+num+'_field_type_input').val(value);
-            
+
                 // Change the display value in the table
                 $('#attribute_row_'+num+'_field_type span').text(value);
-            
+
                 // Remove hidden inputs that could differ between types, e.g. options, other, etc...
                 ELBPFORM.fields[num].options = [];
                 ELBPFORM.fields[num].other = {};
                 $('.attribute_row_'+num+'_field_option_inputs').remove();
                 $('.attribute_row_'+num+'_field_other_cols_inputs').remove();
                 $('.attribute_row_'+num+'_field_other_rows_inputs').remove();
-            
+
                 // CHange the value in the json object
                 ELBPFORM.fields[num].type = value;
-            
+
                 // Reload settings, as different types will need different things
                 editAttribute(num);
-                            
+
             } );
-            
-            
-            
+
+
+
             // Name
             $('#field_settings_name').unbind('keyup blur');
             $('#field_settings_name').bind('keyup blur', function(){
-                
+
                 var value = $(this).val();
-            
+
                 // Change the value in the hidden input
                 $('#attribute_row_'+num+'_field_name_input').val(value);
-            
+
                 // Change the display value in the table
                 $('#attribute_row_'+num+'_field_name span').text(value);
-            
+
                 // Change the value in the json object
                 ELBPFORM.fields[num].name = value;
-                        
+
             } );
-            
-            
-            
+
+
+
             // Instructions
             $('#field_settings_instructions').unbind('keyup blur');
             $('#field_settings_instructions').bind('keyup blur', function(){
-                
+
                 var value = $(this).val();
-            
+
                 // Change the value in the hidden input
                 $('#attribute_row_'+num+'_field_instructions_input').val(value);
-                        
+
                 // Change the value in the json object
                 ELBPFORM.fields[num].instructions = value;
-                        
+
             } );
-            
-            
+
+
             // Display
             $('#field_settings_display').unbind('change');
             $('#field_settings_display').change( function(){
-                
+
                 var value = $(this).val();
-            
+
                 // Change the value in the hidden input
                 $('#attribute_row_'+num+'_field_display_input').val(value);
-            
+
                 // Change the display image in the table
                 if (value == 'main'){
                     var img = 'layout_content.png';
@@ -1303,114 +1303,114 @@ JS;
                 } else {
                     var img = 'question.png';
                 }
-            
+
                 $('#attribute_row_'+num+'_field_display img').attr('src', M.cfg.wwwroot + '/blocks/elbp/pix/icons/' + img);
-            
+
                 // Change the value in the json object
                 ELBPFORM.fields[num].display = value;
-            
+
             } );
-            
-            
-            
+
+
+
             // Options
-            
+
                 // Add option
                 $('.field_settings_option_add').unbind('click');
                 $('.field_settings_option_add').click( function(e){
-                
+
                     // Get the last option number
                     var l = $('#field_settings_options span').length
                     var lastOption = $('#field_settings_options span')[l-1];
                     var o = $($($('#field_settings_options span')[l-1]).find('a')[0]).attr('option-number');
                     o++;
-                
+
                     var option = "<span>";
                     option += "<input type='text' class='normal attribute_popup_options' option-number='"+o+"' value=''> ";
                     option += "<a href='#' class='field_settings_option_delete' option-number='"+o+"'><img src='"+M.cfg.wwwroot+"/blocks/elbp/pix/icons/delete.png'></a> ";
                     option += "<a href='#' class='field_settings_option_add' option-number='"+o+"'><img src='"+M.cfg.wwwroot+"/blocks/elbp/pix/icons/add.png'></a>";
                     option += "<br></span>";
-            
+
                     // Add to html
                     $('#field_settings_options').append(option);
-            
+
                     // Add to json object
                     ELBPFORM.fields[num].options[o] = "";
-            
+
                     // Add hidden input
                     $('.attribute_row_'+num+'_field_option_inputs').remove();
                     $(ELBPFORM.fields[num].options).each( function(k, v){
-                            
+
                         if (v !== undefined){
                             var input = "<input class='attribute_row_"+num+"_field_option_inputs field_opt_num_"+k+"' type='hidden' name='elementOptions["+num+"]["+k+"]' value='"+v+"'>";
                             $('#attribute_row_'+num+'_field_edit_col').append(input);
                         }
 
                     } );
-                    
-            
+
+
                     // Bind this to the new option we just created as well
                     applySettingsBindings();
-                        
+
                     e.preventDefault();
-            
+
                 } );
-            
-            
+
+
                 // Delete option
                 $('.field_settings_option_delete').unbind('click');
                 $('.field_settings_option_delete').click( function(e){
-                
+
                     var o = $(this).attr('option-number');
-            
+
                     // Get the last option number
                     $(this).parent().remove();
-            
+
                     // Remove from json object
                     delete ELBPFORM.fields[num].options[o];
-            
+
                     // Remove from hidden inputs
                     $('.attribute_row_'+num+'_field_option_inputs').remove();
                     $(ELBPFORM.fields[num].options).each( function(k, v){
-                
+
                         if (v !== undefined){
                             var input = "<input class='attribute_row_"+num+"_field_option_inputs field_opt_num_"+k+"' type='hidden' name='elementOptions["+num+"]["+k+"]' value='"+v+"'>";
                             $('#attribute_row_'+num+'_field_edit_col').append(input);
                         }
 
                     } );
-                        
+
                     e.preventDefault();
-            
+
                 } );
-            
-            
+
+
                 // Update option value
                 $('.attribute_popup_options').unbind('keyup blur');
                 $('.attribute_popup_options').bind('keyup blur', function(){
-                    
+
                     var value = $(this).val();
                     var o = $(this).attr('option-number');
-            
+
                     // If hidden input doesn't exist, create it (e.g. default first input)
                     if ( $('.attribute_row_'+num+'_field_option_inputs.field_opt_num_'+o).length == 0 ){
                         var input = "<input class='attribute_row_"+num+"_field_option_inputs field_opt_num_"+o+"' type='hidden' name='elementOptions["+num+"]["+o+"]'>";
                         $('#attribute_row_'+num+'_field_edit_col').append(input);
                     }
 
-                        
+
                     // Change the value in the hidden input
                     $('.attribute_row_'+num+'_field_option_inputs.field_opt_num_'+o).val(value);
 
                     // Change the value in the json object
                     ELBPFORM.fields[num].options[o] = value;
-   
+
                 } );
-            
-            
-            
+
+
+
                 // Matrix - cols and rows
-                
+
                 // Add column
                     $('.field_settings_other_cols_add').unbind('click');
                     $('.field_settings_other_cols_add').click( function(e){
@@ -1434,11 +1434,11 @@ JS;
                         if (ELBPFORM.fields[num].other == undefined){
                             ELBPFORM.fields[num].other = {};
                         }
-            
+
                         if (ELBPFORM.fields[num].other.cols == undefined){
                             ELBPFORM.fields[num].other.cols = [];
                         }
-            
+
                         ELBPFORM.fields[num].other.cols[o] = "";
 
                         // Add hidden input
@@ -1459,7 +1459,7 @@ JS;
                         e.preventDefault();
 
                     });
-            
+
                 // Remove column
                     $('.field_settings_other_cols_delete').unbind('click');
                     $('.field_settings_other_cols_delete').click( function(e){
@@ -1486,7 +1486,7 @@ JS;
                         e.preventDefault();
 
                     } );
-            
+
                 // Update column
                     $('.field_setting_other_cols').unbind('keyup blur');
                     $('.field_setting_other_cols').bind('keyup blur', function(){
@@ -1495,15 +1495,15 @@ JS;
                         var o = $(this).attr('col-number');
 
                         // Change the value in the hidden input
-                        
+
                         // If hidden input doesn't exist, create it (e.g. default first input)
                         if ( $('.attribute_row_'+num+'_field_other_cols_inputs.field_col_num_'+o).length == 0 ){
                             var input = "<input class='attribute_row_"+num+"_field_other_cols_inputs field_col_num_"+o+"' type='hidden' name='elementOther["+num+"][cols]["+o+"]'>";
                             $('#attribute_row_'+num+'_field_edit_col').append(input);
                         }
-            
+
                         $('.attribute_row_'+num+'_field_other_cols_inputs.field_col_num_'+o).val(value);
-            
+
                         // Add to json object
                         if (ELBPFORM.fields[num].other == undefined){
                             ELBPFORM.fields[num].other = {};
@@ -1511,13 +1511,13 @@ JS;
                         if (ELBPFORM.fields[num].other.cols == undefined){
                             ELBPFORM.fields[num].other.cols = [];
                         }
-            
+
 
                         // Change the value in the json object
                         ELBPFORM.fields[num].other.cols[o] = value;
 
-                    } );   
-            
+                    } );
+
                 // Add row
                     $('.field_settings_other_rows_add').unbind('click');
                     $('.field_settings_other_rows_add').click( function(e){
@@ -1541,7 +1541,7 @@ JS;
                         if (ELBPFORM.fields[num].other.rows == undefined){
                             ELBPFORM.fields[num].other.rows = [];
                         }
-            
+
                         ELBPFORM.fields[num].other.rows[o] = "";
 
                         // Add hidden input
@@ -1562,7 +1562,7 @@ JS;
                         e.preventDefault();
 
                     });
-            
+
                 // Remove row
                     $('.field_settings_other_rows_delete').unbind('click');
                     $('.field_settings_other_rows_delete').click( function(e){
@@ -1588,8 +1588,8 @@ JS;
 
                         e.preventDefault();
 
-                    } );    
-            
+                    } );
+
                 // Update row
                     $('.field_setting_other_rows').unbind('keyup blur');
                     $('.field_setting_other_rows').bind('keyup blur', function(){
@@ -1598,118 +1598,118 @@ JS;
                         var o = $(this).attr('row-number');
 
                         // Change the value in the hidden input
-                        
+
                         // If hidden input doesn't exist, create it (e.g. default first input)
                         if ( $('.attribute_row_'+num+'_field_other_rows_inputs.field_row_num_'+o).length == 0 ){
                             var input = "<input class='attribute_row_"+num+"_field_other_rows_inputs field_row_num_"+o+"' type='hidden' name='elementOther["+num+"][rows]["+o+"]'>";
                             $('#attribute_row_'+num+'_field_edit_col').append(input);
                         }
-            
+
                         $('.attribute_row_'+num+'_field_other_rows_inputs.field_row_num_'+o).val(value);
-            
+
                         // Add to json object
                         if (ELBPFORM.fields[num].other.rows == undefined){
                             ELBPFORM.fields[num].other.rows = [];
                         }
-            
+
                         // Change the value in the json object
                         ELBPFORM.fields[num].other.rows[o] = value;
 
-                    } );   
-           
-            
-            
+                    } );
+
+
+
             // Default value
             $('#field_settings_default').unbind('keyup blur');
             $('#field_settings_default').bind('keyup blur', function(){
-                
+
                 var value = $(this).val();
-            
+
                 // Change the value in the hidden input
                 $('#attribute_row_'+num+'_field_default_input').val(value);
-                        
+
                 // Change the value in the json object
                 ELBPFORM.fields[num].default = value;
-                        
+
             } );
-            
-            
-            
+
+
+
             // Validation
             $('#field_settings_validation').unbind('change');
             $('#field_settings_validation').change( function(){
-                
+
                 // Remove existing hidden inputs
                 $('.attribute_row_'+num+'_field_validation_inputs').remove();
-            
+
                 var value = $(this).val();
-            
+
                 $(value).each( function(k, v){
-                
+
                     var input = "<input class='attribute_row_"+num+"_field_validation_inputs' type='hidden' name='elementValidation["+num+"][]' value='"+v+"'>";
                     $('#attribute_row_'+num+'_field_edit_col').append(input);
-            
+
                 } );
-                                    
+
                 // Change the value in the json object
                 ELBPFORM.fields[num].validation = value;
-            
+
             } );
-            
-            
+
+
             // Other
             $('.field_setting_other_max').unbind('change');
             $('.field_setting_other_max').change( function(){
-            
+
                 // Update hidden input, or create if not there
                 if ( $('#attribute_row_'+num+'_field_other_max_input').length == 0 ){
                     var input = "<input id='attribute_row_"+num+"_field_other_max_input' type='hidden' name='elementOther["+num+"][max]' value=''>";
                     $('#attribute_row_'+num+'_field_edit_col').append(input);
-                } 
-            
+                }
+
                 $('#attribute_row_'+num+'_field_other_max_input').val( $(this).val() );
-            
-            
+
+
                 // Update JSON object
                 ELBPFORM.fields[num].other.max = $(this).val();
-            
-   
+
+
             } );
-            
-            
-            
-            
-        
+
+
+
+
+
         }
-            
+
         function removeField(num){
-         
+
             $('#attribute_row_'+num).remove();
             delete ELBPFORM.fields[num];
-            
+
             // Check if settings page is open for this field
             var sNum = $('#field_settings_dynamic_num').val();
-            
+
             // If it is, close the settings thing
             if (num == sNum){
                 showAttributeTab('fields');
             }
-            
+
         }
-            
+
         function reCalculateOptionNumbers(num){
-         
+
             $('.attribute_row_'+num+'_field_option_inputs').each( function(k, v){
-                
+
                 $(this).removeAttr('class');
                 $(this).addClass('attribute_row_'+num+'_field_option_inputs');
                 $(this).addClass('field_opt_num_'+k);
-            
+
             } );
-            
+
         }
-            
-            
+
+
         function applySorting(id)
         {
             $('#'+id).sortable({
@@ -1721,24 +1721,24 @@ JS;
                 }
             })
         }
-        
+
         function resortNumbers(id)
         {
-        
+
             var cnt = $('#'+id+' tbody tr').length;
             var n = 0;
-            
+
             var tmpObj = {};
             tmpObj.fields = [];
-            
+
             $('#'+id+' tr').each( function(){
-            
+
                   var split = $(this).attr('id').split("_");
                   var old = split[2];
-                    
+
                   var TDs = $(this).children('td');
-            
-                    
+
+
                   // Name
                   $(TDs[0]).children('input').attr('name', 'elementNames['+n+']');
                   $(TDs[0]).children('input').attr('id', 'attribute_row_'+n+'_field_name_input');
@@ -1754,11 +1754,11 @@ JS;
                   // Default
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_default_input').attr('name', 'elementDefault['+n+']');
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_default_input').attr('id', 'attribute_row_'+n+'_field_default_input');
-            
+
                   // Old Names
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_old_name').attr('name', 'elementOldNames['+n+']');
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_old_name').attr('id', 'attribute_row_'+n+'_field_old_name');
-            
+
                   // Old IDs
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_old_id').attr('name', 'elementOldIDs['+n+']');
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_old_id').attr('id', 'attribute_row_'+n+'_field_old_id');
@@ -1766,15 +1766,15 @@ JS;
                   // Options
                   $(TDs[3]).children('input.attribute_row_'+old+'_field_option_inputs').attr('name', 'elementOptions['+n+'][]');
                   $(TDs[3]).children('input.attribute_row_'+old+'_field_option_inputs').attr('class', 'attribute_row_'+n+'_field_option_inputs');
-                      
+
                   // Validation
                   $(TDs[3]).children('input.attribute_row_'+old+'_field_validation_inputs').attr('name', 'elementValidation['+n+'][]');
                   $(TDs[3]).children('input.attribute_row_'+old+'_field_validation_inputs').attr('class', 'attribute_row_'+n+'_field_validation_inputs');
-            
+
                   // Instructions
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_instructions_input').attr('name', 'elementInstructions['+n+']');
                   $(TDs[3]).children('input#attribute_row_'+old+'_field_instructions_input').attr('id', 'attribute_row_'+n+'_field_instructions_input');
-            
+
                   // Other
                     // cols
                     $(TDs[3]).children('input.attribute_row_'+old+'_field_other_cols_inputs').each( function(){
@@ -1807,7 +1807,7 @@ JS;
 
                       console.log('row ('+$(this).val()+'), old: ' + old);
                       console.log(oClass);
-            
+
                       $(oClass).each( function(i, v){
 
                         console.log('v: ' + v);
@@ -1825,43 +1825,43 @@ JS;
                       $(this).attr('class', 'attribute_row_'+n+'_field_other_rows_inputs field_row_num_'+o);
 
                     } );
-            
-            
+
+
                   // Edit Link
                   $(TDs[3]).children('a').attr('onclick', 'editAttribute('+n+');return false;');
-            
+
                   // Delete link
                   $(TDs[4]).children('a').attr('onclick', 'removeField('+n+');return false;');
-            
+
                   // TD ids
                   $(TDs[0]).attr('id', 'attribute_row_'+n+'_field_name');
                   $(TDs[1]).attr('id', 'attribute_row_'+n+'_field_type');
                   $(TDs[2]).attr('id', 'attribute_row_'+n+'_field_display');
                   $(TDs[3]).attr('id', 'attribute_row_'+n+'_field_edit_col');
-                  
+
                   // Row id
                   $(this).attr('id', 'attribute_row_'+n);
-            
+
                   // JSON Object
                   tmpObj.fields[n] = ELBPFORM.fields[old];
-            
+
                 n++;
 
             } );
-                        
+
             ELBPFORM = tmpObj;
 
         }
-            
+
         $(document).ready( function(){
             applySorting('elbp_attributes_table tbody');
         } );
-        
-    
+
+
 </script>
-    
+
 JS;
-        
+
 }
 
 /**
@@ -1870,21 +1870,21 @@ JS;
  */
 function elbp_display_attribute_creation_form($obj)
 {
-    
+
     global $CFG, $OUTPUT;
-    
+
     $FORM = new \ELBP\ELBPForm();
     $FORM->load( $obj->getDefaultAttributes() );
-    
+
     $types = $FORM->getSupportedTypes();
     $validation = $FORM->getSupportValidationTypes();
-    
+
     $output = "";
-        
+
     $output .= "<div id='elbp_att_container'>";
-    
+
         $output .= "<div id='elbp_att_overlay'><span></span><img src='{$CFG->wwwroot}/blocks/elbp/pix/loader.gif' alt='loading' /></div>";
-    
+
         $output .= "<div class='elbp_att_form_fields'>";
 
             $output .= "<ul id='nav'>";
@@ -1932,8 +1932,8 @@ function elbp_display_attribute_creation_form($obj)
 
             $output .= "<div id='field_settings'>";
 
-                // Default form            
-                $output .= "<div class='elbp_err_box'><h2>".get_string('nofieldselected', 'block_elbp')."</h2><br><p>".get_string('nofieldselected:desc', 'block_elbp')."</p></div>";   
+                // Default form
+                $output .= "<div class='elbp_err_box'><h2>".get_string('nofieldselected', 'block_elbp')."</h2><br><p>".get_string('nofieldselected:desc', 'block_elbp')."</p></div>";
 
             $output .= "</div>";
 
@@ -1958,7 +1958,7 @@ function elbp_display_attribute_creation_form($obj)
             $output .= '</thead>';
 
             $output .= '<tbody>';
-            
+
                 $numA = 0;
 
                 if ($attributes)
@@ -1975,7 +1975,7 @@ function elbp_display_attribute_creation_form($obj)
                             $hiddenInputs = '<input type="hidden" id="attribute_row_'.$numA.'_field_default_input" name="elementDefault['.$numA.']" value="'.$attribute->default.'" />';
                             $hiddenInputs .= '<input type="hidden" id="attribute_row_'.$numA.'_field_old_name" name="elementOldNames['.$numA.']" value="'.$attribute->name.'" />';
                             $hiddenInputs .= '<input type="hidden" id="attribute_row_'.$numA.'_field_old_id" name="elementOldIDs['.$numA.']" value="'.$attribute->id.'" />';
-                            
+
                             $optionsInputs = "";
 
                             if ($attribute->options)
@@ -2010,10 +2010,10 @@ function elbp_display_attribute_creation_form($obj)
                             }
 
                             $hiddenInputs .= $validationInputs;
-                            
-                            
+
+
                             $otherInputs = "";
-                                                                                    
+
                             if ($attribute->canHaveOther() && $attribute->other)
                             {
                                 $oCnt = array();
@@ -2021,21 +2021,21 @@ function elbp_display_attribute_creation_form($obj)
                                 {
                                     if ($key == 'cols' || $key == 'rows')
                                     {
-                                        
+
                                         $pKey = $key;
                                         $key = rtrim($key, "s");
                                         $oCnt[$key] = 0;
-                                                                                                                        
+
                                         if (is_object($val)){
                                             $val = (array)$val;
                                         }
-                                                                                                                        
+
                                         if (is_array($val)){
                                             foreach($val as $v){
                                                 $otherInputs .= "<input type='hidden' name='elementOther[{$numA}][{$pKey}][{$oCnt[$key]}]' class='attribute_row_{$numA}_field_other_{$pKey}_inputs field_{$key}_num_{$oCnt[$key]}' {$key}-number='{$oCnt[$key]}' value='{$v}' />";
                                                 $oCnt[$key]++;
                                             }
-                                        } else {                                        
+                                        } else {
                                             $otherInputs .= "<input type='hidden' name='elementOther[{$numA}][{$pKey}][{$oCnt[$key]}]' class='attribute_row_{$numA}_field_other_{$pKey}_inputs field_{$key}_num_{$oCnt[$key]}' {$key}-number='{$oCnt[$key]}' value='{$val}' />";
                                             $oCnt[$key]++;
                                         }
@@ -2050,9 +2050,9 @@ function elbp_display_attribute_creation_form($obj)
                                     }
                                 }
                             }
-                            
+
                             $hiddenInputs .= $otherInputs;
-                            
+
                             $hiddenInputs .= '<input type="hidden" id="attribute_row_'.$numA.'_field_instructions_input" name="elementInstructions['.$numA.']" value="'.$attribute->instructions.'" />';
 
                             $output .= '<td id="attribute_row_'.$numA.'_field_edit_col" class="noSort">'.$hiddenInputs.'<a href="#" onclick="editAttribute(\''.$numA.'\');return false;" title="'.get_string('edit').'"><img src="'.elbp_image_url('t/edit').'" /></a></td>';
@@ -2072,26 +2072,26 @@ function elbp_display_attribute_creation_form($obj)
         $output .= "</div>";
 
         $output .= "<br class='elbp_cl' /><br>";
-    
+
     $output .= "</div>";
-    
+
     echo $output;
-    
+
 }
 
 function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
 {
-    
+
     global $CFG;
-    
+
     $output = "";
-    
+
     $FORM = new \ELBP\ELBPForm();
     $types = $FORM->getSupportedTypes();
     $validation = $FORM->getSupportValidationTypes();
-            
+
     $output .= "<input type='hidden' id='field_settings_dynamic_num' value='{$element->num}' />";
-    
+
     // Type
     $output .= "<h3>".get_string('type', 'block_elbp')."</h3>";
 
@@ -2142,15 +2142,15 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
         $output .= "<option value='side' ".( ($element->display == 'side') ? 'selected' : '' )." >".get_string('sideelement', 'block_elbp')."</option>";
     $output .= "</select>";
     $output .= "<br><br>";
-    
+
     // Options
     if ($element->canHaveOptions())
     {
-        
+
         $output .= "<h3>".get_string('options', 'block_elbp')."</h3>";
-        
+
         $output .= "<div id='field_settings_options'>";
-        
+
             $o = 0;
 
             if ($element->options)
@@ -2165,25 +2165,25 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
             {
                 $output .= "<span><input type='text' class='normal attribute_popup_options' option-number='{$o}' value='' /> <a href='#' class='field_settings_option_delete' option-number='{$o}'><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/delete.png' /></a> <a href='#' class='field_settings_option_add' option-number='{$o}'><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/add.png' /></a><br></span>";
             }
-        
+
         $output .= "</div>";
-        
+
         $output .= "<br><br>";
-        
+
     }
-    
-    
+
+
     // Matrix has special things
     if ($element->type == 'Matrix')
     {
-        
+
         $cols = (isset($element->other['cols'])) ? $element->other['cols'] : false;
         $rows = (isset($element->other['rows'])) ? $element->other['rows'] : false;
-        
+
         $output .= "<h3>".get_string('columns', 'block_elbp')."</h3>";
-        
+
         $output .= "<div id='field_settings_cols'>";
-        
+
         $c = 0;
 
         if ($cols)
@@ -2198,16 +2198,16 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
         {
             $output .= "<span><input type='text' class='normal field_setting_other_cols' col-number='{$c}' value='' /> <a href='#' class='field_settings_other_cols_delete' col-number='{$c}'><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/delete.png' /></a> <a href='#' class='field_settings_other_cols_add' col-number='{$c}'><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/add.png' /></a><br></span>";
         }
-        
+
         $output .= "</div>";
 
         $output .= "<br><br>";
-        
-        
+
+
         $output .= "<h3>".get_string('rows', 'block_elbp')."</h3>";
-        
+
         $output .= "<div id='field_settings_rows'>";
-        
+
         $r = 0;
 
         if ($rows)
@@ -2222,17 +2222,17 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
         {
             $output .= "<span><input type='text' class='normal field_setting_other_rows' row-number='{$r}' value='' /> <a href='#' class='field_settings_other_rows_delete' row-number='{$r}'><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/delete.png' /></a> <a href='#' class='field_settings_other_rows_add' row-number='{$r}'><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/add.png' /></a><br></span>";
         }
-        
+
         $output .= "</div>";
-        
+
         $output .= "<br><br>";
-        
+
     }
-    
+
     // Rating lets you choose a max scale
     if ($element->type == 'Rating')
     {
-        
+
         $max = (isset($element->other['max'])) ? $element->other['max'] : false;
         $output .= "<h3>".get_string('rangemax', 'block_elbp')."</h3>";
         $output .= "<input type='radio' class='field_setting_other_max' name='field_setting_other_max' value='5' ".( ($max == 5) ? 'checked': '' )." />5";
@@ -2241,14 +2241,14 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
         $output .= "<br>";
         $output .= "<input type='radio' class='field_setting_other_max' name='field_setting_other_max' value='20' ".( ($max == 20) ? 'checked': '' )." />20";
         $output .= "<br><br>";
-        
+
     }
-    
-    
-       
+
+
+
     // Default
     if ($element->canHaveDefault()){
-        
+
         $default = $element->default;
         if (is_array($default)){
             $default = implode(",", $default);
@@ -2257,14 +2257,14 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
         $output .= "<h3>".get_string('defaultvalue', 'block_elbp')."</h3>";
         $output .= "<textarea id='field_settings_default'>{$default}</textarea>";
         $output .= "<br><br>";
-    
+
     }
-    
-    
+
+
     // Validation
     if ($element->canHaveValidation())
     {
-        
+
         $output .= "<h3>".get_string('validation', 'block_elbp')."</h3>";
         $output .= "<select id='field_settings_validation' multiple='multiple' class='elbp_select'>";
 
@@ -2279,18 +2279,18 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
 
         $output .= "</select>";
         $output .= "<br><br>";
-        
+
     }
-    
-    
+
+
     // Instructions label
     $output .= "<h3>".get_string('instructions', 'block_elbp')."</h3>";
     $output .= "<input type='text' id='field_settings_instructions' class='elbp_95' value='".\elbp_html($element->instructions)."' />";
     $output .= "<br><br>";
-    
-        
+
+
     return $output;
-    
+
 }
 
 
@@ -2303,11 +2303,11 @@ function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
  */
 function elbp_save_attribute_script($obj)
 {
-    
+
     global $MSGS;
-    
+
     if(isset($_POST['submit_attributes'])){
-                                                    
+
         $form = new \ELBP\ELBPForm();
 
         $elementNames = (isset($_POST['elementNames'])) ? $_POST['elementNames'] : array();
@@ -2318,15 +2318,15 @@ function elbp_save_attribute_script($obj)
         $elementDefault = (isset($_POST['elementDefault'])) ? $_POST['elementDefault'] : array();
         $elementInstructions = (isset($_POST['elementInstructions'])) ? $_POST['elementInstructions'] : array();
         $elementOther = (isset($_POST['elementOther'])) ? $_POST['elementOther'] : array();
-        $elementOldNames = (isset($_POST['elementOldNames'])) ? $_POST['elementOldNames'] : array();   
-        $elementOldIDs = (isset($_POST['elementOldIDs'])) ? $_POST['elementOldIDs'] : array();   
-        
+        $elementOldNames = (isset($_POST['elementOldNames'])) ? $_POST['elementOldNames'] : array();
+        $elementOldIDs = (isset($_POST['elementOldIDs'])) ? $_POST['elementOldIDs'] : array();
+
         $elementNames = array_map('trim', $elementNames);
-        
+
         $keys = array_keys($elementNames);
         $names = array();
-                        
-        
+
+
         if ($keys)
         {
             foreach($keys as $i)
@@ -2343,34 +2343,34 @@ function elbp_save_attribute_script($obj)
 
                 $name = str_replace('"', '', $elementNames[$i]);
                 $origName = $name;
-                
+
                 $n = 1;
                 while(in_array($name, $names)){
                     $name = $origName . " ({$n})";
                     $n++;
                 }
-                
+
                 $names[] = $name;
-                
+
                 $type = $elementTypes[$i];
                 $display = $elementDisplays[$i];
-                
+
                 if(isset($elementOptions[$i])){
                     $options = $elementOptions[$i];
                 }
-                
+
                 if(isset($elementValidation[$i]) && $elementValidation[$i]){
                     $validation = array_filter($elementValidation[$i]);
                 }
-                
+
                 if(isset($elementInstructions[$i])){
                     $instructions = $elementInstructions[$i];
                 }
-                
+
                 if(isset($elementDefault[$i])){
                     $default = $elementDefault[$i];
                 }
-                
+
                 if(isset($elementOther[$i])){
                     $other = $elementOther[$i];
                 }
@@ -2388,13 +2388,13 @@ function elbp_save_attribute_script($obj)
                 // Order options properly
                 if ($options)
                 {
-                    
+
                     // Sort them by key
                     ksort($options);
-                    
+
                     // Then re-index to sort out issue with missing indexes, if any options have been removed
                     $options = array_values($options);
-                    
+
                 }
 
                 // Order other properly
@@ -2404,13 +2404,13 @@ function elbp_save_attribute_script($obj)
                     {
                         if (is_array($arr))
                         {
-                            
+
                             // Sort them by key
                             ksort($arr);
-                            
+
                             // Then re-index to sort out issue with missing indexes, if any options have been removed
                             $arr = array_values($arr);
-                            
+
                         }
                     }
                 }
@@ -2424,20 +2424,20 @@ function elbp_save_attribute_script($obj)
                         ->setValidation($validation)
                         ->setInstructions($instructions)
                         ->setOther($other);
-                
+
                 // Keep the existing ID
                 if (isset($elementOldIDs[$i])){
                     $element->setID($elementOldIDs[$i]);
                 }
 
                 $form->addElement($element);
-                
+
             }
         }
 
-                
+
         $data = $form->convertElementsToDataString();
-                
+
         $obj->updateSetting("attributes", $data);
 
         // If we have changed the name of an attribute, we need to change all the data linked to that
@@ -2476,16 +2476,16 @@ function elbp_save_attribute_script($obj)
  */
 function elbp_event_trigger($event, $pluginID, $studentID, $content, $htmlContent, $confidentialityLevel = null)
 {
-    
+
     // Trigger email alerts
     $obj = new \ELBP\EmailAlert();
     $obj->run($event, $pluginID, $studentID, $content, $htmlContent, $confidentialityLevel);
-    
+
     // Trigger SMS alerts
-    
-    
-    
-    
+
+
+
+
 }
 
 /**
@@ -2498,9 +2498,9 @@ function elbp_event_trigger($event, $pluginID, $studentID, $content, $htmlConten
  */
 function elbp_event_trigger_student($event, $pluginID, $studentID, $content, $htmlContent)
 {
-    
+
     // Trigger email alerts
-    
+
     // Check if this plugin has disabled student alerts
     $setting = (int)\ELBP\Setting::getSetting('plugin_stud_alerts_enabled', null, $pluginID);
     if ($setting !== 0)
@@ -2508,7 +2508,7 @@ function elbp_event_trigger_student($event, $pluginID, $studentID, $content, $ht
         $obj = new \ELBP\EmailAlert();
         $obj->runStudent($event, $pluginID, $studentID, $content, $htmlContent);
     }
-    
+
 }
 
 
@@ -2523,37 +2523,37 @@ function elbp_event_trigger_student($event, $pluginID, $studentID, $content, $ht
  */
 function event_course_user_enrolled($data)
 {
-    
+
     global $DB;
-    
+
     $ELBPDB = new \ELBP\DB();
-        
+
     // Get context & role assignment
     $context = $DB->get_record("context", array("contextlevel" => CONTEXT_COURSE, "instanceid" => $data->courseid));
     if (!$context) return true;
-    
+
     $role = $DB->get_record("role_assignments", array("userid" => $data->userid, "contextid" => $context->id));
     if (!$role) return true;
-    
+
     // Must be student
     if ($role->roleid <> $ELBPDB->getRole("student")) return true;
-    
+
     // Find any PTs assigned to this course and add this user to them
     $assigned = $DB->get_records("lbp_tutor_assignments", array("courseid" => $data->courseid));
     if ($assigned)
     {
         foreach($assigned as $record)
         {
-            
+
             $PT = new \ELBP\PersonalTutor();
             $PT->loadTutorID($record->tutorid);
             $PT->assignMentee($data->userid);
-            
+
         }
     }
-    
+
     return true;
-    
+
 }
 
 // FOr now we won't use this. We will let PTs delete their students they don't need, as it'll be a hassle if
@@ -2570,25 +2570,25 @@ function event_course_user_unenrolled($data){
  * @return boolean
  */
 function event_group_user_added($data){
-    
+
     global $DB;
-    
+
     // Find any PTs assigned to this group
     $assigned = $DB->get_records("lbp_tutor_assignments", array("groupid" => $data->groupid));
     if ($assigned)
     {
         foreach($assigned as $record)
         {
-            
+
             $PT = new \ELBP\PersonalTutor();
             $PT->loadTutorID($record->tutorid);
             $PT->assignMentee($data->userid);
-            
+
         }
     }
-    
+
     return true;
-    
+
 }
 
 
@@ -2599,25 +2599,25 @@ function event_group_user_added($data){
  * @return boolean
  */
 function event_group_user_removed($data){
-    
+
     global $DB;
-    
+
     // Find any PTs assigned to this group
     $assigned = $DB->get_records("lbp_tutor_assignments", array("groupid" => $data->groupid));
     if ($assigned)
     {
         foreach($assigned as $record)
         {
-            
+
             $PT = new \ELBP\PersonalTutor();
             $PT->loadTutorID($record->tutorid);
             $PT->removeMentee($data->userid);
-            
+
         }
     }
-    
+
     return true;
-    
+
 }
 
 /**
@@ -2661,25 +2661,25 @@ function elbp_time_elapsed_string($ptime)
  * @param type $string
  */
 function elbp_print_mis_mappings_table($fields, $connection, $string){
-    
+
     $output = "";
-    
+
     if ($fields)
     {
         foreach($fields as $field)
         {
-                        
+
             $output .= "<small><strong>{$field['name']}</strong> - {$field['desc']}</small><br>";
             $output .= "<input type='text' name='mis_map[{$field['field']}]' value='".$connection->getFieldMap($field['field'], true)."' placeholder='".get_string('misfield', 'block_elbp')."' /> ";
             $output .= "<input class='elbp_fairly_large' type='text' name='mis_func[{$field['field']}]' value='".$connection->getFieldFunc($field['field'], true)."' placeholder='".get_string('misfieldfunc', 'block_elbp')."' title='".get_string('misfieldfunc:desc', 'block_elbp')."' /> ";
             $output .= "<input class='elbp_smallish' name='mis_alias[{$field['field']}]' type='text' placeholder='{$string['alias']}' title='{$string['misalias:desc']}' value='".$connection->getFieldAlias($field['field'], true)."' /> ";
             $output .= "<br><br>";
-            
+
         }
     }
-    
+
     echo $output;
-    
+
 }
 
 
@@ -2689,9 +2689,9 @@ function elbp_print_mis_mappings_table($fields, $connection, $string){
  * @param type $userID
  */
 function elbp_get_users_personaltutors($userID){
-    
+
     global $DB;
-    
+
     $params = array();
     $sql = array();
 
@@ -2699,19 +2699,19 @@ function elbp_get_users_personaltutors($userID){
     $sql['from'] = " FROM {role_assignments} r ";
     $sql['join'] = " INNER JOIN {context} cx ON cx.id = r.contextid ";
     $sql['join'] .= " INNER JOIN {user} u ON u.id = r.userid ";
-        
+
     $sql['where'] = " WHERE cx.contextlevel = ? ";
     $params[] = CONTEXT_USER;
     $sql['where'] .= " AND cx.instanceid = ? ";
     $params[] = $userID;
-    
+
     $fullSQL = implode(" ", $sql);
-            
+
     $users = $DB->get_records_sql($fullSQL, $params);
-    
+
     return $users;
-    
-    
+
+
 }
 
 /**
@@ -2721,12 +2721,12 @@ function elbp_get_users_personaltutors($userID){
  * @return type
  */
 function elbp_get_fullname($id){
-    
+
     global $DB;
-    
+
     $user = $DB->get_record("user", array("id" => $id));
     return ($user) ? \fullname($user) : false;
-    
+
 }
 
 /**
@@ -2758,19 +2758,19 @@ function elbp_get_user($username){
  * @param type $txt
  */
 function elbp_parse_text_code($txt, $params){
-    
+
     if (isset($params['student'])){
-        
+
         $fullname = fullname($params['student']) . " ({$params['student']->username})";
         $txt = preg_replace("/%fullname%/", $fullname, $txt);
         $txt = preg_replace("/%fname%/", $params['student']->firstname, $txt);
         $txt = preg_replace("/%sname%/", $params['student']->lastname, $txt);
-        
+
     }
-    
-    
+
+
     return $txt;
-    
+
 }
 
 /**
@@ -2780,13 +2780,13 @@ function elbp_parse_text_code($txt, $params){
  * @return type
  */
 function elbp_get_course_fullname($id){
-    
+
     global $DB;
-    
+
     $record = $DB->get_record("course", array("id" => $id));
-    
+
     return ($record) ? $record->fullname : false;
-    
+
 }
 
 /**
@@ -2796,13 +2796,13 @@ function elbp_get_course_fullname($id){
  * @return string
  */
 function elbp_cut_string($str, $length){
-    
+
     if (strlen($str) > $length){
         $str = substr($str, 0, $length) . '...';
     }
-    
+
     return $str;
-    
+
 }
 
 /**
@@ -2812,13 +2812,13 @@ function elbp_cut_string($str, $length){
  * @return type
  */
 function elbp_get_role_name($roleID){
-    
+
     global $DB;
-    
+
     $record = $DB->get_record("role", array("id" => $roleID));
-    
+
     return ($record) ? $record->name . " (".$record->shortname.")" : false;
-    
+
 }
 
 /**
@@ -2827,24 +2827,24 @@ function elbp_get_role_name($roleID){
  * @return type
  */
 function elbp_strip_to_plain($txt){
-    
+
     if (is_array($txt))
     {
         foreach($txt as &$t)
         {
             $t = \elbp_strip_to_plain($t);
         }
-        
+
         return $txt;
-        
+
     }
     else
     {
         $txt = str_replace(" ", "_", $txt);
         $txt = preg_replace("/[^a-z0-9_]/i", "", $txt);
         return $txt;
-    }    
-    
+    }
+
 }
 
 /**
@@ -2880,11 +2880,11 @@ function elbp_rand_str($length)
  */
 function elbp_implode_with_key($assoc, $outglue = ', ') {
     $return = '';
- 
+
     foreach ($assoc as $tk => $tv) {
         $return .= $outglue . $tk . ' [' . $tv . ']';
     }
- 
+
     return substr($return, strlen($outglue));
 }
 
@@ -2894,7 +2894,7 @@ function elbp_implode_with_key($assoc, $outglue = ', ') {
  * @return type
  */
 function elbp_create_course_from_shortname($shortname){
-    
+
     $data = new \stdClass();
     $data->shortname = $shortname;
     $data->fullname = $shortname;
@@ -2903,7 +2903,7 @@ function elbp_create_course_from_shortname($shortname){
     $data->category = 1;
     $data->visible = 0;
     return create_course($data);
-    
+
 }
 
 /**
@@ -2912,9 +2912,9 @@ function elbp_create_course_from_shortname($shortname){
  * @return type
  */
 function elbp_create_user_from_username($username){
-        
+
     return create_user_record($username, 'xxxx');
-    
+
 }
 
 /**
@@ -2922,14 +2922,14 @@ function elbp_create_user_from_username($username){
  * @global type $CFG
  */
 function elbp_confidentiality_print_no_access(){
-    
+
     global $CFG;
-    
+
     echo "<div class='elbp_centre'>
         <p><img class='no_access_img' src='{$CFG->wwwroot}/blocks/elbp/pix/no.png' /></p>
         <p>".get_string('confidentiality:noaccess', 'block_elbp')."</p>
     </div>";
-    
+
 }
 
 /**
@@ -2951,13 +2951,13 @@ function elbp_get_image_ext_from_base64($data){
  * @return boolean
  */
 function elbp_save_base64_image($data, $path){
-    
+
     $pos = strpos($data, ',');
     $start = $pos - strlen($data) + 1;
     $data = substr($data, $start);
-    
+
     $data = base64_decode($data);
-    
+
     $source = imagecreatefromstring($data);
     if ($source){
         imagejpeg($source, $path);
@@ -2966,8 +2966,8 @@ function elbp_save_base64_image($data, $path){
     } else {
         return false;
     }
-    
-    
+
+
 }
 
 /**
@@ -2975,13 +2975,13 @@ function elbp_save_base64_image($data, $path){
  * @param type $block
  */
 function elbp_is_block_installed($block){
-    
+
     global $DB;
-    
+
     $check = $DB->get_record("block", array("name" => $block));
-    
+
     return ($check) ? true : false;
-    
+
 }
 
 /**
@@ -2992,15 +2992,15 @@ function elbp_is_block_installed($block){
  */
 function elbp_success_alert_box($text, $title = "Success")
 {
-    
+
     $output = "";
     $output .= "<div class='elbp_alert_good fade in'>";
         $output .= "<strong>{$title}</strong> ";
         $output .= "<span>{$text}</span>";
     $output .= "</div>";
-    
+
     return $output;
-    
+
 }
 
 /**
@@ -3011,11 +3011,11 @@ function elbp_success_alert_box($text, $title = "Success")
  */
 function elbp_error_alert_box($text, $title = "Error")
 {
-    
+
     $output = "";
     $output .= "<div class='elbp_alert_bad fade in'>";
         $output .= "<strong>{$title}</strong> ";
-        
+
         if (is_array($text))
         {
             foreach($text as $t)
@@ -3027,11 +3027,11 @@ function elbp_error_alert_box($text, $title = "Error")
         {
             $output .= "<span>{$text}</span>";
         }
-        
+
     $output .= "</div>";
-    
+
     return $output;
-    
+
 }
 
 /**
@@ -3040,12 +3040,12 @@ function elbp_error_alert_box($text, $title = "Error")
  * @return boolean
  */
 function elbp_ip_in_range($ranges){
-        
+
     $result = false;
 
     // Get current IP address - Just going to use REMOTE_ADDR, doesn't really matter if its spoofed, it's not exactly a high security system
     $ip = $_SERVER['REMOTE_ADDR'];
-    
+
     // Get possible ranges
     $ranges = explode(",", $ranges);
 
@@ -3057,16 +3057,16 @@ function elbp_ip_in_range($ranges){
 
             // Strip any whitespace, incase they did comma and space
             $range = trim($range);
-            
+
             // Contains wildcards -  Only supports IPv4
             if (strpos($range, "*") !== false){
 
                 // Split range by dots
                 $rangeSplit = explode(".", $range);
-                
+
                 if ($rangeSplit)
                 {
-                
+
                     // Split ip by dots
                     $ipSplit = explode(".", $ip);
                     $match = 0;
@@ -3076,7 +3076,7 @@ function elbp_ip_in_range($ranges){
 
                         $r = (isset($rangeSplit[$j])) ? $rangeSplit[$j] : false;
                         $i = (isset($ipSplit[$j])) ? $ipSplit[$j] : false;
-                        
+
                         // If wildcard
                         if ($r == "*")
                         {
@@ -3088,13 +3088,13 @@ function elbp_ip_in_range($ranges){
                         }
 
                     }
-                    
+
                     if ($match == 4){
                         $result = true;
                     }
-                
+
                 }
-                
+
 
             } else {
 
@@ -3107,8 +3107,8 @@ function elbp_ip_in_range($ranges){
 
         }
     }
-    
-    
+
+
     return $result;
 
 
@@ -3121,10 +3121,10 @@ function elbp_ip_in_range($ranges){
  */
 function elbp_get_all_capabilities()
 {
-    
+
     global $DB;
     return $DB->get_records_select("capabilities", "component = 'block_elbp' AND name NOT LIKE '%use_quick_tool'", array(), "name ASC");
-    
+
 }
 
 /**
@@ -3134,25 +3134,25 @@ function elbp_get_all_capabilities()
  */
 function elbp_get_all_user_capabilities()
 {
- 
+
     global $DB;
-    
+
     return $DB->get_records_sql("SELECT uc.*, c.name, u.username, u.firstname, u.lastname
                                     FROM {lbp_user_capabilities} uc
                                     INNER JOIN {capabilities} c ON c.id = uc.capabilityid
                                     INNER JOIN {user} u ON u.id = uc.userid
                                     ORDER BY u.lastname, u.firstname, c.name");
-    
+
 }
 
 
-/** 
+/**
  * Create directory in Moodledata to store files
  * Will create the directory: /moodledata/ELBP/$dir
  * Will attempt to create the parent directories if they don't exist yet
  * Uses chmod of 0764:
- *      Owner: rwx, 
- *      Group: rw, 
+ *      Owner: rwx,
+ *      Group: rw,
  *      Public: r
  *  @param type $dir
  */
@@ -3199,9 +3199,9 @@ function elbp_create_data_directory($dir)
  * @return type
  */
 function elbp_create_data_path_code($path){
-    
+
     global $DB;
-    
+
     // See if one already exists for this path
     $record = $DB->get_record("lbp_file_path_codes", array("path" => $path));
     if ($record){
@@ -3218,7 +3218,7 @@ function elbp_create_data_path_code($path){
         $code = \elbp_rand_str(10);
         $cnt = $DB->count_records("lbp_file_path_codes", array("code" => $code));
     }
-    
+
 
     $ins = new \stdClass();
     $ins->path = $path;
@@ -3226,7 +3226,7 @@ function elbp_create_data_path_code($path){
 
     $DB->insert_record("lbp_file_path_codes", $ins);
     return $code;
-    
+
 }
 
 /**
@@ -3236,11 +3236,11 @@ function elbp_create_data_path_code($path){
  * @return type
  */
 function elbp_get_data_path_code($path){
-    
+
     global $DB;
     $record = $DB->get_record("lbp_file_path_codes", array("path" => $path));
     return ($record) ? $record->code : false;
-    
+
 }
 
 /**
@@ -3264,54 +3264,54 @@ function elbp_array_replace_value($ar, $value, $replacement)
  * @param type $type
  */
 function elbp_format_code($code, $type){
-    
+
     switch ($type)
     {
-        
+
         case 'sql':
-            
-            $keywords = array("/(select)/i", "/(from)/i", "/(where)/i", "/(order by)/i", "/(group by)/i", 
+
+            $keywords = array("/(select)/i", "/(from)/i", "/(where)/i", "/(order by)/i", "/(group by)/i",
                         "/(join)/i", "/(left join)/i", "/(right join)/i", "/(inner join)/i", "/(union)/i", "/( in )/i");
-            
-            $funcs = array("/(isnull)/i", "/(convert)/i", "/(cast)/i", "/(sum)/i", "/(max)/i", "/(min)/i", 
+
+            $funcs = array("/(isnull)/i", "/(convert)/i", "/(cast)/i", "/(sum)/i", "/(max)/i", "/(min)/i",
                             "/(avg)/i", "/(count)/i", "/(format)/i", "/(top)/i", "/(limit)/i");
-            
+
             // Colour quotes
             $code = preg_replace('/"/', '<span class="elbp_code_quote">&quot;</span>', $code);
             $code = preg_replace("/'/", '<span class="elbp_code_quote">&apos;</span>', $code);
-                        
+
             // Add a new line after each keyword & colour them
             $code = preg_replace($keywords, '<br><span class="elbp_code_keyword">$1</span><br>', $code);
-            
+
             // Funcs and other things
             $code = preg_replace($funcs, '<span class="elbp_code_func">$1</span>', $code);
-            
+
             $code = preg_replace("/^<br>/", "", $code);
-            
+
             return $code;
-            
+
         break;
-        
+
     }
-    
+
 }
 
 
 function elbp_display_hooks_form($OBJ){
-    
+
     global $ELBP;
-    
+
     $hooks = $ELBP->getAllPossibleHooks();
     $string = $ELBP->getString();
-    
+
     $output = "";
 
     $output .= "<form action='' method='post'>";
-    
+
     $output .= "<table id='hooks_table'>";
-    
+
         $output .= "<tr>";
-            
+
         foreach($hooks as $pluginID => $hook)
         {
             if(array_key_exists($hook['name'], $OBJ->supportedHooks))
@@ -3321,13 +3321,13 @@ function elbp_display_hooks_form($OBJ){
                     $output .= "<th>{$hook['name']}</th>";
                 }
             }
-        }       
-        
+        }
+
         $output .= "</tr>";
-        
-        
+
+
         $output .= "<tr>";
-            
+
         foreach($hooks as $pluginID => $hook)
         {
             if(array_key_exists($hook['name'], $OBJ->supportedHooks))
@@ -3335,7 +3335,7 @@ function elbp_display_hooks_form($OBJ){
                 if($OBJ->getID() <> $pluginID)
                 {
                     $output .= "<td>";
-                    
+
                         foreach($hook['hooks'] as $hk)
                         {
                             if(array_key_exists($hook['name'], $OBJ->supportedHooks) && in_array($hk['name'], $OBJ->supportedHooks[$hook['name']]))
@@ -3343,40 +3343,40 @@ function elbp_display_hooks_form($OBJ){
                                 $output .= "<input type='checkbox' name='hooks[]' value='{$hk['id']}' ".( ($OBJ->hasHookEnabled($hk['id'])) ? 'checked' : '') ." / >{$hk['name']}<br>";
                             }
                         }
-                    
+
                     $output .= "</td>";
-                }                
+                }
             }
-        }        
-        
+        }
+
         $output .= "</tr>";
-        
+
     $output .= "</table>";
-        
-           
-    
+
+
+
     $output .= "<p class='elbp_centre'><input type='submit' name='submit_hooks' value='{$string['save']}' /></p>";
-    
+
     $output .= "</form>";
-    
+
     echo $output;
-    
+
 }
 
 /**
  * Output a missing image to browser
  */
 function elbp_output_missing_image(){
-    
+
     global $CFG;
-            
+
     header('Content-Type: image/png');
     $img = imagecreatefrompng($CFG->dirroot . '/blocks/elbp/pix/missing_img.png');
     imagealphablending($img, false);
     imagesavealpha($img, true);
     imagepng($img);
     exit;
-    
+
 }
 
 /**
@@ -3386,7 +3386,7 @@ function elbp_output_missing_image(){
  */
 function elbp_sprintf($string, $values = false, $location = 'block_elbp')
 {
-    
+
     $txt = get_string($string, $location);
     if ($values)
     {
@@ -3403,7 +3403,7 @@ function elbp_sprintf($string, $values = false, $location = 'block_elbp')
     {
         return $txt;
     }
-    
+
 }
 
 /**
@@ -3412,13 +3412,13 @@ function elbp_sprintf($string, $values = false, $location = 'block_elbp')
  * @return type
  */
 function elbp_implode_placeholders($array){
-    
+
     if ($array){
         return implode(',', array_fill(0, count($array), '?'));
     } else {
         return false;
     }
-    
+
 }
 
 function block_elbp_extend_navigation_user(navigation_node $navigation, stdClass $user)
@@ -3436,14 +3436,14 @@ function block_elbp_extend_navigation_user(navigation_node $navigation, stdClass
  * @return type
  */
 function elbp_image_url($imagename, $component = 'moodle'){
-    
+
     global $PAGE;
-        
+
     if (method_exists($PAGE->theme, 'image_url')){
         return $PAGE->theme->image_url($imagename, $component);
     } else {
         return $PAGE->theme->pix_url($imagename, $component);
     }
-    
-    
+
+
 }

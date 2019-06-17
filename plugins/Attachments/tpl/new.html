@@ -12,7 +12,7 @@
         <i class="glyphicon glyphicon-plus"></i>
         <span><?= $string['selectfile'] ?></span>
         <!-- The file input field used as target for the file upload widget -->
-        <input id="fileupload" type="file" name="file">
+        <input id="fileupload" type="file" name="file" multiple>
     </span>
 </p>
 <br>
@@ -48,14 +48,14 @@
             },
             done: function (e, data) {
 
-                if (data.result.success === true){
-                    $('#output_messages').html('<div class="elbp_success_box"><span>'+ELBP.strings['uploaded']+': '+data.result.title+'</span></div>');
-                } else {
-                    $('#output_messages').html('<div class="elbp_err_box"><span>'+data.result.error+'</span></div>');
-                }
+              if (data.result.success === true){
+                  $('#output_messages').append('<div class="elbp_success_box"><span>'+ELBP.strings['uploaded']+': '+data.result.title+'</span></div>');
+              } else {
+                  $('#output_messages').append('<div class="elbp_err_box"><span>'+data.result.error+'</span></div>');
+              }
 
-                $('#progress').hide();
-                $('#progress-amount').css('width', 0);
+              $('#progress').hide();
+              $('#progress-amount').css('width', 0);
 
             },
             fail: function(e, data){

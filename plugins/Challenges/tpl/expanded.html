@@ -9,9 +9,9 @@
 <?php if ($challenges): ?>
 
     <?php if (\elbp_has_capability('block/elbp:add_challenge', $access)): ?>
-                
+
         <div id="elbp_challenges_wrap">
-   
+
             <div id="elbp_challenges_left">
 
                 <?php foreach($challenges as $challenge): ?>
@@ -35,14 +35,14 @@
                 <?php foreach($challenges as $challenge): ?>
 
                     <div class="elbp_challenge_content">
-                        
+
                         <small><?= \elbp_sprintf('challengeinstruction', $challenge->challenge) ?></small>
                         <br>
                         <form id="challenge_form_<?= $challenge->id ?>">
-                            
+
                             <?php if ($obj->getSetting('use_confidentiality') == 1 && $obj->getStudentID() == $USER->id): ?>
                                 <br>
-                                <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" /> 
+                                <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" />
                                 <b><?= $string['confidentiality'] ?></b>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 <?php if ($cLevels): ?>
@@ -57,7 +57,7 @@
                                 <?php endif; ?>
                             <?php endif; ?>
                             <br>
-                            
+
                             <!-- If we are using confidentiality, then you have to be the student to edit it -->
                             <?php if ( ($obj->getSetting('use_confidentiality') == 1 && $obj->getStudentID() == $USER->id) || $obj->getSetting('use_confidentiality') != 1 ): ?>
                                 <textarea name="challengeComments"><?= (isset($challenge->userChallenge->comments)) ? $challenge->userChallenge->comments : '' ?></textarea>
@@ -71,9 +71,9 @@
                                         <textarea readonly style='height:100px;'></textarea>
                                     <?php endif; ?>
                             <?php endif; ?>
-                            
+
                             <br>
-                            
+
                         </form>
 
                     </div>
@@ -81,9 +81,9 @@
                 <?php endforeach; ?>
 
             </div>
-            
+
             <br class="elbp_cl" />
-            
+
         </div>
 
 
@@ -102,20 +102,13 @@
             <?php endif; ?>
 
         <?php endforeach; ?>
-    
+
 
     <?php endif; ?>
-    
-<?php else: ?>    
+
+<?php else: ?>
 
     <p><?= $string['noresults'] ?></p>
 
 <?php endif; ?>
 
-<script>
-    $('.elbp_tooltip').tooltip({
-        content: function(){
-            return $(this).prop('title');
-        }
-    });
-</script>

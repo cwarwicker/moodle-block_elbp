@@ -1,5 +1,5 @@
 define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block_elbp/tinytbl', 'block_elbp/fileupload'], function($, ui, miniColors, raty, tinytbl, fileupload) {
-       
+
     // Raty image path
     if ($.fn.raty !== undefined) {
         $.fn.raty.defaults.path = M.cfg.wwwroot + '/blocks/elbp/js/jquery/plugins/raty/images';
@@ -16,6 +16,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     ELBP.dockPosition = null;
     ELBP.pluginIcons = {};
     ELBP.moodleVersion = null;
+    ELBP.reloadOnUnPop = 0;
     ELBP.tempData = null;
     ELBP.studentID = null;
     ELBP.courseID = null;
@@ -561,6 +562,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
     // Append a link to the dock to open a plugin
     ELBP.dock = function(plugin, pluginTitle){
+
+        console.log(plugin + ':' + pluginTitle);
 
         if (!$('#docked_'+plugin)[0]){
 
@@ -1169,7 +1172,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                     callBack();
                 }
             }, function(d){
-                $('#elbp_targets_content').html('<img src='+ELBP.www+'"/blocks/elbp/pix/loader.gif" alt="" />');
+                $('#elbp_targets_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
             });
         },
 
@@ -2270,8 +2273,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
 
     };
-    
-    
+
+
     // Custom Plugins
     ELBP.Custom = {
 
@@ -2653,9 +2656,12 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         });
 
         $('.file-drop-zone').off('dragleave dragend');
-        $('.file-drop-zone').on('dragleave  dragend', function(e){
+        $('.file-drop-zone').on('dragleave dragend', function(e){
             $(this).removeClass('in');
         });
+
+        // Tooltips
+        ELBP.apply_tooltip();
 
 
     };
@@ -2846,6 +2852,6 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
 
     return client;
-    
-    
+
+
 });
