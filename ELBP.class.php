@@ -34,6 +34,7 @@ namespace ELBP;
 
 if(!defined('ELBP')) define('ELBP', true);
 define('REMOTE_HOST_URL', 'https://github.com/cwarwicker/moodle-block_elbp');
+define('REMOTE_DOC_URL', 'https://github.com/cwarwicker/moodle-block_elbp/wiki');
 define('REMOTE_VERSION_URL', 'https://raw.githubusercontent.com/cwarwicker/moodle-block_elbp/master/v.txt');
 
 /**

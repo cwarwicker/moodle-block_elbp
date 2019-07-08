@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2017-onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,7 +27,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
 
 // A
@@ -399,6 +399,7 @@ $string['dataimport'] = 'Data Import';
 $string['dataimportexport'] = 'Data Import/Export';
 $string['dataimport:courses'] = 'If the script comes across a course that does not exist in Moodle, should it create the course? (It will be placed in the Misc category)';
 $string['dataimport:coursefield'] = 'Which field from the mdl_course table will match the course column in the csv? E.g. shortname, idnumber, etc...';
+$string['dataimport:docs'] = '<a href="%s/5-Data-Import-Specifications" target="_blank">Click here</a> for data specifications documentation.';
 $string['dataimport:users'] = 'If the script comes across a user that does not exist in Moodle, should it create the user? (It will be created with auth type "manual" and password "xxxx")';
 $string['dataimport:userfield'] = 'Which field from the mdl_user table will match the username column in the csv? E.g. username, idnumber, etc...';
 $string['datasettings'] = 'Data Settings';

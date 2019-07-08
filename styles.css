@@ -1,4 +1,4 @@
-/* 
+/*
     Document   : style
     Created on : 22-Oct-2012, 11:13:19
     Author     : cwarwicker
@@ -602,13 +602,13 @@ table#elbp_bksb_good, table#elbp_bksb_ok, table#elbp_bksb_bad
     width: 708px;
 }
 
-table#elbp_bksb_good td, table#elbp_bksb_good th 
+table#elbp_bksb_good td, table#elbp_bksb_good th
 {
     border:1px solid #5DD557;
     padding:3px 7px 2px 7px;
 }
 
-table#elbp_bksb_good th 
+table#elbp_bksb_good th
 {
     font-size:1.1em;
     text-align:left;
@@ -636,13 +636,13 @@ div#elbp_bksb_ok_heading
     padding:4px;
 }
 
-table#elbp_bksb_ok td, table#elbp_bksb_ok th 
+table#elbp_bksb_ok td, table#elbp_bksb_ok th
 {
     border:1px solid #DC7D00;
     padding:3px 7px 2px 7px;
 }
 
-table#elbp_bksb_ok th 
+table#elbp_bksb_ok th
 {
     font-size:1.1em;
     text-align:left;
@@ -669,13 +669,13 @@ div#elbp_bksb_bad_heading
     padding:4px;
 }
 
-table#elbp_bksb_bad td, table#elbp_bksb_bad th 
+table#elbp_bksb_bad td, table#elbp_bksb_bad th
 {
     border:1px solid #AD0000;
     padding:3px 7px 2px 7px;
 }
 
-table#elbp_bksb_bad th 
+table#elbp_bksb_bad th
 {
     font-size:1.1em;
     text-align:left;
@@ -685,7 +685,7 @@ table#elbp_bksb_bad th
     color:#ffffff;
 }
 
-table#elbp_bksb_bad tr:nth-child(odd) 
+table#elbp_bksb_bad tr:nth-child(odd)
 {
     color:#000000;
     background-color:#FCB2B2;
@@ -750,12 +750,12 @@ table#status_table
 	border-radius: 5px;
 	-moz-box-shadow: 0 1px 5px #E6E6E6 inset, 0 1px 0 #E6E6E6;
 	-webkit-box-shadow: 0 1px 5px #E6E6E6 inset, 0 1px 0 #E6E6E6;
-	box-shadow: 0 1px 5px #E6E6E6 inset, 0 1px 0 #E6E6E6;	          
+	box-shadow: 0 1px 5px #E6E6E6 inset, 0 1px 0 #E6E6E6;
 }
 
 .progress-bar div {
 	display: inline-block;
-	height: 100%;	
+	height: 100%;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
@@ -766,7 +766,7 @@ table#status_table
         -moz-transition: width .4s ease-in-out;
         -ms-transition: width .4s ease-in-out;
         -o-transition: width .4s ease-in-out;
-        transition: width .4s ease-in-out;    
+        transition: width .4s ease-in-out;
 }
 
 li .progress-bar
@@ -778,11 +778,11 @@ li .progress-bar
 
 /* Progress bars on block */
 .block_elbp .blue div, .elbp_target_bar .blue div, .elbp_progress .blue div {
-	background-color: #34c2e3;   
+	background-color: #34c2e3;
 }
 
 .block_elbp .red div, .elbp_target_bar .red div, .elbp_progress .red div {
-	background-color: #E33434; 
+	background-color: #E33434;
 }
 
 .block_elbp .orange div, .elbp_target_bar .orange div, .elbp_progress .orange div {
@@ -792,8 +792,8 @@ li .progress-bar
 	  background-image: -moz-linear-gradient(top, #fecf23, #fd9215);
 	  background-image: -ms-linear-gradient(top, #fecf23, #fd9215);
 	  background-image: -o-linear-gradient(top, #fecf23, #fd9215);
-	  background-image: linear-gradient(top, #fecf23, #fd9215);  
-}	
+	  background-image: linear-gradient(top, #fecf23, #fd9215);
+}
 
 .block_elbp .green div, .elbp_target_bar .green div, .elbp_progress .green div {
 	  background-color: #a5df41;
@@ -802,13 +802,13 @@ li .progress-bar
 	  background-image: -moz-linear-gradient(top, #a5df41, #4ca916);
 	  background-image: -ms-linear-gradient(top, #a5df41, #4ca916);
 	  background-image: -o-linear-gradient(top, #a5df41, #4ca916);
-	  background-image: linear-gradient(top, #a5df41, #4ca916);  
+	  background-image: linear-gradient(top, #a5df41, #4ca916);
 }
 
 .block_elbp .stripes div, .elbp_target_bar .stripes div, .elbp_progress .stripes div {
 	-webkit-background-size: 30px 30px;
 	-moz-background-size: 30px 30px;
-	background-size: 30px 30px;			
+	background-size: 30px 30px;
 	background-image: -webkit-gradient(linear, left top, right bottom,
 						color-stop(.25, rgba(255, 255, 255, .15)), color-stop(.25, transparent),
 						color-stop(.5, transparent), color-stop(.5, rgba(255, 255, 255, .15)),
@@ -828,13 +828,13 @@ li .progress-bar
 						transparent 75%, transparent);
 	background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%,
 						transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,
-						transparent 75%, transparent);            
-	
+						transparent 75%, transparent);
+
 	-webkit-animation: animate-stripes 3s linear infinite;
-	-moz-animation: animate-stripes 3s linear infinite;       		
+	-moz-animation: animate-stripes 3s linear infinite;
 }
 
-@-webkit-keyframes animate-stripes { 
+@-webkit-keyframes animate-stripes {
 	0% {background-position: 0 0;} 100% {background-position: 60px 0;}
 }
 
@@ -948,7 +948,7 @@ div.elbp_target h2
     text-align: left;
 }
 
-table#elbp_attributes_table 
+table#elbp_attributes_table
 {
     text-align: left;
     width: 100%;
@@ -1238,7 +1238,7 @@ table.elbp_attachment_summary
 {
     min-width: 50% !important;
     width: auto !important;
-    margin: auto;    
+    margin: auto;
 }
 
 table.elbp_attachment_summary td:first-child
@@ -1281,7 +1281,7 @@ div.elbp_new_course_report_form table#new_report_table
     width: 100%;
 }
 
-div.elbp_new_course_report_form table#new_report_table > tbody > tr > th, 
+div.elbp_new_course_report_form table#new_report_table > tbody > tr > th,
 div.elbp_new_course_report_form table#new_report_table > tbody > tr > td
 {
     border: 1px solid #696969;
@@ -1485,14 +1485,14 @@ div#periodical_report_overall_info_info table tr td:first-child
 
 div.periodical_report_course
 {
-    
+
     width: 90%;
     margin: auto;
     background-color: #FCFCFC;
     margin-bottom: 30px;
     padding-top: 10px;
     padding-bottom: 10px;
-    
+
 }
 
 div.periodical_report_course p.title
@@ -1518,7 +1518,7 @@ div.periodical_report_course hr
     margin: auto;
 }
 
-/* ENd Course Reports 
+/* ENd Course Reports
 
 /* Comments */
 
@@ -1597,7 +1597,7 @@ div.elbp_new_comment_form table.new_comment_table
     width: 100%;
 }
 
-div.elbp_new_comment_form table.new_comment_table > tbody > tr > th, 
+div.elbp_new_comment_form table.new_comment_table > tbody > tr > th,
 div.elbp_new_comment_form table.new_comment_table > tbody > tr > td
 {
     border: 1px solid #696969;
@@ -1734,7 +1734,7 @@ div.elbp_new_additional_support_form {
     margin: 0px auto;
 }
 
-div.elbp_new_additional_support_form table.new_additional_support_table > tbody > tr > th, 
+div.elbp_new_additional_support_form table.new_additional_support_table > tbody > tr > th,
 div.elbp_new_additional_support_form table.new_additional_support_table > tbody > tr > td {
     border: 1px solid #696969; //Giggidy
 }
@@ -1753,7 +1753,7 @@ div.elbp_new_additional_support_form table.new_additional_support_table {
 table.elbp_register_summary
 {
     min-width: 50% !important;
-    margin: auto;    
+    margin: auto;
 }
 
 div#elbp_register_content
@@ -1798,9 +1798,9 @@ div#elbp_register_content div.ui-tinytbl table th.week, div#elbp_register_conten
     padding: 4px;
 }
 
-div#elbp_register_content div.ui-tinytbl table td.coursetd, 
-div#elbp_register_content div.ui-tinytbl table td.desctd, 
-div#elbp_register_content div.ui-tinytbl table td.daytd, 
+div#elbp_register_content div.ui-tinytbl table td.coursetd,
+div#elbp_register_content div.ui-tinytbl table td.desctd,
+div#elbp_register_content div.ui-tinytbl table td.daytd,
 div#elbp_register_content div.ui-tinytbl table td.timetd
 {
     padding: 4px;
@@ -2015,7 +2015,7 @@ div.elbp_custom_side_elements
 {
     float: right;
     width: 20%;
-    padding: 2.5%; 
+    padding: 2.5%;
 }
 
 div.elbp_custom_attribute_content {
@@ -2044,7 +2044,7 @@ form#elbp_custom_plugin_form table.custom_plugin_table
     width: 100%;
 }
 
-form#elbp_custom_plugin_form table.custom_plugin_table > tbody > tr > th, 
+form#elbp_custom_plugin_form table.custom_plugin_table > tbody > tr > th,
 form#elbp_custom_plugin_form table.custom_plugin_table > tbody > tr > td
 {
     border: 1px solid #696969;
@@ -2154,7 +2154,7 @@ div#elbp_custom_plugin table.incremental
     text-align: center;
 }
 
-div#elbp_custom_plugin table.incremental > tbody > tr > th, 
+div#elbp_custom_plugin table.incremental > tbody > tr > th,
 div#elbp_custom_plugin table.incremental > tbody > tr > td
 {
     border: 1px solid #B8B8B8;
@@ -2206,16 +2206,16 @@ table#elbp_custom_db_report_table tr:nth-child(even){
 
 /* Overall */
 
-div.table { display: table; } 
+div.table { display: table; }
 div.table > div, div.table > form { display: table-row; }
 div.table > div > div, div.table > form > div {
-    display: table-cell; 
+    display: table-cell;
     padding: 0.5em;
     vertical-align: top;
 }
 
 div#elbp_summary_boxes
-{   
+{
     text-align: center;
 }
 
@@ -2658,7 +2658,7 @@ div#elbp_dock_bottom ul#elbp_dock_list li
 
 .ui-dialog
 {
-    z-index: 102 !important;
+    z-index: 2002 !important;
 }
 
 div#elbp_dock_bottom ul#elbp_dock_list li a.dock_plugin_name
@@ -3003,7 +3003,7 @@ a img, a img:hover
 input.hasDatePicker
 {
     width: 100px !important;
-    
+
 }
 
 div.elbpSlider
@@ -3035,7 +3035,7 @@ textarea.elbp_textarea
 
 button::-moz-focus-inner
 {
-    border: 0; 
+    border: 0;
 }
 
 button.elbp_b
@@ -3058,7 +3058,7 @@ button.elbp_b:hover, button.elbp_btn_small:hover
     -webkit-box-shadow: inset 0 0 1px 1px #eaeaea;
     box-shadow: inset 0 0 1px 1px #eaeaea;
     color: #222;
-    cursor: pointer; 
+    cursor: pointer;
 }
 
  button.elbp_b:active, button.elbp_btn_small:hover
@@ -3066,10 +3066,10 @@ button.elbp_b:hover, button.elbp_btn_small:hover
     background: #d0d0d0;
     -webkit-box-shadow: inset 0 0 1px 1px #e3e3e3;
     box-shadow: inset 0 0 1px 1px #e3e3e3;
-    color: #000; 
+    color: #000;
  }
- 
- 
+
+
  button.elbp_btn_small
 {
     background: #E3E3E3;
@@ -3083,8 +3083,8 @@ button.elbp_b:hover, button.elbp_btn_small:hover
     text-shadow: 0px 1px 0px #FFFFFF;
 }
 
- 
- 
+
+
 .validation-error {
     display: inline-block;
     color: #B94A48;
@@ -3144,20 +3144,20 @@ button.elbp_b:hover, button.elbp_btn_small:hover
 }
 
 
- 
+
  div.elbp_comment_textarea
  {
      width: 100%;
      text-align: center;
  }
- 
+
  div.elbp_comment_textarea textarea
  {
      width: 90%;
      margin: auto;
      height: 120px;
  }
- 
+
  div.elbp_comment_box
  {
      padding: 10px;
@@ -3167,7 +3167,7 @@ button.elbp_b:hover, button.elbp_btn_small:hover
      margin: auto;
      margin-bottom: 10px;
  }
- 
+
 div.elbp_comment_box_reply
 {
      padding: 10px;
@@ -3380,17 +3380,17 @@ hr.elbp_hr
     color: red;
     font-weight: bold;
 }
- 
+
  body, html
  {
      height: 100%;
  }
- 
+
  span.elbp_required_field
  {
      color: red;
  }
- 
+
  table.elbp_user_picker
  {
      width: 90%;
@@ -3399,7 +3399,7 @@ hr.elbp_hr
      padding: 5px;
      text-align: center;
  }
- 
+
  table.elbp_course_picker
  {
      width: 90%;
@@ -3408,18 +3408,18 @@ hr.elbp_hr
      padding: 5px;
      text-align: center;
  }
- 
+
  table.elbp_course_picker td
  {
      vertical-align: middle;
  }
- 
+
  table.elbp_course_picker td select,  table.elbp_course_picker td input,
  table.elbp_user_picker td select,  table.elbp_user_picker td input
  {
      width: 100%;
  }
- 
+
 table.elbp_course_picker td select[multiple='multiple'],
 table.elbp_user_picker td select[multiple='multiple']
 {
@@ -3453,7 +3453,7 @@ table.elbp_single_user_picker
     width: 100%;
     text-align: center;
 }
-      
+
 
 small.elbp_block_progress
 {
@@ -3616,13 +3616,13 @@ div.elbp_confirm_box > div
 
 .elbp_rainbow
 {
-    
+
     background-image: -webkit-linear-gradient(left, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); /* For Chrome and Safari */
     background-image:    -moz-linear-gradient(left, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); /* For old Fx (3.6 to 15) */
     background-image:     -ms-linear-gradient(left, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); /* For pre-releases of IE 10*/
     background-image:      -o-linear-gradient(left, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); /* For old Opera (11.1 to 12.0) */
     background-image:         linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3); /* Standard syntax; must be last */
-    
+
 }
 
 /* End Fancy Styles */
@@ -3720,7 +3720,7 @@ div#attribute_popup_form div.handle
     font-size: 11pt;
     cursor: move;
 }
-    
+
 div#attribute_popup_form div.content
 {
     padding: 20px;
@@ -4232,7 +4232,7 @@ div.elbp_progress_traffic_light_trans
 
 div.elbp_progress_traffic_light_desc
 {
-    
+
 }
 
 // target sets table
