@@ -23,6 +23,26 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     ELBP.pluginGroup = null;
     ELBP.pluginIcons = {};
     ELBP.strings = {};
+    ELBP.pluginScripts = {};
+
+    // Push a plugin's AMD scripts onto the ELBP
+    ELBP.push_script = function(name, scripts){
+      ELBP.pluginScripts[name] = scripts;
+    };
+
+    // Call the bindings of all plugin scripts
+    ELBP.bind_scripts = function(){
+      $.each(ELBP.pluginScripts, function(name, scripts){
+        scripts.bindings();
+      });
+    }
+
+    // Call the bindings of a particular script
+    ELBP.bind_script = function(plugin){
+      if (ELBP.pluginScripts[plugin] !== undefined){
+        ELBP.pluginScripts[plugin].bindings();
+      }
+    }
 
     // Hide an element
     ELBP.hide = function(el){
@@ -379,19 +399,23 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         }
     };
 
-    // Load
+    // Load all plugins
     ELBP.load = function(type, id){
+
         let params = {
             type: type,
             id: id,
             student: ELBP.studentID,
             course: ELBP.courseID
         }
+
         ELBP.ajax(0, 'load_template', params, function(d){
             $('#elbp_summary_boxes').html(d);
+            ELBP.bind_scripts();
         }, function(d){
             $('#elbp_summary_boxes').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
         });
+
     };
 
     // Load the expanded view of a plugin
@@ -404,10 +428,14 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         }
 
         ELBP.ajax(0, 'load_expanded', params, function(d){
+
             $('#elbp_popup').html(d);
+            ELBP.bind_script(plugin);
+
             if (callAfter){
                 callAfter();
             }
+
         }, function(d){
             ELBP.pop();
             $('#elbp_popup').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
@@ -562,8 +590,6 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
     // Append a link to the dock to open a plugin
     ELBP.dock = function(plugin, pluginTitle){
-
-        console.log(plugin + ':' + pluginTitle);
 
         if (!$('#docked_'+plugin)[0]){
 
@@ -2464,6 +2490,26 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             ELBP.resize_popup();
         } );
 
+        $('a.elbp_toggle').unbind('click');
+        $('a.elbp_toggle').bind('click', function(e){
+
+          var toggle = $(this).attr('toggle');
+          $(toggle).toggle();
+
+          e.preventDefault();
+
+        });
+
+        $('select.elbp_toggle').unbind('change');
+        $('select.elbp_toggle').bind('change', function(e){
+
+          var toggle = $(this).attr('toggle');
+          $(toggle).toggle();
+
+          e.preventDefault();
+
+        });
+
 
         // Destroy and reapply datepickers
         $('.elbp_datepicker').removeClass('hasDatepicker');
@@ -2664,6 +2710,57 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         ELBP.apply_tooltip();
 
 
+        // Settings
+        var loadAlertsTable = function(type, value){
+
+          if ( (type == 'course' || type == 'student') && value == '' ){
+              $('#alerts_div').html('');
+              return;
+          }
+
+          ELBP.ajax(null, 'get_alerts_table', {type: type, value: value}, function(data){
+              $('#alerts_div').html(data);
+          }, function(){
+              $('#alerts_div').html('<img src="'+M.cfg.wwwroot+'/blocks/elbp/pix/loader.gif" alt="loading" />');
+          });
+
+        };
+
+        // Change links
+        $('.elbp_settings_change_alert_type').unbind('click');
+        $('.elbp_settings_change_alert_type').bind('click', function(e){
+
+          var type = $(this).attr('type');
+
+          $('#alerts_div').html('');
+
+          $('.switch_alerts').hide();
+          $('.switch_alerts').each( function(){
+              if ( $(this).attr('type') == type ){
+                  $(this).show();
+              }
+          } );
+
+          // Mentees or AddSup, just load the table
+          if (type == 'mentees' || type == 'addsup'){
+              loadAlertsTable(type);
+          }
+
+          e.preventDefault();
+
+        });
+
+        // Change dropdowns
+        $('.switch_alerts').unbind('change');
+        $('.switch_alerts').bind('change', function(){
+
+            var type = $(this).attr('type');
+            var value = $(this).val();
+
+            loadAlertsTable(type, value);
+
+        });
+
     };
 
 
@@ -2677,6 +2774,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Set ELBP into global space
     window.ELBP = ELBP;
 
+    // Set onto the client for access in other scripts
+    client.scripts = ELBP;
 
     client.log = function(log){
         console.log('[ELBP] ' + new Date().toTimeString().split(' ')[0] + ': ' + log );
@@ -2688,7 +2787,6 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         client.log('Loading initial state');
         ELBP.ajax(0, 'get_initial_state');
-
 
     };
 

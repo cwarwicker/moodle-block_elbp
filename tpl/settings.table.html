@@ -19,7 +19,7 @@
 
         <tr>
             <td colspan="4" style="text-align:center;border-top:none;">
-                <input type="submit" name="save_settings" class="btn btn-large medium-blue" value="<?= $string['save'] ?> - <?= \elbp_html($title) ?>" />
+                <input type="submit" name="save_settings" class="btn btn-primary" value="<?= $string['save'] ?> - <?= \elbp_html($title) ?>" />
             </td>
         </tr>
 
@@ -54,9 +54,9 @@
                                     -
                                     <?php endif; ?>
                                 </td>
-                                <td> 
+                                <td>
                                     <?php if($n == 0): ?>
-                                        <input type="checkbox" name="alerts[]" value="<?= $event->id ?>" <?= (\ELBP\Alert::userWantsEventAlerts($USER->id, $event->id, $type, $value) == true) ? 'checked' : ''; ?> /> 
+                                        <input type="checkbox" name="alerts[]" value="<?= $event->id ?>" <?= (\ELBP\Alert::userWantsEventAlerts($USER->id, $event->id, $type, $value) == true) ? 'checked' : ''; ?> />
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -87,7 +87,7 @@
 
         <tr>
             <td colspan="4" style="text-align:center;">
-                <input type="submit" name="save_settings" class="btn btn-large medium-blue" value="<?= $string['save'] ?> - <?= \elbp_html($title) ?>" />
+                <input type="submit" name="save_settings" class="btn btn-primary" value="<?= $string['save'] ?> - <?= \elbp_html($title) ?>" />
             </td>
         </tr>
 

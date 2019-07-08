@@ -1,3 +1,6 @@
+THIS BRANCH IS IN DEVELOPMENT, DO NOT USE
+
+
 # Electronic Learning Blue Print (v1.4.2)
 
 This plugin provides you with the Electronic Learning Blue Print block, which is an Individual Learning Plan system, which provides you with one centralised place to see all of the information relevant for a student, such as Attendance, Targets, Timetables, Registers, etc...
@@ -23,7 +26,7 @@ Some of these features include:
 	* Learning Styles
 	* Additional Support
 	* Timetable
-	
+
 * 2 Additional plugins when you use the Grade Tracker block
 	* Grade Tracker
 	* Prior Learning
@@ -34,7 +37,7 @@ Some of these features include:
 	* Multiple Reports - Create multiple instances of the same report, with different values.
 	* Internal DB - A read-only report, drawing data out of your Moodle database, as defined by an SQL query
 	* External DB - A read-only report, drawing data out of an external database, as defined by an SQL query
-	
+
 * MIS Integration - Display data direct from your MIS/SIS system. Supports the following data sources:
 	* MySQL
 	* SQL Server
@@ -43,9 +46,9 @@ Some of these features include:
 	* Firebird
 	* Microsoft Access
 	* SQLite
-	
+
 * Email Alerts - Set up custom alerts to suit your particular needs, based on PLP events, against whole courses, course groups or individual students.
-* Report - See overview reports and build up your own custom reports which can be exported to Excel or saved into the system for later comparisons. 
+* Report - See overview reports and build up your own custom reports which can be exported to Excel or saved into the system for later comparisons.
 
 Requirements
 ------------
@@ -56,7 +59,7 @@ Requirements
 Installation
 ------------
 - Download the zip file, using the green "Clone or download" button
-- Extract the files 
+- Extract the files
 - Rename the folder inside "moodle-block_elbp-master" to just "elbp".
 - Place the "elbp" folder inside the /blocks directory of your Moodle site and run through the normal plugin installation procedure, then you can add the block to a course page.
 

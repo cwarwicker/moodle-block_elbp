@@ -1,15 +1,15 @@
 <?php if(!defined('ELBP')) exit; ?>
 
 <div id="elbp_cmd">
-    
+
     <div id="cmd_output">
-        
+
     </div>
-    
+
     <div id="cmd_input">
         <form action="" method="post" onsubmit="ELBP.execute( $('#input').val() );return false;">
-            [<?= $USER->username ?>@<?= gethostname() ?>] <input id="input" type="text" />
+            [<?= $USER->username ?>] <input id="input" type="text" />
         </form>
     </div>
-    
+
 </div>
