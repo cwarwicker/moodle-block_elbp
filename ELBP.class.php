@@ -467,6 +467,32 @@ class ELBP
     }
 
     /**
+     * Get list of local plugins
+     * @return [type] [description]
+     */
+    public function getListOfLocal(){
+
+        $dir = $this->CFG->dirroot . '/local';
+
+        $results = array();
+        $handle = opendir($dir);
+        if ($handle)
+        {
+
+            while (false !== ($entry = readdir($handle)))
+            {
+                if ($entry == '.' || $entry == '..' || !is_dir($dir . '/' . $entry)) continue;
+                $results[] = $entry;
+            }
+
+        }
+
+        sort($results);
+        return $results;
+
+    }
+
+    /**
      * Get a list of all the directories in the /mod directory
      * @return type
      */
@@ -759,11 +785,16 @@ class ELBP
                         return strnatcasecmp($a->getTitle(), $b->getTitle());
                     });
 
+                    $external = array(
+                      'blocks' => $this->getListOfBlocks(),
+                      'local' => $this->getListOfLocal(),
+                      'mod' => $this->getListOfMods()
+                    );
+
                     $TPL->set("plugins", $plugins);
                     $TPL->set("nameOrderedPlugins", $nameOrderedPlugins);
                     $TPL->set("dir_plugins", $this->getDirectoryPlugins());
-                    $TPL->set("dir_blocks", $this->getListOfBlocks());
-                    $TPL->set("dir_mods", $this->getListOfMods());
+                    $TPL->set("dir_external", $external);
                     $TPL->set("groups", $this->getAllPluginGroups());
                     $TPL->set("block_version", $this->getBlockVersion());
                     $TPL->set("layouts", \ELBP\PluginLayout::getAllPluginLayouts());
@@ -1954,7 +1985,7 @@ class ELBP
                     $layout->setDefault( (isset($layoutDefaults[$layoutNum])) ? $layoutDefaults[$layoutNum] : 0 );
                     $layout->setEnabled( (isset($layoutEnableds[$layoutNum])) ? $layoutEnableds[$layoutNum] : 0 );
 
-                    $groupIDs = $_POST['plugin_layouts_groups_id'][$layoutNum];
+                    $groupIDs = @$_POST['plugin_layouts_groups_id'][$layoutNum];
                     $groupNames = $_POST['plugin_layouts_groups_name'][$layoutNum];
                     $groupEnableds = (isset($_POST['plugin_layouts_groups_enabled'][$layoutNum])) ? $_POST['plugin_layouts_groups_enabled'][$layoutNum] : array();
 

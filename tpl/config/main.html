@@ -5,55 +5,55 @@
 <?= (!empty($MSGS['success'])) ? elbp_success_alert_box($MSGS['success']) : '' ?>
 
 <form action="" method="post">
-    
+
     <h2><?= $string['generalconfig'] ?></h2>
     <p><?= $string['generalconfig:desc'] ?></p>
-    
+
     <small><strong><?= $string['elbp:config:title:short'] ?></strong> - <?= $string['elbp:config:title:short:desc'] ?></small>
     <br>
     <input type="text" name="elbp_title_short" class="elbp_small" value="<?= $ELBP->getELBPShortName() ?>" />
-    
+
     <br><br>
-    
+
     <small><strong><?= $string['elbp:config:title:full'] ?></strong> - <?= $string['elbp:config:title:full:desc'] ?></small>
     <br>
     <input type="text" name="elbp_title_full" value="<?= $ELBP->getELBPFullName() ?>" />
-    
+
      <br><br>
-    
+
     <small><strong><?= $string['elbp:config:title:my'] ?></strong> - <?= $string['elbp:config:title:my:desc'] ?></small>
     <br>
     <input type="text" name="elbp_title_my" value="<?= $ELBP->getELBPMyName() ?>" />
-    
+
     <br><br>
-    
+
     <small><strong><?= $string['elbp:config:gradients'] ?></strong> - <?= $string['elbp:config:gradients:desc'] ?></small>
     <br>
     <input type="checkbox" name="elbp_use_gradients" <?= (\ELBP\Setting::getSetting('elbp_use_gradients') == 1) ? 'checked' : '' ?> />
 
-        
-    <br><br>       
-    
+
+    <br><br>
+
     <h2><?= $string['alertconfig'] ?></h2>
-    <p><?= $string['alertconfig:desc'] ?></p>            
-         
+    <p><?= $string['alertconfig:desc'] ?></p>
+
     <small><strong><?= $string['elbp:config:emailalerts'] ?></strong> - <?= $string['elbp:config:emailalerts:desc'] ?></small>
     <br>
     <input type="checkbox" name="enable_email_alerts" <?= (\ELBP\Setting::getSetting('enable_email_alerts') == 1) ? 'checked' : '' ?> />
-              
-           
-    <br><br>       
+
+
+    <br><br>
     <h2><?= $string['studentprogressbar'] ?></h2>
-    <p><?= $string['studentprogressbar:desc'] ?></p>    
-    
+    <p><?= $string['studentprogressbar:desc'] ?></p>
+
     <small><strong><?= $string['studentprogressbar'] ?></strong> - <?= $string['enabledisable'] ?></small><br>
     <input type='radio' name='enable_student_progress_bar' value='calculated' disabled <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') == 'calculated') ? 'checked' : '' ?> /> <?= $string['calculatedprogress'] ?> - FEATURE IS BEING RE-WRITTEN AND WILL BE BACK IN A LATER VERSION<br>
     <input type='radio' name='enable_student_progress_bar' value='manual' <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') == 'manual') ? 'checked' : '' ?> /> <?= $string['manualprogress'] ?><br>
     <input type='radio' name='enable_student_progress_bar' value='none' <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') != 'calculated' && \ELBP\Setting::getSetting('enable_student_progress_bar') != 'manual' ) ? 'checked' : '' ?> /> <?= $string['none'] ?><br>
-    <br>       
-    
+    <br>
+
     <small><strong><?= $string['manualprogresscolours'] ?></strong> - <?= $string['manualprogresscolours:desc'] ?></small><br>
-    <a href='#' onclick='addNewProgressColour();return false;'><small>[<?= $string['add'] ?>]</small></a><br>
+    <a href='#' class='elbp_add_progress_colour'><small>[<?= $string['add'] ?>]</small></a><br>
     <table id='elbp_manual_progress_colours'>
         <tr>
             <th><?= $string['rank'] ?></th>
@@ -61,51 +61,29 @@
             <th title='<?= $string['hexcode'] ?>'><?= $string['colour'] ?></th>
             <th><?= $string['desc'] ?></th>
         </tr>
-        
+
         <?php if ($manualProgressColours): ?>
-        
+
             <?php for($i = 0; $i < count($manualProgressColours['colours']); $i++): ?>
-            
-                <tr id='elbpmanprogrow_<?= $i ?>'>
-                    <td><input type='number' min='1' name='progress_ranks[<?= $i ?>]' value='<?= \elbp_html($manualProgressColours['ranks'][$i]) ?>' placeholder='1' /></td>
-                    <td><input type='text' name='progress_titles[<?= $i ?>]' value='<?= \elbp_html($manualProgressColours['titles'][$i]) ?>' placeholder='At Risk' /></td>
-                    <td><input type='color' name='progress_colours[<?= $i ?>]' value='<?= \elbp_html($manualProgressColours['colours'][$i]) ?>' placeholder='#000000' /></td>
-                    <td><input type='text' name='progress_desc[<?= $i ?>]' value='<?= \elbp_html($manualProgressColours['desc'][$i]) ?>' placeholder='You are at risk of failing your course' /></td>
-                    <td><a href='#' onclick='$("#elbpmanprogrow_<?= $i ?>").remove();return false;'><img src='<?= elbp_image_url('t/delete') ?>' /></a></td>
+
+                <tr>
+                    <td><input type='number' min='1' name='progress_ranks[>]' value='<?= \elbp_html($manualProgressColours['ranks'][$i]) ?>' placeholder='1' /></td>
+                    <td><input type='text' name='progress_titles[]' value='<?= \elbp_html($manualProgressColours['titles'][$i]) ?>' placeholder='At Risk' /></td>
+                    <td><input type='color' name='progress_colours[]' value='<?= \elbp_html($manualProgressColours['colours'][$i]) ?>' placeholder='#000000' /></td>
+                    <td><input type='text' name='progress_desc[]' value='<?= \elbp_html($manualProgressColours['desc'][$i]) ?>' placeholder='You are at risk of failing your course' /></td>
+                    <td><a href='#' class='elbp_remove' remove='parent-row'><img src='<?= elbp_image_url('t/delete') ?>' /></a></td>
                 </tr>
-            
+
             <?php endfor; ?>
-        
+
         <?php endif; ?>
-        
-        
+
+
     </table>
-           
-    
-    
-           
+
+
+
+
     <br><br>
     <p class='elbp_centre'><input type="submit" name="submitconfig" value="<?= $string['save'] ?>" /></p>
 </form>
-
-<script>
-    
-    var numProgCols = <?= count($manualProgressColours['colours']); ?>
-    
-    function addNewProgressColour(){
-        
-        var output = "";
-        output += "<tr id='elbpmanprogrow_"+numProgCols+"'>";
-            output += "<td><input type='number' name='progress_ranks["+numProgCols+"]' value='' placeholder='1' /></td>";
-            output += "<td><input type='text' name='progress_titles["+numProgCols+"]' value='' placeholder='At Risk' /></td>";
-            output += "<td><input type='color' name='progress_colours["+numProgCols+"]' value='' placeholder='#000000' /></td>";
-            output += "<td><input type='text' name='progress_desc["+numProgCols+"]' value='' placeholder='You are at risk of failing your course' /></td>";
-            output += "<td><a href='#' onclick='$(\"#elbpmanprogrow_"+numProgCols+"\").remove();return false;'><img src='<?= elbp_image_url('t/delete') ?>' /></a></td>";
-        output += "</tr>";
-        $('#elbp_manual_progress_colours').append(output);
-        
-        numProgCols++;
-        
-    }
-    
-</script>

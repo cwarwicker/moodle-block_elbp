@@ -5,6 +5,12 @@
     Description: Styling for the ELBP
 */
 
+
+hidden
+{
+  display: none;
+}
+
 /* Begin: List Style Types */
 
     ul.elbp, ol.elbp
@@ -4353,5 +4359,4 @@ select.switch_alerts
 table#elbp_install_plugins
 {
     width: auto;
-    min-width: 30%;
 }

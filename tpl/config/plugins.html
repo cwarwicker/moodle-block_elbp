@@ -6,171 +6,33 @@
 <h2><?= $string['installnewplugin'] ?></h2>
 <p><?= $string['installnewplugin:desc'] ?></p>
 
-<script>
-
-    var dir = '/';
-    var plugin_type = '';
-    var mod_or_block = '';
-    var plugin_name = '';
-
-    function rebuild_dir()
-    {
-
-        dir = '/';
-
-        if (plugin_type == 'core'){
-            dir = dir + 'blocks/elbp/plugins/';
-        }
-
-        if (plugin_type == 'external' && mod_or_block != 'other'){
-            dir = dir + mod_or_block + '/';
-        }
-
-        dir = dir + plugin_name + '/' + plugin_name + '.class.php';
-
-        if (plugin_type == 'external' && mod_or_block == 'other'){
-            dir = '/' + plugin_name  + '.class.php';
-        }
-
-        $('#plugin_path').val(dir);
-
-        return dir;
-
-    }
-
-    function load_plugin_type(type)
-    {
-
-        $('#mod_or_block').css('display', 'none');
-        $('#plugin_name').css('display', 'none');
-        $('#install_file_msg').css('display', 'none');
-        $('#submit_td').css('display', 'none');
-
-        plugin_type = type;
-
-        if (type == 'core'){
-            $('#mod_or_block').css('display', 'none');
-            $('#plugin_name').html('<option value=""></option>');
-            <?php foreach ($dir_plugins as $plugin): ?>
-                $('#plugin_name').append('<option value="<?= $plugin ?>"><?= $plugin ?></option>');
-            <?php endforeach; ?>
-            $('#plugin_name').css('display', 'inline-block');
-            $('#other_plugin_name').css('display', 'none');
-        }
-        else if(type == 'external'){
-            $('#plugin_name').css('display', 'none');
-            $('#plugin_name').html('');
-            $('#mod_or_block').css('display', 'inline-block');
-            $('#other_plugin_name').css('display', 'none');
-        }
-    }
-
-    function load_external_plugins(type)
-    {
-
-        $('#plugin_name').css('display', 'none');
-        $('#install_file_msg').css('display', 'none');
-        $('#submit_td').css('display', 'none');
-        mod_or_block = type;
-
-        if (type == 'blocks'){
-            $('#plugin_name').html('<option value=""></option>');
-            <?php foreach ($dir_blocks as $plugin): ?>
-                $('#plugin_name').append('<option value="<?= $plugin ?>"><?= $plugin ?></option>');
-            <?php endforeach; ?>
-            $('#plugin_name').css('display', 'inline-block');
-            $('#other_plugin_name').css('display', 'none');
-        }
-        else if(type == 'mod'){
-            $('#plugin_name').html('<option value=""></option>');
-            <?php foreach ($dir_mods as $plugin): ?>
-                $('#plugin_name').append('<option value="<?= $plugin ?>"><?= $plugin ?></option>');
-            <?php endforeach; ?>
-            $('#plugin_name').css('display', 'inline-block');
-            $('#other_plugin_name').css('display', 'none');
-        }
-        else if(type == 'other'){
-            $('#plugin_name').html('');
-            $('#plugin_name').css('display', 'none');
-            $('select#plugin_name').css('display', 'none');
-            $('#other_plugin_name').css('display', 'inline-block');
-            load_submit_button('');
-        }
-    }
-
-    function load_submit_button(name){
-        $('#install_file_msg').css('display', 'inline-block');
-        plugin_name = name;
-        $('#file_name').text( rebuild_dir() );
-        $('#submit_td').css('display', 'inline-block');
-    }
-
-    function retype_file_name(name){
-        plugin_file = name;
-        $('#file_name').text( rebuild_dir() );
-    }
-
-    function change_plugin_file(){
-
-        if ( $('#file_name').css('display') != 'none')
-        {
-            $('#file_name').hide();
-            $('#file_name_input').val( $('#file_name').text() );
-            $('#file_name_input').show();
-        }
-        else
-        {
-            $('#file_name_input').hide();
-            $('#file_name').text( $('#file_name_input').val() );
-            $('#plugin_path').val( $('#file_name_input').val() );
-            $('#file_name').show();
-        }
-
-    }
-
-    var numGroups = <?= count($groups); ?>;
-
-    function addNewPluginGroup(){
-
-        numGroups++;
-
-        $('#plugin_groups_body').append('<tr><td><input type="hidden" class="normal" name="group_id['+numGroups+']" value="-1" /><input type="text" class="normal" name="group_name['+numGroups+']" value="" /></td><td><input type="checkbox" name="enable_disable_group['+numGroups+']" /></td><td><ul id="" class=""></ul></td><td><input type="text" class="elbp_small" name="group_order['+numGroups+']" value="" /></td>|</tr>');
-
-    }
-
-
-</script>
-
 <form action="" method="post">
 <table id="elbp_install_plugins">
 
     <tr>
         <td>
-            <select onchange="load_plugin_type(this.value);return false;">
+            <select id="elbp_install_plugin_change_type">
                 <option value=""></option>
                 <option value="core"><?= $string['coreplugin'] ?></option>
                 <option value="external"><?= $string['externalplugin'] ?></option>
             </select>
         </td>
-        <td>
-            <select id="mod_or_block" style="display:none" onchange="load_external_plugins(this.value);return false;">
+        <td style="display:none;">
+            <select id="elbp_install_plugin_change_external_type">
                 <option value=""></option>
                 <option value="blocks"><?= get_string('block') ?></option>
+                <option value="local"><?= get_string('local') ?></option>
                 <option value="mod"><?= $string['mod'] ?></option>
                 <option value="other"><?= $string['other'] ?></option>
             </select>
         </td>
-        <td>
-            <select id="plugin_name" name="plugin_name" style="display:none" onchange="load_submit_button(this.value);return false;">
-
-            </select>
-            <input type="text" name="plugin_name_2" style="display:none;" id="other_plugin_name" placeholder="Plugin Name" />
+        <td style="display:none;">
+            <select id="elbp_install_plugin_name" name="plugin_name"></select>
         </td>
-        <td>
-            <span id="install_file_msg" style="display:none;"><?= $string['willattemptinstallfile'] ?>:<br><small title="<?= $string['clickmeedit'] ?>" id="file_name" onclick="change_plugin_file();"></small><input type="text" id="file_name_input" style="display:none;" onblur="change_plugin_file();" /></span>
+        <td style="display:none;">
+          <input type="text" id="elbp_install_plugin_path" class="elbp_fairly_large" name="plugin_path" value="" />
         </td>
-        <td id="submit_td" style="display:none;">
-            <input type="hidden" id="plugin_path" name="plugin_path" value="" />
+        <td id="elbp_install_plugin_submit" style="display:none;">
             <input type="submit" name="install_new_plugin" value="<?= $string['install'] ?>" />
         </td>
     </tr>
@@ -258,7 +120,7 @@
 
     <div id="elbp_plugin_layouts_form">
 
-    <input type="button" onclick="elbp_add_new_plugin_layout();return false;" value="<?= $string['addnewlayout'] ?>" /><br><br>
+    <input type="button" class="elbp_add_new_plugin_layout" value="<?= $string['addnewlayout'] ?>" /><br><br>
 
         <?php $layoutNum = 1; ?>
 
@@ -270,7 +132,7 @@
 
                     <tr>
                         <td>
-                            <a href="#" onclick="elbp_delete_layout(<?= $layoutNum ?>);return false;"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/remove.png" alt="<?= $string['delete'] ?>" /></a>
+                            <a href="#" class="elbp_remove" remove="#elbp_plugin_layout_<?= $layoutNum ?>"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/remove.png" alt="<?= $string['delete'] ?>" /></a>
                         </td>
                     </tr>
 
@@ -299,14 +161,14 @@
                         <td colspan='2' id="">
                             <?php foreach($plugins as $plugin): ?>
                                 <?php if ($plugin->hasPluginBox()): ?>
-                                    <div class='elbp_layout_plugin_name' id="plugin_<?= $plugin->quickID ?>_<?= $layoutNum ?>" layoutID="<?= $layout->getID() ?>" layoutNum="<?= $layoutNum ?>" onclick="elbp_add_plugin_to_group(<?= $layoutNum ?>, '<?= $plugin->quickID ?>');return false;" style="display:<?= ($layout->isPluginInLayoutGroups($plugin->quickID)) ? 'none' : 'inline-block'; ?>;background-color:<?= $plugin->getHeaderBackgroundColour() ?>;color:<?= $plugin->getHeaderFontColour() ?>;"><?= $plugin->getTitle() ?></div>
+                                    <div class='elbp_add_plugin_to_group elbp_layout_plugin_name' id="plugin_<?= $plugin->quickID ?>_<?= $layoutNum ?>" layoutID="<?= $layout->getID() ?>" layoutNum="<?= $layoutNum ?>" pluginID="<?= $plugin->quickID ?>" style="display:<?= ($layout->isPluginInLayoutGroups($plugin->quickID)) ? 'none' : 'inline-block'; ?>;background-color:<?= $plugin->getHeaderBackgroundColour() ?>;color:<?= $plugin->getHeaderFontColour() ?>;"><?= $plugin->getTitle() ?></div>
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </td>
                     </tr>
 
                     <tr>
-                        <th colspan="2"><?= $string['groups'] ?> <a href="#" onclick="elbp_add_new_plugin_group(<?= $layoutNum ?>);return false;"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/add_small.png" alt="<?= $string['addnewgroup'] ?>" /></a></th>
+                        <th colspan="2"><?= $string['groups'] ?> <a href="#" class="elbp_add_plugin_group" layout="<?= $layoutNum ?>"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/add_small.png" alt="<?= $string['addnewgroup'] ?>" /></a></th>
                     </tr>
 
                     <?php if ($layout->getGroups()): ?>
@@ -317,7 +179,7 @@
 
                             <tr class="layout_group_<?= $layoutNum ?>_<?= $groupNum ?>_row">
                                 <td>
-                                    <a href="#" onclick="elbp_delete_layout_group(<?= $layoutNum ?>, <?= $groupNum ?>);return false;"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/remove.png" alt="<?= $string['delete'] ?>" /></a>
+                                    <a href="#" class="elbp_remove" remove=".layout_group_<?= $layoutNum ?>_<?= $groupNum ?>_row"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/remove.png" alt="<?= $string['delete'] ?>" /></a>
                                 </td>
                             </tr>
 
@@ -337,13 +199,13 @@
                             <tr class="layout_group_<?= $layoutNum ?>_<?= $groupNum ?>_row">
                                 <td><?= $string['plugins'] ?></td>
                                 <td>
-                                    <small><a href="#" onclick="elbp_toggle_add_layout_plugins(<?= $layoutNum ?>, <?= $groupNum ?>);return false;" groupID="<?= $group->id ?>" groupNum="<?= $groupNum ?>" isAdding="0" class="elbp_add_layout_plugins_link_layout_<?= $layoutNum ?>" id="elbp_add_layout_plugins_link_<?= $layoutNum ?>_<?= $groupNum ?>"><?= $string['startaddingplugins'] ?></a></small>
+                                    <small><a href="#" class="elbp_toggle_add_plugins_to_group elbp_add_layout_plugins_link_layout_<?= $layoutNum ?>" layout="<?= $layoutNum ?>" groupID="<?= $group->id ?>" groupNum="<?= $groupNum ?>" isAdding="0" id="elbp_add_layout_plugins_link_<?= $layoutNum ?>_<?= $groupNum ?>"><?= $string['startaddingplugins'] ?></a></small>
                                     <div class="elbp_layout_plugins_dump elbp_layout_plugins_dump_<?= $layoutNum ?>" id="elbp_layout_plugins_dump_<?= $layoutNum ?>_<?= $groupNum ?>" groupNum="<?= $groupNum ?>" layoutNum="<?= $layoutNum ?>">
                                         <ul>
                                             <?php if ($group->plugins): ?>
                                                 <?php foreach($group->plugins as $plugin): ?>
                                                     <li pluginID='<?= $plugin->quickID ?>'>
-                                                        <?= $plugin->getTitle() ?> <a href="#" onclick="elbp_remove_plugin_from_group(<?= $layoutNum ?>, '<?= $plugin->quickID ?>', this);return false;"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/close_tiny.png" alt="<?= $string['remove'] ?>" /></a>
+                                                        <?= $plugin->getTitle() ?> <a href="#" class="elbp_remove_plugin_from_group" layout="<?= $layoutNum ?>" pluginID="<?= $plugin->quickID ?>"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/close_tiny.png" alt="<?= $string['remove'] ?>" /></a>
                                                         <input type="hidden" name="layout_group_plugins[<?= $layoutNum ?>][<?= $groupNum ?>][]" value="<?= $plugin->quickID ?>" /></li>
                                                 <?php endforeach; ?>
                                             <?php endif; ?>
@@ -380,196 +242,37 @@
 
 
 
-<script>
+<hidden>
 
-    function elbp_delete_layout(layoutNum){
-        $('#elbp_plugin_layout_'+layoutNum).remove();
-    }
+  <!-- Core plugin names -->
+  <core>
+    <?php foreach($dir_plugins as $name): ?>
+      <name><?= $name ?></name>
+    <?php endforeach; ?>
+  </core>
 
-    function elbp_delete_layout_group(layoutNum, groupNum){
-        $('.layout_group_'+layoutNum+'_'+groupNum+'_row').remove();
-    }
+  <!-- External plugin names -->
+  <external>
+    <?php foreach($dir_external as $location => $extPlugins): ?>
+      <<?= $location ?>>
+        <?php foreach($extPlugins as $name): ?>
+          <name><?= $name ?></name>
+        <?php endforeach; ?>
+      </<?= $location ?>>
+    <?php endforeach; ?>
+  </external>
 
-    // Add a new group to a layout
-    function elbp_add_new_plugin_group(layoutNum){
+  <!-- Installed plugins -->
+  <plugins>
+    <?php foreach($plugins as $plugin): ?>
+        <plugin>
+          <id><?= $plugin->getID() ?></id>
+          <name><?= $plugin->getTitle() ?></name>
+          <bg><?= $plugin->getHeaderBackgroundColour() ?></bg>
+          <font><?= $plugin->getHeaderFontColour() ?></font>
+          <custom><?= (isset($plugin->custom) && $plugin->custom) ? 1 : 0 ?></custom>
+        </plugin>
+    <?php endforeach; ?>
+  </plugins>
 
-        var numOfGroups = $('.layout_group_'+layoutNum).length;
-        var groupNum = numOfGroups + 1;
-
-        var output = "";
-
-        output += "<tr class='layout_group_"+layoutNum+"_"+groupNum+"_row'>";
-            output += "<td>";
-                output += "<a href='#' onclick='elbp_delete_layout_group("+layoutNum+", "+groupNum+");return false;'><img src='<?= $CFG->wwwroot ?>/blocks/elbp/pix/remove.png' alt='<?= $string['delete'] ?>' /></a>";
-            output += "</td>";
-        output += "</tr>";
-
-        output += "<tr class='layout_group_"+layoutNum+" layout_group_"+layoutNum+"_"+groupNum+"_row'>";
-            output += "<td><?= $string['name'] ?></td>";
-            output += "<td>";
-                output += "<input type='hidden' name='plugin_layouts_groups_id["+layoutNum+"]["+groupNum+"]' value='' />";
-                output += "<input type='text' name='plugin_layouts_groups_name["+layoutNum+"]["+groupNum+"]' value='' />";
-            output += "</td>";
-        output += "</tr>";
-
-        output += "<tr class='layout_group_"+layoutNum+"_"+groupNum+"_row'>";
-            output += "<td><?= $string['enabled'] ?></td>";
-            output += "<td>";
-                output += "<input type='checkbox' name='plugin_layouts_groups_enabled["+layoutNum+"]["+groupNum+"]' value='1' />";
-            output += "</td>";
-        output += "</tr>";
-
-        output += "<tr class='layout_group_"+layoutNum+"_"+groupNum+"_row'>";
-            output += "<td><?= $string['plugins'] ?></td>";
-            output += "<td>";
-                output += "<small><a href='#' onclick='elbp_toggle_add_layout_plugins("+layoutNum+", "+groupNum+");return false;' groupID='D"+groupNum+"' groupNum='"+groupNum+"' isAdding='0' class='elbp_add_layout_plugins_link_layout_"+layoutNum+"' id='elbp_add_layout_plugins_link_"+layoutNum+"_"+groupNum+"'><?= $string['startaddingplugins'] ?></a></small>";
-                output += "<div class='elbp_layout_plugins_dump elbp_layout_plugins_dump_"+layoutNum+"' id='elbp_layout_plugins_dump_"+layoutNum+"_"+groupNum+"' groupNum='"+groupNum+"' layoutNum='"+layoutNum+"'><ul></ul></div>";
-            output += "</td>";
-        output += "</tr>";
-
-         output += "<tr class='layout_group_"+layoutNum+"_"+groupNum+"_row'>";
-            output += "<td colspan='2'><br></td>";
-        output += "</tr>";
-
-        $('#elbp_plugin_layout_'+layoutNum).append(output);
-
-        elbp_apply_plugin_layout_bindings();
-
-    }
-
-    // Add a new layout
-    function elbp_add_new_plugin_layout(){
-
-        var numOfLayouts = $('.elbp_plugin_layouts').length;
-        var layoutNum = numOfLayouts + 1;
-
-        var output = "";
-        output += "<table id='elbp_plugin_layout_"+layoutNum+"' class='elbp_plugin_layouts'>";
-            output += "<tr>";
-                output += "<td>";
-                    output += "<a href='#' onclick='elbp_delete_layout("+layoutNum+");return false;'><img src='<?= $CFG->wwwroot ?>/blocks/elbp/pix/remove.png' alt='<?= $string['delete'] ?>' /></a>";
-                output += "</td>";
-            output += "</tr>";
-            output += "<tr>";
-                output += "<td><?= $string['layoutname'] ?></td>";
-                output += "<td><input type='hidden' name='plugin_layouts_id["+layoutNum+"]' value='' /><input type='text' name='plugin_layouts_name["+layoutNum+"]' value='' /></td>";
-            output += "</tr>";
-            output += "<tr>";
-                output += "<td><?= $string['default'] ?></td>";
-                output += "<td><input type='checkbox' name='plugin_layouts_default["+layoutNum+"]' value='1' /></td>";
-            output += "</tr>";
-            output += "<tr>";
-                output += "<td><?= $string['enabled'] ?></td>";
-                output += "<td><input type='checkbox' name='plugin_layouts_enabled["+layoutNum+"]' value='1' /></td>";
-            output += "</tr>";
-            output += "<tr>";
-                output += "<td colspan='2'>";
-                    <?php foreach($plugins as $plugin): ?>
-                        <?php if ($plugin->hasPluginBox()): ?>
-                            output += "<div class='elbp_layout_plugin_name' id='plugin_<?= (isset($plugin->custom) && $plugin->custom) ? 'c' : ''; ?><?= $plugin->getID() ?>_"+layoutNum+"' layoutNum='"+layoutNum+"' onclick='elbp_add_plugin_to_group(\""+layoutNum+"\", \"<?= (isset($plugin->custom) && $plugin->custom) ? 'c' : ''; ?><?= $plugin->getID() ?>\");return false;' style='background-color:<?= $plugin->getHeaderBackgroundColour() ?>;color:<?= $plugin->getHeaderFontColour() ?>;' ><?= $plugin->getTitle() ?></div>";
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                output += "</td>";
-            output += "</tr>";
-
-            output += "<tr>";
-                output += "<th colspan='2'><?= $string['groups'] ?> <a href='#' onclick='elbp_add_new_plugin_group("+layoutNum+");return false;'><img src='<?= $CFG->wwwroot ?>/blocks/elbp/pix/add_small.png' alt='<?= $string['addnewgroup'] ?>' /></a></th>";
-            output += "</tr>";
-
-        output += "</table>";
-
-        $('#elbp_plugin_layouts_form').append(output);
-
-    }
-
-
-    // Toggle which layout group we are adding plugins to
-    function elbp_toggle_add_layout_plugins(layoutNum, groupNum){
-
-        // Get current value
-        var isAdding = $('#elbp_add_layout_plugins_link_'+layoutNum+'_'+groupNum).attr('isAdding');
-
-        // Reset all
-        $('.elbp_add_layout_plugins_link_layout_'+layoutNum).attr('isAdding', 0);
-        $('.elbp_add_layout_plugins_link_layout_'+layoutNum).text( "<?= $string['startaddingplugins'] ?>" );
-        $('.elbp_layout_plugins_dump_'+layoutNum+' ul').removeClass('active');
-
-        if (isAdding == 0){
-            $('#elbp_add_layout_plugins_link_'+layoutNum+'_'+groupNum).attr('isAdding', 1);
-            $('#elbp_add_layout_plugins_link_'+layoutNum+'_'+groupNum).text( "<?= $string['stopaddingplugins'] ?>" );
-            $('#elbp_layout_plugins_dump_'+layoutNum+'_'+groupNum+' ul').addClass('active');
-        }
-
-    }
-
-    // Get the groupID we are adding plugins to, in a layout
-    function elbp_get_layout_group_adding(layoutNum){
-
-        var groupNum = false;
-        var groups = $('.elbp_add_layout_plugins_link_layout_'+layoutNum);
-        $.each(groups, function(){
-
-            var isAdding = $(this).attr('isAdding');
-            if (isAdding == 1){
-                groupNum = $(this).attr('groupNum');
-                return;
-            }
-
-        });
-
-        return groupNum;
-
-    }
-
-    // Add a plugin to a layout group
-    function elbp_add_plugin_to_group(layoutNum, pID){
-
-        var groupNum = elbp_get_layout_group_adding(layoutNum);
-        if (!groupNum){
-            alert( '<?= $string['plschooseplugingroup'] ?>' );
-            return false;
-        }
-
-        // Hide plugin name div
-        var divElement = $('#plugin_'+pID+'_'+layoutNum);
-        $('#plugin_'+pID+'_'+layoutNum).hide();
-
-        // Add list item to group
-        $('#elbp_layout_plugins_dump_'+layoutNum+'_'+groupNum+' ul').append('<li pluginID="'+pID+'">'+$(divElement).text()+' <a href="#" onclick="elbp_remove_plugin_from_group('+layoutNum+', \''+pID+'\', this);return false;"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/close_tiny.png" alt="<?= $string['remove'] ?>" /></a><input type="hidden" name="layout_group_plugins['+layoutNum+']['+groupNum+'][]" value="'+pID+'" /></li>');
-
-    }
-
-    // Remove a plugin from the layout group
-    function elbp_remove_plugin_from_group(layoutNum, pID, el){
-
-        // Remove list element
-        $(el).parent().remove();
-
-        // Show plugin in layout again so we can add it to a different group
-        $('#plugin_'+pID+'_'+layoutNum).show();
-
-    }
-
-
-    function elbp_apply_plugin_layout_bindings(){
-
-
-        $('.elbp_layout_plugins_dump ul').sortable( {
-            placeholder: "elbp_layout_plugin_placeholder"
-        } );
-        $('.elbp_layout_plugins_dump ul').disableSelection();
-
-    }
-
-
-    $(document).ready( function(){
-
-        elbp_apply_plugin_layout_bindings();
-
-    } );
-
-
-
-
-
-</script>
+</hidden>

@@ -111,9 +111,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Look for ELBP:JS tags to remove data and eval() instead of displaying
     ELBP.process_data_eval = function(data){
 
-        let pat = /\[ELBP:JS\](.+?)\[\/ELBP:JS\]/gs;
+        let pat = /\[ELBP:JS\]([\s\S]+?)\[\/ELBP:JS\]/g;
         let matches = data.match(pat);
-
         if(matches)
         {
 
@@ -1483,8 +1482,11 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         load_display: function(type, el){
             let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID };
             ELBP.ajax("elbp_timetable", "load_display_type", params, function(d){
+
                 $('#elbp_timetable_content').html(d);
                 ELBP.set_view_link(el);
+                ELBP.bind_script('elbp_timetable');
+
             }, function(d){
                 $('#elbp_timetable_content').html('<img src="'+ELBP.www+'/blocks/elbp/pix/loader.gif" alt="" />');
             });
@@ -2012,7 +2014,19 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         load_comment: function(id){
 
             ELBP.load_expanded('Comments', function(){
-                setTimeout("$('#comment_content_"+id+"').slideDown();$('div#elbp_popup').scrollTop(0);$('div#elbp_popup').animate({ scrollTop: ($('#elbp_comment_"+id+"').offset().top - $('#elbp_comment_"+id+"').height()) }, 2000);", 1000);
+
+                let show = function(){
+
+                  let scrollTop = $('#elbp_comment_'+id).offset().top - $('#elbp_comment_'+id).height();
+                  $('#comment_content_'+id).slideDown();
+                  $('div#elbp_popup').scrollTop(0);
+                  $('div#elbp_popup').animate({
+                    scrollTop: scrollTop
+                  }, 2000);
+                };
+
+                setTimeout(show, 1000);
+
             });
 
         },
@@ -2760,6 +2774,356 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             loadAlertsTable(type, value);
 
         });
+
+        $('.elbp_remove').off('click');
+        $('.elbp_remove').on('click', function(e){
+
+          var target = $(this).attr('remove');
+
+          if (target === 'parent-row'){
+            target = $($(this).parents('tr')[0]);
+          }
+
+          if (target !== undefined){
+            $(target).remove();
+          }
+
+          e.preventDefault();
+
+        });
+
+
+        $('.elbp_add_progress_colour').off('click');
+        $('.elbp_add_progress_colour').on('click', function(e){
+
+          var output = "";
+          output += "<tr>";
+              output += "<td><input type='number' name='progress_ranks[]' value='' placeholder='1' /></td>";
+              output += "<td><input type='text' name='progress_titles[]' value='' placeholder='At Risk' /></td>";
+              output += "<td><input type='color' name='progress_colours[]' value='' placeholder='#000000' /></td>";
+              output += "<td><input type='text' name='progress_desc[]' value='' placeholder='You are at risk of failing your course' /></td>";
+              output += "<td><a href='#' class='elbp_remove' remove='parent-row'><img src='"+M.util.image_url('t/delete')+"' /></a></td>";
+          output += "</tr>";
+          $('#elbp_manual_progress_colours').append(output);
+
+          ELBP.bind();
+
+          e.preventDefault();
+
+        });
+
+
+
+        var rebuild_plugin_path = function(name){
+
+          var type = $('#elbp_install_plugin_change_type').val();
+          var external = $('#elbp_install_plugin_change_external_type').val();
+
+          dir = '/';
+
+          if (type == 'core'){
+              dir = dir + 'blocks/elbp/plugins/';
+          }
+          else if (type == 'external' && external != 'other'){
+              dir = dir + external + '/';
+          }
+
+          var prefix = (type === 'external' && name !== undefined && name.indexOf('elbp_') < 0) ? 'elbp_' : '';
+          dir = dir + name + '/' + prefix + name + '.class.php';
+
+          // Other
+          if (type == 'external' && external == 'other'){
+              dir = '/path/to/plugin/file.php';
+          }
+
+          $('#elbp_install_plugin_path').val(dir);
+
+          return dir;
+
+        };
+
+
+        // Change plugin type for install (core or external)
+        $('#elbp_install_plugin_change_type').off('change');
+        $('#elbp_install_plugin_change_type').on('change', function(){
+
+          var type = $(this).val();
+
+          $('#elbp_install_plugin_change_external_type').parent().hide();
+          $('#elbp_install_plugin_name').parent().hide();
+          $('#elbp_install_plugin_path').parent().hide();
+          $('#elbp_install_plugin_path').val('');
+          $('#elbp_install_plugin_submit').hide();
+
+          if (type === 'core'){
+
+            $('#elbp_install_plugin_name').parent().show();
+            $('#elbp_install_plugin_name').html('<option value=""></option>');
+
+            var plugins = $('hidden > core > name');
+            $.each(plugins, function(i, v){
+              $('#elbp_install_plugin_name').append('<option value="'+$(v).text()+'">'+$(v).text()+'</option>');
+            });
+
+          }
+
+          else if(type === 'external'){
+
+            $('#elbp_install_plugin_change_external_type').parent().show();
+
+          }
+
+        });
+
+        // Select plugin name
+        $('#elbp_install_plugin_name').off('change');
+        $('#elbp_install_plugin_name').on('change', function(){
+
+          var name = $(this).val();
+
+          if (name === ''){
+
+            $('#elbp_install_plugin_path').parent().hide();
+            $('#elbp_install_plugin_path').val('');
+            $('#elbp_install_plugin_submit').hide();
+
+          } else {
+
+            rebuild_plugin_path(name);
+
+            $('#elbp_install_plugin_path').parent().show();
+            $('#elbp_install_plugin_submit').show();
+
+          }
+
+        });
+
+        // Change external type
+        $('#elbp_install_plugin_change_external_type').off('change');
+        $('#elbp_install_plugin_change_external_type').on('change', function(){
+
+          var type = $(this).val();
+
+          $('#elbp_install_plugin_name').parent().hide();
+          $('#elbp_install_plugin_submit').hide();
+          $('#elbp_install_plugin_path').parent().hide();
+          $('#elbp_install_plugin_path').val('');
+
+          if (type === 'other'){
+
+            rebuild_plugin_path();
+            $('#elbp_install_plugin_path').parent().show();
+            $('#elbp_install_plugin_submit').show();
+
+          } else {
+
+            $('#elbp_install_plugin_name').parent().show();
+            $('#elbp_install_plugin_name').html('<option value=""></option>');
+
+            var plugins = $('hidden > external > ' + type + ' > name');
+            $.each(plugins, function(i, v){
+              $('#elbp_install_plugin_name').append('<option value="'+$(v).text()+'">'+$(v).text()+'</option>');
+            });
+
+
+          }
+
+        });
+
+        // Add new plugin group to a layout
+        $('.elbp_add_plugin_group').off('click');
+        $('.elbp_add_plugin_group').on('click', function(e){
+
+          var layoutNum = $(this).attr('layout');
+          var numOfGroups = $('.layout_group_'+layoutNum).length;
+          var groupNum = numOfGroups + 1;
+
+          var output = "";
+
+          output += "<tr class='layout_group_"+layoutNum+"_"+groupNum+"_row'>";
+              output += "<td>";
+                  output += "<a href='#' class='elbp_remove' remove='.layout_group_"+layoutNum+"_"+groupNum+"_row'><img src='"+M.cfg.wwwroot+"/blocks/elbp/pix/remove.png' alt='"+ELBP.strings.delete+"' /></a>";
+              output += "</td>";
+          output += "</tr>";
+
+          output += "<tr class='layout_group_"+layoutNum+" layout_group_"+layoutNum+"_"+groupNum+"_row'>";
+              output += "<td>"+ELBP.strings.name+"</td>";
+              output += "<td>";
+                  output += "<input type='hidden' name='plugin_layouts_groups_id["+layoutNum+"]["+groupNum+"]' value='' />";
+                  output += "<input type='text' name='plugin_layouts_groups_name["+layoutNum+"]["+groupNum+"]' value='' />";
+              output += "</td>";
+          output += "</tr>";
+
+          output += "<tr class='layout_group_"+layoutNum+"_"+groupNum+"_row'>";
+              output += "<td>"+ELBP.strings.enabled+"</td>";
+              output += "<td>";
+                  output += "<input type='checkbox' name='plugin_layouts_groups_enabled["+layoutNum+"]["+groupNum+"]' value='1' />";
+              output += "</td>";
+          output += "</tr>";
+
+          output += "<tr class='layout_group_"+layoutNum+"_"+groupNum+"_row'>";
+              output += "<td>"+ELBP.strings.plugins+"</td>";
+              output += "<td>";
+                  output += "<small><a href='#' class='elbp_toggle_add_plugins_to_group elbp_add_layout_plugins_link_layout_"+layoutNum+"' layout='"+layoutNum+"' groupID='D"+groupNum+"' groupNum='"+groupNum+"' isAdding='0' id='elbp_add_layout_plugins_link_"+layoutNum+"_"+groupNum+"'>"+ELBP.strings.startaddingplugins+"</a></small>";
+                  output += "<div class='elbp_layout_plugins_dump elbp_layout_plugins_dump_"+layoutNum+"' id='elbp_layout_plugins_dump_"+layoutNum+"_"+groupNum+"' groupNum='"+groupNum+"' layoutNum='"+layoutNum+"'><ul></ul></div>";
+              output += "</td>";
+          output += "</tr>";
+
+           output += "<tr class='layout_group_"+layoutNum+"_"+groupNum+"_row'>";
+              output += "<td colspan='2'><br></td>";
+          output += "</tr>";
+
+          $('#elbp_plugin_layout_'+layoutNum).append(output);
+
+          ELBP.bind();
+
+          e.preventDefault();
+
+        });
+
+        $('.elbp_remove_plugin_from_group').off('click');
+        $('.elbp_remove_plugin_from_group').on('click', function(e){
+
+          var layoutNum = $(this).attr('layout');
+          var pluginID = $(this).attr('pluginID');
+
+          // Remove list element
+          $(this).parent().remove();
+
+          // Show plugin in layout again so we can add it to a different group
+          $('#plugin_'+pluginID+'_'+layoutNum).show();
+
+          e.preventDefault();
+
+        });
+
+        $('.elbp_toggle_add_plugins_to_group').off('click');
+        $('.elbp_toggle_add_plugins_to_group').on('click', function(e){
+
+          var layoutNum = $(this).attr('layout');
+          var groupNum = $(this).attr('groupNum');
+
+          // Get current value
+          var isAdding = $('#elbp_add_layout_plugins_link_'+layoutNum+'_'+groupNum).attr('isAdding');
+
+          // Reset all
+          $('.elbp_add_layout_plugins_link_layout_'+layoutNum).attr('isAdding', 0);
+          $('.elbp_add_layout_plugins_link_layout_'+layoutNum).text( ELBP.strings.startaddingplugins );
+          $('.elbp_layout_plugins_dump_'+layoutNum+' ul').removeClass('active');
+
+          if (isAdding == 0){
+              $('#elbp_add_layout_plugins_link_'+layoutNum+'_'+groupNum).attr('isAdding', 1);
+              $('#elbp_add_layout_plugins_link_'+layoutNum+'_'+groupNum).text( ELBP.strings.stopaddingplugins );
+              $('#elbp_layout_plugins_dump_'+layoutNum+'_'+groupNum+' ul').addClass('active');
+          }
+
+          e.preventDefault();
+
+        });
+
+        $('.elbp_add_new_plugin_layout').off('click');
+        $('.elbp_add_new_plugin_layout').on('click', function(e){
+
+          var numOfLayouts = $('.elbp_plugin_layouts').length;
+          var layoutNum = numOfLayouts + 1;
+          var plugins = $('hidden > plugins > plugin');
+
+          var output = "";
+          output += "<table id='elbp_plugin_layout_"+layoutNum+"' class='elbp_plugin_layouts'>";
+              output += "<tr>";
+                  output += "<td>";
+                      output += "<a href='#' class='elbp_remove' remove='#elbp_plugin_layout_"+layoutNum+"'><img src='"+M.cfg.wwwroot+"/blocks/elbp/pix/remove.png' alt='"+ELBP.strings.delete+"' /></a>";
+                  output += "</td>";
+              output += "</tr>";
+              output += "<tr>";
+                  output += "<td>"+ELBP.strings.layoutname+"</td>";
+                  output += "<td><input type='hidden' name='plugin_layouts_id["+layoutNum+"]' value='' /><input type='text' name='plugin_layouts_name["+layoutNum+"]' value='' /></td>";
+              output += "</tr>";
+              output += "<tr>";
+                  output += "<td>"+ELBP.strings.default+"</td>";
+                  output += "<td><input type='checkbox' name='plugin_layouts_default["+layoutNum+"]' value='1' /></td>";
+              output += "</tr>";
+              output += "<tr>";
+                  output += "<td>"+ELBP.strings.enabled+"</td>";
+                  output += "<td><input type='checkbox' name='plugin_layouts_enabled["+layoutNum+"]' value='1' /></td>";
+              output += "</tr>";
+              output += "<tr>";
+                  output += "<td colspan='2'>";
+
+                    $.each(plugins, function(i, el){
+
+                      var id = $(el).find('id').text();
+                      var name = $(el).find('name').text();
+                      var bg = $(el).find('bg').text();
+                      var font = $(el).find('font').text();
+                      var custom = $(el).find('custom').text();
+
+                      var isCustom = (custom == '1') ? 'c' : '';
+
+                      output += "<div class='elbp_add_plugin_to_group elbp_layout_plugin_name' id='plugin_"+isCustom+id+"_"+layoutNum+"' layoutNum='"+layoutNum+"' pluginID='"+id+"' style='background-color:"+bg+";color:"+font+";' >"+name+"</div>";
+
+                    });
+
+                  output += "</td>";
+              output += "</tr>";
+
+              output += "<tr>";
+                  output += "<th colspan='2'>"+ELBP.strings.groups+" <a href='#' class='elbp_add_plugin_group' layout='"+layoutNum+"'><img src='"+M.cfg.wwwroot+"/blocks/elbp/pix/add_small.png' alt='"+ELBP.strings.addnewgroup+"' /></a></th>";
+              output += "</tr>";
+
+          output += "</table>";
+
+          $('#elbp_plugin_layouts_form').append(output);
+
+          ELBP.bind();
+
+          e.preventDefault();
+
+        });
+
+        $('.elbp_add_plugin_to_group').off('click');
+        $('.elbp_add_plugin_to_group').on('click', function(e){
+
+          var layoutNum = $(this).attr('layoutNum');
+          var pluginID = $(this).attr('pluginID');
+
+          var groupNum = false;
+          var groups = $('.elbp_add_layout_plugins_link_layout_'+layoutNum);
+
+          $.each(groups, function(i, el){
+
+              var isAdding = $(el).attr('isAdding');
+              if (isAdding == 1){
+                  groupNum = $(el).attr('groupNum');
+                  return;
+              }
+
+          });
+
+          if (!groupNum){
+              alert( ELBP.strings.plschooseplugingroup );
+              return false;
+          }
+
+          // Hide plugin name div
+          var divElement = $('#plugin_'+pluginID+'_'+layoutNum);
+          $('#plugin_'+pluginID+'_'+layoutNum).hide();
+
+          // Add list item to group
+          $('#elbp_layout_plugins_dump_'+layoutNum+'_'+groupNum+' ul').append('<li pluginID="'+pluginID+'">'+$(divElement).text()+' <a href="#" class="elbp_remove_plugin_from_group" layout="'+layoutNum+'" pluginID="'+pluginID+'"><img src="'+M.cfg.wwwroot+'/blocks/elbp/pix/close_tiny.png" alt="'+ELBP.strings.remove+'" /></a><input type="hidden" name="layout_group_plugins['+layoutNum+']['+groupNum+'][]" value="'+pluginID+'" /></li>');
+
+          ELBP.bind();
+
+        });
+
+
+        // Bind them as sortable
+        $('.elbp_layout_plugins_dump ul').sortable( {
+            placeholder: "elbp_layout_plugin_placeholder"
+        } );
+
+        $('.elbp_layout_plugins_dump ul').disableSelection();
+
 
     };
 
