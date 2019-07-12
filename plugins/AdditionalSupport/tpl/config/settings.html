@@ -5,7 +5,7 @@
 <?php \elbp_display_attribute_creation_js($OBJ); ?>
 
 <script>
-    
+
     function showHooks(pluginID)
     {
 
@@ -13,7 +13,7 @@
         $('#hooks_' + pluginID).slideToggle('slow');
 
     }
-    
+
 </script>
 
 <h2><?= $string['additionalsupportattributes'] ?></h2>
@@ -21,11 +21,11 @@
 
 
 <form action="" method="post">
- 
+
     <?php \elbp_display_attribute_creation_form($OBJ); ?>
-        
+
     <input type="submit" name="submit_attributes" value="<?= $string['save'] ?>" />
-    
+
 </form>
 
 <br><br>
@@ -38,5 +38,3 @@
 
 
 <br><br>
-
-<script>applySorting('attributes_table_tbody');</script>

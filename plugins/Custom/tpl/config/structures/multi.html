@@ -8,11 +8,11 @@
 
 
 <form action="" method="post" >
- 
+
     <?php \elbp_display_attribute_creation_form($OBJ); ?>
-        
+
     <input type="submit" name="submit_attributes" value="<?= $string['save'] ?>" />
-    
+
 </form>
 
 <br><br>
@@ -27,7 +27,7 @@
     <option value=""><?= $string['choose'] ?>...</option>
     <?php if ($OBJ->getElementsFromAttributeString()): ?>
         <?php foreach($OBJ->getElementsFromAttributeString() as $attribute): ?>
-        <option value="<?= $attribute->name ?>"  <?= ($OBJ->getSetting('title_attribute') == $attribute->name) ? 'selected' : ''; ?>  ><?= $attribute->name ?></option>       
+        <option value="<?= $attribute->name ?>"  <?= ($OBJ->getSetting('title_attribute') == $attribute->name) ? 'selected' : ''; ?>  ><?= $attribute->name ?></option>
         <?php endforeach; ?>
     <?php endif; ?>
 </select>
@@ -36,7 +36,3 @@
 <input type="submit" name="submit_title_attribute" value="<?= $string['save'] ?>" />
 
 </form>
-
-
-
-<script>applySorting('attributes_table_tbody');</script>

@@ -4,52 +4,52 @@
 
 
 <script>
-    
+
     function addQuestionRow()
     {
         $('#elbp_add_review_questions').append('<tr><td><input type="text" name="review_questions[new][]" class="elbp_large" /></td><td></td></tr>');
     }
-    
+
     function addValueRow()
     {
         $('#elbp_add_review_values').append('<tr><td><input type="text" name="review_values[new][]" class="elbp_large" /></td><td><input type="text" name="review_value_scores[new][]" class="elbp_small" /></td><td></td><td></td></tr>');
     }
-    
+
     function deleteRow(el)
     {
        $(el).parents('tr').remove();
     }
-    
-    
+
+
 function showHooks(pluginID)
 {
-    
+
     $('.availablehooks').css('display', 'none');
     $('#hooks_' + pluginID).slideToggle('slow');
-    
+
 }
-    
+
 </script>
 <h2><?= $string['courses'] ?></h2>
 <p><?= $string['coursereports:courses:desc'] ?></p>
-    
+
 <form action="" method="post">
-    
+
     <small><strong><?= $string['coursereports:coursetypes'] ?></strong> - <?= $string['coursereports:coursetypes:desc'] ?></small><br>
-    <small><?= $string['both'] ?></small> <input type="radio" name="course_types" value="both" <?= ($settings['course_types'] == 'both' || !$settings['course_types']) ? 'checked' : ''; ?> /> &nbsp;&nbsp; 
-    <small><?= $string['metacoursesonly'] ?></small> <input type="radio" name="course_types" value="meta" <?= ($settings['course_types'] == 'meta') ? 'checked' : ''; ?> /> &nbsp;&nbsp; 
+    <small><?= $string['both'] ?></small> <input type="radio" name="course_types" value="both" <?= ($settings['course_types'] == 'both' || !$settings['course_types']) ? 'checked' : ''; ?> /> &nbsp;&nbsp;
+    <small><?= $string['metacoursesonly'] ?></small> <input type="radio" name="course_types" value="meta" <?= ($settings['course_types'] == 'meta') ? 'checked' : ''; ?> /> &nbsp;&nbsp;
     <small><?= $string['childcoursesonly'] ?></small> <input type="radio" name="course_types" value="child" <?= ($settings['course_types'] == 'child') ? 'checked' : ''; ?> />
     <br><br>
-    
+
     <small><strong><?= get_string('coursename', 'block_elbp') ?></strong> - <?= get_string('coursename:desc' ,'block_elbp') ?></small><br>
-    <small><?= get_string('shortname', 'block_elbp') ?></small> <input type='radio' name='course_name' value='shortname' <?= ($settings['course_name'] == 'shortname' ) ? 'checked' : '' ?> />  &nbsp; 
-    <small><?= get_string('idnumber', 'block_elbp') ?></small> <input type='radio' name='course_name' value='idnumber' <?= ($settings['course_name'] == 'idnumber' ) ? 'checked' : '' ?> />  &nbsp; 
-    <small><?= get_string('fullname', 'block_elbp') ?></small> <input type='radio' name='course_name' value='fullname' <?= ($settings['course_name'] == 'fullname' ) ? 'checked' : '' ?> />  &nbsp; 
-    
+    <small><?= get_string('shortname', 'block_elbp') ?></small> <input type='radio' name='course_name' value='shortname' <?= ($settings['course_name'] == 'shortname' ) ? 'checked' : '' ?> />  &nbsp;
+    <small><?= get_string('idnumber', 'block_elbp') ?></small> <input type='radio' name='course_name' value='idnumber' <?= ($settings['course_name'] == 'idnumber' ) ? 'checked' : '' ?> />  &nbsp;
+    <small><?= get_string('fullname', 'block_elbp') ?></small> <input type='radio' name='course_name' value='fullname' <?= ($settings['course_name'] == 'fullname' ) ? 'checked' : '' ?> />  &nbsp;
+
     <br><br>
-    
+
     <input type="submit" name="submit_courses" value="<?= $string['save'] ?>" />
-    
+
 </form>
 
 <br><br>
@@ -60,11 +60,11 @@ function showHooks(pluginID)
 
 
 <form action="" method="post">
-        
+
     <?php \elbp_display_attribute_creation_form($OBJ); ?>
-        
+
     <input type="submit" name="submit_attributes" value="<?= $string['save'] ?>" />
-    
+
 </form>
 
 <br><br>
@@ -73,19 +73,19 @@ function showHooks(pluginID)
 <p><?= $string['reviewquestions:desc'] ?></p>
 
 <form action="" method="post">
-    
+
     <small><strong><?= $string['enabledisable'] ?></strong> - <?= $string['coursereports:enable:desc'] ?></small><br>
     <input type="checkbox" name="enable_review_questions" <?= ($OBJ->getSetting('enable_review_questions') == 1) ? 'checked' : '' ?> ><br><br>
-    
+
     <small><strong><?= $string['questions'] ?></strong> - <?= $string['coursereports:questions:desc'] ?></small><br>
     <table id="elbp_add_review_questions">
-        
+
         <tr>
             <th><?= $string['question'] ?></th>
             <th><a href="#" onclick="addQuestionRow();return false;"><?= $string['add'] ?></a></th>
             <th></th>
         </tr>
-        
+
         <?php foreach($OBJ->getReviewQuestions() as $question): ?>
         <tr>
             <td><input type="text" class="elbp_large" name="review_questions[existing][<?= $question->id ?>]" value="<?= elbp_html($question->question) ?>" /></td>
@@ -93,20 +93,20 @@ function showHooks(pluginID)
             <td><a href="#" onclick="deleteRow( $(this) );return false;"><img src="<?= elbp_image_url('t/delete') ?>" alt="<?= get_string('delete') ?>" title="<?= get_string('delete') ?>" /></a></td>
         </tr>
         <?php endforeach; ?>
-        
+
     </table>
-    
+
     <small><strong><?= $string['values'] ?></strong> - <?= $string['coursereports:values:desc'] ?></small><br>
-    
+
      <table id="elbp_add_review_values">
-        
+
         <tr>
             <th><?= $string['value'] ?></th>
             <th><?= $string['score'] ?></th>
             <th><a href="#" onclick="addValueRow();return false;"><?= $string['add'] ?></a></th>
             <th></th>
         </tr>
-        
+
         <?php foreach($OBJ->getReviewValues() as $value): ?>
         <tr>
             <td><input type="text" class="elbp_large" name="review_values[existing][<?= $value->id ?>]" value="<?= elbp_html($value->value) ?>" /></td>
@@ -115,14 +115,14 @@ function showHooks(pluginID)
             <td><a href="#" onclick="deleteRow( $(this) );return false;"><img src="<?= elbp_image_url('t/delete') ?>" alt="<?= get_string('delete') ?>" title="<?= get_string('delete') ?>" /></a></td>
         </tr>
         <?php endforeach; ?>
-        
+
     </table>
-    
-    
+
+
     <br><br>
     <input type="submit" name="submit_review" value="<?= $string['save'] ?>" />
-    
-    
+
+
 </form>
 
 <br><br>
@@ -131,11 +131,11 @@ function showHooks(pluginID)
 <p><?= $string['coursereportinstructions:desc'] ?></p>
 
 <form action="" method="post">
-    
+
     <input type="text" class="elbp_max" name="new_course_report_instructions" value="<?= ($OBJ->getSetting('new_course_report_instructions')) ? $OBJ->getSetting('new_course_report_instructions') : ''; ?>" />
     <br><br>
     <input type="submit" name="submit_course_report_instructions" value="<?= $string['save'] ?>" />
-    
+
 </form>
 
 <br><br>
@@ -146,7 +146,3 @@ function showHooks(pluginID)
 <?php \elbp_display_hooks_form($OBJ); ?>
 
 <br><br>
-
-
-
-<script>applySorting('attributes_table_tbody');</script>

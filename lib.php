@@ -1799,23 +1799,17 @@ JS;
                     } );
 
                     // rows
-                    console.log('about to sort rows');
                     $(TDs[3]).children('input.attribute_row_'+old+'_field_other_rows_inputs').each( function(){
 
                       var oClass = $(this).attr('class').split(" ");
                       var o = false;
 
-                      console.log('row ('+$(this).val()+'), old: ' + old);
-                      console.log(oClass);
-
                       $(oClass).each( function(i, v){
 
-                        console.log('v: ' + v);
                           if ( v.match("^field_row_num_") ){
 
                               var split = v.split("_");
                               o = split[ split.length - 1 ];
-                              console.log('old: ' + old + ', new: ' + n + ', o: ' + o);
 
                           }
 
@@ -1852,10 +1846,6 @@ JS;
             ELBPFORM = tmpObj;
 
         }
-
-        $(document).ready( function(){
-            applySorting('elbp_attributes_table tbody');
-        } );
 
 
 </script>

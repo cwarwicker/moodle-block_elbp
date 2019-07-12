@@ -1831,9 +1831,6 @@ class CustomPlugin {
             $output .= "<small>".get_string('notavailable')."</small>";
         }
 
-
-        $output .= "<script>$(document).ready( function(){ ELBP.apply_colour_picker(); } );</script>";
-
         echo $output;
 
     }

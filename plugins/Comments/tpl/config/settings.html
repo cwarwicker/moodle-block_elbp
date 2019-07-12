@@ -8,11 +8,11 @@
 
 
 <form action="" method="post">
- 
+
     <?php \elbp_display_attribute_creation_form($OBJ); ?>
-        
+
     <input type="submit" name="submit_attributes" value="<?= $string['save'] ?>" />
-    
+
 </form>
 
 <br><br>
@@ -26,7 +26,7 @@
     <option value=""><?= $string['choose'] ?>...</option>
     <?php if ($OBJ->getElementsFromAttributeString()): ?>
         <?php foreach($OBJ->getElementsFromAttributeString() as $attribute): ?>
-        <option value="<?= $attribute->name ?>"  <?= ($OBJ->getSetting('comment_title_attribute') == $attribute->name) ? 'selected' : ''; ?>  ><?= $attribute->name ?></option>       
+        <option value="<?= $attribute->name ?>"  <?= ($OBJ->getSetting('comment_title_attribute') == $attribute->name) ? 'selected' : ''; ?>  ><?= $attribute->name ?></option>
         <?php endforeach; ?>
     <?php endif; ?>
 </select>
@@ -52,7 +52,7 @@
 <br><br>
 
 <form action="" method="post" enctype="multipart/form-data">
-    
+
     <table>
         <tr>
             <td><strong><?= $string['positive'] ?></strong></td>
@@ -67,12 +67,10 @@
             <td><input type="file" name="negative_icon" /></td>
 
         </tr>
-    
+
     </table>
-    
+
     <br><br>
     <input type="submit" name="submit_icons" value="<?= $string['save'] ?>" />
-    
-</form>
 
-<script>applySorting('attributes_table_tbody');</script>
+</form>

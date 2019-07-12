@@ -72,6 +72,12 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             },
             success: function(d){
 
+                // If no data returned, or attempted redirect - display alert
+                if (d.length === 0 || d.indexOf("<!DOCTYPE") >= 0){
+                  alert( 'No data was returned by this request. Your Moodle session may have timed out, please refresh the page and see if you need to login again.' );
+                  return false;
+                }
+
                 // Process data for hidden JS
                 let e = ELBP.process_data_eval(d);
 
@@ -3123,6 +3129,16 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         } );
 
         $('.elbp_layout_plugins_dump ul').disableSelection();
+
+        // Terrible quick-fix until I actually move all of the attribute form js into an AMD module
+        $('#elbp_attributes_table tbody').sortable({
+            containerSelector: 'tbody',
+            itemSelector: 'tr',
+            cancel: '.noSort',
+            update: function(event, ui){
+                resortNumbers('elbp_attributes_table tbody');
+            }
+        });
 
 
     };

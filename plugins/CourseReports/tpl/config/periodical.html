@@ -2,38 +2,34 @@
 
 <h2><?= $string['coursereports:periodical'] ?></h2>
 <p><?= $string['coursereports:periodical:desc'] ?></p>
-    
+
 <form action="" method="post">
-    
+
     <small><strong><?= $string['enabledisable'] ?></strong> - <?= $string['coursereports:periodical:enabledisable'] ?></small><br>
-    <small><?= $string['enable'] ?></small> <input type="radio" name="periodical_enabled" value="1" <?= ($OBJ->getSetting('periodical_enabled') == 1) ? 'checked' : ''; ?> /> &nbsp;&nbsp; 
+    <small><?= $string['enable'] ?></small> <input type="radio" name="periodical_enabled" value="1" <?= ($OBJ->getSetting('periodical_enabled') == 1) ? 'checked' : ''; ?> /> &nbsp;&nbsp;
     <small><?= $string['disable'] ?></small> <input type="radio" name="periodical_enabled" value="0" <?= ($OBJ->getSetting('periodical_enabled') != 1) ? 'checked' : ''; ?> />
-    <br><br>    
-    
+    <br><br>
+
     <small><strong><?= $string['hooks'] ?></strong> - <?= $string['coursereports:periodical:hooks'] ?></small><br><br>
-    
+
     <small><?= $string['coursereports:periodical:attendance'] ?></small><br>
-    
-    <small><?= $string['enable'] ?></small> <input type="radio" name="periodical_attendance_enabled" value="1" <?= ($OBJ->getSetting('periodical_attendance_enabled') == 1) ? 'checked' : ''; ?> /> &nbsp;&nbsp; 
+
+    <small><?= $string['enable'] ?></small> <input type="radio" name="periodical_attendance_enabled" value="1" <?= ($OBJ->getSetting('periodical_attendance_enabled') == 1) ? 'checked' : ''; ?> /> &nbsp;&nbsp;
     <small><?= $string['disable'] ?></small> <input type="radio" name="periodical_attendance_enabled" value="0" <?= ($OBJ->getSetting('periodical_attendance_enabled') != 1) ? 'checked' : ''; ?> />
-    <br><br>  
-    
+    <br><br>
+
     <?php if(\elbp_is_block_installed('bcgt')): ?>
-    
+
         <small><?= $string['coursereports:periodical:gradetracker'] ?></small><br>
 
-        <small><?= $string['enable'] ?></small> <input type="radio" name="periodical_gradetracker_enabled" value="1" <?= ($OBJ->getSetting('periodical_gradetracker_enabled') == 1) ? 'checked' : ''; ?> /> &nbsp;&nbsp; 
+        <small><?= $string['enable'] ?></small> <input type="radio" name="periodical_gradetracker_enabled" value="1" <?= ($OBJ->getSetting('periodical_gradetracker_enabled') == 1) ? 'checked' : ''; ?> /> &nbsp;&nbsp;
         <small><?= $string['disable'] ?></small> <input type="radio" name="periodical_gradetracker_enabled" value="0" <?= ($OBJ->getSetting('periodical_gradetracker_enabled') != 1) ? 'checked' : ''; ?> />
-        <br><br>  
-    
+        <br><br>
+
     <?php endif; ?>
-    
+
     <input type="submit" name="submitconfig" value="<?= $string['save'] ?>" />
-    
+
 </form>
 
 <br><br>
-
-
-
-<script>applySorting('attributes_table_tbody');</script>
