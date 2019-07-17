@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2017-onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,43 +27,43 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
 
 namespace ELBP\Plugins\AdditionalSupport;
 
 /**
- * 
+ *
  */
 class Session extends \ELBP\BasePluginObject {
-    
+
     private $id = false;
     private $studentID;
     private $setByUserID;
     private $setTime;
     private $date;
     private $deadline;
-    
+
     private $comments = array();
-    
+
     private $errors = array();
     protected $attributes = array();
     private $AdditionalSupport;
     private $student;
     private $staff;
     private $autoSave = false;
-    
+
     private $targets;
-        
-    
+
+
     public function __construct($id) {
-        
+
         global $DB;
-        
+
         // If $id is an int, load up that session
         if (is_numeric($id))
         {
-        
+
             $record = $DB->get_record("lbp_add_sup_sessions", array("id" => $id));
             if ($record)
             {
@@ -75,25 +75,25 @@ class Session extends \ELBP\BasePluginObject {
                 $this->date = $record->sessiondate;
                 $this->deadline = $record->deadline;
                 $this->del = $record->del;
-                
+
                 $this->staff = $this->getSetByUser();
 
                 $this->loadAttributes();
 
             }
-        
+
         }
         // Otherwise we are creating a temp object with data provided in an array
         elseif (is_array($id))
         {
-            
+
             // Build new one from data provided
             $this->loadData($id);
-            
+
         }
-        
+
     }
-    
+
     /**
      * Is the session valid?
      * @return type
@@ -101,7 +101,7 @@ class Session extends \ELBP\BasePluginObject {
     public function isValid(){
         return ($this->id !== false) ? true : false;
     }
-    
+
     /**
      * Get the session id
      * @return type
@@ -109,7 +109,7 @@ class Session extends \ELBP\BasePluginObject {
     public function getID(){
         return $this->id;
     }
-    
+
     /**
      * Get the id of the student loaded in the object
      * @return type
@@ -117,7 +117,7 @@ class Session extends \ELBP\BasePluginObject {
     public function getStudentID(){
         return $this->studentID;
     }
-    
+
     /**
      * Get the student loaded in the object
      * @global \ELBP\Plugins\AdditionalSupport\type $DB
@@ -130,7 +130,7 @@ class Session extends \ELBP\BasePluginObject {
         }
         return $this->student;
     }
-    
+
     /**
      * Get the id of the user who set this session
      * @return type
@@ -138,7 +138,7 @@ class Session extends \ELBP\BasePluginObject {
     public function getSetByUserID(){
         return $this->setByUserID;
     }
-    
+
     /**
      * Get the user who set this session
      * @global \ELBP\Plugins\AdditionalSupport\type $DB
@@ -148,7 +148,7 @@ class Session extends \ELBP\BasePluginObject {
         global $DB;
         return $DB->get_record("user", array("id" => $this->setByUserID));
     }
-    
+
     /**
      * Get the unix timestamp this session was set
      * @return type
@@ -156,7 +156,7 @@ class Session extends \ELBP\BasePluginObject {
     public function getSetTime(){
         return $this->setTime;
     }
-    
+
     /**
      * Get the date this session was set for
      * @param bool $format If false will return timestamp, else will return date() using specified format
@@ -166,7 +166,7 @@ class Session extends \ELBP\BasePluginObject {
         if (!$format) return $this->date;
         else return date($format, $this->date);
     }
-    
+
     /**
      * Get the deadline set for this session
      * @param type $format If false will return timestamp, else will return date() using specified format
@@ -176,7 +176,7 @@ class Session extends \ELBP\BasePluginObject {
         if (!$format) return $this->deadline;
         else return date($format, $this->deadline);
     }
-    
+
     /**
      * Get the loaded attributes
      * @return type
@@ -184,7 +184,7 @@ class Session extends \ELBP\BasePluginObject {
     public function getAttributes(){
         return $this->attributes;
     }
-    
+
     /**
      * Get the name of the member of staff who set the session
      * @return type
@@ -192,7 +192,7 @@ class Session extends \ELBP\BasePluginObject {
     public function getStaffName(){
         return fullname($this->staff);
     }
-    
+
     /**
      * Get any errors
      * @return type
@@ -200,23 +200,23 @@ class Session extends \ELBP\BasePluginObject {
     public function getErrors(){
         return $this->errors;
     }
-    
+
     /**
      * Load session attributes
      * @global \ELBP\Plugins\AdditionalSupport\type $DB
      * @return type
      */
     public function loadAttributes(){
-        
+
         global $DB;
-                
+
         $check = $DB->get_records("lbp_add_sup_attributes", array("sessionid" => $this->id));
-        
+
         $this->attributes = parent::_loadAttributes($check);
         return $this->attributes;
-        
+
     }
-    
+
     /**
      * Set the Plugin object into the session
      * @param type $obj
@@ -225,19 +225,19 @@ class Session extends \ELBP\BasePluginObject {
     {
         $this->AdditionalSupport = $obj;
     }
-    
+
     /**
      * Count the number of targets on this session which have been achieved
      * @return int
      */
     public function countAchievedTargets(){
-        
+
         if (is_null($this->targets) || empty($this->targets)){
             $this->getAllTargets();
         }
-        
+
         $cnt = 0;
-        
+
         if ($this->targets)
         {
             foreach($this->targets as $target)
@@ -248,27 +248,27 @@ class Session extends \ELBP\BasePluginObject {
                 }
             }
         }
-        
+
         return $cnt;
-        
+
     }
-    
+
     /**
      * Get all the targets assigned to this session
      * @global \ELBP\Plugins\AdditionalSupport\type $DB
      * @return \ELBP\Plugins\Targets\Target
      */
     public function getAllTargets(){
-        
+
         global $DB, $ELBP;
-        
+
         if ($this->targets){
             return $this->targets;
         }
-        
+
         if ($ELBP->getPlugin("Targets"))
         {
-        
+
             $check = $DB->get_records_select("lbp_add_sup_attributes", "sessionid = ? AND field = 'Targets'", array($this->id));
             $results = array();
             if ($check)
@@ -288,9 +288,9 @@ class Session extends \ELBP\BasePluginObject {
             }
 
         return false;
-        
+
     }
-    
+
     /**
      * Count the targets assigned to this session
      * @return type
@@ -298,7 +298,7 @@ class Session extends \ELBP\BasePluginObject {
     public function countTargets(){
         return count($this->getAllTargets());
     }
-    
+
     /**
      * Remove an attribute from the Session
      * @param string $attribute Field
@@ -306,9 +306,9 @@ class Session extends \ELBP\BasePluginObject {
      */
     public function removeAttribute($attribute, $value = false)
     {
-        
+
         global $DB;
-        
+
         // If value is specified delete where value as well, otherwise only where field
         if ($value){
             // Log Action
@@ -326,10 +326,10 @@ class Session extends \ELBP\BasePluginObject {
             ));
             return $DB->delete_records_select("lbp_add_sup_attributes", "sessionid = ? AND field = ?", array($this->id, $attribute));
         }
-        
-        
+
+
     }
-    
+
     /**
      * Set the value of an attribute
      * @param type $attribute
@@ -339,7 +339,7 @@ class Session extends \ELBP\BasePluginObject {
     {
         $this->attributes[$attribute] = $value;
     }
-    
+
     /**
      * Set boolean true/false whether we should try to autosave the tutorial
      * @param type $val
@@ -347,28 +347,28 @@ class Session extends \ELBP\BasePluginObject {
     public function setAutoSave($val){
         $this->autoSave = $val;
     }
-    
+
     /**
      * Display the Session info in the expanded view
      */
     public function display(){
-                 
+
         global $DB, $ELBP;
-        
+
         $access = $ELBP->getUserPermissions($this->studentID);
-        
+
         $attributes = $this->AdditionalSupport->getAttributesForDisplay();
         $this->loadObjectIntoAttributes($attributes);
-        
+
         if (!$attributes) return get_string('noattributesdefined', 'block_elbp');
-                                
+
         $output = "";
-        
+
         $output .= "<div>";
-        
+
         // Main central elements
         $output .= "<div class='elbp_additional_support_main_elements'>";
-        
+
             $mainAttributes = $this->AdditionalSupport->getAttributesForDisplayDisplayType("main", $attributes);
             if ($mainAttributes)
             {
@@ -382,8 +382,8 @@ class Session extends \ELBP\BasePluginObject {
                 }
             }
         $output .= "</div>";
-        
-        
+
+
         // Summary
         $sideAttributes = $this->AdditionalSupport->getAttributesForDisplayDisplayType("side", $attributes);
         if ($sideAttributes)
@@ -400,17 +400,17 @@ class Session extends \ELBP\BasePluginObject {
             $output .= "</div>";
         }
 
-        
+
         // BKSBLive Hook
         if ($this->AdditionalSupport->hasHookEnabled("elbp_bksblive/English IA") || $this->AdditionalSupport->hasHookEnabled("elbp_bksblive/Maths IA") || $this->AdditionalSupport->hasHookEnabled("elbp_bksblive/ICT IA"))
         {
-            
+
             $bksb = $ELBP->getPlugin("elbp_bksblive");
-            
+
             $output .= "<div class='elbp_additional_support_summary_elements'>";
                 $output .= "<b>".get_string('initassessments', 'block_elbp_bksblive')."</b><br><br>";
                 $output .= "<table class='additional_support_bksb_table'>";
-                    
+
                     if ($this->AdditionalSupport->hasHookEnabled("elbp_bksblive/English IA"))
                     {
                         $value = $this->getAttribute('English IA', true);
@@ -421,8 +421,8 @@ class Session extends \ELBP\BasePluginObject {
                         }
                         $output .= "<tr><td>".get_string('engia', 'block_elbp_bksblive')."</td><td>{$value}</td></tr>";
                     }
-                    
-                    
+
+
                     if ($this->AdditionalSupport->hasHookEnabled("elbp_bksblive/Maths IA"))
                     {
                         $value = $this->getAttribute('Maths IA', true);
@@ -433,8 +433,8 @@ class Session extends \ELBP\BasePluginObject {
                         }
                         $output .= "<tr><td>".get_string('mathsia', 'block_elbp_bksblive')."</td><td>{$value}</td></tr>";
                     }
-                    
-                    
+
+
                     if ($this->AdditionalSupport->hasHookEnabled("elbp_bksblive/ICT IA"))
                     {
                         $value = $this->getAttribute('ICT IA', true);
@@ -445,24 +445,24 @@ class Session extends \ELBP\BasePluginObject {
                         }
                         $output .= "<tr><td>".get_string('ictia', 'block_elbp_bksblive')."</td><td>{$value}</td></tr>";
                     }
-                    
-                
+
+
                 $output .= "</table>";
             $output .= "</div>";
-            
+
         }
-                
-        
+
+
         // BKSB Hook
         elseif ($this->AdditionalSupport->hasHookEnabled("elbp_bksb/English IA") || $this->AdditionalSupport->hasHookEnabled("elbp_bksb/Maths IA") || $this->AdditionalSupport->hasHookEnabled("elbp_bksb/ICT IA"))
         {
-            
+
             $bksb = $ELBP->getPlugin("elbp_bksb");
-            
+
             $output .= "<div class='elbp_additional_support_summary_elements'>";
                 $output .= "<b>".get_string('initassessments', 'block_elbp_bksb')."</b><br><br>";
                 $output .= "<table class='additional_support_bksb_table'>";
-                    
+
                     if ($this->AdditionalSupport->hasHookEnabled("elbp_bksb/English IA"))
                     {
                         $value = $this->getAttribute('English IA', true);
@@ -473,8 +473,8 @@ class Session extends \ELBP\BasePluginObject {
                         }
                         $output .= "<tr><td>".get_string('engia', 'block_elbp_bksb')."</td><td>{$value}</td></tr>";
                     }
-                    
-                    
+
+
                     if ($this->AdditionalSupport->hasHookEnabled("elbp_bksb/Maths IA"))
                     {
                         $value = $this->getAttribute('Maths IA', true);
@@ -485,8 +485,8 @@ class Session extends \ELBP\BasePluginObject {
                         }
                         $output .= "<tr><td>".get_string('mathsia', 'block_elbp_bksb')."</td><td>{$value}</td></tr>";
                     }
-                    
-                    
+
+
                     if ($this->AdditionalSupport->hasHookEnabled("elbp_bksb/ICT IA"))
                     {
                         $value = $this->getAttribute('ICT IA', true);
@@ -497,26 +497,26 @@ class Session extends \ELBP\BasePluginObject {
                         }
                         $output .= "<tr><td>".get_string('ictia', 'block_elbp_bksb')."</td><td>{$value}</td></tr>";
                     }
-                    
-                
+
+
                 $output .= "</table>";
             $output .= "</div>";
-            
+
         }
-        
+
         $output .= "<br class='elbp_cl'>";
-        
+
         // Targets hook
         if ($this->AdditionalSupport->hasHookEnabled("Targets/Targets"))
         {
-        
+
             $targetList = array();
             $targetsObj = \ELBP\Plugins\Plugin::instaniate("Targets");
-            
+
             $output .= "<div class='elbp_summary_table'>";
                 $output .= "<p class='elbp_centre'><b>".get_string('targetssetinthissession', 'block_elbp')."</b></p><br>";
                 $output .= "<p id='additional_support_target_output_session_{$this->id}'></p>";
-                
+
                 if (isset($this->attributes['Targets'])){
                     if (!is_array($this->attributes['Targets'])) $this->attributes['Targets'] = array($this->attributes['Targets']);
                     foreach($this->attributes['Targets'] as $targetID)
@@ -530,10 +530,10 @@ class Session extends \ELBP\BasePluginObject {
 
                     }
                 }
-                
+
                 if ($targetList)
                 {
-                                        
+
                     $output .= "<table class='additional_support_targets_table'>";
                     $output .= "<tr>";
                     $output .= "<th>".get_string('targetname', 'block_elbp')."</th>";
@@ -542,7 +542,7 @@ class Session extends \ELBP\BasePluginObject {
                     $output .= "<th>".get_string('deadline', 'block_elbp')."</th>";
                     $output .= "<th>".get_string('numberofcomments', 'block_elbp')."</th>";
                     $output .= "</tr>";
-                    
+
                     foreach($targetList as $target)
                     {
                         $output .= "<tr>";
@@ -558,7 +558,7 @@ class Session extends \ELBP\BasePluginObject {
                         }
                         $output .= "<a id='target_link_{$target->getID()}' href='#' onclick='ELBP.save_state(\"AdditionalSupport\");ELBP.dock(\"AdditionalSupport\", \"".elbp_html($this->AdditionalSupport->getTitle())."\");ELBP.Targets.load_targets({$target->getStatus()}, {$target->getID()});return false;' title='{$title}' class='target_name_tooltip'>".elbp_html($target->getName())."</a></td>";
                         $output .= "<td>";
-                        
+
                             if (!$target->isAchieved() && elbp_has_capability('block/elbp:edit_additional_support_target_status', $this->AdditionalSupport->getAccess()) && ($target->getDeadline() > time() || $this->AdditionalSupport->getSetting('lock_targets_after_deadline') != 1))
                             {
                                 $output .= "<select id='update_status_{$target->getID()}' onchange='ELBP.AdditionalSupport.update_target_status(this.value, {$target->getID()}, {$this->id});return false;'>";
@@ -580,13 +580,13 @@ class Session extends \ELBP\BasePluginObject {
                                     $output .= "<br><small>{$target->getUpdatedDate()}</small>";
                                 }
                             }
-                        
-                            
+
+
                         $output .= "</td>";
-                        
+
                         if ($this->AdditionalSupport->getSetting('confidence_enabled') == 1)
                         {
-                            
+
                             $output .= "<td>".get_string('start', 'block_elbp').": ";
 
                             $attName = 'Targets Confidence Start ' . $target->getID();
@@ -631,59 +631,59 @@ class Session extends \ELBP\BasePluginObject {
                             }
 
                             $output .= "</td>";
-                        
+
                         }
-                        
+
                         $output .= "<td>{$target->getDueDate()}</td>";
                         $output .= "<td>{$target->countComments()}</td>";
                         $output .= "</tr>";
                     }
-                    
+
                     $output .= "</table>";
-                    
+
                 }
                 else
                 {
                     $output .= "<p class='elbp_centre'>".get_string('noresults', 'block_elbp')."</p>";
                 }
-        
+
             $output .= "</div>";
-        
+
         }
-        
+
         $output .= "</div>";
         $output .= "<script>$('.target_name_tooltip').tooltip();</script>";
-        
+
         echo $output;
-        
+
     }
-    
+
     /**
      * Delete Session
      * @return boolean
      */
     public function delete()
     {
-        
+
         global $DB;
-                
+
         $data = new \stdClass();
         $data->id = $this->id;
         $data->del = 1;
-                
+
         if (!$DB->update_record("lbp_add_sup_sessions", $data)){
             $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
             return false;
         }
-        
+
         // Log Action
         elbp_log(LOG_MODULE_ELBP, LOG_ELEMENT_ELBP_ADDITIONAL_SUPPORT, LOG_ACTION_ELBP_ADDITIONAL_SUPPORT_DELETED_SESSION, $this->studentID, array(
             "sessionID" => $this->id
         ));
-        
+
         // If we want to then delete targets, do that as well
         if ($this->AdditionalSupport->getSetting('delete_targets_on_delete') == 1){
-            
+
             $targets = $this->getAllTargets();
             if ($targets)
             {
@@ -695,12 +695,12 @@ class Session extends \ELBP\BasePluginObject {
                     }
                 }
             }
-            
+
         }
-        
+
         return true;
     }
-    
+
     /**
      * Save session into the DB
      * @global type $USER
@@ -708,22 +708,22 @@ class Session extends \ELBP\BasePluginObject {
      * @return boolean
      */
     public function save(){
-        
+
         global $USER, $DB;
-        
+
         if (!$this->id) return false;
         if (!$this->AdditionalSupport) return false;
-                
+
         if (!ctype_digit($this->date)) $this->errors[] = get_string('additionalsupporterrors:date', 'block_elbp');
         if (!ctype_digit($this->studentID)) $this->errors[] = get_string('additionalsupporterrors:studentid', 'block_elbp');
-        
+
         // Loop through defined attributes and check if we have that submitted. Then validate it if needed
         $allAttributes = $this->AdditionalSupport->getElementsFromAttributeString();
-                        
+
         // If auto save, don't check for errors, just save it
         if (!$this->autoSave)
         {
-        
+
             if ($allAttributes)
             {
 
@@ -748,31 +748,40 @@ class Session extends \ELBP\BasePluginObject {
             }
 
             if (!empty($this->errors)) return false;
-        
+
         }
-        
+
         $tmp = new Session($this->id);
-        
+        $now = time();
+
+        if (is_null($this->deadline)){
+          $this->deadline = $now + 604800; // Now + 1 week
+        }
+
+        if (is_null($this->date)){
+          $this->date = $now;
+        }
+
         // Save it
-        
+
         // New, so insert it
         if ($this->id == -1)
         {
-         
+
             $obj = new \stdClass();
             $obj->studentid = $this->studentID;
             $obj->sessiondate = $this->date;
             $obj->deadline = $this->deadline;
             $obj->setbyuserid = $USER->id;
-            $obj->settime = time();
+            $obj->settime = $now;
             $obj->del = 0;
-            
-            // Insert the target 
+
+            // Insert the target
             if (!$id = $DB->insert_record("lbp_add_sup_sessions", $obj)){
                 $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                 return false;
             }
-            
+
             // Log Action
             elbp_log(LOG_MODULE_ELBP, LOG_ELEMENT_ELBP_ADDITIONAL_SUPPORT, LOG_ACTION_ELBP_ADDITIONAL_SUPPORT_ADDED_SESSION, $this->studentID, array(
                 "sessionID" => $id,
@@ -780,59 +789,62 @@ class Session extends \ELBP\BasePluginObject {
                 "deadline" => $this->deadline,
                 "attributes" => http_build_query($this->attributes)
             ));
-            
-            
-            
+
+            // Set vars
+            $this->id = $id;
+            $this->setTime = $now;
+            $this->setByUserID = $USER->id;
+
             // Now using that target ID, insert it's attributes
             if ($this->attributes)
             {
-                
+
                 foreach($this->attributes as $field => $value)
                 {
-                    
-                    
+
+
                     // First check for interested parties and do that differently if found
                     if ($field == 'Interested Parties')
                     {
-                        
+
                         // For each interested party, set their alert preferences so that they get alerts about
                         // This additional support session
-                        
+
                         $events = $this->AdditionalSupport->getEvents();
                         $DBC = new \ELBP\DB();
-                        
+
                         if (!is_array($value)) $value = array($value);
                         foreach($value as $val)
                         {
-                            
+
                             $user = $DBC->getUser(array("type" => "username", "val" => $val));
                             if ($user)
                             {
-                            
+
                                 if ($events)
                                 {
                                     foreach($events as $event)
                                     {
-                                        
+
                                         $this->AdditionalSupport->setUserEventPreference($event->id, 1, array("studentID" => $this->studentID), false, $user->id);
 
                                     }
                                 }
-                            
+
                             }
                         }
-                                                
+
                     }
-                    
-                    
-                    
+
+
+
                     // If array, do each of them
                     if (is_array($value))
                     {
-                        
+
                         foreach($value as $val)
                         {
-                            
+
                             $ins = new \stdClass();
                             $ins->sessionid = $id;
                             $ins->field = $field;
@@ -841,16 +853,16 @@ class Session extends \ELBP\BasePluginObject {
                                 $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                                 return false;
                             }
-                            
+
                         }
-                        
+
                     }
                     else
                     {
-                        
+
                         // If empty, set to NULL in DB
                         if ($value == "") $value = null;
-                        
+
                         $ins = new \stdClass();
                         $ins->sessionid = $id;
                         $ins->field = $field;
@@ -859,36 +871,36 @@ class Session extends \ELBP\BasePluginObject {
                             $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                             return false;
                         }
-                        
+
                     }
-                    
+
                 }
-                
+
             }
-            
+
             // Trigger alerts
-            $alertContent = get_string('alerts:additionalsupportsessionadded', 'block_elbp') . 
+            $alertContent = get_string('alerts:additionalsupportsessionadded', 'block_elbp') .
                             $this->getInfoForEventTrigger(false);
             elbp_event_trigger("Additional Support Session Added", $this->AdditionalSupport->getID(), $this->studentID, $alertContent, nl2br($alertContent));
-            
-            
-            
+
+
+
         }
         else
         {
-            
+
             // Update
             $obj = new \stdClass();
             $obj->id = $this->id;
             $obj->sessiondate = $this->date;
             $obj->deadline = $this->deadline;
             $obj->del = 0;
-            
+
             if (!$DB->update_record("lbp_add_sup_sessions", $obj)){
                 $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                 return false;
             }
-            
+
             // Log Action
             elbp_log(LOG_MODULE_ELBP, LOG_ELEMENT_ELBP_ADDITIONAL_SUPPORT, LOG_ACTION_ELBP_ADDITIONAL_SUPPORT_UPDATED_SESSION, $this->studentID, array(
                  "sessionID" => $this->id,
@@ -896,52 +908,52 @@ class Session extends \ELBP\BasePluginObject {
                  "deadline" => $this->deadline,
                  "attributes" => http_build_query($this->attributes)
             ));
-            
-            // Now using that target ID, insert it's attributes  
+
+            // Now using that target ID, insert it's attributes
             if ($this->attributes)
             {
-                                
+
                 foreach($this->attributes as $field => $value)
                 {
-                                                            
+
                     // First check for interested parties and do that differently if found
                     if ($field == 'Interested Parties')
                     {
-                        
+
                         // For each interested party, set their alert preferences so that they get alerts about
                         // This additional support session
-                        
+
                         $events = $this->AdditionalSupport->getEvents();
                         $DBC = new \ELBP\DB();
-                        
+
                         if (!is_array($value)) $value = array($value);
-                        
+
                         $newParties = array();
-                        
+
                         foreach($value as $val)
                         {
-                            
+
                             $user = $DBC->getUser(array("type" => "username", "val" => $val));
                             if ($user)
                             {
-                            
+
                                 if ($events)
                                 {
                                     foreach($events as $event)
                                     {
-                                        
+
                                         $this->AdditionalSupport->setUserEventPreference($event->id, 1, array("studentID" => $this->studentID), false, $user->id);
                                         $newParties[] = $user->id;
-                                        
+
                                     }
                                 }
-                            
+
                             }
                         }
-                        
+
                         // Now find any interested parties who were previously assigned but are not any more, and remove
                         // alert preference (set to 0)
-                        
+
                         $currentParties = $DB->get_records("lbp_add_sup_attributes", array("sessionid" => $this->id, "field" => "Interested Parties"));
                         if ($currentParties)
                         {
@@ -953,35 +965,35 @@ class Session extends \ELBP\BasePluginObject {
                                     // If not in submitted array, disable preference
                                     if (!in_array($user->id, $newParties))
                                     {
-                                        
+
                                         foreach ($events as $event)
                                         {
                                             $this->AdditionalSupport->setUserEventPreference($event->id, 0, array("studentID" => $this->studentID), false, $user->id);
                                         }
-                                        
+
                                     }
                                 }
                             }
                         }
-                                                
+
                     }
-                    
-                    
-                    
-                    
+
+
+
+
                     // If array, do each of them
                     if (is_array($value))
                     {
-                        
-                                                
+
+
                         // If it's an array then we're going to have to delete all records of this att first
                         // Otherwise, say we saved 4 values: one, two, three, four oringally, then we update to: one, four
                         // The two & thre would still be in there
                         $DB->delete_records("lbp_add_sup_attributes", array("sessionid" => $this->id, "field" => $field));
-                        
+
                         foreach($value as $val)
                         {
-                         
+
                             $ins = new \stdClass();
                             $ins->sessionid = $this->id;
                             $ins->field = $field;
@@ -990,19 +1002,19 @@ class Session extends \ELBP\BasePluginObject {
                                 $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                                 return false;
                             }
-                                                        
+
                         }
-                                                
+
                     }
                     else
                     {
-                        
+
                         // Get att from DB
                         $attribute = $DB->get_record_select("lbp_add_sup_attributes", "sessionid = ? AND field = ?", array($this->id, $field));
-                                                    
+
                         // If empty, set to NULL in DB
                         if ($value == "") $value = null;
-                        
+
                         // if it exists, update it
                         if ($attribute)
                         {
@@ -1014,7 +1026,7 @@ class Session extends \ELBP\BasePluginObject {
                                 return false;
                             }
                         }
-                        
+
                         // Else, insert it
                         else
                         {
@@ -1027,60 +1039,60 @@ class Session extends \ELBP\BasePluginObject {
                                 return false;
                             }
                         }
-                        
-                        
+
+
                     }
-                    
+
                 }
-                
+
                 // Now loop through the defined attributes in the config settings
                 // If any of those cannot be found in the attributes supplied, e.g. may be a checkbox with nothing selected
                 // now, having had something selected before (it won't send a value), and delete them
                 if ($allAttributes)
                 {
-                                        
+
                     foreach($allAttributes as $allAttribute)
                     {
-                        
+
                         if (!isset($this->attributes[$allAttribute->name]))
                         {
                             $DB->delete_records("lbp_add_sup_attributes", array("sessionid" => $this->id, "field" => $allAttribute->name));
                         }
-                        
+
                     }
                 }
-                                
-                
+
+
             }
-            
+
             // Trigger alerts
-            $alertContent = get_string('alerts:additionalsupportsessionupdated', 'block_elbp') . 
+            $alertContent = get_string('alerts:additionalsupportsessionupdated', 'block_elbp') .
                             $this->getInfoForEventTrigger(false);
-            $htmlContent = get_string('alerts:additionalsupportsessionupdated', 'block_elbp') . 
+            $htmlContent = get_string('alerts:additionalsupportsessionupdated', 'block_elbp') .
                             $this->getInfoForEventTrigger(true, $tmp);
             elbp_event_trigger("Additional Support Session Updated", $this->AdditionalSupport->getID(), $this->studentID, $alertContent, $htmlContent);
-            
-            
-            
+
+
+
         }
-        
-        
+
+
         return true;
-        
-        
+
+
     }
-    
-    
+
+
     /**
      * Generate simple HTML output to be printed
      */
     public function printOut()
     {
-        
+
         global $CFG, $USER, $ELBP;
-        
+
         ob_clean();
-        
+
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . get_string('additionalsupportsession', 'block_elbp') . ' - ' . $this->getDate('d M Y');
         $logo = \ELBP\ELBP::getPrintLogo();
         $title = get_string('additionalsupportsession', 'block_elbp');
@@ -1088,13 +1100,13 @@ class Session extends \ELBP\BasePluginObject {
 
         $attributes = $this->AdditionalSupport->getAttributesForDisplay();
         $this->loadObjectIntoAttributes($attributes);
-        
+
         $strings = array();
         $strings['startdate'] = get_string('startdate', 'block_elbp');
         $strings['deadline'] = get_string('deadline', 'block_elbp');
         $strings['setby'] = get_string('setby', 'block_elbp');
         $strings['targetsset'] = get_string('numberoftargetsset', 'block_elbp');
-        
+
         $txt = "";
         $txt .= "<table class='info'>";
             $txt .= "<tr>";
@@ -1109,10 +1121,10 @@ class Session extends \ELBP\BasePluginObject {
                 $txt .= "<td colspan='2'>".get_string('longtermaim', 'block_elbp').": ".$this->AdditionalSupport->getSetting('long_term_aim', $this->student->id)."</td>";
             $txt .= "</tr>";
         $txt .= "</table>";
-        
+
         $txt .= "<hr>";
         $txt .= "<table>";
-        
+
         if ($attributes)
         {
             foreach($attributes as $attribute)
@@ -1121,17 +1133,17 @@ class Session extends \ELBP\BasePluginObject {
                 $txt .= "<tr><td>".$attribute->displayValue(true)."</td></tr>";
             }
         }
-   
+
         $txt .= "</table>";
-        
-        
+
+
         // BKSB hook
         if ($this->AdditionalSupport->hasHookEnabled("elbp_bksblive/English IA") || $this->AdditionalSupport->hasHookEnabled("elbp_bksblive/Maths IA") || $this->AdditionalSupport->hasHookEnabled("elbp_bksblive/ICT IA"))
         {
-            
+
             $txt .= "<hr>";
             $txt .= "<u>".get_string('initassessments', 'block_elbp_bksblive')."</u><br>";
-            
+
             if ($this->AdditionalSupport->hasHookEnabled("elbp_bksblive/English IA")){
                 $txt .= get_string('engia', 'block_elbp_bksblive') . ': ';
                 $val = $this->getAttribute('English IA', true);
@@ -1139,7 +1151,7 @@ class Session extends \ELBP\BasePluginObject {
                 $txt .= $val;
                 $txt .= "<br>";
             }
-            
+
             if ($this->AdditionalSupport->hasHookEnabled("elbp_bksblive/Maths IA")){
                 $txt .= get_string('mathsia', 'block_elbp_bksblive') . ': ';
                 $val = $this->getAttribute('Maths IA', true);
@@ -1147,7 +1159,7 @@ class Session extends \ELBP\BasePluginObject {
                 $txt .= $val;
                 $txt .= "<br>";
             }
-            
+
             if ($this->AdditionalSupport->hasHookEnabled("elbp_bksblive/ICT IA")){
                 $txt .= get_string('ictia', 'block_elbp_bksblive') . ': ';
                 $val = $this->getAttribute('ICT IA', true);
@@ -1155,15 +1167,15 @@ class Session extends \ELBP\BasePluginObject {
                 $txt .= $val;
                 $txt .= "<br>";
             }
-            
+
         }
-        
+
         elseif ($this->AdditionalSupport->hasHookEnabled("elbp_bksb/English IA") || $this->AdditionalSupport->hasHookEnabled("elbp_bksb/Maths IA") || $this->AdditionalSupport->hasHookEnabled("elbp_bksb/ICT IA"))
         {
-            
+
             $txt .= "<hr>";
             $txt .= "<u>".get_string('initassessments', 'block_elbp_bksb')."</u><br>";
-            
+
             if ($this->AdditionalSupport->hasHookEnabled("elbp_bksb/English IA")){
                 $txt .= get_string('engia', 'block_elbp_bksb') . ': ';
                 $val = $this->getAttribute('English IA', true);
@@ -1171,7 +1183,7 @@ class Session extends \ELBP\BasePluginObject {
                 $txt .= $val;
                 $txt .= "<br>";
             }
-            
+
             if ($this->AdditionalSupport->hasHookEnabled("elbp_bksb/Maths IA")){
                 $txt .= get_string('mathsia', 'block_elbp_bksb') . ': ';
                 $val = $this->getAttribute('Maths IA', true);
@@ -1179,7 +1191,7 @@ class Session extends \ELBP\BasePluginObject {
                 $txt .= $val;
                 $txt .= "<br>";
             }
-            
+
             if ($this->AdditionalSupport->hasHookEnabled("elbp_bksb/ICT IA")){
                 $txt .= get_string('ictia', 'block_elbp_bksb') . ': ';
                 $val = $this->getAttribute('ICT IA', true);
@@ -1187,13 +1199,13 @@ class Session extends \ELBP\BasePluginObject {
                 $txt .= $val;
                 $txt .= "<br>";
             }
-            
+
         }
-        
+
         // Targets hook
         if ($this->AdditionalSupport->hasHookEnabled("Targets/Targets"))
         {
-        
+
             $txt .= "<hr>";
             $txt .= "<u>".get_string('targets', 'block_elbp')."</u><br>";
 
@@ -1244,17 +1256,17 @@ class Session extends \ELBP\BasePluginObject {
             {
                 $txt .= get_string('noresults', 'block_elbp');
             }
-        
+
         }
-        
-        
+
+
         // Overall session comments
         if ($this->getComments()){
             $txt .= "<hr>";
             $txt .= "<u>".get_string('sessioncomments', 'block_elbp')."</u><br>";
             $txt .= $this->displayPdfComments();
         }
-        
+
         // Anything else they want to write in
         $txt .= "<hr>";
         $txt .= "<u>".get_string('optionalextracomments', 'block_elbp')."</u><br><div style='height:50px;'></div>";
@@ -1263,53 +1275,53 @@ class Session extends \ELBP\BasePluginObject {
         $txt .= "<small>".get_string('studentsignature', 'block_elbp')."_______________________________________________________________________ ".get_string('date')."___________________</small><br><br>";
         $txt .= "<small>".get_string('tutorsignature', 'block_elbp')."_________________________________________________________________________ ".get_string('date')."___________________</small><br>";
         $txt .= "</div>";
-        
+
         $TPL = new \ELBP\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);
         $TPL->set("heading", $heading);
         $TPL->set("content", $txt);
-        
-        
+
+
         $TPL->load( $CFG->dirroot . '/blocks/elbp/tpl/print.html' );
         $TPL->display();
         exit;
-        
-        
+
+
     }
-    
-    
-    
+
+
+
     /**
      * Get a particular comment on the session
      * @param int $id
      */
     public function getComment($id){
-        
+
         // Comment might be parent level or child level, so have to loop through and look for it
         if (!$this->comments) $this->loadComments();
-                
+
         if ($this->comments)
         {
             foreach($this->comments as $comment)
             {
-                
-                if ($comment->id == $id) return $comment;      
-                
+
+                if ($comment->id == $id) return $comment;
+
                 if ($comment->childComments)
                 {
                     $check = $this->getRecursiveComment($comment, $id);
                     if ($check) return $check;
                 }
-                
+
             }
         }
-        
-        return false;        
-        
+
+        return false;
+
     }
-    
+
     /**
      * Get comment from any level
      * @param type $comment
@@ -1318,43 +1330,43 @@ class Session extends \ELBP\BasePluginObject {
      */
     private function getRecursiveComment($comment, $id)
     {
-                
+
         foreach($comment->childComments as $child)
         {
-            
+
             if ($child->id == $id) return $child;
-            
+
             if ($child->childComments)
             {
                 $check = $this->getRecursiveComment($child, $id);
                 if ($check) return $check;
             }
-            
+
         }
-        
+
         return false;
-        
+
     }
-    
+
     /**
      * Load comments into object property
      * This gets all the parent comments, then recursively loads all their children.
      */
     private function loadComments(){
-        
+
         global $DB;
-        
+
         $results = $DB->get_records_select("lbp_add_sup_comments", "sessionid = ? AND parent IS NULL AND del = 0", array($this->id), "time ASC");
-        
+
         $return = array();
-        
+
         // If there are some results, see if there are any child comments
         if ($results)
         {
-            
+
             foreach($results as $result)
             {
-                
+
                 $user = $DB->get_record("user", array("id" => $result->userid));
                 $result->firstName = ($user) ? $user->firstname : "?";
                 $result->lastName = ($user) ? $user->lastname : "?";
@@ -1362,38 +1374,38 @@ class Session extends \ELBP\BasePluginObject {
                 $result->css = elbp_get_comment_css($result->width);
                 $result->childComments = $this->loadRecursiveComments($result->id);
                 $return[$result->id] = $result;
-                
+
             }
-            
+
         }
-        
+
         $this->comments = $return;
         return $this->comments;
-        
-        
+
+
     }
-    
+
     /**
      * Recursively load all child comments of a given comment
      * @param int $parentID
      */
     private function loadRecursiveComments($parentID, $width = 80){
-        
+
         global $DB;
-        
+
         $results = $DB->get_records_select("lbp_add_sup_comments", "sessionid = ? AND parent = ? AND del = 0", array($this->id, $parentID), "time ASC");
-        
+
         $return = array();
-        
+
         if ($results)
         {
-            
+
             $width--;
             if ($width < 50) $width = 50;
-            
+
             foreach($results as $result)
             {
-                
+
                 $user = $DB->get_record("user", array("id" => $result->userid));
                 $result->firstName = ($user) ? $user->firstname : "?";
                 $result->lastName = ($user) ? $user->lastname : "?";
@@ -1401,16 +1413,16 @@ class Session extends \ELBP\BasePluginObject {
                 $result->css = elbp_get_comment_css($width);
                 $result->childComments = $this->loadRecursiveComments($result->id, $width);
                 $return[] = $result;
-                
+
             }
-            
+
         }
-        
+
         return $return;
-        
-        
+
+
     }
-    
+
     /**
      * Count the number of comments on this Target
      * @return int
@@ -1419,15 +1431,15 @@ class Session extends \ELBP\BasePluginObject {
         if (!$this->comments) $this->loadComments();
         return count($this->comments);
     }
-    
+
     /**
      * Return a list of comments
      */
     public function getComments(){
         if (!$this->comments) $this->loadComments();
-        return $this->comments;       
+        return $this->comments;
     }
-    
+
     /**
      * Add a comment to a target
      * @global type $DB
@@ -1437,9 +1449,9 @@ class Session extends \ELBP\BasePluginObject {
      * @return bool
      */
     public function addComment($comment, $parentID = null){
-        
+
         global $DB, $USER;
-        
+
         $obj = new \stdClass();
         $obj->sessionid = $this->id;
         $obj->userid = $USER->id;
@@ -1448,66 +1460,66 @@ class Session extends \ELBP\BasePluginObject {
         $obj->time = time();
         $obj->del = 0;
         if($id = $DB->insert_record("lbp_add_sup_comments", $obj)){
-            
-            
+
+
             // Trigger alerts
-            $alertContent = get_string('alerts:additionalsupportsessioncommentadded', 'block_elbp') . "\n" . 
-                            get_string('sessiondate', 'block_elbp') . ": " . $this->getDate('M jS Y') . "\n" . 
-                            get_string('user') . ": " . fullname($USER) . "\n" . 
+            $alertContent = get_string('alerts:additionalsupportsessioncommentadded', 'block_elbp') . "\n" .
+                            get_string('sessiondate', 'block_elbp') . ": " . $this->getDate('M jS Y') . "\n" .
+                            get_string('user') . ": " . fullname($USER) . "\n" .
                             get_string('comment', 'block_elbp') . ": " . $comment . "\n";
-            
+
             // Student alert
             elbp_event_trigger_student("Additional Support Session Comment Added", $this->AdditionalSupport->getID(), $this->studentID, $alertContent, nl2br($alertContent));
-            
+
             // Staff alerts
             elbp_event_trigger("Additional Support Session Comment Added", $this->AdditionalSupport->getID(), $this->studentID, $alertContent, nl2br($alertContent));
-            
-            
-            
+
+
+
             elbp_log(LOG_MODULE_ELBP, LOG_ELEMENT_ELBP_ADDITIONAL_SUPPORT, LOG_ACTION_ELBP_ADDITIONAL_SUPPORT_ADDED_COMMENT, $this->studentID, array(
                 "commentID" => $id
             ));
-            
+
             $user = $DB->get_record("user", array("id" => $obj->userid));
             $obj->id = $id;
             $obj->firstName = $user->firstname;
             $obj->lastName = $user->lastname;
             $obj->width = 80;
-            
+
             // Count levels of threading
             $cntThreading = $this->countCommentThreading($id);
             $obj->width -= ( $cntThreading * 2 );
-                        
+
             $obj->css = elbp_get_comment_css($obj->width);
             return $obj;
-            
+
         } else {
             return false;
         }
-        
+
     }
-    
+
     /**
      * Delete a comment and all its child comments
      * @param type $commentID
      */
     public function deleteComment($commentID){
-        
+
         global $DB;
-        
+
         $comment = $this->getComment($commentID);
         if (!$comment) return false;
-                
+
         $obj = new \stdClass();
         $obj->id = $commentID;
         $obj->del = 1;
-        
+
         if ($DB->update_record("lbp_add_sup_comments", $obj)){
-            
+
             elbp_log(LOG_MODULE_ELBP, LOG_ELEMENT_ELBP_ADDITIONAL_SUPPORT, LOG_ACTION_ELBP_ADDITIONAL_SUPPORT_DELETED_COMMENT, $this->studentID, array(
                 "commentID" => $commentID
             ));
-            
+
             // Recursive
             if (isset($comment->childComments) && $comment->childComments)
             {
@@ -1516,50 +1528,50 @@ class Session extends \ELBP\BasePluginObject {
                     $this->deleteComment($child->id);
                 }
             }
-            
+
             return true;
-            
+
         }
-        
+
         return false;
-                
+
     }
-    
+
     /**
      * Count the levels of comment threading of a given comment so we can work out the width % to apply
      * @param type $commentID
      */
     private function countCommentThreading($commentID){
-        
+
         global $DB;
-        
+
         $cnt = 0;
-        
+
         $check = $DB->get_record("lbp_add_sup_comments", array("id" => $commentID));
         if (!is_null($check->parent)){
-            
+
             $cnt++;
             $cnt += $this->countCommentThreading($check->parent);
-            
+
         }
-        
+
         return $cnt;
-        
+
     }
-    
+
     /**
      * Display comments for printing
      * @param type $childComments
      */
     public function displayPdfComments($childComments = false, $childLevel = 0){
-                
+
         $output = "";
-        
+
         $comments = (!$childComments) ? $this->getComments() : $childComments;
-        
+
         foreach($comments as $comment)
         {
-            
+
             if ($childLevel > 0) $output .= str_repeat("&nbsp;&nbsp;&nbsp;", $childLevel);
             $output .= "<small><b>{$comment->firstName} {$comment->lastName}</b> - ".date('D jS M Y H:i', $comment->time)."</small><br>";
             if ($childLevel > 0) $output .= str_repeat("&nbsp;&nbsp;&nbsp;", $childLevel);
@@ -1568,135 +1580,135 @@ class Session extends \ELBP\BasePluginObject {
             {
                 $output .= $this->displayPdfComments($comment->childComments, ++$childLevel);
             }
-            
+
         }
-        
+
         return $output;
-        
+
     }
-    
-    
+
+
     /**
      * Display the comments, recursively going through all levels of child comments
      * @param mixed $childComments False for the first level, then an object of child comments
      */
     public function displayComments($childComments = false){
-        
+
         global $ELBP, $USER;
-        
+
         $output = "";
-        
+
         if (!$this->comments) $this->loadComments();
-        
+
         $comments = (!$childComments) ? $this->getComments() : $childComments;
         $access = $ELBP->getUserPermissions($this->studentID);
-        
+
         foreach($comments as $comment)
         {
-            
+
             $output .= "<div id='comment_{$comment->id}' class='elbp_comment_box' style='width:90%;" . ((isset($comment->css->bdr)) ? "border: 1px solid {$comment->css->bdr};" : "") . ((isset($comment->css->bg)) ? "background-color:{$comment->css->bg};" : "") . "'>";
             $output .= "<p id='elbp_comment_add_output_comment_{$comment->id}'></p>";
             $output .= elbp_html($comment->comments, true);
             $output .= "<br><br>";
             $output .= "<small><b>{$comment->firstName} {$comment->lastName}</b></small><br>";
             $output .= "<small>".date('D jS M Y H:i', $comment->time)."</small><br>";
-            
+
             if (elbp_has_capability('block/elbp:add_additional_support_session_comment', $access)){
                 $output .= "<small><a href='#' onclick='$(\"#comment_reply_{$comment->id}\").slideToggle();return false;'>".get_string('reply', 'block_elbp')."</a></small><br>";
                 $output .= "<div id='comment_reply_{$comment->id}' class='elbp_comment_textarea' style='display:none;'><textarea id='add_reply_{$comment->id}'></textarea><br><br><input class='elbp_big_button' type='button' value='".get_string('submit', 'block_elbp')."' onclick='ELBP.AdditionalSupport.add_comment({$this->getID()}, $(\"#add_reply_{$comment->id}\").val(), {$comment->id});return false;' /><br><br></div>";
             }
-            
+
             // We either need the delete_any_target_comment capability if the comment is not ours, or if it is ours, we need the delete_my_target_comment
             if ( ($comment->userid <> $USER->id && elbp_has_capability('block/elbp:delete_any_additional_support_session_comment', $access) ) || ( $comment->userid == $USER->id && elbp_has_capability('block/elbp:delete_my_additional_support_session_comment', $access) ) ){
                 $output .= "<small><a href='#' onclick='ELBP.AdditionalSupport.delete_comment({$this->id}, {$comment->id});return false;'>".get_string('delete', 'block_elbp')."</a></small><br><br>";
             }
-            
+
             if ($comment->childComments)
             {
                 $output .= $this->displayComments($comment->childComments);
             }
-            
+
             $output .= "</div>";
-            
+
         }
-        
+
         return $output;
-        
+
     }
-    
-    
+
+
      /**
      * Get the string to display for whether or not a target is late or still has time left to be met
      * @return type
      */
     public function getLateOrRemaining(){
-                
+
         // Past the dseadline
         if ($this->deadline > time()){
 
             $difference = $this->deadline - time();
-            
+
             $period = get_string('minutes', 'block_elbp');
             $difference /= 60;
-            
+
             if ($difference >= 60){
-            
+
                 $period = get_string('hours', 'block_elbp');
                 $difference /= 60;
 
-                if ($difference >= 24){            
+                if ($difference >= 24){
                     $difference /= 24;
                     $period = get_string('days', 'block_elbp');
                 }
-            
+
             }
-            
+
             $difference = round($difference);
             return "({$difference} {$period} ". strtolower( get_string('remaining', 'block_elbp') ).")";
-            
+
         }
-        
+
         // The session itself has a deadline, but there is no actual marking of the session as finished
         // So we don't do late, or all of them would appear late
-        
+
         return "";
-        
+
     }
-    
-    
+
+
     /**
      * Given an array of data, build up the Incident object based on that instead of a DB record
      * This is used for creating a new Incident or editing an existing one
      * @param type $data
      */
     public function loadData($data){
-                        
+
         $this->id = (isset($data['session_id'])) ? $data['session_id'] : -1; # Set to -1 if not set, as probably new incident
         if (isset($data['studentID'])) $this->studentID = $data['studentID'];
         if (isset($data['session_date']) && !elbp_is_empty($data['session_date'])){
             $date =  \DateTime::createFromFormat('d-m-Y H:i:s', $data['session_date'] . ' 00:00:00');
             $this->date = $date->format("U"); # Unix
         }
-        
+
         if (isset($data['deadline']) && !elbp_is_empty($data['deadline'])){
             $deadline =  \DateTime::createFromFormat('d-m-Y H:i:s', $data['deadline'] . ' 00:00:00');
             $this->deadline = $deadline->format("U"); # Unix
         }
-        
-        
+
+
         unset($data['session_id']);
         unset($data['studentID']);
         unset($data['session_date']);
         unset($data['deadline']);
         unset($data['courseID']);
-        
+
         // Attributes - FIrstly get all possible attributes and loop through them
         $OBJ = new \ELBP\Plugins\AdditionalSupport();
         $this->setSubmittedAttributes($data, $OBJ);
-        
-                       
+
+
     }
-    
+
     /**
      * Get the content to go in the event trigger email
      * @global type $CFG
@@ -1708,20 +1720,20 @@ class Session extends \ELBP\BasePluginObject {
     private function getInfoForEventTrigger($useHtml = false, $tmp = false)
     {
         global $CFG, $USER;
-            
+
         $output = "";
-        
+
         // If using HTML
         if ($useHtml)
         {
             $output .= "<br>----------<br>";
             $output .= get_string('student', 'block_elbp') . ": " . fullname($this->getStudent()) . " ({$this->getStudent()->username})<br>";
-            
+
             // Old Date
             $output .= "<del style='color:red;'>".get_string('sessiondate', 'block_elbp') . ": " . $tmp->getDate('M jS Y') . "</del><br>";
             // New Date
             $output .= "<ins style='color:blue;'>".get_string('sessiondate', 'block_elbp') . ": " . $this->getDate('M jS Y') . "</ins><br>";
-            
+
 
             // Attributes
             if ($this->attributes)
@@ -1729,43 +1741,43 @@ class Session extends \ELBP\BasePluginObject {
 
                 foreach($this->attributes as $field => $value)
                 {
-                            
+
                     // Targets
                     if ($field == 'Targets')
                     {
-                        
+
                         $oldTargetOutput = '';
                         $newTargetOutput = '';
-                        
+
                         if (!is_array($value)) $value = array($value);
                         foreach($value as $targetID)
                         {
                             $targetObj = new \ELBP\Plugins\Targets\Target($targetID);
                             if ($targetObj->isValid())
                             {
-                                
+
                                 // Old
                                 $oldTargetOutput .= $targetObj->getName();
                                 $startConfidence = $tmp->getAttribute('Targets Confidence Start ' . $targetID, true);
                                 $endConfidence = $tmp->getAttribute('Targets Confidence End ' . $targetID, true);
                                 $oldTargetOutput .= " (".get_string('confidence', 'block_elbp').": [{$startConfidence}] [{$endConfidence}]), ";
-                                
+
                                 // New
                                 $newTargetOutput .= $targetObj->getName();
                                 $startConfidence = (isset($this->attributes['Targets Confidence Start ' . $targetID])) ? $this->attributes['Targets Confidence Start ' . $targetID] : '-';
                                 $endConfidence = (isset($this->attributes['Targets Confidence End ' . $targetID])) ? $this->attributes['Targets Confidence End ' . $targetID] : '-';
                                 $newTargetOutput .= " (".get_string('confidence', 'block_elbp').": [{$startConfidence}] [{$endConfidence}]), ";
-                                
+
                             }
                         }
-                        
+
                         // Old e
                         $output .= "<del style='color:red;'>{$field}: " . $oldTargetOutput . "</del><br>";
 
                         // New
                         $output .= "<ins style='color:blue;'>{$field}: " . $newTargetOutput . "</ins><br>";
-                        
-                        
+
+
                     }
                     elseif (preg_match("/Targets Confidence/", $field))
                     {
@@ -1773,7 +1785,7 @@ class Session extends \ELBP\BasePluginObject {
                     }
                     else
                     {
-                        
+
                          if (is_array($value)) $value = implode(",", $value);
                         $value = preg_replace("/\n/", " ", $value);
 
@@ -1782,12 +1794,12 @@ class Session extends \ELBP\BasePluginObject {
 
                         // New attrribute value
                         $output .= "<ins style='color:blue;'>{$field}: " . $value . "</ins><br>";
-                        
+
                     }
-    
-                    
+
+
                 }
-                
+
             }
 
             $output .= "----------<br>";
@@ -1795,13 +1807,13 @@ class Session extends \ELBP\BasePluginObject {
             $output .= get_string('link', 'block_elbp') . ": " . "<a href='{$CFG->wwwroot}/blocks/elbp/view.php?id={$this->studentID}'>{$CFG->wwwroot}/blocks/elbp/view.php?id={$this->studentID}</a><br>";
 
         }
-        
+
         // Otherwise
         else
         {
             $output .= "\n----------\n";
             $output .= get_string('student', 'block_elbp') . ": " . fullname($this->getStudent()) . " ({$this->getStudent()->username})\n";
-            
+
             $output .= get_string('sessiondate', 'block_elbp') . ": " . $this->getDate('M jS Y') . "\n";
             $output .= get_string('deadline', 'block_elbp') . ": " . $this->getDeadline('M jS Y') . "\n";
 
@@ -1811,15 +1823,15 @@ class Session extends \ELBP\BasePluginObject {
 
                 foreach($this->attributes as $field => $value)
                 {
-                    
-                    
+
+
                     // Targets
                     if ($field == 'Targets')
                     {
-                        
+
                         $targetOutput = '';
                         if (!is_array($value)) $value = array($value);
-                        
+
                         foreach($value as $targetID)
                         {
                             $targetObj = new \ELBP\Plugins\Targets\Target($targetID);
@@ -1832,7 +1844,7 @@ class Session extends \ELBP\BasePluginObject {
                             }
                         }
                         $output .= $field . ": " . $targetOutput . "\n";
-                        
+
                     }
                     elseif (preg_match("/Targets Confidence/", $field))
                     {
@@ -1840,14 +1852,14 @@ class Session extends \ELBP\BasePluginObject {
                     }
                     else
                     {
-                        
+
                         if (is_array($value)) $value = implode(",", $value);
                         $value = preg_replace("/\n/", " ", $value);
-                        $output .= $field . ": " . $value . "\n";    
-                        
+                        $output .= $field . ": " . $value . "\n";
+
                     }
-                   
-                                    
+
+
                 }
 
             }
@@ -1857,55 +1869,55 @@ class Session extends \ELBP\BasePluginObject {
             $output .= get_string('link', 'block_elbp') . ": " . "{$CFG->wwwroot}/blocks/elbp/view.php?id={$this->studentID}\n";
 
         }
-                
-        
+
+
         return $output;
-        
+
     }
-    
-    
+
+
     /**
      * Get an array of data to be put into a new/edit form
      * @param int $incidentID
      */
     public static function getDataForNewSessionForm($sessionID = false)
     {
-        
+
         global $ELBP;
-        
+
         $support = $ELBP->getPlugin("AdditionalSupport");
         $data = array();
-        
+
         $attributes = $support->getAttributesForDisplay();
-        
+
         if ($sessionID)
         {
-            
+
             $session = new Session($sessionID);
             if (!$session->isValid()) return false;
-            
+
             $data['id'] = $session->getID();
             $data['date'] = $session->getDate("d-m-Y");
             $data['deadline'] = $session->getDeadline("d-m-Y");
-            $data['atts'] = array();    
+            $data['atts'] = array();
             $data['hookAtts'] = array();
-            
+
             // Since it's a real Session, get all the actual attributes stored for it, not just the ones we think it should have from the config
             $definedAttributes = $session->getAttributes();
-                        
+
             $processedAttributes = array();
-                        
+
             // Loop through all possible attributes defined in the system
             $data['atts'] = array();
-                        
+
             // Loop through default attributes
             if ($attributes)
             {
                 foreach($attributes as $attribute)
                 {
-                    
+
                     $attribute->loadObject($support);
-                    
+
                     // If the attribute name exists in the defined attributes (ones linked to this target)
                     // Simply add it to the data array
                     if (array_key_exists($attribute->name, $definedAttributes))
@@ -1916,13 +1928,13 @@ class Session extends \ELBP\BasePluginObject {
                     }
                     else
                     {
-                        
+
                         // Otherwise
                         // Loop through defined attributes (linked to target) and see if there are any LIKE
                         // this attribute, e.g. for Matrices they will be Name_Row => Col rather than Name => Col
                         $valueArray = array();
                         $like = false;
-                        
+
                         if ($definedAttributes)
                         {
                             foreach($definedAttributes as $key => $d)
@@ -1939,7 +1951,7 @@ class Session extends \ELBP\BasePluginObject {
                                 $valueArray = reset($valueArray);
                             }
                         }
-                        
+
                         // If we found some, add them
                         if ($like)
                         {
@@ -1953,12 +1965,12 @@ class Session extends \ELBP\BasePluginObject {
                             $data['atts'][] = $attribute;
                             $processedAttributes[] = $attribute->name;
                         }
-                        
+
                     }
-                                        
+
                 }
             }
-                        
+
             // Now loop through the actual attributes in the DB and get any that aren't defined in config attributes
             // These will be hooked attributes
             if ($definedAttributes)
@@ -1971,31 +1983,31 @@ class Session extends \ELBP\BasePluginObject {
                     }
                 }
             }
-                                    
-            
+
+
         }
         else
         {
-            
+
             $data['id'] = -1;
             $data['date'] = date("d-m-Y");
             $data['deadline'] = '';
-            
+
             if ($attributes){
                 foreach($attributes as $attribute){
                     $attribute->loadObject($support);
                 }
             }
-            
+
             $data['atts'] = $attributes;
-            
-            
+
+
         }
-                
+
         return $data;
-        
+
     }
-    
-    
-    
+
+
+
 }

@@ -1,46 +1,47 @@
 <?php if(!defined('ELBP')) exit; ?>
 
-<?php 
+<?php
 
 if (!elbp_has_capability('block/elbp:add_additional_support_session', $access)){
     exit;
 }
 
 if ($page == 'new'){
-    if (!elbp_has_capability('block/elbp:add_additional_support_session', $access)) exit; 
+    if (!elbp_has_capability('block/elbp:add_additional_support_session', $access)) exit;
     $newedit = $string['newsupportsession'];
 }
 
 elseif($page == 'edit'){
-    if (!elbp_has_capability('block/elbp:edit_additional_support_session', $access)) exit; 
+    if (!elbp_has_capability('block/elbp:edit_additional_support_session', $access)) exit;
     $newedit = $string['editsupportsession'];
 }
 
 ?>
 
 <script>
+
     $('.elbp_view_link').removeClass('selected');
-    
-    function validateIncidentFormSubmission(form)
+
+    function validateFormSubmission(form)
     {
-                
+
         if (ELBP.validate_form(form) == true)
         {
             ELBP.AdditionalSupport.save(form);
         }
     }
-    
+
     function showExistingTargets()
     {
         $('#existingtargets').toggle();
     }
-    
+
 </script>
 
 <form id="new_additional_support_form">
 
 
-<p class="elbp_centre"><button class="elbp_b" onclick="validateIncidentFormSubmission( $(this.form) );return false;"><?= $string['savesession'] ?></button></p>
+<p class="elbp_centre"><button class="elbp_b" onclick="validateFormSubmission( $(this.form) );return false;"><?= $string['savesession'] ?></button></p>
 <br>
 
 <p class="elbp_centre"><u><?= $string['instructions'] ?></u>: <?= $obj->getSetting('new_additional_support_instructions') ?></p>
@@ -58,12 +59,12 @@ elseif($page == 'edit'){
                 <td><?= $string['sessiondate'] ?></td>
                 <td><input type="text" name="session_date" value="<?= $data['date'] ?>" class="elbp_datepicker" validation="NOT_EMPTY" /></td>
             </tr>
-            
+
             <tr>
                 <td><?= $string['deadline'] ?></td>
                 <td><input type="text" name="deadline" onchange="ELBP.Targets.tmp_deadline = this.value;" value="<?= $data['deadline'] ?>" class="elbp_datepicker" validation="NOT_EMPTY" /></td>
             </tr>
-                        
+
             <!-- BKSB Hooks -->
             <?php if ($obj->hasHookEnabled("elbp_bksblive/English IA") || $obj->hasHookEnabled("elbp_bksblive/Maths IA") || $obj->hasHookEnabled("elbp_bksblive/ICT IA")): ?>
             <tr>
@@ -81,13 +82,13 @@ elseif($page == 'edit'){
                                 <th><?= get_string('ictia', 'block_elbp_bksblive') ?></th>
                             <?php endif; ?>
                         </tr>
-                        
+
                         <tr>
                             <?php if($obj->hasHookEnabled("elbp_bksblive/English IA")): ?>
                                 <td>
                                     <!-- If there is data, then we're editing and we can get from attributes -->
                                     <?php if (isset($data['hookAtts'])): ?>
-                                    
+
                                         <?php if (isset($data['hookAtts']['English IA'])): ?>
                                             <?php $explode = explode("|", $data['hookAtts']['English IA']); ?>
                                             <?= $explode[0] ?>
@@ -96,9 +97,9 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php else: ?>
-                                    
+
                                         <?php if (isset($hooks['elbp_bksblive/English IA']) && $hooks['elbp_bksblive/English IA']): ?>
                                             <?= $hooks['elbp_bksblive/English IA']->Result ?><br>
                                             <small><?= $hooks['elbp_bksblive/English IA']->Date ?></small>
@@ -106,17 +107,17 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php endif; ?>
-                                    
+
                                 </td>
                             <?php endif; ?>
-                            
+
                             <?php if($obj->hasHookEnabled("elbp_bksblive/Maths IA")): ?>
                                 <td>
-                                    
+
                                      <?php if (isset($data['hookAtts'])): ?>
-                                    
+
                                         <?php if (isset($data['hookAtts']['Maths IA'])): ?>
                                             <?php $explode = explode("|", $data['hookAtts']['Maths IA']); ?>
                                             <?= $explode[0] ?>
@@ -125,9 +126,9 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php else: ?>
-                                    
+
                                         <?php if (isset($hooks['elbp_bksblive/Maths IA']) && $hooks['elbp_bksblive/Maths IA']): ?>
                                             <?= $hooks['elbp_bksblive/Maths IA']->Result ?><br>
                                             <small><?= $hooks['elbp_bksblive/Maths IA']->Date ?></small>
@@ -135,17 +136,17 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php endif; ?>
-                                    
+
                                 </td>
                             <?php endif; ?>
-                            
+
                             <?php if($obj->hasHookEnabled("elbp_bksblive/ICT IA")): ?>
                                 <td>
-                                    
+
                                     <?php if (isset($data['hookAtts'])): ?>
-                                    
+
                                         <?php if (isset($data['hookAtts']['ICT IA'])): ?>
                                             <?php $explode = explode("|", $data['hookAtts']['ICT IA']); ?>
                                             <?= $explode[0] ?>
@@ -154,9 +155,9 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php else: ?>
-                                    
+
                                         <?php if (isset($hooks['elbp_bksblive/ICT IA']) && $hooks['elbp_bksblive/ICT IA']): ?>
                                             <?= $hooks['elbp_bksblive/ICT IA']->Result ?><br>
                                             <small><?= $hooks['elbp_bksblive/ICT IA']->Date ?></small>
@@ -164,18 +165,18 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php endif; ?>
                                 </td>
                             <?php endif; ?>
-                            
+
                         </tr>
-                        
+
                     </table>
                 </td>
-            </tr>            
-            
-            
+            </tr>
+
+
             <?php elseif ($obj->hasHookEnabled("elbp_bksb/English IA") || $obj->hasHookEnabled("elbp_bksb/Maths IA") || $obj->hasHookEnabled("elbp_bksb/ICT IA")): ?>
             <tr>
                 <td><?= get_string('initassessments', 'block_elbp_bksb') ?></td>
@@ -192,13 +193,13 @@ elseif($page == 'edit'){
                                 <th><?= get_string('ictia', 'block_elbp_bksb') ?></th>
                             <?php endif; ?>
                         </tr>
-                        
+
                         <tr>
                             <?php if($obj->hasHookEnabled("elbp_bksb/English IA")): ?>
                                 <td>
                                     <!-- If there is data, then we're editing and we can get from attributes -->
                                     <?php if (isset($data['hookAtts'])): ?>
-                                    
+
                                         <?php if (isset($data['hookAtts']['English IA'])): ?>
                                             <?php $explode = explode("|", $data['hookAtts']['English IA']); ?>
                                             <?= $explode[0] ?>
@@ -207,9 +208,9 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php else: ?>
-                                    
+
                                         <?php if (isset($hooks['elbp_bksb/English IA']) && $hooks['elbp_bksb/English IA']): ?>
                                             <?= $hooks['elbp_bksb/English IA']->Result ?><br>
                                             <small><?= $hooks['elbp_bksb/English IA']->date ?></small>
@@ -217,17 +218,17 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php endif; ?>
-                                    
+
                                 </td>
                             <?php endif; ?>
-                            
+
                             <?php if($obj->hasHookEnabled("elbp_bksb/Maths IA")): ?>
                                 <td>
-                                    
+
                                      <?php if (isset($data['hookAtts'])): ?>
-                                    
+
                                         <?php if (isset($data['hookAtts']['Maths IA'])): ?>
                                             <?php $explode = explode("|", $data['hookAtts']['Maths IA']); ?>
                                             <?= $explode[0] ?>
@@ -236,9 +237,9 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php else: ?>
-                                    
+
                                         <?php if (isset($hooks['elbp_bksb/Maths IA']) && $hooks['elbp_bksb/Maths IA']): ?>
                                             <?= $hooks['elbp_bksb/Maths IA']->Result ?><br>
                                             <small><?= $hooks['elbp_bksb/Maths IA']->date ?></small>
@@ -246,17 +247,17 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php endif; ?>
-                                    
+
                                 </td>
                             <?php endif; ?>
-                            
+
                             <?php if($obj->hasHookEnabled("elbp_bksb/ICT IA")): ?>
                                 <td>
-                                    
+
                                     <?php if (isset($data['hookAtts'])): ?>
-                                    
+
                                         <?php if (isset($data['hookAtts']['ICT IA'])): ?>
                                             <?php $explode = explode("|", $data['hookAtts']['ICT IA']); ?>
                                             <?= $explode[0] ?>
@@ -265,9 +266,9 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php else: ?>
-                                    
+
                                         <?php if (isset($hooks['elbp_bksb/ICT IA']) && $hooks['elbp_bksb/ICT IA']): ?>
                                             <?= $hooks['elbp_bksb/ICT IA']->Result ?><br>
                                             <small><?= $hooks['elbp_bksb/ICT IA']->date ?></small>
@@ -275,28 +276,28 @@ elseif($page == 'edit'){
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
-                                    
+
                                     <?php endif; ?>
                                 </td>
                             <?php endif; ?>
-                            
+
                         </tr>
-                        
+
                     </table>
                 </td>
             </tr>
             <?php endif; ?>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-                        
+
+
+
+
+
+
+
+
+
+
+
             <?php
             // Targets is an awkward one, it's not something you can call automatically so we'll have to test for it
             // differently - this hooks thing is becoming a pain in the arse, may need to re-write the whole thing
@@ -313,8 +314,8 @@ elseif($page == 'edit'){
                 &nbsp;&nbsp;&nbsp;
                 <button onclick='showExistingTargets();return false;'><?= $string['addexistingtarget'] ?></button>
             </p>
-                            
-            
+
+
             <p class='elbp_centre' id="existingtargets" style="display:none;">
                 <select id="add_existing_target" onchange="ELBP.AdditionalSupport.add_existing_target(this.value);return false;">
                     <option value=""></option>
@@ -323,12 +324,12 @@ elseif($page == 'edit'){
                             <option value="<?= $target->id ?>"><?= elbp_html($target->name); ?> (<?= date('d-m-Y', $target->settime) ?>)</option>
                         <?php endforeach; ?>
                     <?php endif; ?>
-                </select> &nbsp;&nbsp; 
+                </select> &nbsp;&nbsp;
                 <span id="loading_add_existing_target" style="display:none;">
                     <img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/loader.gif" alt="loading" />
                 </span>
             </p>
-            
+
             <div>
                 <table id='elbp_additional_support_new_targets'>
                     <tr>
@@ -346,13 +347,13 @@ elseif($page == 'edit'){
                             <?php if ($target->isValid()): ?>
                             <tr id='new_added_target_id_<?= $targetID ?>' class='added_target_row'>
                                 <td><a href='#' onclick='ELBP.AdditionalSupport.edit_target(<?= $target->getID() ?>, "Tutorials");return false;'><?= $target->getName() ?></a></td>
-                                
+
                                 <?php if($obj->getSetting('confidence_enabled') == 1): ?>
                                     <td><?= $string['atthestart'] ?>: <select name='Targets Confidence Start <?= $target->getID() ?>'><option value=''></option>";
                                         <?php for ($i = 1; $i <= $obj->getConfidenceLimit(); $i++): ?>
                                         <option value='<?= $i ?>' <?= (isset($data['hookAtts']['Targets Confidence Start ' . $target->getID()]) && $data['hookAtts']['Targets Confidence Start ' . $target->getID()] == $i) ? 'selected' : ''; ?> ><?= $i ?></option>
                                         <?php endfor; ?>
-                                    </select> &nbsp;&nbsp; 
+                                    </select> &nbsp;&nbsp;
                                     <?= $string['now'] ?>: <select name='Targets Confidence End <?= $target->getID() ?>'><option value=''></option>";
                                         <?php for ($i = 1; $i <= $obj->getConfidenceLimit(); $i++): ?>
                                             <option value='<?= $i ?>' <?= (isset($data['hookAtts']['Targets Confidence End ' . $target->getID()]) && $data['hookAtts']['Targets Confidence End ' . $target->getID()] == $i) ? 'selected' : ''; ?> ><?= $i ?></option>
@@ -360,7 +361,7 @@ elseif($page == 'edit'){
                                     </select>
                                     </td>
                                 <?php endif; ?>
-                                
+
                                 <td><a href='#' onclick='ELBP.AdditionalSupport.remove_target(<?= $target->getID() ?>, <?= $data['id'] ?>);return false;' title='<?= $string['remove'] ?>'><img src='<?= $CFG->wwwroot ?>/blocks/elbp/pix/remove.png' alt='<?= $string['remove'] ?>' /></a><input type='hidden' name='Targets' value='<?= $target->getID() ?>' /></td>
                             </tr>
                             <?php endif; ?>
@@ -374,15 +375,15 @@ elseif($page == 'edit'){
             <?php
             endif;
             ?>
-            
-            
+
+
             <?php foreach($data['atts'] as $attribute): ?>
             <tr>
                 <td><?= $attribute->name ?></td>
                 <td><?= $attribute->convertToFormElement() ?></td>
             </tr>
             <?php endforeach; ?>
-                        
+
             <?php if (isset($interestedParties)): ?>
             <tr>
                 <td><?= $string['interestedparties'] ?></td>
@@ -391,10 +392,10 @@ elseif($page == 'edit'){
                 </td>
             </tr>
             <?php endif; ?>
-            
-            
+
+
         </table>
-        
+
 
 </div>
 </form>
