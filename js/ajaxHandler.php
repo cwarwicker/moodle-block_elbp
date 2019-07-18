@@ -483,7 +483,7 @@ JS;
             exit;
         }
 
-        echo "[{$USER->username}@".gethostname()."] (".date('d-m-Y H:i:s').") ";
+        echo "[{$USER->username}@".gethostname()."] {$params['action']}<br>";
         echo nl2br($ELBP->executeAjaxCommand($params['action']));
         exit;
 

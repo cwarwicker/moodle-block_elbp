@@ -8,28 +8,28 @@
 
 <br>
 
-<table class="environmenttable">
-    
+<table class="elbp_config">
+
     <tr>
         <th><?= $string['extension'] ?></th>
         <th><?= $string['plugins'] ?></th>
         <th><?= $string['status'] ?></th>
     </tr>
-    
+
     <?php if ($extensions): ?>
-    
+
         <?php foreach($extensions as $extension => $pluginInfo): ?>
-        
+
         <tr class='env_<?= (extension_loaded($extension)) ? 'good' : 'bad'; ?>'>
-            <td><?= ( extension_loaded($extension) ) ? $extension : '<a href="http://php.net/manual/'.$CFG->lang.'/ref.'.str_replace('_', '-', $extension).'.php" target="_blank">'.$extension.'</a>' ; ?></td>                
+            <td><?= ( extension_loaded($extension) ) ? $extension : '<a href="http://php.net/manual/'.$CFG->lang.'/ref.'.str_replace('_', '-', $extension).'.php" target="_blank">'.$extension.'</a>' ; ?></td>
             <td><?= \elbp_implode_with_key($pluginInfo, '<br>') ?></td>
             <td><?= (extension_loaded($extension)) ? get_string('ok') : get_string('check'); ?></td>
         </tr>
-        
+
         <?php endforeach; ?>
-    
+
     <?php endif; ?>
-    
+
 </table>
 
 <br><br>
@@ -38,18 +38,18 @@
 
 <br>
 
-<table class="environmenttable">
-    
+<table class="elbp_config">
+
     <tr>
         <th><?= $string['tablename'] ?></th>
         <th><?= $string['numberofrows'] ?></th>
         <th><?= $string['size'] ?></th>
     </tr>
-    
+
    <?php if ($tables): ?>
-      
+
         <?php foreach($tables as $table): ?>
-       
+
         <tr class='<?= ($table['size'] >= 1000000000 || $table['indexsize'] == 0) ? 'env_bad' : ''; ?>'>
                 <td><?= $table['name'] ?></td>
                 <td><?= $table['records'] ?></td>
@@ -67,46 +67,40 @@
             </tr>
 
         <?php endforeach; ?>
-   
+
    <?php else: ?>
-   
+
    <tr>
        <td colspan="3"><?= $string['dbenvnotables'] ?></td>
    </tr>
-   
+
    <?php endif; ?>
-    
+
 </table>
 
 <br><br>
 
 <?php if ($tables): ?>
 
-<form action="" method="post">
-    
-    <small><strong><?= $string['purgedbtables'] ?></strong> - <?= $string['purgedbtables:desc'] ?></small><br><br>
-    <select name='purge_table' id='purge_table'>
-        <option value=''></option>
-        <?php if ($purgeTables): ?>
-            <?php foreach($purgeTables as $tbl): ?>
-                <option value="<?= $tbl ?>"><?= $tbl ?></option>
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </select> &nbsp;&nbsp; 
-    
-    <input type="text" class="elbp_datepicker" name="purge_date" id='purge_date' /> &nbsp;&nbsp; 
-    <input type="button" onclick="$('#hidden_purge_confirm').slideDown();$('#tbl-nm').text( $('#purge_table').val() );$('#tbl-dt').text( $('#purge_date').val() );return false;" value="<?= $string['purge'] ?>" />
-    
-    <div id='hidden_purge_confirm' style='display:none;'>
-        <br><br>
-        <small style='color:red;'>Are you sure you want to do this? It will delete all the records in the table {<span id='tbl-nm'></span>} before the date (<span id='tbl-dt'></span>)!</small> &nbsp;&nbsp; 
-        <input type="submit" name="submit_purge_db_tables" value="<?= $string['yes'] ?>" />
-    </div>
-    
-    <br><br>
-    <small><?= $string['purgedbtables:note'] ?></small>
-    
-</form>
+  <form action="" method="post">
+
+      <small><strong><?= $string['purgedbtables'] ?></strong> - <?= $string['purgedbtables:desc'] ?></small><br>
+      <select name='purge_table' id='purge_table'>
+          <option value=''></option>
+          <?php if ($purgeTables): ?>
+              <?php foreach($purgeTables as $tbl): ?>
+                  <option value="<?= $tbl ?>"><?= $tbl ?></option>
+              <?php endforeach; ?>
+          <?php endif; ?>
+      </select> &nbsp;&nbsp;
+
+      <input type="text" class="elbp_datepicker" name="purge_date" id='purge_date' /> &nbsp;&nbsp;
+      <input type="submit" class="elbp_btn elbp_yellow" name="submit_purge_db_tables" value="<?= $string['purge'] ?>" />
+
+      <br><br>
+      <small><?= $string['purgedbtables:note'] ?></small>
+
+  </form>
 
 <?php endif; ?>
 

@@ -5,27 +5,28 @@
 
 
 <h2><?= get_string('phpextensions', 'block_elbp') ?></h2>
+<br>
 
-<table style="width:90%;" class="environmenttable">
-    
+<table class="elbp_config">
+
     <tr>
         <th style="width:95%;"><?= get_string('extension', 'block_elbp') ?></th>
         <th style="width:5%;"><?= get_string('status') ?></th>
     </tr>
     <?php foreach($dbTypes as $typeName => $exts): ?>
-    <?php $n = 0; ?>
-    <tr>
-        <td colspan="2" class="elbp_bold elbp_centre"><?= $typeName ?></td>
-    </tr>
-        <?php foreach($exts as $ext): ?>
-        <?php $n++; ?>
-        <tr class="<?= (($n % 2) == 0) ? 'r0' : 'r1'; ?>">
-            <td style="text-align:left;"><?= ( extension_loaded($ext) ) ? $ext : '<a href="http://php.net/manual/'.$CFG->lang.'/ref.'.str_replace('_', '-', $ext).'.php" target="_blank">'.$ext.'</a>' ; ?></td>                
-            <td class="env_<?= (extension_loaded($ext)) ? 'good' : 'bad'; ?>"><?= (extension_loaded($ext)) ? get_string('ok') : get_string('check'); ?></td>
+        <?php $n = 0; ?>
+        <tr class="nohover">
+            <td colspan="2" class="elbp_bold elbp_centre"><?= $typeName ?></td>
         </tr>
+        <?php foreach($exts as $ext): ?>
+          <?php $n++; ?>
+          <tr class="<?= (($n % 2) == 0) ? 'r0' : 'r1'; ?>">
+              <td style="text-align:left;"><?= ( extension_loaded($ext) ) ? $ext : '<a href="http://php.net/manual/'.$CFG->lang.'/ref.'.str_replace('_', '-', $ext).'.php" target="_blank">'.$ext.'</a>' ; ?></td>
+              <td class="env_<?= (extension_loaded($ext)) ? 'good' : 'bad'; ?>"><?= (extension_loaded($ext)) ? get_string('ok') : get_string('check'); ?></td>
+          </tr>
         <?php endforeach; ?>
     <?php endforeach; ?>
-    
+
 </table>
 
 <br><br><br>
@@ -84,7 +85,7 @@
                 <td><input type="submit" value="<?= get_string('save', 'block_elbp') ?>" name="edit_mis_connection" /></td>
             </tr>
         </form>
-        
+
         <?php endforeach; ?>
 
     </table>
@@ -104,6 +105,7 @@
                 <th><?= get_string('mispassword', 'block_elbp') ?></th>
                 <th><?= get_string('misdbname', 'block_elbp') ?> <small>(<?= get_string('optional', 'block_elbp') ?>)</small></th>
                 <th></th>
+                <th></th>
             </tr>
 
             <tr class="small">
@@ -113,6 +115,7 @@
                 <th><?= get_string('misusername:example', 'block_elbp') ?></th>
                 <th><?= get_string('mispassword:example', 'block_elbp') ?></th>
                 <th><?= get_string('misdbname:example', 'block_elbp') ?></th>
+                <th></th>
                 <th></th>
             </tr>
 
@@ -133,13 +136,12 @@
                 <td><input type="password" class="normal"  name="new_mis_pass" value="<?= (isset($FORMVALS['new_mis_pass'])) ? $FORMVALS['new_mis_pass'] : '' ?>" /></td>
                 <td><input type="text" class="normal"  name="new_mis_dbname" value="<?= (isset($FORMVALS['new_mis_dbname'])) ? $FORMVALS['new_mis_dbname'] : '' ?>" /></td>
                 <td><input type="button" value="<?= get_string('test', 'block_elbp') ?>" onclick="ELBP.test_mis_connection( document.forms['new_mis_form'].new_mis_type.value, document.forms['new_mis_form'].new_mis_host.value, document.forms['new_mis_form'].new_mis_user.value, document.forms['new_mis_form'].new_mis_pass.value, document.forms['new_mis_form'].new_mis_dbname.value );return false;" /><br><div id="elbp_config_test_conn"></div></td>
+                <td><input type="submit" name="submit_new_mis" value="<?= get_string('save', 'block_elbp') ?>" /></td>
             </tr>
 
         </table>
     </div>
-    
-<br><br>
-<p class='elbp_centre'><input type="submit" name="submit_new_mis" value="<?= get_string('savenewmis', 'block_elbp') ?>" /></p>
+
 </form>
 
 <br><br><br>
@@ -167,7 +169,7 @@
                         <?php endforeach; ?>
                     </select>
                 </td>
-                <td><input type="hidden" name="<?= (isset($plugin->custom)) ? 'custom_plugin_id' : 'plugin_id'; ?>" value="<?= $plugin->getID() ?>" /><input type="submit" name="submit_assign_plugin_mis" value="<?= get_string('save', 'block_elbp') ?>" /></td>
+                <td><input type="hidden" name="<?= (isset($plugin->custom)) ? 'custom_plugin_id' : 'plugin_id'; ?>" value="<?= $plugin->getID() ?>" /><input type="submit" name="submit_assign_plugin_mis" class="elbp_btn elbp_blue" value="<?= get_string('save', 'block_elbp') ?>" /></td>
             </tr>
         </form>
         <?php endforeach; ?>

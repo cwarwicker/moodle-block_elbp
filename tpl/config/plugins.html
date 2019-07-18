@@ -33,7 +33,7 @@
           <input type="text" id="elbp_install_plugin_path" class="elbp_fairly_large" name="plugin_path" value="" />
         </td>
         <td id="elbp_install_plugin_submit" style="display:none;">
-            <input type="submit" name="install_new_plugin" value="<?= $string['install'] ?>" />
+            <input type="submit" class="elbp_btn elbp_blue"  name="install_new_plugin" value="<?= $string['install'] ?>" />
         </td>
     </tr>
 
@@ -48,14 +48,14 @@
 <form action="" method="post" enctype="multipart/form-data">
 
     <div>
-        <small><?= $string['title'] ?></small> <input type="text" name="title" value="" /> <input type="submit" name="add_new_custom_plugin" value="<?= $string['create'] ?>" />
+        <small><?= $string['title'] ?></small> <input type="text" name="title" value="" /> <input type="submit" class="elbp_btn elbp_blue"  name="add_new_custom_plugin" value="<?= $string['create'] ?>" />
     </div>
 
     <br>
     <p><?= $string['importcustomplugin:desc'] ?></p>
 
     <div>
-        <small><?= $string['import'] ?></small> <input type="file" name="plugin_xml" value="" />  <input type="submit" name="import_custom_plugin" value="<?= $string['import'] ?>" />
+        <small><?= $string['import'] ?></small> <input type="file" name="plugin_xml" value="" />  <input type="submit" class="elbp_btn elbp_blue" name="import_custom_plugin" value="<?= $string['import'] ?>" />
     </div>
 
 </form>
@@ -63,6 +63,7 @@
 <br>
 
 <h2><?= $string['manageplugins'] ?></h2>
+<br>
 <div style="overflow-x:scroll;">
     <table class="elbp_config">
         <tr>
@@ -113,6 +114,7 @@
 <br><br>
 
 <h2><?= $string['managepluginlayouts'] ?></h2>
+<br>
 
 <div id="plugin_groups_output" class="elbp_success_box" style="display:none;"></div>
 
@@ -236,7 +238,7 @@
 
     </div>
 
-    <input type="submit" name="submit_plugin_layouts" value="<?= $string['save'] ?>" />
+    <p class='elbp_centre'><input type="submit" class="elbp_btn elbp_blue" name="submit_plugin_layouts" value="<?= $string['save'] ?>" /></p>
 
 </form>
 

@@ -33,9 +33,6 @@
 namespace ELBP;
 
 if(!defined('ELBP')) define('ELBP', true);
-define('REMOTE_HOST_URL', 'https://github.com/cwarwicker/moodle-block_elbp');
-define('REMOTE_DOC_URL', 'https://github.com/cwarwicker/moodle-block_elbp/wiki');
-define('REMOTE_VERSION_URL', 'https://raw.githubusercontent.com/cwarwicker/moodle-block_elbp/master/v.txt');
 
 /**
  *
@@ -46,6 +43,12 @@ class ELBP
     const MAJOR_VERSION = 1;
     const MINOR_VERSION = 5;
     const BUILD_NUMBER = 0;
+
+    const REMOTE_HOST_URL = 'https://github.com/cwarwicker/moodle-block_elbp';
+    const REMOTE_VERSION_URL = 'https://raw.githubusercontent.com/cwarwicker/moodle-block_elbp/master/v.txt';
+    const REMOTE_DOC_URL = 'https://github.com/cwarwicker/moodle-block_elbp/wiki';
+    const REMOTE_HUB = '';
+    const REMOTE_HUB_TOKEN = '';
 
     private $CFG;
     private $DB;
@@ -102,15 +105,32 @@ class ELBP
      * Print out a message if there are new updates
      * @return string
      */
-    public function printVersionCheck(){
+    public function printVersionCheck($full = false){
 
-        $remote = @file_get_contents(REMOTE_VERSION_URL);
-        if (!$remote) return "<span class='elbp_err'>".get_string('unabletocheckforupdates', 'block_elbp')."</span>";
+        global $CFG;
 
-        $remote = trim($remote);
-        $result = version_compare($this->getPluginVersion(), $remote, '<');
+        // $remote = @file_get_contents(REMOTE_VERSION_URL);
+        // if (!$remote) return "<span class='elbp_err'>".get_string('unabletocheckforupdates', 'block_elbp')."</span>";
+        //
+        // $remote = json_decode(trim($remote));
+        // if (!$remote || is_null($remote)){
+        //     return "<span class='elbp_err'>".get_string('unabletocheckforupdates', 'block_elbp') . "</span>";
+        // }
+
+        // $result = version_compare($this->getPluginVersion(), $remote->version, '<');
+        $result = true;
+        $remote = new \stdClass();
+        $remote->version = "1.6.0";
+        $remote->update = 'securitycrit';
+
         if ($result){
-            return "<span class='elbp_update_notification'><a href='".REMOTE_HOST_URL."'>".get_string('newversionavailable', 'block_elbp')." - {$remote}</a></span>";
+            $img = (file_exists($CFG->dirroot . '/blocks/elbp/pix/update_'.$remote->update.'.png')) ? $CFG->wwwroot . '/blocks/elbp/pix/update_'.$remote->update.'.png' : $CFG->wwwroot . '/blocks/elbp/pix/update_general.png';
+            $link = (isset($remote->file) && $remote->file != '') ? $remote->file : self::REMOTE_HOST_URL;
+            if ($full){
+                return "<span class='elbp_update_notification_full_{$remote->update}'>".get_string('newversionavailable', 'block_elbp').": {$remote->version} [".\get_string('versionupdatetype_'.$remote->update, 'block_elbp')."]</span> <a href='{$link}'><img src='".\elbp_image_url('t/download')."' alt='download' /></a>";
+            } else {
+                return "&nbsp;&nbsp;&nbsp;&nbsp;<span class='elbp_update_notification'><a href='{$link}'><img src='{$img}' alt='update' title='".get_string('newversionavailable', 'block_elbp').": {$remote->version} [".\get_string('versionupdatetype_'.$remote->update, 'block_elbp')."]' /></a></span>";
+            }
         }
 
     }
@@ -724,8 +744,6 @@ class ELBP
 
                 case 'main':
 
-                    $setting = $this->getSetting('manual_student_progress');
-                    $TPL->set("manualProgressColours", unserialize($setting));
 
                 break;
 
@@ -769,6 +787,9 @@ class ELBP
                     $categories = \core_course_category::make_categories_list();
                     $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
 
+                    $setting = $this->getSetting('manual_student_progress');
+
+                    $TPL->set("manualProgressColours", unserialize($setting));
                     $TPL->set("themeLayouts", $PAGE->theme->layouts);
                     $TPL->set("categories", $categories);
                     $TPL->set("includedCategories", $includedCategories);
@@ -1508,12 +1529,20 @@ class ELBP
      * @global \ELBP\type $MSGS
      * @return boolean
      */
-    private function saveConfigMain()
+    private function saveConfigMain(){}
+
+    /**
+     * Save the Settings configuration data
+     * @global \ELBP\type $MSGS
+     * @return boolean
+     */
+    private function saveConfigSettings()
     {
 
-        global $MSGS;
+        global $MSGS, $CFG;
 
         $settings = $_POST;
+
 
         if (isset($settings['submitconfig']))
         {
@@ -1524,6 +1553,8 @@ class ELBP
             // Checkboxes need int values
             $settings['elbp_use_gradients'] = (isset($settings['elbp_use_gradients'])) ? '1' : '0';
             $settings['enable_email_alerts'] = (isset($settings['enable_email_alerts'])) ? '1' : '0';
+            $settings['academic_year_enabled'] = (isset($settings['academic_year_enabled'])) ? '1' : '0';
+
 
             // Progress colours & descs will be arrays
             $manualProgressColours = array();
@@ -1559,37 +1590,6 @@ class ELBP
             unset($settings['progress_titles']);
             unset($settings['progress_colours']);
             unset($settings['progress_desc']);
-
-            // For every setting sent in the POST, update it
-            foreach( (array)$settings as $setting => $value ){
-                $this->updateSetting($setting, trim($value));
-            }
-
-            $MSGS['success'] = get_string('settingsupdated', 'block_elbp');
-            return true;
-
-        }
-
-    }
-
-    /**
-     * Save the Settings configuration data
-     * @global \ELBP\type $MSGS
-     * @return boolean
-     */
-    private function saveConfigSettings()
-    {
-
-        global $MSGS, $CFG;
-
-        $settings = $_POST;
-
-
-        if (isset($settings['submitconfig']))
-        {
-
-            // Remove so doesn't get put into lbp_settings
-            unset($settings['submitconfig']);
 
             // Specific course categories
             $settings['specific_course_cats'] = @implode(",", $settings['specific_course_cats']);
@@ -4495,8 +4495,6 @@ class ELBP
                 if ($users)
                 {
 
-                    $output .= "\n";
-
                     foreach($users as $user)
                     {
 
@@ -4556,8 +4554,6 @@ class ELBP
 
                     if ($tutors)
                     {
-
-                        $output .= "\n";
 
                         foreach($tutors as $tutor)
                         {

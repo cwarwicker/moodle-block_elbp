@@ -5,9 +5,8 @@
 
 <h2><?= $string['useractions'] ?></h2>
 <p><?= $string['useractions:desc'] ?></p>
-<br>
-<div id="user-actions">
 
+<div id="user-actions">
 
     <form action='#user-actions' method='post'>
 
@@ -18,7 +17,7 @@
         </select> &nbsp;&nbsp;
         <input type='text' name='for_user' id='reset_colour_for_user' placeholder='<?= $string['username'] ?>' value='' style='display:none;' />
          &nbsp;&nbsp;
-        <input type="submit" name="submit_reset_colours" value="<?= $string['submit'] ?>" />
+        <input type="submit" class="elbp_btn elbp_blue" name="submit_reset_colours" value="<?= $string['submit'] ?>" />
 
     </form>
 
@@ -33,7 +32,7 @@
         </select> &nbsp;&nbsp;
         <input type='text' name='for_pt' id='clear_mentee_for_user' placeholder='<?= $string['username'] ?>' value='' style='display:none;' />
          &nbsp;&nbsp;
-        <input type="submit" name="submit_clear_personal_tutors" value="<?= $string['submit'] ?>" />
+        <input type="submit" class="elbp_btn elbp_blue" name="submit_clear_personal_tutors" value="<?= $string['submit'] ?>" />
 
     </form>
 
@@ -58,7 +57,7 @@
 
         <input type='text' name='user' placeholder='<?= $string['username'] ?>' value='' />
          &nbsp;&nbsp;
-        <input type="submit" name="submit_user_capability" value="<?= $string['submit'] ?>" />
+        <input type="submit" class="elbp_btn elbp_blue" name="submit_user_capability" value="<?= $string['submit'] ?>" />
         <br>
         <small id='cap-info'></small>
 
@@ -68,7 +67,7 @@
     <?php if ($userCapabilities): ?>
 
     <div id='elbp_user_capabilities'>
-        <table id='elbp_user_capabilities'>
+        <table class="elbp_config">
 
             <tr>
                 <th><?= $string['username'] ?></th>

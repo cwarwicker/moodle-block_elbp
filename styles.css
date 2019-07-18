@@ -11,6 +11,299 @@ hidden
   display: none;
 }
 
+/* Buttons */
+
+input.elbp_btn, a.elbp_btn, a.elbp_btn:link, a.elbp_btn:visited, div.elbp_btn,
+input.elbp_btn[type="submit"], input.elbp_btn[type="button"], input.elbp_btn[type="reset"]
+{
+    background: #E3E3E3;
+    border: 1px solid #BBB;
+    border-radius: 3px;
+    color: #333 !important;
+    padding: 8px 0px 9px;
+    text-align: center;
+    width: 150px;
+    display: inline-block;
+    /*margin: 0 10px;*/
+    margin: 0;
+    box-shadow: none;
+}
+
+
+input.elbp_btn:hover, a.elbp_btn:hover, a.elbp_btn:focus, div.elbp_btn:hover,
+input.elbp_btn[type="submit"]:hover, input.elbp_btn[type="button"]:hover, input.elbp_btn[type="reset"]:hover,
+input.elbp_btn[type="submit"]:focus, input.elbp_btn[type="button"]:focus, input.elbp_btn[type="reset"]:focus
+{
+    background: #d9d9d9;
+    color: #222;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+input.elbp_btn:active, a.elbp_btn:active
+{
+    background: #d0d0d0;
+    color: #000;
+}
+
+input.elbp_btn:disabled, input.elbp_btn[type="submit"]:disabled, input.elbp_btn[type="button"]:disabled, input.elbp_btn[type="reset"]:disabled
+{
+    color: #696969 !important;
+    background: #d9d9d9 !important;
+    cursor: not-allowed !important;
+    border: 1px solid #696969 !important;
+}
+
+input.elbp_btn_small, a.elbp_btn_small
+{
+    width: 100px !important;
+    padding: 2px !important;
+    font-size: 8pt !important;
+}
+
+a.elbp_btn[disabled]
+{
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.3;
+}
+
+input.elbp_blue, a.elbp_blue, a.elbp_blue:link, a.elbp_blue:visited, div.elbp_blue, input.elbp_blue[type="submit"], input.elbp_blue[type="button"], input.elbp_blue[type="reset"],
+a.elbp_blue[disabled]:hover
+{
+    background: #2191ed;
+    background-size: 100%;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #47a4f0), color-stop(100%, #2191ed));
+    background-image: -webkit-linear-gradient(top, #47a4f0, #2191ed);
+    background-image: -moz-linear-gradient(top, #47a4f0, #2191ed);
+    background-image: -o-linear-gradient(top, #47a4f0, #2191ed);
+    background-image: linear-gradient(top, #47a4f0, #2191ed);
+    border: 1px solid #1387e7;
+    color: #fff !important;
+}
+
+input.elbp_blue:hover, a.elbp_blue:hover, a.elbp_blue:focus, div.elbp_blue:hover,
+input.elbp_blue[type="submit"]:hover, input.elbp_blue[type="button"]:hover, input.elbp_blue[type="reset"]:hover,
+input.elbp_blue[type="submit"]:focus, input.elbp_blue[type="button"]:focus, input.elbp_blue[type="reset"]:focus
+{
+      background: #1387e7;
+      background-size: 100%;
+      background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #349aef), color-stop(100%, #1387e7));
+      background-image: -webkit-linear-gradient(top, #349aef, #1387e7);
+      background-image: -moz-linear-gradient(top, #349aef, #1387e7);
+      background-image: -o-linear-gradient(top, #349aef, #1387e7);
+      background-image: linear-gradient(top, #349aef, #1387e7);
+      color: #fff !important;
+}
+
+input.elbp_blue:active, a.elbp_blue:active, input.elbp_blue[type="submit"]:active, input.elbp_blue[type="button"]:active, input.elbp_blue[type="reset"]:active
+{
+    background: #188cec;
+    background-size: 100%;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #1179cf), color-stop(100%, #188cec));
+    background-image: -webkit-linear-gradient(top, #1179cf, #188cec);
+    background-image: -moz-linear-gradient(top, #1179cf, #188cec);
+    background-image: -o-linear-gradient(top, #1179cf, #188cec);
+    background-image: linear-gradient(top, #1179cf, #188cec);
+    color: #fff !important;
+}
+
+
+
+input.elbp_red, a.elbp_red, a.elbp_red:link, a.elbp_red:visited, div.elbp_red, input.elbp_red[type="submit"], input.elbp_red[type="button"], input.elbp_red[type="reset"]
+{
+    background: #db3535;
+    background-size: 100%;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #e15858), color-stop(100%, #db3535));
+    background-image: -webkit-linear-gradient(top, #e15858, #db3535);
+    background-image: -moz-linear-gradient(top, #e15858, #db3535);
+    background-image: -o-linear-gradient(top, #e15858, #db3535);
+    background-image: linear-gradient(top, #e15858, #db3535);
+    border: 1px solid #d62626;
+    color: #fff !important;
+}
+
+input.elbp_red:hover, a.elbp_red:hover, a.elbp_red:focus, div.elbp_red:hover,
+input.elbp_red[type="submit"]:hover, input.elbp_red[type="button"]:hover, input.elbp_red[type="reset"]:hover,
+input.elbp_red[type="submit"]:focus, input.elbp_red[type="button"]:focus, input.elbp_red[type="reset"]:focus
+{
+      background: #d62626;
+      background-size: 100%;
+      background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #de4646), color-stop(100%, #d62626));
+      background-image: -webkit-linear-gradient(top, #de4646, #d62626);
+      background-image: -moz-linear-gradient(top, #de4646, #d62626);
+      background-image: -o-linear-gradient(top, #de4646, #d62626);
+      background-image: linear-gradient(top, #de4646, #d62626);
+      color: #fff !important;
+}
+
+input.elbp_red:active, a.elbp_red:active, input.elbp_red[type="submit"]:active, input.elbp_red[type="button"]:active, input.elbp_red[type="reset"]:active
+{
+      background: #d92c2c;
+      background-size: 100%;
+      background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c02222), color-stop(100%, #d92c2c));
+      background-image: -webkit-linear-gradient(top, #c02222, #d92c2c);
+      background-image: -moz-linear-gradient(top, #c02222, #d92c2c);
+      background-image: -o-linear-gradient(top, #c02222, #d92c2c);
+      background-image: linear-gradient(top, #c02222, #d92c2c);
+      color: #fff !important;
+}
+
+
+input.elbp_green, a.elbp_green, a.elbp_green:link, a.elbp_green:visited, div.elbp_green, input.elbp_green[type="submit"], input.elbp_green[type="button"], input.elbp_green[type="reset"]
+{
+    color: #fff !important;
+    background: #63a822;
+    background-size: 100%;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #77ca29), color-stop(100%, #63a822));
+    background-image: -webkit-linear-gradient(top, #77ca29, #63a822);
+    background-image: -moz-linear-gradient(top, #77ca29, #63a822);
+    background-image: -o-linear-gradient(top, #77ca29, #63a822);
+    background-image: linear-gradient(top, #77ca29, #63a822);
+    border: 1px solid #59971f;
+}
+
+input.elbp_green:hover, a.elbp_green:hover, a.elbp_green:focus, div.elbp_green:hover,
+input.elbp_green[type="submit"]:hover, input.elbp_green[type="button"]:hover, input.elbp_green[type="reset"]:hover,
+input.elbp_green[type="submit"]:focus, input.elbp_green[type="button"]:focus, input.elbp_green[type="reset"]:focus
+{
+    color: #fff !important;
+    background: #63A128;
+    background-size: 100%;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #7CBB41), color-stop(100%, #63A128));
+    background-image: -webkit-linear-gradient(top,#7CBB41,#63A128);
+    background-image: -moz-linear-gradient(top, #7CBB41, #63A128);
+    background-image: -o-linear-gradient(top, #7CBB41, #63A128);
+    background-image: linear-gradient(top, #7CBB41, #63A128);
+}
+
+input.elbp_green:active, a.elbp_green:active, input.elbp_green[type="submit"]:active, input.elbp_green[type="button"]:active, input.elbp_green[type="reset"]:active
+{
+    color: #fff !important;
+    background: #5ea020;
+    background-size: 100%;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #4d821a), color-stop(100%, #5ea020));
+    background-image: -webkit-linear-gradient(top, #4d821a, #5ea020);
+    background-image: -moz-linear-gradient(top, #4d821a, #5ea020);
+    background-image: -o-linear-gradient(top, #4d821a, #5ea020);
+    background-image: linear-gradient(top, #4d821a, #5ea020);
+}
+
+input.elbp_black, a.elbp_black, a.elbp_black:link, a.elbp_black:visited, div.elbp_black, input.elbp_black[type="submit"], input.elbp_black[type="button"], input.elbp_black[type="reset"]
+{
+    color: #fff !important;
+    background-color: #363636;
+    background-image: -moz-linear-gradient(top, #444444, #222222);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
+    background-image: -webkit-linear-gradient(top, #444444, #222222);
+    background-image: -o-linear-gradient(top, #444444, #222222);
+    background-image: linear-gradient(to bottom, #444444, #222222);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF444444', endColorstr='#FF222222', GradientType=0);
+    border-color: #222222 #222222 black;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+input.elbp_black:hover, a.elbp_black:hover, a.elbp_black:focus, div.elbp_black:hover,
+input.elbp_black[type="submit"]:hover, input.elbp_black[type="button"]:hover, input.elbp_black[type="reset"]:hover,
+input.elbp_black[type="submit"]:focus, input.elbp_black[type="button"]:focus, input.elbp_black[type="reset"]:focus
+{
+    color: #fff !important;
+    background-color: #222222;
+}
+
+input.elbp_black:active, a.elbp_black:active, input.elbp_black[type="submit"]:active, input.elbp_black[type="button"]:active, input.elbp_black[type="reset"]:active
+{
+    color: #fff !important;
+    background-color: #222222;
+}
+
+
+input.elbp_pink, a.elbp_pink, a.elbp_pink:link, a.elbp_pink:visited, div.elbp_pink, input.elbp_pink[type="submit"], input.elbp_pink[type="button"], input.elbp_pink[type="reset"]
+{
+    background: #ff5db1;
+    background-size: 100%;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff5db1), color-stop(100%,#ef017c));
+    background: -webkit-linear-gradient(top, #ff5db1 0%,#ef017c 100%);
+    background: -o-linear-gradient(top, #ff5db1 0%,#ef017c 100%);
+    background: -ms-linear-gradient(top, #ff5db1 0%,#ef017c 100%);
+    background: linear-gradient(to bottom, #ff5db1 0%,#ef017c 100%);
+    border: 1px solid #DD00B0;
+    color: #fff !important;
+}
+
+input.elbp_pink:hover, a.elbp_pink:hover, a.elbp_pink:focus, div.elbp_pink:hover,
+input.elbp_pink[type="submit"]:hover, input.elbp_pink[type="button"]:hover, input.elbp_pink[type="reset"]:hover,
+input.elbp_pink[type="submit"]:focus, input.elbp_pink[type="button"]:focus, input.elbp_pink[type="reset"]:focus
+{
+    background: #E6549F;
+    background-size: 100%;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#E6549F), color-stop(100%,#CC4A8E));
+    background: -webkit-linear-gradient(top, #E6549F 0%,#CC4A8E 100%);
+    background: -o-linear-gradient(top, #E6549F 0%,#CC4A8E 100%);
+    background: -ms-linear-gradient(top, #E6549F 0%,#CC4A8E 100%);
+    background: linear-gradient(to bottom, #E6549F 0%,#CC4A8E 100%);
+    color: #fff !important;
+}
+
+input.elbp_pink:active, a.elbp_pink:active, input.elbp_pink[type="submit"]:active, input.elbp_pink[type="button"]:active, input.elbp_pink[type="reset"]:active
+{
+    background: #ef017c;
+    background-size: 100%;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ef017c), color-stop(100%,#ff5db1));
+    background: -webkit-linear-gradient(top, #ef017c 0%,#ff5db1 100%);
+    background: -o-linear-gradient(top, #ef017c 0%,#ff5db1 100%);
+    background: -ms-linear-gradient(top, #ef017c 0%,#ff5db1 100%);
+    background: linear-gradient(to bottom, #ef017c 0%,#ff5db1 100%);
+    color: #fff !important;
+}
+
+
+
+input.elbp_yellow, a.elbp_yellow, a.elbp_yellow:link, a.elbp_yellow:visited, div.elbp_yellow, input.elbp_yellow[type="submit"], input.elbp_yellow[type="button"], input.elbp_yellow[type="reset"],
+a.elbp_yellow[disabled]:hover
+{
+    background: #ffff5d;
+    background-size: 100%;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffff5d), color-stop(100%,#efc901));
+    background: -webkit-linear-gradient(top, #ffff5d 0%,#efc901 100%);
+    background: -o-linear-gradient(top, #ffff5d 0%,#efc901 100%);
+    background: -ms-linear-gradient(top, #ffff5d 0%,#efc901 100%);
+    background: linear-gradient(to bottom, #ffff5d 0%,#efc901 100%);
+    border: 1px solid #dd9f00;
+    color: #000 !important;
+}
+
+input.elbp_yellow:hover, a.elbp_yellow:hover, a.elbp_yellow:focus, div.elbp_yellow:hover,
+input.elbp_yellow[type="submit"]:hover, input.elbp_yellow[type="button"]:hover, input.elbp_yellow[type="reset"]:hover,
+input.elbp_yellow[type="submit"]:focus, input.elbp_yellow[type="button"]:focus, input.elbp_yellow[type="reset"]:focus
+{
+    background: #e6e054;
+    background-size: 100%;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e6e054), color-stop(100%,#ccbc4a));
+    background: -webkit-linear-gradient(top, #e6e054 0%,#ccbc4a 100%);
+    background: -o-linear-gradient(top, #e6e054 0%,#ccbc4a 100%);
+    background: -ms-linear-gradient(top, #e6e054 0%,#ccbc4a 100%);
+    background: linear-gradient(to bottom, #e6e054 0%,#ccbc4a 100%);
+    color: #000 !important;
+}
+
+input.elbp_yellow:active, a.elbp_yellow:active, input.elbp_yellow[type="submit"]:active, input.elbp_yellow[type="button"]:active, input.elbp_yellow[type="reset"]:active
+{
+    background: #efdc01;
+    background-size: 100%;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#efdc01), color-stop(100%,#ffec5d));
+    background: -webkit-linear-gradient(top, #efdc01 0%,#ffec5d 100%);
+    background: -o-linear-gradient(top, #efdc01 0%,#ffec5d 100%);
+    background: -ms-linear-gradient(top, #efdc01 0%,#ffec5d 100%);
+    background: linear-gradient(to bottom, #efdc01 0%,#ffec5d 100%);
+    color: #000 !important;
+}
+
+
+
+
 /* Begin: List Style Types */
 
     ul.elbp, ol.elbp
@@ -65,6 +358,127 @@ hidden
     {
         list-style-type: lower-greek;
     }
+
+
+
+    ul#elbp_dropdown_list {
+      font-size: 9pt;
+      background: #688cc3;
+      height: 50px;
+      list-style: none;
+      margin: 10px 0 0 0;
+      padding: 0;
+      -webkit-border-radius: 15px;
+      -moz-border-radius: 15px;
+      border-radius: 15px;
+      -webkit-box-shadow: inset 0px 20px 0px 0px rgba(255, 255, 255, 0.1);
+      -moz-box-shadow: inset 0px 20px 0px 0px rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0px 20px 0px 0px rgba(255, 255, 255, 0.1);
+    }
+
+    ul#elbp_dropdown_list li {
+      float: left;
+      padding: 0px 0px 0px 5px;
+    }
+
+    ul#elbp_dropdown_list > li:first-child {
+        padding-left: 15px;
+    }
+
+    ul#elbp_dropdown_list li a {
+      color: #fff !important;
+      display: block;
+      font-weight: normal;
+      line-height: 50px;
+      margin: 0px;
+      padding: 0px 10px;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    ul#elbp_dropdown_list li:hover > a,
+    ul#elbp_dropdown_list li.selected > a {
+      background: #53599e;
+      color: #FFFFFF !important;
+      text-decoration: none;
+    }
+
+    ul#elbp_dropdown_list > li > a:hover,
+    ul#elbp_dropdown_list > li.selected > a {
+      -webkit-box-shadow: inset 0px 0px 7px 2px rgba(0, 0, 0, 0.3);
+      -moz-box-shadow: inset 0px 0px 7px 2px rgba(0, 0, 0, 0.3);
+      box-shadow: inset 0px 0px 7px 2px rgba(0, 0, 0, 0.3);
+    }
+
+
+    ul#elbp_dropdown_list li ul {
+      display: none;
+      height: auto;
+      padding: 0px;
+      margin: 0px;
+      border: 0px;
+      position: absolute;
+      width: 200px;
+      z-index: 200;
+    }
+
+    ul#elbp_dropdown_list li:hover > ul {
+      display: block;
+    }
+
+    ul#elbp_dropdown_list li li {
+      display: block;
+      float: none;
+      margin: 0px;
+      padding: 0px;
+      width: 200px;
+      background: #B6C368;
+      /*this is where the rounded corners for the dropdown disappears*/
+    }
+
+    ul#elbp_dropdown_list li:hover li a {
+      background: none;
+    }
+
+    ul#elbp_dropdown_list li ul a {
+      display: block;
+      height: 50px;
+      font-size: 12px;
+      font-style: normal;
+      margin: 0px;
+      padding: 0px 10px 0px 15px;
+      text-align: left;
+    }
+
+    ul#elbp_dropdown_list li ul li:hover > a,
+    ul#elbp_dropdown_list li.selected ul li.selected > a {
+      border: 0px;
+      color: #FFFFFF;
+      background: #53599e;
+      text-decoration: none;
+    }
+
+    ul#elbp_dropdown_list li ul li ul li:hover a {
+        background: #C7D18C;
+        color: #000;
+    }
+
+    ul#elbp_dropdown_list ul li ul {
+        left: 100%;
+        margin-top: -50px;
+        display: none;
+    }
+
+    ul#elbp_dropdown_list li ul li:hover ul {
+        display: block;
+    }
+
+    ul#elbp_dropdown_list li img
+    {
+        width: 16px;
+        height: 16px;
+    }
+
 
 /* End: List Style Types */
 
@@ -258,7 +672,7 @@ div#elbp_wrapper select,
 div#elbp_popup_content select,
 div.elbp_config select
 {
-    height: 20px;
+    height: 24px;
 }
 
 div#elbp_wrapper select[multiple="multiple"],
@@ -783,6 +1197,12 @@ li .progress-bar
 
 
 /* Progress bars on block */
+table#elbp_manual_progress_colours
+{
+    min-width: 40%;
+    font-size: small;
+}
+
 .block_elbp .blue div, .elbp_target_bar .blue div, .elbp_progress .blue div {
 	background-color: #34c2e3;
 }
@@ -2871,9 +3291,9 @@ div.elbp_config h1
 div.elbp_config h2
 {
     color: #000;
-    font-size: 12pt;
-    font-weight: bold;
-    border-bottom: 1px solid #000;
+    font-size: 14pt;
+    font-weight: 400;
+    margin: 0;
 }
 
 div.elbp_config h3
@@ -2936,47 +3356,60 @@ input.elbp_long
     width: 300px !important;
 }
 
-table.elbp_config
-{
-    width: 90%;
+table.elbp_config {
+    width: 100%;
     margin: auto;
     text-align: center;
+    font-size: 10pt;
+    white-space: nowrap;
 }
 
-table.elbp_config th
-{
-    text-transform: uppercase;
-    background-color: #42c4f9;
-    color: #fff;
-}
-
-table.elbp_config th, table.elbp_config td
-{
+table.elbp_config th, table.elbp_config td {
     text-align: center;
-    border: 1px solid #0384b9;
+    vertical-align: top;
+    border: 1px solid #efeded;
     padding: 4px;
 }
 
-table.elbp_config td
-{
+table.elbp_config th, table.elbp_config > tbody > tr > th a {
+  padding: 10px;
+  color: #fff;
+  background-color: #42ca59;
+  border-color: #efeded;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+
+table.elbp_config td {
     background-color: #fff;
+    vertical-align: middle;
 }
 
-table.elbp_config tr:nth-child(odd) td
+table.elbp_config thead tr:first-child th[colspan]
 {
-    background-color: #f6fcff;
+  border-radius: 10px 10px 0 0;
 }
 
-table.elbp_config tr.custom td
-{
-    background-color: #FCFFDF;
+table.elbp_config tr:nth-child(odd) td {
+    background-color: #eef9ee;
 }
 
-table.elbp_config tr.small th
-{
-    text-transform: none;
-    font-size: 8pt;
+table.elbp_config tr:not(.nohover):hover td, table.elbp_config tr:not(.nohover):nth-child(odd):hover td {
+    background-color: #e1e6ff;
 }
+
+table.elbp_config tr.elbp_seperator td {
+    background-color: #0384b9;
+    color: #fff;
+}
+
+table.elbp_config td img
+{
+    max-width: 50px;
+    max-height: 50px;
+}
+
 
 table.elbp_config tr.extloaded td
 {
@@ -3067,16 +3500,16 @@ button.elbp_b:hover, button.elbp_btn_small:hover
     cursor: pointer;
 }
 
- button.elbp_b:active, button.elbp_btn_small:hover
- {
+button.elbp_b:active, button.elbp_btn_small:hover
+{
     background: #d0d0d0;
     -webkit-box-shadow: inset 0 0 1px 1px #e3e3e3;
     box-shadow: inset 0 0 1px 1px #e3e3e3;
     color: #000;
- }
+}
 
 
- button.elbp_btn_small
+button.elbp_btn_small
 {
     background: #E3E3E3;
     border: 1px solid #BBBBBB;
@@ -3508,30 +3941,13 @@ ul.ui-sortable li:hover { opacity: 0.8;  }
     border: 1px dashed #3D7922;
 }
 
-table.environmenttable
-{
-    min-width: 80%;
-    margin: auto;
-    text-align: center;
-}
 
-table.environmenttable tr.r1 td
-{
-    background-color: #f9f9f9;
-}
-
-table.environmenttable td
-{
-    border: 1px solid #ddd;
-    border-collapse: collapse;
-}
-
-.env_good
+tr.env_good td
 {
     background-color: #e3fee1 !important;
 }
 
-.env_bad
+tr.env_bad td
 {
     background-color: #fee1e1 !important;
     color: #FF0000;
@@ -4204,15 +4620,30 @@ div.elbp_rate
     color: red;
 }
 
-.elbp_update_notification
+
+span.elbp_update_notification img
 {
-    background-color: #fcf8e3;
-    padding: 2px;
+    width: 20px;
+    height: 20px;
 }
 
-.elbp_update_notification a
+
+span.elbp_update_notification_full_general, span.elbp_update_notification_full_performance
 {
-    color: #C09853 !important;
+    background: yellow;
+    color: #000;
+}
+
+span.elbp_update_notification_full_security
+{
+    background: #BB8530;
+    color: #fff;
+}
+
+span.elbp_update_notification_full_securitycrit
+{
+    background: red;
+    color: #fff
 }
 
 div.elbp_progress_traffic_lights
@@ -4359,4 +4790,113 @@ select.switch_alerts
 table#elbp_install_plugins
 {
     width: auto;
+}
+
+img.elbp_logo_text
+{
+    height: 50px !important;
+}
+
+
+
+div.elbp_form_panel_heading
+{
+    color: #fff;
+    background-color: #42ca59;
+    border-color: #44ca42;
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    font-size: 14px;
+}
+
+div.elbp_form_panel_sub_heading
+{
+    margin: auto;
+    padding: 5px;
+    color: #fff;
+    background-color: #CA6B42;
+    border: 1px solid #CA4242;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    font-size: 13px;
+}
+
+div.elbp_form_panel_heading a, div.elbp_form_panel_sub_heading a,
+div.elbp_form_panel_heading a:visited, div.elbp_form_panel_sub_heading a:visited,
+div.elbp_form_panel_heading a:active, div.elbp_form_panel_sub_heading a:active
+{
+    color: #fff;
+}
+
+div.elbp_form_panel_heading small
+{
+    color: inherit;
+}
+
+div.elbp_form_panel_sub_heading_alt
+{
+    background-color: #4259ca;
+    border: 1px solid #2e48a8;
+}
+
+div.elbp_form_panel_sub_heading_alt2
+{
+    background-color: #AD42CA;
+    border: 1px solid #8342CA;
+}
+
+div.elbp_form_panel_sub_heading img
+{
+    float: right;
+}
+
+div.elbp_form_panel_body
+{
+    padding: 15px;
+    background-color: #F4F4F4;
+}
+
+div.elbp_form_panel_body div.elbp_form_panel_body
+{
+    background-color: #FDFDFD;
+}
+
+div.elbp_form_panel_sub_body
+{
+    width: 95%;
+    margin: auto;
+    padding: 5px;
+    background-color: rgb(252, 252, 252);
+}
+
+div.elbp_form_panel_side
+{
+    width: 20%;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+}
+
+div.elbp_form_panel_side table
+{
+    width: 90%;
+    margin: auto;
+}
+
+div.elbp_form_panel_side table img
+{
+    width: 12px;
+    height: 12px;
+}
+
+div.elbp_form_panel_centre
+{
+    width: 58%;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
 }

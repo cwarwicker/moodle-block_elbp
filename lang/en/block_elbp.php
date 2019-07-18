@@ -80,7 +80,7 @@ $string['admin'] = 'Admin';
 $string['adminscripts'] = 'Admin Scripts';
 $string['alias'] = 'Alias';
 $string['alertconfig'] = 'Alerts Configuration';
-$string['alertconfig:desc'] = 'Configure email/sms alerts system-wide';
+$string['alertconfig:desc'] = 'Configure email alerts system-wide';
 $string['alertsdeleted'] = 'All Alert Settings Deleted';
 $string['alertvalue:below'] = 'Receieve alerts if value drops below';
 $string['all'] = 'All';
@@ -517,7 +517,7 @@ $string['elbp:config:gradients:desc'] = 'Do you want to use gradients in summary
 $string['elbp:config:jquery'] = 'Use Theme jQuery';
 $string['elbp:config:jquery:desc'] = 'If your theme uses jQuery check this box to ensure the ELBP block does not include its jQuery files';
 $string['elbp:config:emailalerts'] = 'Email Alerts';
-$string['elbp:config:emailalerts:desc'] = 'Enable/Disable email alerts';
+$string['elbp:config:emailalerts:desc'] = 'Enable/Disable email alerts system-wide';
 
 $string['edit'] = 'Edit';
 $string['editattribute'] = 'Edit Attribute';
@@ -981,6 +981,7 @@ $string['notificationconfig:emailcontent'] = 'Message';
 $string['notificationconfig:emailcontent:desc'] = 'Enter the email message you want to be sent, before the content of the plugin';
 $string['notinstalled'] = 'Not Installed';
 $string['notutorialsfound'] = 'No tutorials found.';
+$string['notwriteable'] = 'Not Writeable';
 $string['nousersfound'] = 'No users found';
 $string['novalidcontactemails'] = 'No valid contact emails were found';
 $string['now'] = 'Now';
@@ -1010,6 +1011,7 @@ $string['overall'] = 'Overall';
 $string['overallcomments'] = 'Overall Comments';
 $string['overallreportdetailsfor'] = 'Overall Report Details for';
 $string['override'] = 'Override';
+$string['overview'] = 'Overview';
 
 // P
 $string['p'] = 'P';
@@ -1103,6 +1105,7 @@ $string['questions'] = 'Questions';
 // R
 $string['rangemax'] = 'Range (Max)';
 $string['rank'] = 'Rank';
+$string['recentactivity'] = 'Recent Activity';
 $string['recommended'] = 'Recommended';
 $string['recordperiods'] = 'Record Periods';
 $string['recordperiods:desc'] = 'These are the periods you are storing data against, they can be whatever you want, e.g. "Last 7 Days", "Last 28 Days", "Term 1", "Term 2", "Blahblahblah", etc...';
@@ -1227,6 +1230,7 @@ $string['startaddingplugins'] = 'Start Adding Plugins';
 $string['startdate'] = 'Start Date';
 $string['startdateandweek'] = 'Start Date/Week';
 $string['startdateandweek:desc'] = 'What week number should we start at? And what date should that be?';
+$string['stats'] = 'Statistics';
 $string['status'] = 'Status';
 $string['statuses'] = 'Statuses';
 $string['statusupdated'] = 'Status Updated';
@@ -1288,6 +1292,20 @@ $string['summarypluginconfig:desc'] = 'Enable/Disable Summary elements from appe
 $string['summaryelement'] = 'Summary Element';
 $string['summarysettingsupdated'] = 'Summary Settings Updated';
 $string['switchuser'] = 'Switch User';
+
+$string['systeminfo'] = 'System Info';
+$string['system:moodleversion'] = 'Moodle Version';
+$string['system:moodleversion:info'] = 'Your Moodle version will not be published';
+$string['system:version'] = 'ELBP Version';
+$string['system:updatesavailable'] = 'Updates';
+$string['system:dataroot'] = 'ELBP Data Directory';
+$string['system:registered'] = 'Site Registration';
+$string['system:registered:no'] = 'Your site is not registered';
+$string['system:registered:yes'] = '<b>%s</b><br>Last updated %s (%s)';
+$string['system:registered:task'] = 'Next update scheduled for: %s';
+$string['system:elbpinfo'] = 'ELBP Stats';
+$string['system:elbpinfo:info'] = 'These stats will not be published';
+
 $string['systemroles'] = 'System Roles';
 
 // T
@@ -1420,6 +1438,7 @@ $string['uploads:movingfiles'] = 'Cannot move files to new location';
 $string['uploads:mkdir'] = 'Unable to create directory';
 $string['uploadstudentbyfield'] = 'Upload Student by Field';
 $string['uploadtutorbyfield'] = 'Upload Tutor by Field';
+$string['uptodate'] = 'Up to date';
 $string['useconfidentiality'] = 'Use Confidentiality to allow some things to be seen only by certain types of users?';
 $string['usemoodleormis'] = 'Moodle Database or MIS?';
 $string['usemoodleormis:desc'] = 'Should the plugin use the in-built Moodle tables to find the data? Or should it directly query your MIS each time?';
@@ -1433,6 +1452,8 @@ $string['userdefined'] = 'User-defined';
 $string['userfield'] = 'User Field';
 $string['userguide'] = 'User Guide';
 $string['userguides'] = 'User Guides';
+$string['userguide:student'] = 'Student User Guide';
+$string['userguide:staff'] = 'Staff User Guide';
 $string['userguide:staff:desc'] = 'This is the User Guide which will be displayed to staff. (PDF)';
 $string['userguide:student:desc'] = 'This is the User Guide which will be displayed to students. (PDF)';
 $string['usertargets'] = 'User Targets';
@@ -1459,6 +1480,10 @@ $string['valuesettings'] = 'Value Settings';
 $string['valuesettings:desc'] = 'If your table/view will be returning codes/symbols for register values, e.g. "L, O, A, /, -", etc... you can define a title/meaning for them here, which will be displayed on hover over.';
 $string['valuesupdated'] = 'Values Updated';
 $string['version'] = 'Version';
+$string['versionupdatetype_general'] = 'General Update';
+$string['versionupdatetype_performance'] = 'Performance Update';
+$string['versionupdatetype_security'] = 'Security Update';
+$string['versionupdatetype_securitycrit'] = 'Critical Security Update';
 $string['videofiles'] = 'Video files';
 $string['view'] = 'View';
 $string['viewableonlybystudent'] = 'Viewable ONLY by student';
@@ -1470,6 +1495,7 @@ $string['visibility'] = 'Visibility';
 $string['week'] = 'Week';
 $string['weeks'] = 'Weeks';
 $string['willattemptinstallfile'] = 'Will attempt to install plugin from file';
+$string['writeable'] = 'Writeable';
 
 // X
 

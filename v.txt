@@ -1,1 +1,5 @@
-1.5.0
+{
+"version": "1.5.0",
+"update": "general",
+"file": "https://github.com/cwarwicker/moodle-block_elbp/archive/master.zip"
+}
