@@ -109,20 +109,15 @@ class ELBP
 
         global $CFG;
 
-        // $remote = @file_get_contents(REMOTE_VERSION_URL);
-        // if (!$remote) return "<span class='elbp_err'>".get_string('unabletocheckforupdates', 'block_elbp')."</span>";
-        //
-        // $remote = json_decode(trim($remote));
-        // if (!$remote || is_null($remote)){
-        //     return "<span class='elbp_err'>".get_string('unabletocheckforupdates', 'block_elbp') . "</span>";
-        // }
+        $remote = @file_get_contents(REMOTE_VERSION_URL);
+        if (!$remote) return "<span class='elbp_err'>".get_string('unabletocheckforupdates', 'block_elbp')."</span>";
 
-        // $result = version_compare($this->getPluginVersion(), $remote->version, '<');
-        $result = true;
-        $remote = new \stdClass();
-        $remote->version = "1.6.0";
-        $remote->update = 'securitycrit';
+        $remote = json_decode(trim($remote));
+        if (!$remote || is_null($remote)){
+            return "<span class='elbp_err'>".get_string('unabletocheckforupdates', 'block_elbp') . "</span>";
+        }
 
+        $result = version_compare($this->getPluginVersion(), $remote->version, '<');
         if ($result){
             $img = (file_exists($CFG->dirroot . '/blocks/elbp/pix/update_'.$remote->update.'.png')) ? $CFG->wwwroot . '/blocks/elbp/pix/update_'.$remote->update.'.png' : $CFG->wwwroot . '/blocks/elbp/pix/update_general.png';
             $link = (isset($remote->file) && $remote->file != '') ? $remote->file : self::REMOTE_HOST_URL;
@@ -744,6 +739,14 @@ class ELBP
 
                 case 'main':
 
+                  // Require hub
+                  require_once $CFG->dirroot . '/local/df_hub/lib.php';
+
+                  // Recent activity
+                  $TPL->set("logs", \ELBP\Log::parseListOfLogs( \ELBP\Log::getRecentLogs(15) ));
+
+                  $site = new \DF\Site();
+                  $TPL->set("site", $site);
 
                 break;
 

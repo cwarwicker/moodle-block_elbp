@@ -1293,18 +1293,7 @@ $string['summaryelement'] = 'Summary Element';
 $string['summarysettingsupdated'] = 'Summary Settings Updated';
 $string['switchuser'] = 'Switch User';
 
-$string['systeminfo'] = 'System Info';
-$string['system:moodleversion'] = 'Moodle Version';
-$string['system:moodleversion:info'] = 'Your Moodle version will not be published';
-$string['system:version'] = 'ELBP Version';
-$string['system:updatesavailable'] = 'Updates';
-$string['system:dataroot'] = 'ELBP Data Directory';
-$string['system:registered'] = 'Site Registration';
-$string['system:registered:no'] = 'Your site is not registered';
-$string['system:registered:yes'] = '<b>%s</b><br>Last updated %s (%s)';
-$string['system:registered:task'] = 'Next update scheduled for: %s';
-$string['system:elbpinfo'] = 'ELBP Stats';
-$string['system:elbpinfo:info'] = 'These stats will not be published';
+
 
 $string['systemroles'] = 'System Roles';
 

@@ -4900,3 +4900,75 @@ div.elbp_form_panel_centre
     margin: 0;
     padding: 0;
 }
+
+
+ul.elbp_recent_activity
+{
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.elbp_recent_activity > li
+{
+    min-height: 72px;
+    background: #fff;
+    padding: 6px;
+    border-bottom: 1px dotted #eeeeee;
+    font-size: 8pt;
+}
+
+ul.elbp_recent_activity > li:hover
+{
+    background: #efefef;
+}
+
+ul.elbp_recent_activity > li > div:first-child
+{
+    display: inline-block;
+    vertical-align: top;
+    width: 10%;
+}
+
+ul.elbp_recent_activity > li > div:first-child > img
+{
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.3);
+    background-size: 100%;
+}
+
+ul.elbp_recent_activity > li > div:last-child
+{
+    vertical-align: top;
+    display: inline-block;
+    width: 85%;
+}
+
+ul.elbp_recent_activity > li > div:last-child table
+{
+    width: 100%;
+}
+
+ul.elbp_recent_activity > li > div:last-child table td
+{
+    vertical-align: top;
+}
+
+ul.elbp_recent_activity img
+{
+    max-width: 100%;
+    height: auto;
+}
+
+div.elbp_full_page
+{
+  width: 100%;
+  font-size: 10pt;
+}

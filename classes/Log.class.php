@@ -39,7 +39,6 @@ global $DB;
 
 // Modules
 define("LOG_MODULE_ELBP", "ELBP");
-//define("LOG_MODULE_GRADETRACKER", "GRADETRACKER");
 define("LOG_MODULE_PARENT_PORTAL", "PARENT_PORTAL");
 
 // Elements
@@ -58,15 +57,6 @@ define("LOG_MODULE_PARENT_PORTAL", "PARENT_PORTAL");
     define("LOG_ELEMENT_ELBP_CUSTOM", "CUSTOM");
 
     define("LOG_ELEMENT_ELBP_SETTINGS", "SETTINGS");
-
-    // Grade Tracker Elements
-//    define("LOG_ELEMENT_GRADETRACKER_QUALIFICATION", "QUALIFICATION");
-//    define("LOG_ELEMENT_GRADETRACKER_UNIT", "UNIT");
-//    define("LOG_ELEMENT_GRADETRACKER_CRITERIA", "CRITERIA");
-//    define("LOG_ELEMENT_GRADETRACKER_SETTINGS", "SETTINGS"); # This is for admin stuff, like setting new values, lvls, etc..
-//    define("LOG_ELEMENT_GRADETRACKER_TASK", "TASK");
-//    define("LOG_ELEMENT_GRADETRACKER_RANGE", "RANGE");
-
 
 
  // Actions
@@ -137,70 +127,19 @@ define("LOG_MODULE_PARENT_PORTAL", "PARENT_PORTAL");
 
         define("LOG_ACTION_ELBP_SETTINGS_SET_USER_CAPABILITY", "set user capability");
 
-    // Grade Tracker Actions
-
-        // Qual related
-//        define("LOG_ACTION_GRADETRACKER_INSERTED_QUAL", "inserted qualification");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_QUAL", "updated qualification");
-//        define("LOG_ACTION_GRADETRACKER_DELETED_QUAL", "deleted qualification");
-//        define("LOG_ACTION_GRADETRACKER_ADDED_UNIT_TO_QUAL", "added unit onto qualification");
-//        define("LOG_ACTION_GRADETRACKER_REMOVED_UNIT_FROM_QUAL", "removed unit from qualification");
-//        define("LOG_ACTION_GRADETRACKER_ADDED_QUAL_TO_COURSE", "added qualification to course");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_QUAL_COMMENTS", "updated student's qualification comments");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_QUAL_AWARD", "updated student's qualification award");
-//        define("LOG_ACTION_GRADETRACKER_DELETED_QUAL_AWARD", "deleted student's qualification award");
-//        define("LOG_ACTION_GRADETRACKER_SAVED_GRID", "saved student's grid");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_QUAL_ATTRIBUTE", "updated student's qualification attribute");
-//
-//        // Criteria related
-//        define("LOG_ACTION_GRADETRACKER_INSERTED_CRIT", "inserted criteria");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_CRIT", "updated criteria");
-//        define("LOG_ACTION_GRADETRACKER_DELETED_CRIT", "deleted criteria");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_CRIT_AWARD", "updated student's criteria award");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_CRIT_AWARD_AUTO", "automatically updated student's criteria award");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_CRIT_COMMENT", "updated student's criteria comment");
-//        define("LOG_ACTION_GRADETRACKER_DELETED_CRIT_COMMENT", "deleted student's criteria comment");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_USER_DEFINED_VALUE", "updated student's user defined value");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_CRIT_USER_TARGET_DATE", "updated student's target date");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_CRIT_USER_AWARD_DATE", "updated student's award date");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_OUTCOME_OBSERVATION", "updated student's outcome observation");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_SIGNOFF_RANGE_OBSERVATION", "updated student's signoff range observation");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_CRIT_ATTRIBUTE", "updated student's criteria attribute");
-//
-//        // Unit related
-//        define("LOG_ACTION_GRADETRACKER_INSERTED_UNIT", "inserted unit");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_UNIT", "updated unit");
-//        define("LOG_ACTION_GRADETRACKER_DELETED_UNIT", "deleted unit");
-//        define("LOG_ACTION_GRADETRACKER_ADDED_STUDENT_TO_UNIT", "added student to unit");
-//        define("LOG_ACTION_GRADETRACKER_DELETED_STUDENT_FROM_UNIT", "deleted student from unit");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_STUDENT_TO_UNIT", "updated student on unit");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_UNIT_AWARD", "updated student's unit award");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_UNIT_COMMENT", "updated student's unit comment");
-//        define("LOG_ACTION_GRADETRACKER_DELETED_UNIT_COMMENT", "deleted student's unit comment");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_UNIT_ATTRIBUTE", "updated student's unit attribute");
-//
-//        // Task related
-//        define("LOG_ACTION_GRADETRACKER_INSERTED_TASK", "inserted task");
-//        define("LOG_ACTION_GRADETRACKER_INSERTED_TASK_AWARD", "inserted student's criteria task award");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_TASK_AWARD", "updated student's criteria task award");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_TASK_COMMENT", "updated student's criteria task comment");
-//        define("LOG_ACTION_GRADETRACKER_DELETED_TASK_COMMENT", "deleted student's criteria task comment");
-//
-//        // Range related
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_CRITERIA_RANGE_VALUE", "updated student's criteria/range value");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_RANGE_AWARD_DATE", "updated student's range award date");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_RANGE_AWARD", "updated student's range award");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_RANGE_AWARD_AUTO", "automatically updated student's range award");
-//        define("LOG_ACTION_GRADETRACKER_UPDATED_RANGE_TARGET_DATE", "updated student's range target date");
-//        define("LOG_ACTION_GRADETRACKER_DELETED_SIGNOFF_SHEET", "deleted signoff sheet"); # Not technically range but who cares
-//        define("LOG_ACTION_GRADETRACKER_DELETED_SIGNOFF_SHEET_RANGE", "deleted signoff sheet range");
-
-
-
 /**
  *
  */
 class Log {
+
+    public static function getRecentLogs($limit = 20){
+
+      global $DB;
+
+      $recent = $DB->get_records_sql("SELECT * FROM {lbp_logs} WHERE module = 'ELBP' AND element != 'SETTINGS' ORDER BY time DESC", null, 0, $limit);
+      return $recent;
+
+    }
 
     /**
      * Give an list of logs from the db, return an array of readable information about them

@@ -6,11 +6,23 @@
 <div class="elbp_full_page">
 
     <div class='elbp_form_panel_side'>
-
             <div class='elbp_form_panel_heading'><?= $string['recentactivity'] ?></div>
             <div class="elbp_form_panel_body">
                 <ul class='elbp_recent_activity'>
-
+                  <?php if($logs): ?>
+                    <?php foreach($logs as $log): ?>
+                      <li>
+                          <div><?= $OUTPUT->user_picture($log['user'], array("courseid"=>SITEID, "size"=>50)) ?></div>
+                          <div>
+                              <span>
+                                  <a href='<?= $CFG->wwwroot ?>/user/profile.php?id=<?= $log['user']->id ?>'><?= $log['info'] ?>
+                              </span>
+                              <br>
+                              <small><i class="icon-time"></i> <?= \elbp_time_ago($log['log']->time) ?></small>
+                          </div>
+                      </li>
+                    <?php endforeach; ?>
+                  <?php endif; ?>
                 </ul>
             </div>
 
@@ -19,11 +31,63 @@
     </div>
 
     <div class='elbp_form_panel_centre'>
-        <div class='elbp_form_panel_heading'><?= $string['systeminfo'] ?></div>
+        <div class='elbp_form_panel_heading'><?= \get_string('systeminfo', 'local_df_hub') ?></div>
         <div class="elbp_form_panel_body">
 
-            
+          <table id="gt_sys_info">
 
+              <tr>
+                  <td><strong><?= \get_string('system:moodleversion', 'local_df_hub') ?></strong></td>
+                  <td><?= $site->getVersion() ?> (<?= $site->getBuild() ?>)</td>
+              </tr>
+
+              <tr>
+                  <td><strong><?= \sprintf( \get_string('system:pluginversion', 'local_df_hub'), $ELBP->getELBPShortName() ) ?></strong></td>
+                  <td><?= $ELBP->getPluginVersion() ?> (<?= $ELBP->getBlockVersion() ?>)</td>
+              </tr>
+
+              <tr>
+                  <td><strong><?= \get_string('system:updatesavailable', 'local_df_hub')  ?></strong></td>
+                  <td><?= $ELBP->printVersionCheck( true, \get_string('system:uptodate', 'local_df_hub') ) ?></td>
+              </tr>
+
+              <tr>
+                  <td><strong><?= \sprintf( \get_string('system:plugindataroot', 'local_df_hub'), $ELBP->getELBPShortName() ) ?></strong></td>
+                  <td><em><?= $ELBP->dir ?></em> <?= (is_writeable($ELBP->dir)) ? "<span style='color:green;'>(".\get_string('writeable', 'local_df_hub') .")</span>" : "<span style='color:red;'>(".\get_string('notwriteable', 'local_df_hub') .")</span>" ?></td>
+              </tr>
+
+              <tr>
+                  <td colspan="2"><hr></td>
+              </tr>
+
+              <tr>
+                   <td><strong><?= \get_string('system:registered', 'local_df_hub') ?></strong></td>
+                   <td>
+                       <?php if ($site->isRegistered()): ?>
+
+                           <span><?= \sprintf(\get_string('system:registered:yes', 'local_df_hub'), $site->getUIN(), $site->getLastUpdated('D jS M Y, H:i'), \df_time_ago($site->getLastUpdated())) ?></span><br>
+                           <input type='button' value='<?= $string['update'] ?>' class='elbp_btn elbp_blue elbp_toggle' toggle='#register_site' />
+
+                       <?php else: ?>
+
+                           <a href="#" class="elbp_toggle" toggle="#register_site"><?= \get_string('system:registered:no', 'local_df_hub') ?></a>
+                           <img src="<?= \elbp_image_url('help') ?>" class="elbp_tooltip" title="<?= \get_string('system:resgister:info', 'local_df_hub'); ?>" />
+
+                       <?php endif; ?>
+                   </td>
+               </tr>
+
+          </table>
+
+        </div>
+
+        <br>
+
+        <div id='register_site' style='display:none;'>
+            <div class='elbp_form_panel_heading'><?= \get_string('system:registered', 'local_df_hub') ?></div>
+            <div class="elbp_form_panel_body">
+              <?= $site->printRegistrationForm() ?>
+            </div>
         </div>
 
     </div>
@@ -33,9 +97,6 @@
         <div class='elbp_form_panel_heading'><?= $string['stats'] ?></div>
         <div class="elbp_form_panel_body">
         </div>
-
-
-
 
     </div>
 
