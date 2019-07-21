@@ -60,7 +60,7 @@
                   <td colspan="2"><hr></td>
               </tr>
 
-              <tr>
+              <!-- <tr>
                    <td><strong><?= \get_string('system:registered', 'local_df_hub') ?></strong></td>
                    <td>
                        <?php if ($site->isRegistered()): ?>
@@ -75,7 +75,7 @@
 
                        <?php endif; ?>
                    </td>
-               </tr>
+               </tr> -->
 
           </table>
 
@@ -96,6 +96,28 @@
 
         <div class='elbp_form_panel_heading'><?= $string['stats'] ?></div>
         <div class="elbp_form_panel_body">
+          <table>
+            <?php foreach($stats as $stat => $val): ?>
+              <tr>
+                <td><?= $string['stat:'.$stat] ?></td>
+                <td><?= $val ?></td>
+              </tr>
+            <?php endforeach; ?>
+          </table>
+        </div>
+
+        <div class='elbp_form_panel_heading'><?= $string['plugins'] ?></div>
+        <div class="elbp_form_panel_body">
+            <table>
+                <?php if ($plugins): ?>
+                    <?php foreach($plugins as $plugin): ?>
+                        <tr>
+                            <td><?= $plugin->getTitle() ?></td>
+                            <td><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/<?= ($plugin->isEnabled()) ? 'on' : 'off' ?>.png" /></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </table>
         </div>
 
     </div>

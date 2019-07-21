@@ -8,11 +8,9 @@
 
     <br class="elbp_cl">
 
-    <!-- <div class='elbp_centre'>
-        <img id='elbplogo' name='elbplogo' src='<?= $CFG->wwwroot ?>/blocks/elbp/pix/elbp.png' class='elbp_logo_text' />
-    </div> -->
-
-    <h1><?= $ELBP->getELBPFullName() ?></h1>
+    <div class='elbp_centre'>
+        <img id='elbplogo' name='elbplogo' src='<?= $CFG->wwwroot ?>/blocks/elbp/pix/elbp_text.png' class='elbp_logo_text' />
+    </div>
 
     <ul id="elbp_dropdown_list">
 
@@ -28,7 +26,7 @@
         <?php if ($view == 'course'): ?>
             <li class="<?= ($view == 'course') ? 'selected' : '' ?>"><a href="config.php?view=course"><?= $string['course'] ?></a></li>
         <?php endif; ?>
-
+        
     </ul>
 
     <br class="elbp_cl">
@@ -36,3 +34,5 @@
     <?php $ELBP->displayConfig($view) ?>
 
 </div>
+
+<!-- <div id="elbp_loading_overlay"></div> -->

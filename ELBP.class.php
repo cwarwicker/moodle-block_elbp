@@ -727,7 +727,7 @@ class ELBP
      */
     public function displayConfig($view)
     {
-        global $CFG, $MSGS, $FORMVALS, $OUTPUT, $PAGE, $DBC;
+        global $CFG, $DB, $MSGS, $FORMVALS, $OUTPUT, $PAGE, $DBC;
 
         $TPL = new \ELBP\Template();
         $TPL->set("ELBP", $this);
@@ -739,14 +739,23 @@ class ELBP
 
                 case 'main':
 
-                  // Require hub
+                  // Require hub & stats
                   require_once $CFG->dirroot . '/local/df_hub/lib.php';
+                  require_once './classes/df_hub/stats.php';
 
                   // Recent activity
                   $TPL->set("logs", \ELBP\Log::parseListOfLogs( \ELBP\Log::getRecentLogs(15) ));
 
+                  // DF Hub Site
                   $site = new \DF\Site();
                   $TPL->set("site", $site);
+
+                  // Plugins
+                  $plugins = $this->getAllPlugins();
+                  $TPL->set("plugins", $plugins);
+
+                  // Stats
+                  $TPL->set("stats", $stats);
 
                 break;
 

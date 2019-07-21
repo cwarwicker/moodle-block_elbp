@@ -363,7 +363,7 @@ input.elbp_yellow:active, a.elbp_yellow:active, input.elbp_yellow[type="submit"]
 
     ul#elbp_dropdown_list {
       font-size: 9pt;
-      background: #688cc3;
+      background: #404ac6;
       height: 50px;
       list-style: none;
       margin: 10px 0 0 0;
@@ -398,7 +398,7 @@ input.elbp_yellow:active, a.elbp_yellow:active, input.elbp_yellow[type="submit"]
 
     ul#elbp_dropdown_list li:hover > a,
     ul#elbp_dropdown_list li.selected > a {
-      background: #53599e;
+      background: #707bd4;
       color: #FFFFFF !important;
       text-decoration: none;
     }
@@ -432,7 +432,7 @@ input.elbp_yellow:active, a.elbp_yellow:active, input.elbp_yellow[type="submit"]
       margin: 0px;
       padding: 0px;
       width: 200px;
-      background: #B6C368;
+      background: #404ac6;
       /*this is where the rounded corners for the dropdown disappears*/
     }
 
@@ -454,7 +454,7 @@ input.elbp_yellow:active, a.elbp_yellow:active, input.elbp_yellow[type="submit"]
     ul#elbp_dropdown_list li.selected ul li.selected > a {
       border: 0px;
       color: #FFFFFF;
-      background: #53599e;
+      background: #707bd4;
       text-decoration: none;
     }
 
@@ -680,6 +680,11 @@ div#elbp_popup_content select[multiple="multiple"],
 div.elbp_config select[multiple="multiple"]
 {
     height: 150px;
+}
+
+div.elbp_config div.elbp_form_panel_body select
+{
+  max-width: 80%;
 }
 
 div#elbp_wrapper input[type="color"]
@@ -4794,7 +4799,7 @@ table#elbp_install_plugins
 
 img.elbp_logo_text
 {
-    height: 50px !important;
+    height: 75px !important;
 }
 
 
@@ -4971,4 +4976,16 @@ div.elbp_full_page
 {
   width: 100%;
   font-size: 10pt;
+}
+
+div#elbp_loading_overlay
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: url([[pix:block_elbp|loader_big]]) 50% 5% no-repeat #fff;
+  /* opacity: 0.8; */
 }

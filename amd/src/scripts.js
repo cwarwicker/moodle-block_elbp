@@ -3141,6 +3141,11 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         });
 
 
+
+        // Remove loading overlay
+        $('#elbp_loading_overlay').fadeOut();
+
+
     };
 
 

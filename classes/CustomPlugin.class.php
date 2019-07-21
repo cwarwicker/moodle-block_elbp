@@ -3859,7 +3859,7 @@ class CustomPlugin {
         finfo_close($fInfo);
 
         // Has to be csv file, otherwise error and return
-        if ($mime != 'application/xml' && $mime != 'text/plain'){
+        if ($mime != 'application/xml' && $mime != 'text/plain' && $mime != 'text/xml'){
             return array('success' => false, 'error' => get_string('uploads:invalidmimetype', 'block_elbp') . " ( {$mime} )");
         }
 

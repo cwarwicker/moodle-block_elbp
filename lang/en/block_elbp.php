@@ -1231,6 +1231,18 @@ $string['startdate'] = 'Start Date';
 $string['startdateandweek'] = 'Start Date/Week';
 $string['startdateandweek:desc'] = 'What week number should we start at? And what date should that be?';
 $string['stats'] = 'Statistics';
+
+$string['stat:addsup'] = 'No. AddSup Sessions';
+$string['stat:attachments'] = 'No. Attachments';
+$string['stat:challenges'] = 'No. Challenges';
+$string['stat:comments'] = 'No. Comments';
+$string['stat:coursereports'] = 'No. Course Reports';
+$string['stat:periodicalcoursereports'] = 'No. Periodical Reports';
+$string['stat:targets'] = 'No. Targets';
+$string['stat:tutorials'] = 'No. Tutorials';
+$string['stat:customplugins'] = 'No. Custom Plugins';
+
+
 $string['status'] = 'Status';
 $string['statuses'] = 'Statuses';
 $string['statusupdated'] = 'Status Updated';
