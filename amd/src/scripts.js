@@ -56,7 +56,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
     ELBP.ajax = function(plugin, action, params, callback, callBefore){
 
-        let url = ELBP.www + "/blocks/elbp/js/ajaxHandler.php";
+        var url = ELBP.www + "/blocks/elbp/js/ajaxHandler.php";
 
         if (callBefore){
             callBefore();
@@ -79,7 +79,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                 }
 
                 // Process data for hidden JS
-                let e = ELBP.process_data_eval(d);
+                var e = ELBP.process_data_eval(d);
 
                 if (ELBP.tempData != null){
                     d = ELBP.tempData;
@@ -117,14 +117,14 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Look for ELBP:JS tags to remove data and eval() instead of displaying
     ELBP.process_data_eval = function(data){
 
-        let pat = /\[ELBP:JS\]([\s\S]+?)\[\/ELBP:JS\]/g;
-        let matches = data.match(pat);
+        var pat = /\[ELBP:JS\]([\s\S]+?)\[\/ELBP:JS\]/g;
+        var matches = data.match(pat);
         if(matches)
         {
 
             data = data.replace(pat, "");
-            let toEval = "";
-            for(let i = 0; i < matches.length; i++)
+            var toEval = "";
+            for(var i = 0; i < matches.length; i++)
             {
                 matches[i] = matches[i].replace(/(\[ELBP:JS\]|\[\/ELBP:JS\])/g, "");
                 toEval += matches[i];
@@ -142,7 +142,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Test an MIS connection
     ELBP.test_mis_connection = function(type, host, user, pass, db, id){
 
-        let params = {
+        var params = {
             type: type,
             host: host,
             user: user,
@@ -150,7 +150,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             db: db
         };
 
-        let el = '#elbp_config_test_conn';
+        var el = '#elbp_config_test_conn';
         if (id != undefined){
             el += '_'+id;
         }
@@ -215,16 +215,16 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         ELBP.savedInputs[pluginName] = {};
 
         // Find inputs
-        let inputs = $('#elbp_popup :input');
+        var inputs = $('#elbp_popup :input');
         $(inputs).each( function(){
-            let tagName = $(this).prop('tagName');
+            var tagName = $(this).prop('tagName');
             if (tagName != 'BUTTON' && $(this).attr('type') != 'submit'){
 
-                let id = $(this).attr('id');
-                let name = $(this).attr('name');
-                let val = $(this).val();
-                let chkd = ( $(this).is(':checked') ) ? true : false ;
-                let content = '';
+                var id = $(this).attr('id');
+                var name = $(this).attr('name');
+                var val = $(this).val();
+                var chkd = ( $(this).is(':checked') ) ? true : false ;
+                var content = '';
 
                 // First check if it's a texteditor, in which case get iframe contents
                 if ( $(this).hasClass('elbp_texteditor') ){
@@ -243,10 +243,10 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                 }
                 // Only one value with that name so far: {value: value, checked: checked}
                 else if (ELBP.savedInputs[pluginName][name] != undefined && ELBP.savedInputs[pluginName][name] instanceof Object && ELBP.savedInputs[pluginName][name][0] == undefined ){
-                    let tmpVar = ELBP.savedInputs[pluginName][name];
+                    var tmpVar = ELBP.savedInputs[pluginName][name];
                     ELBP.savedInputs[pluginName][name] = [ tmpVar, {value: val, checked: chkd} ];
                 } else if (ELBP.savedInputs[pluginName][name] != undefined && ELBP.savedInputs[pluginName][name] instanceof Object && ELBP.savedInputs[pluginName][name][0] instanceof Object){
-                    let cnt = Object.keys(ELBP.savedInputs[pluginName][name]).length;
+                    var cnt = Object.keys(ELBP.savedInputs[pluginName][name]).length;
                     ELBP.savedInputs[pluginName][name][cnt] = {value: val, checked: chkd};
                 } else {
                     ELBP.savedInputs[pluginName][name] = {value: val, checked: chkd};
@@ -267,24 +267,24 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             // Load inputs values back into saved html
             $.each( ELBP.savedInputs[pluginName], function(key, o){
 
-                let v = o.value;
-                let fullHtml = undefined;
+                var v = o.value;
+                var fullHtml = undefined;
 
                 // First check for any texteditors as we need to do iframey stuff
-                let type = $.type(v);
+                var type = $.type(v);
                 if (type == 'object' && $(v).find('body').length > 0){
                     v = $(v).find('body').html();
                 }
 
                 key = key.replace(/"/g, '&quot;');
-                let tmpVar = $('input[name="'+key+'"], textarea[name="'+key+'"], select[name="'+key+'"]', ELBP.savedStates[pluginName]);
-                let tagName = $(tmpVar).prop('tagName');
+                var tmpVar = $('input[name="'+key+'"], textarea[name="'+key+'"], select[name="'+key+'"]', ELBP.savedStates[pluginName]);
+                var tagName = $(tmpVar).prop('tagName');
 
                 // If we found more than one with the same name, loop through
                 if (tmpVar.length > 1)
                 {
 
-                    for (let i = 0; i < tmpVar.length; i++)
+                    for (var i = 0; i < tmpVar.length; i++)
                     {
 
                         v = o[i].value;
@@ -349,11 +349,11 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             $(ELBP.savedStates[pluginName]).find('.elbp_texteditor').siblings('div').remove();
 
 
-            let html = $(ELBP.savedStates[pluginName]).html();
+            var html = $(ELBP.savedStates[pluginName]).html();
 
 
             // Put the elbp_popup div around it again
-            let wrapperDiv = $(ELBP.savedStates[pluginName]).first();
+            var wrapperDiv = $(ELBP.savedStates[pluginName]).first();
             $(wrapperDiv).css('display', 'none');
             html = "<div id='"+$(wrapperDiv).attr('id')+"' style='"+$(wrapperDiv).attr('style')+"' class='"+$(wrapperDiv).attr('class')+"'>" + html + "</div>";
 
@@ -369,16 +369,16 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                 if (id.substring(0, 7) == "elbpfe_"){
 
                     // Explode id into array by _
-                    let explode = id.split("_");
+                    var explode = id.split("_");
 
                     // Set last item in arrya to "parent" instead of "ifr"
                     explode[ explode.length - 1 ] = "parent";
 
                     // Join the array back into a string for the span's id
-                    let spanID = explode.join("_");
+                    var spanID = explode.join("_");
 
                     // Also get the id of the actual textarea
-                    let editorID = spanID.replace("_parent", "");
+                    var editorID = spanID.replace("_parent", "");
 
                     // Remove the span parent
                     $(this).parents('#'+spanID).remove();
@@ -407,7 +407,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Load all plugins
     ELBP.load = function(type, id){
 
-        let params = {
+        var params = {
             type: type,
             id: id,
             student: ELBP.studentID,
@@ -426,7 +426,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Load the expanded view of a plugin
     ELBP.load_expanded = function(plugin, callAfter){
 
-        let params = {
+        var params = {
             pluginname: plugin,
             student: ELBP.studentID,
             course: ELBP.courseID
@@ -462,8 +462,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         // When we hover over a summary box, if there is any overflow hidden, show the expand link
         $('.elbp_summary_box_wrapper').hover(
             function(){
-                let height = $(this).height();
-                let scrollHeight = $(this)[0].scrollHeight;
+                var height = $(this).height();
+                var scrollHeight = $(this)[0].scrollHeight;
                 if (scrollHeight > height){
                     $(this).next('.elbp_summary_box_footer').slideDown('slow');
                 }
@@ -490,24 +490,24 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
     ELBP.expand = function(el){
 
-        let wrapperObj = $(el).siblings('.elbp_summary_box_wrapper')[0];
+        var wrapperObj = $(el).siblings('.elbp_summary_box_wrapper')[0];
 
-        let scrollHeight = wrapperObj.scrollHeight + 10;
+        var scrollHeight = wrapperObj.scrollHeight + 10;
         $(wrapperObj).animate({height: scrollHeight}, 300);
 
         // Change expand link to contract
         $(el).attr('onclick', 'ELBP.contract(this);return false;');
         $(el).attr('title', ELBP.strings['contract']);
-        let img = $(el).children('img');
+        var img = $(el).children('img');
         $(img).attr('src', $(img).attr('src').replace('switch_plus', 'switch_minus'));
 
     };
 
     ELBP.contract = function(el){
 
-        let max_height = 225;
+        var max_height = 225;
 
-        let wrapperObj = $(el).siblings('.elbp_summary_box_wrapper')[0];
+        var wrapperObj = $(el).siblings('.elbp_summary_box_wrapper')[0];
 
         $(wrapperObj).animate({height: max_height}, 300);
 
@@ -516,7 +516,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         // Change expand link to expand
         $(el).attr('onclick', 'ELBP.expand(this);return false;');
         $(el).attr('title', ELBP.strings['expand']);
-        let img = $(el).children('img');
+        var img = $(el).children('img');
         $(img).attr('src', $(img).attr('src').replace('switch_minus', 'switch_plus'));
 
     };
@@ -543,8 +543,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     ELBP.resize_popup = function(){
 
         // Height & Width of popup so we can use explode effect
-        let screenWidth = ($(window).width() / 100) * 80;
-        let screenHeight = ($(window).height() / 100) * 80;
+        var screenWidth = ($(window).width() / 100) * 80;
+        var screenHeight = ($(window).height() / 100) * 80;
         $('#elbp_popup').css('height', screenHeight);
         $('#elbp_popup').css('width', screenWidth);
 
@@ -555,7 +555,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         $('#elbp_dialogue div').html(content);
 
-        let options = {
+        var options = {
             title: title,
             autoOpen: true,
             autoResize: true,
@@ -603,7 +603,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             }
 
             else if (ELBP.dockPosition == 'left'){
-                let img = ELBP.pluginIcons[plugin];
+                var img = ELBP.pluginIcons[plugin];
                 $('#elbp_dock_list').append('<li id="docked_'+plugin+'"><a href="#" onclick="ELBP.load_from_dock(\''+plugin+'\');return false;" class="dock_plugin_name" title="\'+ELBP.strings[\'loadsavedstate\']+\': '+pluginTitle+'"><img src="'+img+'" alt="'+pluginTitle+'" /></a><br><a href="#" onclick="ELBP.undock(\''+plugin+'\');return false;" class="dock_plugin_close"><img src="\'+ELBP.www+\'/blocks/elbp/pix/close_tiny.png" alt="img" title="'+ELBP.strings['undock']+': '+pluginTitle+'" /></a></li>');
             }
 
@@ -659,7 +659,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             return false;
         }
 
-        let params = { action: "load_users", param: param };
+        var params = { action: "load_users", param: param };
         ELBP.ajax(0, "switch_user", params, function(d){
 
             $('#switch_user_users').find('option').remove();
@@ -703,7 +703,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         if (search == '') return false;
 
-        let params = { action: "load_users", search: search };
+        var params = { action: "load_users", search: search };
         ELBP.ajax(0, "search_load_student", params, function(d){
 
             $('#switch_users_loading').html('');
@@ -718,7 +718,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Load your settings popup
     ELBP.my_settings = function(userID){
 
-        let opt = {
+        var opt = {
             buttons: {
                 "Save": function() {
                     $(this).dialog("close");
@@ -731,7 +731,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             height: 400
         };
 
-        let params = { student: ELBP.studentID, userID: userID }
+        var params = { student: ELBP.studentID, userID: userID }
 
         $('#mysettingsimg').attr('src', ELBP.www + '/blocks/elbp/pix/loader.gif');
 
@@ -745,7 +745,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Save your settings
     ELBP.save_my_settings = function(userID){
 
-        let params = {};
+        var params = {};
 
         if (userID == undefined || userID == "undefined" || userID == ""){
             params = { data: $('#my_settings').serialiseObject() }
@@ -779,7 +779,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         // Return all courses in given cat as <option>s for the course_picker form element
         choose_category: function(catID, el, use){
 
-            let params = { action: "choose_category", catID: catID, use: use };
+            var params = { action: "choose_category", catID: catID, use: use };
 
             ELBP.ajax(0, "course_picker", params, function(data){
                 $($(el).siblings('#category_picker_pick_courses').children('input')[0]).val('');
@@ -791,8 +791,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         search_course: function(search, el, use){
 
-            let catID = $($($(el).parents()[1]).children()[0]).val();
-            let params = { action: "search_courses", catID: catID, search: search, use: use };
+            var catID = $($($(el).parents()[1]).children()[0]).val();
+            var params = { action: "search_courses", catID: catID, search: search, use: use };
             ELBP.ajax(0, "course_picker", params, function(data){
                 $($(el).siblings('select')[0]).html(data);
             });
@@ -801,28 +801,28 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         add: function(el){
 
-            let parents = $(el).parents()[0];
-            let searchdiv = $(parents).siblings('.elbp_course_picker_search_div')[0];
-            let coursediv = $(searchdiv).children('#category_picker_pick_courses')[0];
-            let select = $(coursediv).children('select.course_list')[0];
-            let courses = $(select).val();
+            var parents = $(el).parents()[0];
+            var searchdiv = $(parents).siblings('.elbp_course_picker_search_div')[0];
+            var coursediv = $(searchdiv).children('#category_picker_pick_courses')[0];
+            var select = $(coursediv).children('select.course_list')[0];
+            var courses = $(select).val();
 
             if (courses != null){
 
-                let options = $(select).children('option');
-                let coursenames = new Array();
+                var options = $(select).children('option');
+                var coursenames = new Array();
 
                 $.each(options, function(k,v){
                     coursenames[v.value] = v.innerHTML;
                 });
 
-                let chosendiv = $(parents).siblings('.elbp_course_picker_chosen_div')[0];
-                let addselect = $(chosendiv).children('select.courseholder')[0];
-                let hiddeninputs = $(addselect).siblings('.coursepickerhiddeninputs')[0];
-                let fieldname = $(hiddeninputs).attr('fieldname');
+                var chosendiv = $(parents).siblings('.elbp_course_picker_chosen_div')[0];
+                var addselect = $(chosendiv).children('select.courseholder')[0];
+                var hiddeninputs = $(addselect).siblings('.coursepickerhiddeninputs')[0];
+                var fieldname = $(hiddeninputs).attr('fieldname');
 
-                let addedoptions = $(addselect).children('option');
-                let addedoptionvalues = new Array();
+                var addedoptions = $(addselect).children('option');
+                var addedoptionvalues = new Array();
                 $.each(addedoptions, function(k,v){
                     addedoptionvalues.push(v.value);
                 });
@@ -849,12 +849,12 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         remove: function(el){
 
-            let parents = $(el).parents()[0];
-            let chosendiv = $(parents).siblings('.elbp_course_picker_chosen_div')[0];
-            let addselect = $(chosendiv).children('select.courseholder')[0];
-            let hiddeninputs = $(addselect).siblings('.coursepickerhiddeninputs')[0];
+            var parents = $(el).parents()[0];
+            var chosendiv = $(parents).siblings('.elbp_course_picker_chosen_div')[0];
+            var addselect = $(chosendiv).children('select.courseholder')[0];
+            var hiddeninputs = $(addselect).siblings('.coursepickerhiddeninputs')[0];
 
-            let courses = $(addselect).val();
+            var courses = $(addselect).val();
 
             if (courses != null){
 
@@ -882,7 +882,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         // Search users
         search_user: function(search, el){
 
-            let params = { action: "search_users", search: search };
+            var params = { action: "search_users", search: search };
             ELBP.ajax(0, "user_picker", params, function(data){
                 $($(el).siblings('select')[0]).html(data);
             });
@@ -891,27 +891,27 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         add: function(el){
 
-            let parents = $(el).parents()[0];
-            let searchdiv = $(parents).siblings('.elbp_user_picker_search_div')[0];
-            let select = $(searchdiv).children('.user_list')[0];
-            let users = $(select).val();
+            var parents = $(el).parents()[0];
+            var searchdiv = $(parents).siblings('.elbp_user_picker_search_div')[0];
+            var select = $(searchdiv).children('.user_list')[0];
+            var users = $(select).val();
 
             if (users != null){
 
-                let options = $(select).children('option');
-                let usernames = new Array();
+                var options = $(select).children('option');
+                var usernames = new Array();
 
                 $.each(options, function(k,v){
                     usernames[v.value] = v.innerHTML;
                 });
 
-                let chosendiv = $(parents).siblings('.elbp_user_picker_chosen_div')[0];
-                let addselect = $(chosendiv).children('.userholder')[0];
-                let hiddeninputs = $(addselect).siblings('.userpickerhiddeninputs')[0];
-                let fieldname = $(hiddeninputs).attr('fieldname');
+                var chosendiv = $(parents).siblings('.elbp_user_picker_chosen_div')[0];
+                var addselect = $(chosendiv).children('.userholder')[0];
+                var hiddeninputs = $(addselect).siblings('.userpickerhiddeninputs')[0];
+                var fieldname = $(hiddeninputs).attr('fieldname');
 
-                let addedoptions = $(addselect).children('option');
-                let addedoptionvalues = new Array();
+                var addedoptions = $(addselect).children('option');
+                var addedoptionvalues = new Array();
                 $.each(addedoptions, function(k,v){
                     addedoptionvalues.push(v.value);
                 });
@@ -938,12 +938,12 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         remove: function(el){
 
-            let parents = $(el).parents()[0];
-            let chosendiv = $(parents).siblings('.elbp_user_picker_chosen_div')[0];
-            let addselect = $(chosendiv).children('.userholder')[0];
-            let hiddeninputs = $(addselect).siblings('.userpickerhiddeninputs')[0];
+            var parents = $(el).parents()[0];
+            var chosendiv = $(parents).siblings('.elbp_user_picker_chosen_div')[0];
+            var addselect = $(chosendiv).children('.userholder')[0];
+            var hiddeninputs = $(addselect).siblings('.userpickerhiddeninputs')[0];
 
-            let users = $(addselect).val();
+            var users = $(addselect).val();
 
             if (users != null){
 
@@ -967,26 +967,26 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Validate a form based on validation attributes
     ELBP.validate_form = function(form){
 
-        let errs = 0;
-        let formID = $(form).attr('id');
+        var errs = 0;
+        var formID = $(form).attr('id');
 
         $( '#' + formID + ' input, #'+formID+' select, #'+formID+' textarea').removeClass('elbp_red');
         $('span.elbp_error').remove();
 
-        let firstEl = '';
+        var firstEl = '';
 
         // Loop through the data elements provided and check if they have a "validation" attribute
         $( '#' + formID + ' input, #'+formID+' select, #'+formID+' textarea').each( function(){
 
-            let input = $(this);
-            let value = $(this).val();
+            var input = $(this);
+            var value = $(this).val();
             value = $.trim(value);
 
             // If it's a Moodle Text Editor, the value is in the iframe, so we need to get that instead
             if ( $(this).hasClass('elbp_texteditor') ){
 
                 // Moodle 2.7 and above
-                let ifr27 = $('#' + $(this).attr('id') + 'editable');
+                var ifr27 = $('#' + $(this).attr('id') + 'editable');
                 if ( ifr27.length > 0 ) {
 
                     value = ifr27.html();
@@ -1008,9 +1008,9 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             if ( $(this).attr('validation') != undefined ){
 
                 // Implode into array and check all of the types
-                let validation = $(this).attr('validation').split(',');
-                let type = $(this).attr('type');
-                let name = $(this).attr('name');
+                var validation = $(this).attr('validation').split(',');
+                var type = $(this).attr('type');
+                var name = $(this).attr('name');
 
                 $.each(validation, function(i, v){
 
@@ -1023,8 +1023,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                             if (type == 'radio' || type == 'checkbox')
                             {
 
-                                let others = $('#'+formID+' input[name="'+name+'"]');
-                                let ticked = 0;
+                                var others = $('#'+formID+' input[name="'+name+'"]');
+                                var ticked = 0;
                                 $.each(others, function(){
                                     if ( $(this).prop('checked') == true ){
                                         ticked++;
@@ -1168,14 +1168,14 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             return true;
         }
 
-        let params = {action: action};
+        var params = {action: action};
 
         $('#cmd_input input').val('');
 
         ELBP.ajax(0, "execute", params, function(d){
             $('#cmd_output').append(d + '<br>');
             $(function() {
-                let height = $('#cmd_output')[0].scrollHeight;
+                var height = $('#cmd_output')[0].scrollHeight;
                 $('#cmd_output').scrollTop(height);
             });
         });
@@ -1195,7 +1195,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type
         load_display: function(type, el, callBack, loadedFrom, putInto){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID, loadedFrom: loadedFrom, putInto: putInto }
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID, loadedFrom: loadedFrom, putInto: putInto }
             ELBP.ajax("Targets", "load_display_type", params, function(d){
                 $('#elbp_targets_content').html(d);
                 ELBP.set_view_link(el);
@@ -1211,7 +1211,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
             ELBP.Targets.loaded_type = true;
 
-            let runSetFalse = function(){
+            var runSetFalse = function(){
                 ELBP.Targets.loaded_type = false;
             };
 
@@ -1235,7 +1235,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                 putInto = undefined;
             }
 
-            let data = form.serialiseObject();
+            var data = form.serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID, loadedFrom: loadedFrom, putInto: putInto});
 
             ELBP.ajax("Targets", "save_target", data, function(d){
@@ -1249,7 +1249,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         edit_target: function(id, loadedFrom, putInto){
 
-            let params = { type: "edit", targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID, loadedFrom: loadedFrom, putInto: putInto }
+            var params = { type: "edit", targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID, loadedFrom: loadedFrom, putInto: putInto }
             ELBP.ajax("Targets", "load_display_type", params, function(d){
                 $('#elbp_targets_content').html(d);
             }, function(d){
@@ -1260,9 +1260,9 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_target: function(id){
 
-            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            var confirm = window.confirm(ELBP.strings['areyousuredelete']);
             if (confirm){
-                let params = { type: "delete", targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+                var params = { type: "delete", targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
                 ELBP.ajax("Targets", "delete_target", params, function(d){
                     eval(d);
                 });
@@ -1272,7 +1272,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         add_comment: function(id, comment, parentID){
 
-            let params = { targetID: id, comment: comment, parentID: parentID };
+            var params = { targetID: id, comment: comment, parentID: parentID };
             ELBP.ajax("Targets", "add_comment", params, function(d){
                 eval(d);
             });
@@ -1281,7 +1281,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_comment: function(targetID, commentID){
 
-            let params = { targetID: targetID, commentID: commentID };
+            var params = { targetID: targetID, commentID: commentID };
             ELBP.ajax("Targets", "delete_comment", params, function(d){
                 eval(d);
             });
@@ -1290,7 +1290,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         update_status: function(targetID, statusID){
 
-            let params = { targetID: targetID, statusID: statusID };
+            var params = { targetID: targetID, statusID: statusID };
             ELBP.ajax("Targets", "update_status", params, function(d){
                 eval(d);
             });
@@ -1304,7 +1304,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             $('#email-to-addr-'+targetID).hide();
             $('#email-loading-img-'+targetID).show();
 
-            let params = { targetID: targetID, usernames: usernames };
+            var params = { targetID: targetID, usernames: usernames };
 
             ELBP.ajax("Targets", "forward_email", params, function(d){
                 eval(d);
@@ -1350,9 +1350,9 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         edit : function(section){
 
-            let hide = 'elbp_studentprofile_'+section+'_simple';
-            let show = 'elbp_studentprofile_'+section+'_edit';
-            let link = '#elbp_studentprofile_'+section+'_edit_link';
+            var hide = 'elbp_studentprofile_'+section+'_simple';
+            var show = 'elbp_studentprofile_'+section+'_edit';
+            var link = '#elbp_studentprofile_'+section+'_edit_link';
 
             ELBP.hide('.'+hide+', #'+hide);
             ELBP.show('.'+show+', #'+show);
@@ -1368,9 +1368,9 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         edit_return : function(section){
 
-            let hide = 'elbp_studentprofile_'+section+'_edit';
-            let show = 'elbp_studentprofile_'+section+'_simple';
-            let link = '#elbp_studentprofile_'+section+'_edit_link';
+            var hide = 'elbp_studentprofile_'+section+'_edit';
+            var show = 'elbp_studentprofile_'+section+'_simple';
+            var link = '#elbp_studentprofile_'+section+'_edit_link';
 
             ELBP.hide('.'+hide+', #'+hide);
             ELBP.show('.'+show+', #'+show);
@@ -1385,7 +1385,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             // Set the simple values to the same that were just submitted in the edit form
             if (params){
                 $.each(params, function(key, val){
-                    let element = '#elbp_studentprofile_details_simple_'+key;
+                    var element = '#elbp_studentprofile_details_simple_'+key;
                     $(element).text(val);
                 });
             }
@@ -1401,10 +1401,10 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             if (section == "details")
             {
 
-                let values = $('.elbp_studentprofile_details_edit_values');
-                let params = {};
+                var values = $('.elbp_studentprofile_details_edit_values');
+                var params = {};
                 $.each(values, function(){
-                    let key = this.name;
+                    var key = this.name;
                     params[key] = this.value;
                 });
 
@@ -1417,7 +1417,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             {
 
                 // Are we using iframes or not? Moodle 2.7+ doesn't, but previous versions do
-                let info = '';
+                var info = '';
                 if ($('#student_info_textarea_ifr').length > 0){
                     info = $('#student_info_textarea_ifr').contents().find('body').html();
                 } else if ( $('#student_info_textareaeditable').length > 0 ) {
@@ -1426,7 +1426,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                     info = $('#student_info_textarea').val();
                 }
 
-                let params = {
+                var params = {
                     studentID: ELBP.studentID,
                     info: info,
                     element: 'student_info_textarea'
@@ -1469,7 +1469,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type, e.g. tabular, bar chart, etc...
         load_display: function(type, el){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID };
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID };
             ELBP.ajax("Attendance", "load_display_type", params, function(d){
                 $('#elbp_attendance_content').html(d);
                 ELBP.set_view_link(el);
@@ -1486,7 +1486,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type
         load_display: function(type, el){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID };
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID };
             ELBP.ajax("elbp_timetable", "load_display_type", params, function(d){
 
                 $('#elbp_timetable_content').html(d);
@@ -1501,7 +1501,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         // Load colour setting dialogue box
         load_colour_settings: function(){
 
-            let opt = {
+            var opt = {
                 buttons: {
                     "Save": function() {
                         ELBP.Timetable.save_colour_settings();
@@ -1514,7 +1514,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                 height: 400
             };
 
-            let params = { student: ELBP.studentID };
+            var params = { student: ELBP.studentID };
 
             ELBP.ajax("elbp_timetable", "load_colours_form", params, function(d){
                 ELBP.dialogue(ELBP.strings['changecolours'], d, opt);
@@ -1525,7 +1525,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save_colour_settings: function(){
 
-            let colours = {
+            var colours = {
                 MON: $('#monday_colour').val(),
                 TUE: $('#tuesday_colour').val(),
                 WED: $('#wednesday_colour').val(),
@@ -1587,8 +1587,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                 $(link).addClass('sel');
             }
 
-            let add = 0;
-            let today = false;
+            var add = 0;
+            var today = false;
 
             if(typeof params != 'undefined' && typeof params['add'] != 'undefined'){
                 if (params['add'] == 'today'){
@@ -1650,7 +1650,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type
         load_display: function(type, el){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax("Tutorials", "load_display_type", params, function(d){
                 $('#elbp_tutorials_content').html(d);
                 ELBP.set_view_link(el);
@@ -1696,7 +1696,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         add_existing_target: function(id){
 
             $('#loading_add_existing_target').show();
-            let params = { targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax("Tutorials", "get_target_row", params, function(d){
                 $('#elbp_tutorial_new_targets').append(d);
                 $('#loading_add_existing_target').hide();
@@ -1707,7 +1707,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         // Remove a target from the tutorial
         remove_target: function(targetID, tutorialID){
 
-            let confirm = window.confirm(ELBP.strings['areyousureremovetarget']);
+            var confirm = window.confirm(ELBP.strings['areyousureremovetarget']);
             if (confirm){
 
                 // If no tutorial ID specified, must be new tutorial that hasn't been saved yet, so just remove from screen and it won't get added to tutorial
@@ -1715,7 +1715,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                     $('#new_added_target_id_'+targetID).remove();
                 }
 
-                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, tutorialID: tutorialID, targetID: targetID };
+                var params = { studentID: ELBP.studentID, courseID: ELBP.courseID, tutorialID: tutorialID, targetID: targetID };
 
                 ELBP.ajax("Tutorials", "remove_target", params, function(d){
                     eval(d);
@@ -1729,7 +1729,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save_tutorial: function(form){
 
-            let data = form.serialiseObject();
+            var data = form.serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
 
             ELBP.ajax("Tutorials", "save_tutorial", data, function(d){
@@ -1743,7 +1743,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         edit_tutorial: function(id){
 
-            let params = { type: "edit", tutorialID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: "edit", tutorialID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax("Tutorials", "load_display_type", params, function(d){
                 $('#elbp_tutorials_content').html(d);
             }, function(d){
@@ -1754,7 +1754,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_tutorial: function(id){
 
-            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            var confirm = window.confirm(ELBP.strings['areyousuredelete']);
             if (confirm){
                 var params = { studentID: ELBP.studentID, courseID: ELBP.courseID, tutorialID: id };
                 ELBP.ajax("Tutorials", "delete_tutorial", params, function(d){
@@ -1786,7 +1786,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type
         load_display: function(type, el){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax("Attachments", "load_display_type", params, function(d){
                 $('#elbp_attachments_content').html(d);
                 ELBP.set_view_link(el);
@@ -1797,10 +1797,10 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_attachment: function(id){
 
-            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            var confirm = window.confirm(ELBP.strings['areyousuredelete']);
             if (confirm){
 
-                let data = {id: id, studentID: ELBP.studentID, courseID: ELBP.courseID};
+                var data = {id: id, studentID: ELBP.studentID, courseID: ELBP.courseID};
 
                 ELBP.ajax("Attachments", "delete", data, function(d){
                     eval(d);
@@ -1814,7 +1814,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         add_comment: function(id, comment, parentID){
 
-            let params = { id: id, comment: comment, parentID: parentID };
+            var params = { id: id, comment: comment, parentID: parentID };
             ELBP.ajax("Attachments", "add_comment", params, function(d){
                 eval(d);
             });
@@ -1823,7 +1823,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_comment: function(id){
 
-            let params = { id: id };
+            var params = { id: id };
             ELBP.ajax("Attachments", "delete_comment", params, function(d){
                 eval(d);
             });
@@ -1839,7 +1839,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type
         load_display: function(type, el, courseIDForReport, reportID, callBack){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID, courseIDForReport: courseIDForReport, reportID: reportID }
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID, courseIDForReport: courseIDForReport, reportID: reportID }
             ELBP.ajax("CourseReports", "load_display_type", params, function(d){
                 $('#elbp_course_reports_content').html(d);
                 ELBP.set_view_link(el);
@@ -1867,7 +1867,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         load_report: function(cID, id)
         {
 
-            let tmpID = ELBP.courseID;
+            var tmpID = ELBP.courseID;
             ELBP.courseID = cID;
             ELBP.load_expanded('CourseReports');
             ELBP.courseID = tmpID;
@@ -1878,7 +1878,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
             ELBP.CourseReports.load_display('course', undefined, cid, undefined, function(){
                 $('div#elbp_popup').scrollTop(0); // First we scroll right to the top
-                let top = $('#course_report_content_'+id).offset().top - $('#course_report_content_'+id).height();
+                var top = $('#course_report_content_'+id).offset().top - $('#course_report_content_'+id).height();
                 $('#course_report_content_'+id).slideDown();
                 $('div#elbp_popup').animate({ scrollTop: top }, 2000);
             });
@@ -1887,10 +1887,10 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_report: function(id){
 
-            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            var confirm = window.confirm(ELBP.strings['areyousuredelete']);
             if (confirm){
 
-                let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, reportID: id};
+                var params = {studentID: ELBP.studentID, courseID: ELBP.courseID, reportID: id};
                 ELBP.ajax("CourseReports", "delete_report", params, function(d){
                     eval(d);
                 });
@@ -1903,7 +1903,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
             if (from == '' || to == '') return false;
 
-            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, dateFrom: from, dateTo: to};
+            var params = {studentID: ELBP.studentID, courseID: ELBP.courseID, dateFrom: from, dateTo: to};
 
             ELBP.ajax("CourseReports", "search", params, function(d){
                 $('#elbp_periodical_output').html(d);
@@ -1927,7 +1927,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         edit_periodical: function(id){
 
-            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, reportID: id};
+            var params = {studentID: ELBP.studentID, courseID: ELBP.courseID, reportID: id};
 
             ELBP.ajax("CourseReports", "edit_periodical", params, function(d){
                 $('#elbp_periodical_output').html(d);
@@ -1939,7 +1939,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_periodical: function(id){
 
-            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, reportID: id};
+            var params = {studentID: ELBP.studentID, courseID: ELBP.courseID, reportID: id};
 
             ELBP.ajax("CourseReports", "delete_periodical", params, function(d){
                 eval(d);
@@ -1967,7 +1967,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type
         load_display: function(type, el){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax("Comments", "load_display_type", params, function(d){
                 $('#elbp_comments_content').html(d);
                 ELBP.set_view_link(el);
@@ -1978,7 +1978,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save: function(form){
 
-            let data = form.serialiseObject();
+            var data = form.serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
 
             ELBP.ajax("Comments", "save_comment", data, function(d){
@@ -1992,7 +1992,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         edit_comment: function(id){
 
-            let params = { type: "edit", commentID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: "edit", commentID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax("Comments", "load_display_type", params, function(d){
                 $('#elbp_comments_content').html(d);
             }, function(d){
@@ -2003,9 +2003,9 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_comment: function(id){
 
-            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            var confirm = window.confirm(ELBP.strings['areyousuredelete']);
             if (confirm){
-                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, commentID: id };
+                var params = { studentID: ELBP.studentID, courseID: ELBP.courseID, commentID: id };
                 ELBP.ajax("Comments", "delete_comment", params, function(d){
                     eval(d);
                 }, function(d){
@@ -2021,9 +2021,9 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
             ELBP.load_expanded('Comments', function(){
 
-                let show = function(){
+                var show = function(){
 
-                  let scrollTop = $('#elbp_comment_'+id).offset().top - $('#elbp_comment_'+id).height();
+                  var scrollTop = $('#elbp_comment_'+id).offset().top - $('#elbp_comment_'+id).height();
                   $('#comment_content_'+id).slideDown();
                   $('div#elbp_popup').scrollTop(0);
                   $('div#elbp_popup').animate({
@@ -2040,7 +2040,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         // Mark comment as resolved
         mark_resolved: function(id, val){
 
-            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, commentID: id, val: val};
+            var params = {studentID: ELBP.studentID, courseID: ELBP.courseID, commentID: id, val: val};
 
             ELBP.ajax("Comments", "mark_resolved", params, function(d){
                 eval(d);
@@ -2060,7 +2060,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type
         load_display: function(type, el){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax("AdditionalSupport", "load_display_type", params, function(d){
                 $('#elbp_additional_support_content').html(d);
                 ELBP.set_view_link(el);
@@ -2099,7 +2099,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         // Remove a target from the tutorial
         remove_target: function(targetID, sessionID){
 
-            let confirm = window.confirm(ELBP.strings['areyousureremovetarget']);
+            var confirm = window.confirm(ELBP.strings['areyousureremovetarget']);
             if (confirm){
 
                 // If no sessionID specified, must be new sessoin that hasn't been saved yet, so just remove from screen and it won't get added to session
@@ -2107,7 +2107,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                     $('#new_added_target_id_'+targetID).remove();
                 }
 
-                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: sessionID, targetID: targetID };
+                var params = { studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: sessionID, targetID: targetID };
 
                 ELBP.ajax("AdditionalSupport", "remove_target", params, function(d){
                     eval(d);
@@ -2119,7 +2119,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save: function(form){
 
-            let data = form.serialiseObject();
+            var data = form.serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
 
             ELBP.ajax("AdditionalSupport", "save", data, function(d){
@@ -2144,7 +2144,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         edit_session: function(id){
 
-            let params = { type: "edit", sessionID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: "edit", sessionID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax("AdditionalSupport", "load_display_type", params, function(d){
                 $('#elbp_additional_support_content').html(d);
             }, function(d){
@@ -2155,7 +2155,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_session: function(id){
 
-            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            var confirm = window.confirm(ELBP.strings['areyousuredelete']);
             if (confirm){
                 var params = { studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: id };
                 ELBP.ajax("AdditionalSupport", "delete", params, function(d){
@@ -2169,7 +2169,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         update_target_confidence: function(type, value, sessionID, targetID){
 
-            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: sessionID, targetID: targetID, type: type, value: value};
+            var params = {studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: sessionID, targetID: targetID, type: type, value: value};
 
             ELBP.ajax("AdditionalSupport", "update_target_confidence", params, function(d){
                 eval(d);
@@ -2182,7 +2182,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         update_target_status: function(statusID, targetID, sessionID){
 
-            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: sessionID, targetID: targetID, statusID: statusID};
+            var params = {studentID: ELBP.studentID, courseID: ELBP.courseID, sessionID: sessionID, targetID: targetID, statusID: statusID};
 
             ELBP.ajax("AdditionalSupport", "update_target_status", params, function(d){
                 eval(d);
@@ -2196,7 +2196,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
             if (comment == '') return;
 
-            let params = { sessionID: id, comment: comment, parentID: parentID };
+            var params = { sessionID: id, comment: comment, parentID: parentID };
             ELBP.ajax("AdditionalSupport", "add_comment", params, function(d){
                 eval(d);
                 $('#elbp_additional_support_content input[type="button"]').removeAttr('disabled');
@@ -2215,9 +2215,9 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_comment: function(sessionID, commentID){
 
-            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            var confirm = window.confirm(ELBP.strings['areyousuredelete']);
             if (confirm){
-                let params = { sessionID: sessionID, commentID: commentID };
+                var params = { sessionID: sessionID, commentID: commentID };
                 ELBP.ajax("AdditionalSupport", "delete_comment", params, function(d){
                     eval(d);
                 }, function(d){
@@ -2229,7 +2229,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save_attribute: function(attribute, value){
 
-            let params = {studentID: ELBP.studentID, courseID: ELBP.courseID, attribute: attribute, value: value};
+            var params = {studentID: ELBP.studentID, courseID: ELBP.courseID, attribute: attribute, value: value};
 
             ELBP.ajax("AdditionalSupport", "save_attribute", params, function(d){
                 eval(d);
@@ -2243,7 +2243,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
             if ( $('#new_added_target_id_'+id).length == 0 ){
                 $('#loading_add_existing_target').show();
-                let params = { targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+                var params = { targetID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
                 ELBP.ajax("AdditionalSupport", "get_target_row", params, function(d){
                     $('#elbp_additional_support_new_targets').append(d);
                     $('#loading_add_existing_target').hide();
@@ -2254,7 +2254,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         auto_save:  function(){
 
-            let data = $('#new_additional_support_form').serialiseObject();
+            var data = $('#new_additional_support_form').serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID, auto: 1});
 
             ELBP.ajax("AdditionalSupport", "save", data, function(d){
@@ -2275,7 +2275,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save: function(form){
 
-            let data = form.serialiseObject();
+            var data = form.serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
 
             ELBP.ajax("Challenges", "save", data, function(d){
@@ -2295,7 +2295,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type
         load_display: function(type){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax("LearningStyles", "load_display_type", params, function(d){
                 $('#elbp_learning_styles_content').html(d);
             }, function(d){
@@ -2305,7 +2305,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save: function(form){
 
-            let data = form.serialiseObject();
+            var data = form.serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
 
             ELBP.ajax("LearningStyles", "save", data, function(d){
@@ -2326,7 +2326,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Load a display type
         load_display: function(plugin, type, el){
-            let params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: type, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax(plugin, "load_display_type", params, function(d){
                 $('#elbp_custom_content').html(d);
                 ELBP.set_view_link(el);
@@ -2338,7 +2338,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save_single: function(plugin, form){
 
-            let data = form.serialiseObject();
+            var data = form.serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
 
             ELBP.ajax(plugin, "save_single", data, function(d){
@@ -2352,7 +2352,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save_incremental: function(plugin, form){
 
-            let data = form.serialiseObject();
+            var data = form.serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
 
             ELBP.ajax(plugin, "save_incremental", data, function(d){
@@ -2368,10 +2368,10 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_incremental_item: function(plugin, id){
 
-            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            var confirm = window.confirm(ELBP.strings['areyousuredelete']);
             if (confirm){
 
-                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, itemID: id };
+                var params = { studentID: ELBP.studentID, courseID: ELBP.courseID, itemID: id };
                 ELBP.ajax(plugin, "delete_incremental_item", params, function(d){
                     eval(d);
                     ELBP.Custom.refresh_incremental(plugin);
@@ -2387,7 +2387,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         refresh_incremental: function(plugin){
 
-            let params = { studentID: ELBP.studentID, courseID: ELBP.courseID };
+            var params = { studentID: ELBP.studentID, courseID: ELBP.courseID };
             ELBP.ajax(plugin, "refresh_incremental", params, function(d){
                 $('#elbp_custom_plugin_items').html( d );
             }, function(d){
@@ -2399,7 +2399,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         save_multi: function(plugin, form){
 
-            let data = form.serialiseObject();
+            var data = form.serialiseObject();
             $.extend(data, {studentID: ELBP.studentID, courseID: ELBP.courseID});
 
             ELBP.ajax(plugin, "save_multi", data, function(d){
@@ -2413,10 +2413,10 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         delete_item: function(plugin, id){
 
-            let confirm = window.confirm(ELBP.strings['areyousuredelete']);
+            var confirm = window.confirm(ELBP.strings['areyousuredelete']);
             if (confirm){
 
-                let params = { studentID: ELBP.studentID, courseID: ELBP.courseID, itemID: id };
+                var params = { studentID: ELBP.studentID, courseID: ELBP.courseID, itemID: id };
                 ELBP.ajax(plugin, "delete_item", params, function(d){
                     eval(d);
                 }, function(d){
@@ -2431,7 +2431,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         edit_item: function(plugin, id){
 
-            let params = { type: "edit", itemID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
+            var params = { type: "edit", itemID: id, studentID: ELBP.studentID, courseID: ELBP.courseID }
             ELBP.ajax(plugin, "load_display_type", params, function(d){
                 $('#elbp_custom_content').html(d);
             }, function(d){
@@ -2457,7 +2457,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             if ( $('#toggle-badges').length > 0 )
             {
 
-                let src = $('#toggle-badges').attr('src');
+                var src = $('#toggle-badges').attr('src');
                 if (src.indexOf('switch_plus') > 0){
                     src = src.replace('switch_plus', 'switch_minus');
                     ELBP.addCookie('hide_elbp_badges', 0);
@@ -2476,12 +2476,12 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
     ELBP.getCookie = function(cookie){
 
-        let c = document.cookie.split(' ');
-        let cookies = {};
+        var c = document.cookie.split(' ');
+        var cookies = {};
         for (i in c){
-            let split = c[i].split("=");
-            let k = split[0];
-            let v = split[1];
+            var split = c[i].split("=");
+            var k = split[0];
+            var v = split[1];
             v = v.replace(';', '');
             cookies[k] = v;
         }
@@ -2492,7 +2492,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
     ELBP.addCookie = function(cookie, value){
 
-        let str = "";
+        var str = "";
         str += (cookie + "=" + value);
         document.cookie = str;
 
@@ -2569,20 +2569,20 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         $.fn.serialiseObject = function(){
 
-            let obj = {};
-            let f = this;
-            let arr = this.serializeArray();
+            var obj = {};
+            var f = this;
+            var arr = this.serializeArray();
 
             $.each(arr, function(){
 
-                let name = this.name;
+                var name = this.name;
 
                 // If it's an array with a key, we need to deal with that differently
-                let match = name.match(/\[(\d+|\w+|)\]/);
+                var match = name.match(/\[(\d+|\w+|)\]/);
                 if (match != null){
 
-                    let key = match[1];
-                    let arrayName = name.split("[")[0];
+                    var key = match[1];
+                    var arrayName = name.split("[")[0];
 
                     if (!obj[arrayName]){
                         obj[arrayName] = [];
@@ -2610,18 +2610,18 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             });
 
             // Find moodle text editor elements
-            let els = $(this).find('.elbp_texteditor');
+            var els = $(this).find('.elbp_texteditor');
             $(els).each( function(){
 
-                let id = $(this).attr('id');
-                let name = $(this).attr('name');
-                let content = '';
+                var id = $(this).attr('id');
+                var name = $(this).attr('name');
+                var content = '';
 
                 // Moodle 2.6 and lower
-                let ifr = $(f).find('#'+id+'_ifr');
+                var ifr = $(f).find('#'+id+'_ifr');
 
                 // Moodle 2.7 and above
-                let ifr27 = $(f).find('#'+id+'editable');
+                var ifr27 = $(f).find('#'+id+'editable');
 
                 if (ifr.length > 0){
                     content = $(ifr).contents().find('body').html();
@@ -2648,19 +2648,19 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         // Dock hover images
         $('.dock_plugin_close img').mouseover( function(){
-            let src = $(this).attr('src');
+            var src = $(this).attr('src');
             $(this).attr('src', src.replace('close_tiny.png', 'close_tiny_hover.png'));
         } );
 
         $('.dock_plugin_close img').mouseout( function(){
-            let src = $(this).attr('src');
+            var src = $(this).attr('src');
             $(this).attr('src', src.replace('close_tiny_hover.png', 'close_tiny.png'));
         } );
 
         // Check for cookie to hide badges
         if ( ELBP.getCookie('hide_elbp_badges') == 1 ){
             if ( $('#toggle-badges').length > 0 ){
-                let src = $('#toggle-badges').attr('src');
+                var src = $('#toggle-badges').attr('src');
                 src = src.replace('switch_minus', 'switch_plus');
                 $('#toggle-badges').attr('src', src);
             }
@@ -2670,7 +2670,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         $('.elbp_progress_traffic_light').off('click');
         $('.elbp_progress_traffic_light').on('click', function(){
 
-            let rankNum = $(this).attr('rankNum');
+            var rankNum = $(this).attr('rankNum');
 
             // If already shown, hide it
             if ( $('#elbp_progress_traffic_light_desc_' + rankNum).css('display') == 'none' ){
@@ -2691,8 +2691,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         $('.elbp_set_student_manual_progress').off('click');
         $('.elbp_set_student_manual_progress').on('click', function(){
 
-            let rank = $(this).attr('rankNum');
-            let params = { studentID: ELBP.studentID, rank: rank };
+            var rank = $(this).attr('rankNum');
+            var params = { studentID: ELBP.studentID, rank: rank };
             ELBP.ajax(0, "set_student_manual_progress", params, function(d){
                 eval(d);
                 $('#elbp_progress_traffic_loading').html('');
@@ -2706,8 +2706,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         // When we hover over a summary box, if there is any overflow hidden, show the expand link
         $('.elbp_summary_box_wrapper').hover(
             function(){
-                let height = $(this).height();
-                let scrollHeight = $(this)[0].scrollHeight;
+                var height = $(this).height();
+                var scrollHeight = $(this)[0].scrollHeight;
                 if (scrollHeight > height){
                     $(this).next('.elbp_summary_box_footer').slideDown('slow');
                 }
@@ -3197,9 +3197,9 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
 
     // Keyboard shortcuts
-    let keyMap = {16: false, 17: false, 220: false}; // Ctrl + Shift + |
-    let keyMapAdvanced = { 16: false, 17: false, 192: false }; // Ctrl + Shift + @
-    let keyMapClear = {16: false, 17: false, 13: false}; // Ctrl + Shift + Enter
+    var keyMap = {16: false, 17: false, 220: false}; // Ctrl + Shift + |
+    var keyMapAdvanced = { 16: false, 17: false, 192: false }; // Ctrl + Shift + @
+    var keyMapClear = {16: false, 17: false, 13: false}; // Ctrl + Shift + Enter
 
 
     $(document).keydown(function(e){
@@ -3264,7 +3264,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
             if ( (ELBP.commandPointer - 1) >= 0){
                 ELBP.commandPointer--;
-                let command = ELBP.savedCommands[ELBP.commandPointer];
+                var command = ELBP.savedCommands[ELBP.commandPointer];
                 $('#cmd_input #input').val('');
                 $('#cmd_input #input').val(command);
             }
@@ -3273,7 +3273,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
             if ( (ELBP.commandPointer + 1) < ELBP.savedCommands.length){
                 ELBP.commandPointer++;
-                let command = ELBP.savedCommands[ELBP.commandPointer];
+                var command = ELBP.savedCommands[ELBP.commandPointer];
                 $('#cmd_input #input').val('');
                 $('#cmd_input #input').val(command);
             }
