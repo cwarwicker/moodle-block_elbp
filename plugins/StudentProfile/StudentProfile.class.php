@@ -1011,6 +1011,8 @@ class StudentProfile extends Plugin {
                 if ($editor == 'atto' && isset($params['element'])){
                     $DB->delete_records("editor_atto_autosave", array("elementid" => $params['element'], "userid" => $USER->id));
                 }
+				
+				echo 'OK';
 
                 return true;
                 
