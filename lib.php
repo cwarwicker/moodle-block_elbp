@@ -3462,3 +3462,19 @@ function elbp_time_ago($timestamp) {
    }
 
 }
+
+/**
+ * Sanitize a user-submitted file name, in case they try to go back into directories they shouldn't
+ * @param  [type] $path [description]
+ * @return [type]       [description]
+ */
+function elbp_sanitize_path($path){
+
+  $path = str_replace("\"", "", $path);
+  $path = str_replace("`", "", $path);
+  $path = str_replace("../", "", $path);
+  $path = str_replace("..", "", $path);
+  $path = str_replace("./", "", $path);
+  return $path;
+
+}

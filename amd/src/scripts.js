@@ -2504,6 +2504,8 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
     // Bind events
     ELBP.bind = function(){
 
+      console.log('binding ELBP');
+
         // Resize the popup
         ELBP.resize_popup();
         $(window).resize( function(){
@@ -2564,7 +2566,55 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
         $('#elbp_popup').draggable( { handle: "div.elbp_popup_header" } );
 
         // Files
-        // [TODO]
+        $('.elbp_fileupload').each( function(){
+
+          var id = $(this).attr('id');
+
+          $(this).fileupload({
+              url: M.cfg.wwwroot + '/blocks/elbp/upload.php',
+              dataType: 'json',
+              formData: {sid: '<?= $obj->getStudentID(); ?>'},
+              send: function(e, data){
+
+                // Remove output messages and values
+                $('#output_messages-'+id).html('');
+                $('#filevalue-'+id).html('');
+
+                // Show progress
+                $('#progress-'+id).show();
+
+              },
+              done: function (e, data) {
+
+                if (data.result.success === true){
+                    $('#output_messages-'+id).append('<div class="elbp_success_box"><span>'+ELBP.strings['uploaded']+': '+data.result.title+'</span></div>');
+                } else {
+                    $('#output_messages-'+id).append('<div class="elbp_err_box"><span>'+data.result.error+'</span></div>');
+                }
+
+                $('#progress-'+id).hide();
+                $('#progress-amount-'+id).css('width', 0);
+                $('#hidden-file-'+id).val(data.result.tmp);
+
+              },
+              fail: function(e, data){
+                  $('#output_messages-'+id).html('<div class="elbp_err_box"><span>'+ELBP.strings['uploads:unknownerror']+'</span></div>');
+                  $('#progress-'+id).hide();
+              },
+              progressall: function (e, data) {
+                  let progress = parseInt(data.loaded / data.total * 100, 10);
+                  $('#progress-amount-'+id).css(
+                      'width',
+                      progress + '%'
+                  );
+              }
+          }).prop('disabled', !$.support.fileInput)
+              .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+        } );
+
+
+
 
 
         $.fn.serialiseObject = function(){

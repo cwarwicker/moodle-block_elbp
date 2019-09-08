@@ -1117,28 +1117,51 @@ class ELBPFormElement {
                 return $output;
             break;
 
+            // New file section using new fileupload plugin
             case 'file':
-                $value = $this->getValue();
-                $file = $CFG->dataroot . '/ELBP/' . $value;
-                $output = "";
-                if ($this->instructions){
-                    $output .= "<span class='elbp_attribute_instructions'><small>".elbp_html($this->instructions)."</small><br><br></span>";
-                }
-                if ($value && file_exists($file))
-                {
-                    $icon = \elbp_get_file_icon($file);
-                    if ($icon)
-                    {
-                        $output .= "<img src='{$CFG->wwwroot}/blocks/elbp/pix/file_icons/{$icon}' alt='' /> ";
-                    }
-                    $output .= \basename($file) . "<br>";
-                }
-                $id = \elbp_strip_to_plain($this->name);
-                $id .= "_" . $this->id;
-                $output .= "<div id='fine-uploader-{$id}' class='elbp_file'></div>";
-                $output .= "<input id='hidden-file-fine-uploader-{$id}' type='hidden' name='".elbp_html($this->name)."' value='{$value}' class='elbp_form_field' />";
-                return $output;
+
+              $value = $this->getValue();
+              $file = $CFG->dataroot . '/ELBP/' . \elbp_sanitize_path($value);
+              $id = \elbp_strip_to_plain($this->name) . "_" . $this->id;
+
+              $output = "";
+
+              if ($this->instructions){
+                  $output .= "<span class='elbp_attribute_instructions'><small>".elbp_html($this->instructions)."</small><br><br></span>";
+              }
+
+              if ($value && file_exists($file))
+              {
+                  $output .= "<span id='filevalue-{$id}'>";
+                  $icon = \elbp_get_file_icon($file);
+                  if ($icon)
+                  {
+                      $output .= "<img src='{$CFG->wwwroot}/blocks/elbp/pix/file_icons/{$icon}' alt='' /> ";
+                  }
+                  $output .= \basename($file) . "<br></span>";
+              }
+
+
+              // Output messages
+              $output .= "<div id='output_messages-{$id}' class='elbp_centre'></div>";
+
+              // File upload button
+              $output .= "<span class='btn btn-success fileinput-button'><i class='glyphicon glyphicon-plus'></i><span>".get_string('selectfile', 'block_elbp')."</span><input id='{$id}' class='elbp_fileupload' type='file' name='file' multiple></span>";
+              $output .= "<input id='hidden-file-{$id}' type='hidden' name='".elbp_html($this->name)."' value='' class='elbp_form_field' />";
+
+              $output .= "<br><br>";
+
+              // Progress bar
+              $output .= "<div class='elbp_progress'><div id='progress-{$id}' class='elbp_progress progress-bar green stripes' style='display:none;'><div id='progress-amount-{$id}' style='width:0;'></div></div></div>";
+
+              // Uploaded files container
+              $output .= "<div id='files-{$id}' class='files'></div>";
+
+              return $output;
+
+
             break;
+
 
             case 'description':
                 return "<span>{$this->getValue()}</span>";

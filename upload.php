@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2017-onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,7 +27,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
 
 
@@ -42,40 +42,42 @@ if (empty($_POST) && empty($_FILES)){
     echo json_encode($result);
     exit;
 }
-
 // Check uploading from Moodle - This is only going to work if the referer is actually sent, so it's not exactly great, but worth having anyway
 if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $CFG->wwwroot) !== 0){
     exit;
 }
 
+
+
 // Upload the file, if it's been sent
-if (isset($_FILES['qqfile'])){
-    
+if (isset($_FILES['file'])){
+
     // This will be stored in the temp directory for the time being, until it is saved somewhere else
     if (!\elbp_create_data_directory("tmp") || !\elbp_create_data_directory("tmp/" . $USER->id) ){
         $result = array('success' => false,'error' => get_string('uploads:dirnoexist', 'block_elbp'));
         echo json_encode($result);
         exit;
     }
-    
+
     $Upload = new \ELBP\Upload();
-    
+
     // If there was a problem uploading the temporary file - stop
-    if ($_FILES['qqfile']['error'] > 0){
-        $Upload->setFile( $_FILES['qqfile'] );    
+    if ($_FILES['file']['error'] > 0){
+        $Upload->setFile( $_FILES['file'] );
         $result = array('success' => false, 'error' => $Upload->getUploadErrorCodeMessage());
         echo json_encode($result);
         exit;
     }
-    
+
     $Upload->setUploadDir( $CFG->dataroot . '/ELBP/tmp/' . $USER->id . '/' );
-    $Upload->setFile( $_FILES['qqfile'] );   
+    $Upload->setFile( $_FILES['file'] );
     $Upload->doNotChangeFileName = true;
-    
+
     $result = $Upload->doUpload();
-    $result['uploadName'] = '/tmp/' . $USER->id . '/' . $Upload->filename;   
-        
+    $result['tmp'] = 'tmp:' . $USER->id . '/' . $Upload->filename;
+    $result['title'] = $Upload->filename;
+
     echo json_encode($result);
     exit;
-   
+
 }

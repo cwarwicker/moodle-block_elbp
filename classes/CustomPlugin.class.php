@@ -3975,7 +3975,7 @@ class CustomPlugin {
      */
     protected function moveTmpUploadedFiles($defaultAttributes, $itemID = 0){
 
-        global $CFG;
+        global $CFG, $USER;
 
         $result = true;
 
@@ -3986,12 +3986,20 @@ class CustomPlugin {
                 if ($attribute->type == 'File')
                 {
 
+                    // Sanitize the path
+                    $this->studentattributes[$attribute->name] = \elbp_sanitize_path($this->studentattributes[$attribute->name]);
+
                     $value = (isset($this->studentattributes[$attribute->name])) ? $this->studentattributes[$attribute->name] : false;
                     if ($value)
                     {
 
-                        // Current tmp file
-                        $tmpFile = $CFG->dataroot . '/ELBP/' . $value;
+                        // Is it a tmp file?
+                        if (strpos($value, "tmp:") === 0){
+                          $value = \elbp_sanitize_path( substr($value, (4 - strlen($value))) );
+                          $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $value;
+                        } else {
+                          return true;
+                        }
 
                         // Create directory
                         $create = \elbp_create_data_directory( 'Custom/' . $this->getID() . '/' . $itemID );
