@@ -2602,7 +2602,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
                   $('#progress-'+id).hide();
               },
               progressall: function (e, data) {
-                  let progress = parseInt(data.loaded / data.total * 100, 10);
+                  var progress = parseInt(data.loaded / data.total * 100, 10);
                   $('#progress-amount-'+id).css(
                       'width',
                       progress + '%'
