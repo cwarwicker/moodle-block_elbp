@@ -3995,29 +3995,29 @@ class CustomPlugin {
 
                         // Is it a tmp file?
                         if (strpos($value, "tmp:") === 0){
-                          $value = \elbp_sanitize_path( substr($value, (4 - strlen($value))) );
-                          $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $value;
-                        } else {
-                          return true;
-                        }
 
-                        // Create directory
-                        $create = \elbp_create_data_directory( 'Custom/' . $this->getID() . '/' . $itemID );
-                        if ($create){
+                            $value = \elbp_sanitize_path( substr($value, (4 - strlen($value))) );
+                            $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $value;
 
-                            $explode = explode("/", $value);
-                            $value = end($explode);
+                            // Create directory
+                            $create = \elbp_create_data_directory( 'Custom/' . $this->getID() . '/' . $itemID );
+                            if ($create){
 
-                            $newFile = $CFG->dataroot . '/ELBP/Custom/' . $this->getID() . '/' . $itemID . '/' . $value;
+                                $explode = explode("/", $value);
+                                $value = end($explode);
 
-                            if (\rename($tmpFile, $newFile)){
-                                $this->studentattributes[$attribute->name] = 'Custom/' . $this->getID() . '/' . $itemID . '/' . $value;
+                                $newFile = $CFG->dataroot . '/ELBP/Custom/' . $this->getID() . '/' . $itemID . '/' . $value;
+
+                                if (\rename($tmpFile, $newFile)){
+                                    $this->studentattributes[$attribute->name] = 'Custom/' . $this->getID() . '/' . $itemID . '/' . $value;
+                                } else {
+                                    $result = false;
+                                }
+
                             } else {
                                 $result = false;
                             }
 
-                        } else {
-                            $result = false;
                         }
 
                     }

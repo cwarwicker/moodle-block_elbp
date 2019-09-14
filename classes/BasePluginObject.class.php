@@ -219,31 +219,30 @@ abstract class BasePluginObject {
 
                         // Is it a tmp file?
                         if (strpos($value, "tmp:") === 0){
-                          $value = \elbp_sanitize_path( substr($value, (4 - strlen($value))) );
-                          $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $value;
-                        } else {
-                          // If not, skip it as we don't need to do anything if we haven't changed the file
-                          return true;
-                        }
 
-                        // Create directory
-                        if ($obj->createDataDirectory( $this->getID() )){
+                            $value = \elbp_sanitize_path( substr($value, (4 - strlen($value))) );
+                            $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $value;
 
-                            $explode = explode("/", $value);
-                            $value = end($explode);
+                            // Create directory
+                            if ($obj->createDataDirectory( $this->getID() )){
 
-                            $newFile = $CFG->dataroot . '/ELBP/' . $obj->getName() . '/' . $this->getID() . '/' . $value;
+                                $explode = explode("/", $value);
+                                $value = end($explode);
 
-                            if (\rename($tmpFile, $newFile)){
+                                $newFile = $CFG->dataroot . '/ELBP/' . $obj->getName() . '/' . $this->getID() . '/' . $value;
 
-                                $this->attributes[$attribute->name] = $obj->getName() . '/' . $this->getID() . '/' . $value;
+                                if (\rename($tmpFile, $newFile)){
+
+                                    $this->attributes[$attribute->name] = $obj->getName() . '/' . $this->getID() . '/' . $value;
+
+                                } else {
+                                    $result = false;
+                                }
 
                             } else {
                                 $result = false;
                             }
 
-                        } else {
-                            $result = false;
                         }
 
                     }
