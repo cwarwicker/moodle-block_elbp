@@ -743,10 +743,12 @@ class Comment extends \ELBP\BasePluginObject {
                         $check = $DB->get_record("lbp_comment_attributes", array("commentid" => $this->id, "field" => $field));
                         if ($check)
                         {
-                            $check->value = $value;
-                            if (!$DB->update_record("lbp_comment_attributes", $check)){
-                                $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
-                                return false;
+                            if ($value !== 'elbp:unchanged') {
+                                $check->value = $value;
+                                if (!$DB->update_record("lbp_comment_attributes", $check)) {
+                                    $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[" . __FILE__ . ":" . __LINE__ . "]";
+                                    return false;
+                                }
                             }
                         }
                         else

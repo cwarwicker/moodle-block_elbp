@@ -534,17 +534,43 @@ function convert_bytes_to_hr($bytes, $precision = 2)
 }
 
 /**
+ * Get the file name from a path, without the extension
+ * @param  [type] $filename [description]
+ * @return [type]           [description]
+ */
+function elbp_get_file_name($filename){
+
+  $info = pathinfo($filename);
+  return $info['filename'];
+
+}
+
+/**
  * Get the file extension from a file name
  * @param type $filename
  * @return type
  */
 function elbp_get_file_extension($filename)
 {
-    $filename = strtolower($filename);
-    $exts = explode(".", $filename);
-    $n = count($exts) - 1;
-    $ext = $exts[$n];
-    return $ext;
+  $info = pathinfo($filename);
+  return $info['extension'];
+}
+
+/**
+ * Get the filename of an uploaded file, with the elbp appended "elbp-<randid>-" prefix removed
+ * @param  [type] $filename [description]
+ * @return [type]           [description]
+ */
+function elbp_get_stripped_uploaded_file_name($filename){
+
+  $regex = '/^elbp-[a-z0-9]{15}-(.*+)$/i';
+  preg_match($regex, $filename, $matches);
+  if ($matches){
+    return $matches[1];
+  } else {
+    return $filename;
+  }
+
 }
 
 /**

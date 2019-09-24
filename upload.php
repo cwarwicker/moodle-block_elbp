@@ -71,11 +71,11 @@ if (isset($_FILES['file'])){
 
     $Upload->setUploadDir( $CFG->dataroot . '/ELBP/tmp/' . $USER->id . '/' );
     $Upload->setFile( $_FILES['file'] );
-    $Upload->doNotChangeFileName = true;
+    $Upload->doNotChangeFileName = false;
 
     $result = $Upload->doUpload();
-    $result['tmp'] = 'tmp:' . $USER->id . '/' . $Upload->filename;
-    $result['title'] = $Upload->filename;
+    $result['tmp'] = 'tmp:' . $Upload->filename;
+    $result['title'] = $Upload->getRealFilename();
 
     echo json_encode($result);
     exit;

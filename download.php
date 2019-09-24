@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2017-onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,11 +27,12 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
 
 require_once '../../config.php';
 require_once $CFG->dirroot . '/lib/filelib.php';
+require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 require_login();
 
 $f = required_param('f', PARAM_TEXT);
@@ -42,5 +43,6 @@ if (!$record || !file_exists($record->path)){
     exit;
 }
 
-\send_file($record->path, basename($record->path));
+$niceName = \elbp_get_stripped_uploaded_file_name( basename($record->path) );
+\send_file($record->path, $niceName);
 exit;

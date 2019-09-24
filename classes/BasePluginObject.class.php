@@ -203,6 +203,8 @@ abstract class BasePluginObject {
 
         $result = true;
 
+        $itemID = $this->getID();
+
         if ($defaultAttributes)
         {
             foreach($defaultAttributes as $attribute)
@@ -221,20 +223,37 @@ abstract class BasePluginObject {
                         if (strpos($value, "tmp:") === 0){
 
                             $value = \elbp_sanitize_path( substr($value, (4 - strlen($value))) );
-                            $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $value;
+                            $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $USER->id . '/' . $value;
 
                             // Create directory
-                            if ($obj->createDataDirectory( $this->getID() )){
+                            if ( $obj->createDataDirectory($itemID) ){
 
                                 $explode = explode("/", $value);
                                 $value = end($explode);
 
-                                $newFile = $CFG->dataroot . '/ELBP/' . $obj->getName() . '/' . $this->getID() . '/' . $value;
+                                // If we specified an itemID then we can use that as the path, as items will be user-specific
+                                if ($itemID > 0){
+                                  $newPath = $value;
+                                } else {
 
-                                if (\rename($tmpFile, $newFile)){
+                                  // If not, we cannot just store it under "0" as uploads with the same name will override and users could see files from
+                                  // other user's PLPs. So we will store it under "user-<uid>"
+                                  if ( $obj->createDataDirectory($itemID . '/u-' . $this->student->id) ){
+                                    $newPath = 'u-' . $this->student->id . '/' . $value;
+                                  } else {
+                                    $result = false;
+                                  }
 
-                                    $this->attributes[$attribute->name] = $obj->getName() . '/' . $this->getID() . '/' . $value;
+                                }
 
+                                // Set the newFile path
+                                if ($result){
+                                  $newFile = $CFG->dataroot . '/ELBP/' . $obj->getName() . '/' . $itemID . '/' . $newPath;
+                                }
+
+                                // Try and move the tmp file to its new location
+                                if ($result && \rename($tmpFile, $newFile)){
+                                    $this->attributes[$attribute->name] = $obj->getName() . '/' . $itemID . '/' . $value;
                                 } else {
                                     $result = false;
                                 }

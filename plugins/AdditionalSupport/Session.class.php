@@ -776,7 +776,7 @@ class Session extends \ELBP\BasePluginObject {
             $obj->settime = $now;
             $obj->del = 0;
 
-            // Insert the target
+            // Insert the session
             if (!$id = $DB->insert_record("lbp_add_sup_sessions", $obj)){
                 $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                 return false;
@@ -794,6 +794,12 @@ class Session extends \ELBP\BasePluginObject {
             $this->id = $id;
             $this->setTime = $now;
             $this->setByUserID = $USER->id;
+
+            // Move any tmp files
+            if (!$this->moveTmpUploadedFiles($allAttributes, $this->AdditionalSupport)){
+                $this->errors[] = get_string('uploads:movingfiles', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
+                return false;
+            }
 
             // Now using that target ID, insert it's attributes
             if ($this->attributes)
@@ -898,6 +904,12 @@ class Session extends \ELBP\BasePluginObject {
 
             if (!$DB->update_record("lbp_add_sup_sessions", $obj)){
                 $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
+                return false;
+            }
+
+            // Move any tmp files
+            if (!$this->moveTmpUploadedFiles($allAttributes, $this->AdditionalSupport)){
+                $this->errors[] = get_string('uploads:movingfiles', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                 return false;
             }
 
@@ -1018,12 +1030,14 @@ class Session extends \ELBP\BasePluginObject {
                         // if it exists, update it
                         if ($attribute)
                         {
-                            $ins = new \stdClass();
-                            $ins->id = $attribute->id;
-                            $ins->value = $value;
-                            if (!$DB->update_record("lbp_add_sup_attributes", $ins)){
-                                $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
-                                return false;
+                            if ($value !== 'elbp:unchanged') {
+                                $ins = new \stdClass();
+                                $ins->id = $attribute->id;
+                                $ins->value = $value;
+                                if (!$DB->update_record("lbp_add_sup_attributes", $ins)) {
+                                    $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[" . __FILE__ . ":" . __LINE__ . "]";
+                                    return false;
+                                }
                             }
                         }
 

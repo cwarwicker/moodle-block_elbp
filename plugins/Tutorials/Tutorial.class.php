@@ -614,12 +614,14 @@ class Tutorial extends \ELBP\BasePluginObject {
                         // if it exists, update it
                         if ($attribute)
                         {
-                            $ins = new \stdClass();
-                            $ins->id = $attribute->id;
-                            $ins->value = $value;
-                            if (!$DB->update_record("lbp_tutorial_attributes", $ins)){
-                                $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
-                                return false;
+                            if ($value !== 'elbp:unchanged') {
+                                $ins = new \stdClass();
+                                $ins->id = $attribute->id;
+                                $ins->value = $value;
+                                if (!$DB->update_record("lbp_tutorial_attributes", $ins)) {
+                                    $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[" . __FILE__ . ":" . __LINE__ . "]";
+                                    return false;
+                                }
                             }
                         }
 

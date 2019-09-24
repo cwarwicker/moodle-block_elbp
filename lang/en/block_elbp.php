@@ -1423,6 +1423,7 @@ $string['uploadedby'] = 'Uploaded By';
 $string['uploads:cantopenfile'] = 'Cannot open file';
 $string['uploads:dirnoexist'] = 'Upload directory does not exist or is not writeable';
 $string['uploads:dropfileshere'] = 'Drag and drop your file here';
+$string['uploads:error'] = 'Error uploading file(s)';
 $string['uploads:filenotset'] = 'File Not Set';
 $string['uploads:filetoolarge'] = 'File exceeds maximum allowed size';
 $string['uploads:invalidmimetype'] = 'Invalid file format';

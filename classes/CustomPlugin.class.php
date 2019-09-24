@@ -2291,6 +2291,7 @@ class CustomPlugin {
                 }
 
             }
+
         }
 
 
@@ -2298,8 +2299,10 @@ class CustomPlugin {
 
 
         // Move any tmp files
-        if (!$this->moveTmpUploadedFiles($allAttributes)){
-            $this->errors[] = get_string('uploads:movingfiles', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
+        $result = $this->moveTmpUploadedFiles($allAttributes);
+        if (!$result['result']){
+            $err = (strlen($result['errors'])) ? $result['errors'] : get_string('uploads:error', 'block_elbp');
+            $this->errors[] = $err . " [".__FILE__.":".__LINE__."]";
             return false;
         }
 
@@ -2350,12 +2353,14 @@ class CustomPlugin {
                     // if it exists, update it
                     if ($attribute)
                     {
-                        $ins = new \stdClass();
-                        $ins->id = $attribute->id;
-                        $ins->value = $value;
-                        if (!$DB->update_record("lbp_custom_plugin_attributes", $ins)){
-                            $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
-                            return false;
+                        if ($value !== 'elbp:unchanged') {
+                            $ins = new \stdClass();
+                            $ins->id = $attribute->id;
+                            $ins->value = $value;
+                            if (!$DB->update_record("lbp_custom_plugin_attributes", $ins)) {
+                                $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[" . __FILE__ . ":" . __LINE__ . "]";
+                                return false;
+                            }
                         }
                     }
 
@@ -2494,8 +2499,10 @@ class CustomPlugin {
 
 
         // Move any tmp files
-        if (!$this->moveTmpUploadedFiles($allAttributes, $itemID)){
-            $this->errors[] = get_string('uploads:movingfiles', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
+        $result = $this->moveTmpUploadedFiles($allAttributes, $itemID);
+        if (!$result['result']){
+            $err = (strlen($result['errors'])) ? $result['errors'] : get_string('uploads:error', 'block_elbp');
+            $this->errors[] = $err . " [".__FILE__.":".__LINE__."]";
             return false;
         }
 
@@ -2547,12 +2554,14 @@ class CustomPlugin {
                     // if it exists, update it
                     if ($attribute)
                     {
-                        $ins = new \stdClass();
-                        $ins->id = $attribute->id;
-                        $ins->value = $value;
-                        if (!$DB->update_record("lbp_custom_plugin_attributes", $ins)){
-                            $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
-                            return false;
+                        if ($value !== 'elbp:unchanged') {
+                            $ins = new \stdClass();
+                            $ins->id = $attribute->id;
+                            $ins->value = $value;
+                            if (!$DB->update_record("lbp_custom_plugin_attributes", $ins)) {
+                                $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[" . __FILE__ . ":" . __LINE__ . "]";
+                                return false;
+                            }
                         }
                     }
 
@@ -2788,8 +2797,10 @@ class CustomPlugin {
         }
 
         // Move any tmp files
-        if (!$this->moveTmpUploadedFiles($allAttributes, $itemID)){
-            $this->errors[] = get_string('uploads:movingfiles', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
+        $result = $this->moveTmpUploadedFiles($allAttributes, $itemID);
+        if (!$result['result']){
+            $err = (strlen($result['errors'])) ? $result['errors'] : get_string('uploads:error', 'block_elbp');
+            $this->errors[] = $err . " [".__FILE__.":".__LINE__."]";
             return false;
         }
 
@@ -2840,12 +2851,14 @@ class CustomPlugin {
                     // if it exists, update it
                     if ($attribute)
                     {
-                        $ins = new \stdClass();
-                        $ins->id = $attribute->id;
-                        $ins->value = $value;
-                        if (!$DB->update_record("lbp_custom_plugin_attributes", $ins)){
-                            $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
-                            return false;
+                        if ($value !== 'elbp:unchanged') {
+                            $ins = new \stdClass();
+                            $ins->id = $attribute->id;
+                            $ins->value = $value;
+                            if (!$DB->update_record("lbp_custom_plugin_attributes", $ins)) {
+                                $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[" . __FILE__ . ":" . __LINE__ . "]";
+                                return false;
+                            }
                         }
                     }
 
@@ -3977,7 +3990,10 @@ class CustomPlugin {
 
         global $CFG, $USER;
 
-        $result = true;
+        $result = array(
+            'result' => true,
+            'errors' => ''
+        );
 
         if ($defaultAttributes)
         {
@@ -3997,7 +4013,7 @@ class CustomPlugin {
                         if (strpos($value, "tmp:") === 0){
 
                             $value = \elbp_sanitize_path( substr($value, (4 - strlen($value))) );
-                            $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $value;
+                            $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $USER->id . '/' . $value;
 
                             // Create directory
                             $create = \elbp_create_data_directory( 'Custom/' . $this->getID() . '/' . $itemID );
@@ -4006,16 +4022,38 @@ class CustomPlugin {
                                 $explode = explode("/", $value);
                                 $value = end($explode);
 
-                                $newFile = $CFG->dataroot . '/ELBP/Custom/' . $this->getID() . '/' . $itemID . '/' . $value;
-
-                                if (\rename($tmpFile, $newFile)){
-                                    $this->studentattributes[$attribute->name] = 'Custom/' . $this->getID() . '/' . $itemID . '/' . $value;
+                                // If we specified an itemID then we can use that as the path, as items will be user-specific
+                                if ($itemID > 0){
+                                  $newPath = $value;
                                 } else {
-                                    $result = false;
+
+                                  // If not, we cannot just store it under "0" as uploads with the same name will override and users could see files from
+                                  // other user's PLPs. So we will store it under "user-<uid>"
+                                  if ( \elbp_create_data_directory( 'Custom/' . $this->getID() . '/' . $itemID . '/' . 'u-' . $this->student->id ) ){
+                                    $newPath = 'u-' . $this->student->id . '/' . $value;
+                                  } else {
+                                    $result['result'] = false;
+                                    $result['errors'] = get_string('uploads:dirnoexist', 'block_elbp');
+                                  }
+
+                                }
+
+                                // Set the newFile path
+                                if ($result['result']){
+                                  $newFile = $CFG->dataroot . '/ELBP/Custom/' . $this->getID() . '/' . $itemID . '/' . $newPath;
+                                }
+
+                                // Try and move the tmp file to its new location
+                                if ($result['result'] && \rename($tmpFile, $newFile)){
+                                    $this->studentattributes[$attribute->name] = 'Custom/' . $this->getID() . '/' . $itemID . '/' . $newPath;
+                                } else {
+                                    $result['result'] = false;
+                                    $result['errors'] = get_string('uploads:movingfiles', 'block_elbp');
                                 }
 
                             } else {
-                                $result = false;
+                                $result['result'] = false;
+                                $result['errors'] = get_string('uploads:dirnoexist', 'block_elbp');
                             }
 
                         }

@@ -373,7 +373,7 @@ class ELBPFormElement {
                 $output .= "<a href='{$CFG->wwwroot}/blocks/elbp/download.php?f={$code}' target='_blank'>";
             }
 
-            $output .= \basename($value);
+            $output .= \elbp_get_stripped_uploaded_file_name( \basename($value) );
 
             if (!$print)
             {
@@ -1013,8 +1013,6 @@ class ELBPFormElement {
                 $output .= \html_writer::tag('textarea', $this->getValue(),
                     array('id' => "elbpfe_{$id}_{$this->id}", 'name' => elbp_html($this->name), 'class' => 'elbp_textarea elbp_texteditor elbp_form_field', 'validation' => $this->getValidationString(), 'rows' => 5, 'cols' => 10));
 
-                //$output .= "<textarea id='elbpfe_{$id}_{$this->id}' class='elbp_textarea elbp_texteditor' name='".elbp_html($this->name)."' validation='{$this->getValidationString()}'>".$this->getValue()."</textarea>";
-
                 return $output;
 
             break;
@@ -1121,6 +1119,7 @@ class ELBPFormElement {
             case 'file':
 
               $value = $this->getValue();
+              $formVal = '';
               $file = $CFG->dataroot . '/ELBP/' . \elbp_sanitize_path($value);
               $id = \elbp_strip_to_plain($this->name) . "_" . $this->id;
 
@@ -1132,13 +1131,14 @@ class ELBPFormElement {
 
               if ($value && file_exists($file))
               {
+                  $formVal = 'elbp:unchanged';
                   $output .= "<span id='filevalue-{$id}'>";
                   $icon = \elbp_get_file_icon($file);
                   if ($icon)
                   {
                       $output .= "<img src='{$CFG->wwwroot}/blocks/elbp/pix/file_icons/{$icon}' alt='' /> ";
                   }
-                  $output .= \basename($file) . "<br></span>";
+                  $output .= \elbp_get_stripped_uploaded_file_name( \basename($file) ) . "<br></span>";
               }
 
 
@@ -1147,7 +1147,7 @@ class ELBPFormElement {
 
               // File upload button
               $output .= "<span class='btn btn-success fileinput-button'><i class='glyphicon glyphicon-plus'></i><span>".get_string('selectfile', 'block_elbp')."</span><input id='{$id}' class='elbp_fileupload' type='file' name='file' multiple></span>";
-              $output .= "<input id='hidden-file-{$id}' type='hidden' name='".elbp_html($this->name)."' value='' class='elbp_form_field' />";
+              $output .= "<input id='hidden-file-{$id}' type='hidden' name='".elbp_html($this->name)."' value='{$formVal}' class='elbp_form_field' />";
 
               $output .= "<br><br>";
 
