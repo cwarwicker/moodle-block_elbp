@@ -109,7 +109,7 @@ class ELBP
 
         global $CFG;
 
-        $remote = @file_get_contents(REMOTE_VERSION_URL);
+        $remote = @file_get_contents(self::REMOTE_VERSION_URL);
         if (!$remote) return "<span class='elbp_err'>".get_string('unabletocheckforupdates', 'block_elbp')."</span>";
 
         $remote = json_decode(trim($remote));

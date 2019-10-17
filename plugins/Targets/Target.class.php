@@ -1661,7 +1661,7 @@ class Target extends \ELBP\BasePluginObject {
         global $ELBP;
 
         if (!$targets){
-            $targets = $ELBP->getPlugin("Targets");
+            $targets = $ELBP->getPlugin("Targets", true);
         }
 
         $attributes = $targets->getAttributesForDisplay();

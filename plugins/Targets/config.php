@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2017-onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,7 +27,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
 
 require_once '../../../../config.php';
@@ -97,7 +97,7 @@ if ($edittarget)
 {
     $chosentarget = $DB->get_record('lbp_target_sets', array('id' => $edittarget));
     $attribs = $DB->get_records('lbp_target_set_attributes', array('targetsetid' => $chosentarget->id));
-    
+
     $TPL->set("chosentarget", $chosentarget);
     $TPL->set("attribs", $attribs);
 }
@@ -107,7 +107,7 @@ $TPL->set("view", $view);
 $TPL->set("MSGS", $MSGS);
 $TPL->set("OUTPUT", $OUTPUT);
 $TPL->set("FORM", $FORM);
-$TPL->set("data", \ELBP\Plugins\Targets\Target::getDataForNewTargetForm($edittarget, false, true));
+$TPL->set("data", \ELBP\Plugins\Targets\Target::getDataForNewTargetForm($edittarget, $TAR, true));
 $TPL->set("targets", $targets);
 $TPL->set("edittarget", $edittarget);
 $TPL->set("deletetarget", $deletetarget);
