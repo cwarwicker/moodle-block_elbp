@@ -606,6 +606,16 @@ class Register extends Plugin {
         }
 
         $output = "";
+
+        // Course
+        if (isset($event->courseid)) {
+            $output .= \elbp_get_course_fullname($event->courseid) . "<br>";
+        }
+
+        // Day.
+        $output .= ( (isset($event->dayname)) ? $event->dayname : $event->day ) . "<br>";
+
+        // Time
         if ($unix){
             $output .= date('l d/m/Y', $unix) . " (" . get_string('week', 'block_elbp'). " {$week}) ";
         }

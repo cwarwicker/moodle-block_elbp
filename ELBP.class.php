@@ -3111,7 +3111,6 @@ class ELBP
             $output = "";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/css/start/jquery-ui.min.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.css' />";
-            $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/tinytbl/jquery.tinytbl.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/js/jquery/plugins/raty/jquery.raty.css' />";
             $output .= "<link rel='stylesheet' type='text/css' href='{$CFG->wwwroot}/blocks/elbp/css/application.css' />";
             return $output;
@@ -3122,7 +3121,6 @@ class ELBP
 
             $PAGE->requires->css( '/blocks/elbp/js/jquery/css/start/jquery-ui.min.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/minicolors/jquery.minicolors.css' );
-            $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/tinytbl/jquery.tinytbl.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/raty/jquery.raty.css' );
             $PAGE->requires->css( '/blocks/elbp/js/jquery/plugins/fileupload/jquery.fileupload.css' );
             $PAGE->requires->css( '/blocks/elbp/css/application.css' );

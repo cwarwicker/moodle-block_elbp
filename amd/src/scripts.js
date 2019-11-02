@@ -1,4 +1,4 @@
-define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block_elbp/tinytbl', 'block_elbp/fileupload'], function($, ui, miniColors, raty, tinytbl, fileupload) {
+define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block_elbp/fileupload'], function($, ui, miniColors, raty, fileupload) {
 
     // Raty image path
     if ($.fn.raty !== undefined) {

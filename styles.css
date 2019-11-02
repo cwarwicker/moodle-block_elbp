@@ -2210,8 +2210,6 @@ div#elbp_register_content table th, div#elbp_register_content table td
     overflow-x: hidden;
 }
 
-
-
 div#elbp_register_content table td.disabled
 {
     background-color: rgb(218, 218, 218);
@@ -2221,26 +2219,49 @@ div#elbp_register_content table tbody tr:nth-child(even){
     background-color: #f2f2f2;
 }
 
-div#elbp_register_content table#register_table th.week, div#elbp_register_content table#register_table td.week,
-div#elbp_register_content div.ui-tinytbl table th.week, div#elbp_register_content div.ui-tinytbl table td.week
+div#elbp_register_container
+{
+    width: 100%;
+    overflow-x: auto;
+}
+
+div#elbp_register_container table th.week,
+div#elbp_register_container table td.week
 {
     width: 35px !important;
     text-align: center !important;
-    padding: 4px;
+    padding: 8px;
 }
 
-div#elbp_register_content div.ui-tinytbl table td.coursetd,
-div#elbp_register_content div.ui-tinytbl table td.desctd,
-div#elbp_register_content div.ui-tinytbl table td.daytd,
-div#elbp_register_content div.ui-tinytbl table td.timetd
+
+div#elbp_register_container table .coursetd,
+div#elbp_register_container table .desctd,
+div#elbp_register_container table .daytd,
+div#elbp_register_container table .timetd
 {
-    padding: 4px;
+    padding: 8px;
 }
 
-div#elbp_register_content div.ui-widget-content div.ui-widget-content div.ui-tinytbl-frozen,
-div#elbp_register_content div.ui-widget-content div.ui-widget-content div.ui-tinytbl-column
+div#elbp_register_container table .coursetd,
+div#elbp_register_container table .desctd
 {
-    min-height: 100px;
+    min-width: 200px;
+    width: 200px;
+    max-width: 200px;
+}
+
+div#elbp_register_container table .timetd
+{
+    min-width: 60px;
+    width: 60px;
+    max-width: 60px;
+}
+
+div#elbp_register_container table .daytd
+{
+    min-width: 85px;
+    width: 85px;
+    max-width: 85px;
 }
 
 .tooltip-inner {
@@ -2251,36 +2272,6 @@ div#elbp_register_content div.ui-widget-content div.ui-widget-content div.ui-tin
 {
     z-index: 3001 !important;
 }
-
-
-.ui-tinytbl-inner-register
-{
-    background: none !important;
-    color: #000 !important;
-    font-weight: normal !important;
-}
-
-.ui-tinytbl-inner-register th
-{
-    color: #fff !important;
-    font-weight: bold !important;
-}
-
-
-#elbp_register_content .ui-tinytbl
-{
-    margin: auto;
-}
-
-#elbp_register_content .ui-tinytbl-foot
-{
-    display: none;
-}
-
-/*div#elbp_register_content table th {
-    background: #0066ff;
-    color: #fff;
-}*/
 
 /* End Register */
 
@@ -3266,11 +3257,6 @@ div#elbp_popup_content
 div#elbp_popup_content table
 {
     font-size: 10pt;
-}
-
-div#elbp_popup_content table:not(.ui-tinytbl-outer) td
-{
-    padding: 0.5em;
 }
 
 a.elbp_selected_view
@@ -4899,7 +4885,7 @@ div.elbp_form_panel_side table img
 
 div.elbp_form_panel_centre
 {
-    width: 58%;
+    width: 78%; /* Don't think i'm going to have a _right section */
     display: inline-block;
     vertical-align: top;
     margin: 0;
