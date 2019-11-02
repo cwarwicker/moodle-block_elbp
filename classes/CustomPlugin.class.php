@@ -3080,10 +3080,11 @@ class CustomPlugin {
 
                 }
 
-
-                // SUccess message at top
-                echo "$('#custom_output').html('<div class=\"elbp_success_box\" id=\"custom_success\"></div>');";
-                echo "$('#custom_success').append('<span>".get_string('saved', 'block_elbp')."</span><br>');";
+                // Reload expanded view to see changes.
+                echo "ELBP.load_expanded('{$this->getName()}', function(){
+                    $('#custom_output').html('<div class=\"elbp_success_box\" id=\"custom_success\"></div>');
+                    $('#custom_success').append('<span>".get_string('saved', 'block_elbp')."</span><br>');
+                });";
 
                 exit;
 

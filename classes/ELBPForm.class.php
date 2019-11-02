@@ -480,7 +480,8 @@ class ELBPFormElement {
                 $value = $this->obj->getAttribute( $this->name, true );
                 $this->setValue($value);
             }
-            return $this->getValue();
+
+            return nl2br($this->getValue());
 
         }
     }

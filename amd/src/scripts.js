@@ -68,7 +68,7 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
             data: {plugin: plugin, action: action, params: params},
             error: function(d){
                 ELBP.ajax_error(d.responseText);
-                console.log('Error: ' + d);
+                client.log('Error: ' + d);
             },
             success: function(d){
 
@@ -2503,8 +2503,6 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
     // Bind events
     ELBP.bind = function(){
-
-      console.log('binding ELBP');
 
         // Resize the popup
         ELBP.resize_popup();
