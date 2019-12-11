@@ -667,7 +667,10 @@ class Comment extends \ELBP\BasePluginObject {
             // Staff alerts
             elbp_event_trigger("Comment Added", $this->Comments->getID(), $this->studentID, $alertContent, nl2br($alertContent));
 
-
+            // Student alerts.
+            if (!$this->isHidden()) {
+                elbp_event_trigger_student("Comment Added", $this->Comments->getID(), $this->studentID, $alertContent, nl2br($alertContent));
+            }
 
         }
         else
@@ -794,8 +797,10 @@ class Comment extends \ELBP\BasePluginObject {
             $htmlContent = get_string('alerts:commentupdated', 'block_elbp') .
                            $this->getInfoForEventTrigger(true, $tmp);
 
-            // Student alert - bedford wanted this off
-            elbp_event_trigger_student("Comment Updated", $this->Comments->getID(), $this->studentID, $alertContent, $htmlContent);
+            // Student alert.
+            if (!$this->isHidden()) {
+                elbp_event_trigger_student("Comment Updated", $this->Comments->getID(), $this->studentID, $alertContent, $htmlContent);
+            }
 
             // Staff alerts
             elbp_event_trigger("Comment Updated", $this->Comments->getID(), $this->studentID, $alertContent, $htmlContent);
