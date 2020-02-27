@@ -1,11 +1,14 @@
-THIS BRANCH IS IN DEVELOPMENT, DO NOT USE
+# Electronic Learning Blue Print (v2.0.0)
 
+[![Open Issues](https://img.shields.io/github/issues/cwarwicker/moodle-block_elbp)](https://github.com/cwarwicker/moodle-block_elbp/issues)
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-# Electronic Learning Blue Print (v1.4.2)
+![Moodle 3.4 supported](https://img.shields.io/badge/Moodle-3.4-brightgreen)
+![Moodle 3.5 supported](https://img.shields.io/badge/Moodle-3.5-brightgreen)
+![Moodle 3.6 supported](https://img.shields.io/badge/Moodle-3.6-brightgreen)
+![Moodle 3.7 supported](https://img.shields.io/badge/Moodle-3.7-brightgreen)
 
 This plugin provides you with the Electronic Learning Blue Print block, which is an Individual Learning Plan system, which provides you with one centralised place to see all of the information relevant for a student, such as Attendance, Targets, Timetables, Registers, etc...
-
-![](https://image.ibb.co/deKKOo/screenshot.png)
 
 
 Features
@@ -50,23 +53,54 @@ Some of these features include:
 * Email Alerts - Set up custom alerts to suit your particular needs, based on PLP events, against whole courses, course groups or individual students.
 * Report - See overview reports and build up your own custom reports which can be exported to Excel or saved into the system for later comparisons.
 
-Requirements
-------------
-- PHP 5.6 or higher
-- Moodle 3.1, 3.2, 3.3
-- block_bc_dashboard installed
-
-Installation
-------------
-- Download the zip file, using the green "Clone or download" button
-- Extract the files
-- Rename the folder inside "moodle-block_elbp-master" to just "elbp".
-- Place the "elbp" folder inside the /blocks directory of your Moodle site and run through the normal plugin installation procedure, then you can add the block to a course page.
-
 User Guide
 ------------
 [Please see the Wiki](https://github.com/cwarwicker/moodle-block_elbp/wiki)
 
-Licence
+Screenshots
+-----------
+
+Viewing a Student's ELBP:
+![](pix/screenshots/screenshot.png)
+
+Viewing a Student's Targets:
+![](pix/screenshots/targets.png)
+
+Viewing a Student's Timetable:
+![](pix/screenshots/timetable.png)
+
+Viewing a Student's Attendance data:
+![](pix/screenshots/attendance.png)
+
+Configuring a custom form:
+![](pix/screenshots/config-forms.png)
+
+ELBP Plugin Configuration:
+![](pix/screenshots/config-plugins.png)
+
+Viewing a Student's Customised Plugin (Personal Skills Development):
+![](pix/screenshots/ss_personal_skills.png)
+
+Requirements
 ------------
-http://www.gnu.org/copyleft/gpl.html
+- Moodle 3.4, 3.5, 3.6, 3.7
+- Plugin block_bc_dashboard installed
+- Plugin local_df_hub installed
+
+Installation
+------------
+1. Download the latest version of the plugin from the [Releases](https://github.com/cwarwicker/moodle-block_elbp/releases) page.
+2. Extract the directory from the zip file and rename it to 'elbp' if it is not already named as such.
+3. Place the 'elbp' folder into your Moodle site's */blocks/* directory.
+4. Run the Moodle upgrade process either through the web interface or command line.
+5. Add the block to a page and start using it
+
+License
+-------
+https://www.gnu.org/licenses/gpl-3.0
+
+Support
+-------
+If you need any help using the block, or wish to report a bug or feature request, please use the issue tracking system: https://github.com/cwarwicker/moodle-block_elbp/issues
+
+If you want to help out with the development, feel free to submit commits for review.

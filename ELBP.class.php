@@ -40,8 +40,8 @@ if(!defined('ELBP')) define('ELBP', true);
 class ELBP
 {
 
-    const MAJOR_VERSION = 1;
-    const MINOR_VERSION = 5;
+    const MAJOR_VERSION = 2;
+    const MINOR_VERSION = 0;
     const BUILD_NUMBER = 0;
 
     const REMOTE_HOST_URL = 'https://github.com/cwarwicker/moodle-block_elbp';
