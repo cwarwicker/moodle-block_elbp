@@ -49,17 +49,13 @@ class block_elbp extends block_base
 
         global $SITE, $CFG, $USER, $COURSE, $DB;
 
+        $context = context_course::instance($COURSE->id);
 
-        if ($this->content !== null){
+        if ($this->content !== null || !$USER || is_guest($this->context, $USER)) {
             return $this->content;
         }
 
         $this->content = new stdClass();
-
-        if (!$USER){
-            return $this->content;
-        }
-
 
         $check_block = $DB->get_record("block", array("name" => "bc_dashboard"));
         $this->bc_dashboard_installed = ($check_block !== false);
