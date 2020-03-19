@@ -30,11 +30,11 @@
  *
  */
 
-$plugin->version = 2020022700;
-$plugin->requires = 2014111006;
+$plugin->version = 2020031900;
+$plugin->requires = 2017111300;
 $plugin->cron = 3600; # Run every hour
 $plugin->component = 'block_elbp';
 $plugin->dependencies = array(
-    'block_bc_dashboard' => 2018070600,
-    'local_df_hub' => 2019071900
+    'block_bc_dashboard' => 2020031900,
+    'local_df_hub' => 2020031900
 );
