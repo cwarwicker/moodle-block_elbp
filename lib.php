@@ -3216,7 +3216,13 @@ function elbp_create_data_directory($dir)
  */
 function elbp_create_data_path_code($path){
 
-    global $DB;
+    global $ELBP, $DB;
+
+    // Strip the dataroot from the beginning.
+    $path = str_replace($ELBP->dir, '', $path);
+    if (strpos($path, DIRECTORY_SEPARATOR) === 0) {
+        $path = ltrim($path, DIRECTORY_SEPARATOR);
+    }
 
     // See if one already exists for this path
     $record = $DB->get_record("lbp_file_path_codes", array("path" => $path));

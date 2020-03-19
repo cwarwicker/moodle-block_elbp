@@ -38,6 +38,10 @@ require_login();
 $f = required_param('f', PARAM_TEXT);
 
 $record = $DB->get_record("lbp_file_path_codes", array("code" => $f));
+if ($record) {
+    $record->path = $CFG->dataroot . DIRECTORY_SEPARATOR . 'ELBP' . DIRECTORY_SEPARATOR . $record->path;
+}
+
 if (!$record || !file_exists($record->path)){
     print_error( get_string('filenotfound', 'block_elbp') );
     exit;
