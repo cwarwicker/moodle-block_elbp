@@ -51,7 +51,7 @@ class block_elbp extends block_base
 
         $context = context_course::instance($COURSE->id);
 
-        if ($this->content !== null || !$USER || is_guest($this->context, $USER)) {
+        if ($this->content !== null || !$USER || is_guest($context, $USER)) {
             return $this->content;
         }
 
