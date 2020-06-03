@@ -42,7 +42,7 @@ class ELBP
 
     const MAJOR_VERSION = 2;
     const MINOR_VERSION = 0;
-    const BUILD_NUMBER = 0;
+    const BUILD_NUMBER = 1;
 
     const REMOTE_HOST_URL = 'https://github.com/cwarwicker/moodle-block_elbp';
     const REMOTE_VERSION_URL = 'https://raw.githubusercontent.com/cwarwicker/moodle-block_elbp/master/v.txt';

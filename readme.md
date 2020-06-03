@@ -1,4 +1,4 @@
-# Electronic Learning Blue Print (v2.0.0)
+# Electronic Learning Blue Print (v2.0.1)
 
 [![Open Issues](https://img.shields.io/github/issues/cwarwicker/moodle-block_elbp)](https://github.com/cwarwicker/moodle-block_elbp/issues)
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
