@@ -60,7 +60,7 @@ class block_elbp extends block_base
         $check_block = $DB->get_record("block", array("name" => "bc_dashboard"));
         $this->bc_dashboard_installed = ($check_block !== false);
 
-        $this->elbp = ELBP\ELBP::instantiate();
+        $this->elbp = block_elbp\ELBP::instantiate();
         $this->title = $this->elbp->getELBPFullName();
 
         $this->imgdir = $CFG->wwwroot . '/blocks/elbp/pix/';

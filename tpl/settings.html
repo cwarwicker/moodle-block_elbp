@@ -13,14 +13,14 @@
         <h2><?= $string['generalsettings'] ?></h2>
 
             <b><?= $string['tutorialautosave'] ?></b> - <?= $string['tutorialautosave:desc'] ?><br>
-            <?= $string['enable'] ?> <input type="radio" name="tutorial_autosave" value="1" <?= (\ELBP\Setting::getSetting('tutorial_autosave', $USER->id) == 1) ? 'checked' : '' ?> /> &nbsp;&nbsp;
-            <?= $string['disable'] ?> <input type="radio" name="tutorial_autosave" value="0" <?= (\ELBP\Setting::getSetting('tutorial_autosave', $USER->id) <> 1) ? 'checked' : '' ?> />
+            <?= $string['enable'] ?> <input type="radio" name="tutorial_autosave" value="1" <?= (\block_elbp\Setting::getSetting('tutorial_autosave', $USER->id) == 1) ? 'checked' : '' ?> /> &nbsp;&nbsp;
+            <?= $string['disable'] ?> <input type="radio" name="tutorial_autosave" value="0" <?= (\block_elbp\Setting::getSetting('tutorial_autosave', $USER->id) <> 1) ? 'checked' : '' ?> />
 
             <br><br>
 
             <b><?= $string['additionalsupportautosave'] ?></b> - <?= $string['additionalsupportautosave:desc'] ?><br>
-            <?= $string['enable'] ?> <input type="radio" name="addsup_autosave" value="1" <?= (\ELBP\Setting::getSetting('addsup_autosave', $USER->id) == 1) ? 'checked' : '' ?> /> &nbsp;&nbsp;
-            <?= $string['disable'] ?> <input type="radio" name="addsup_autosave" value="0" <?= (\ELBP\Setting::getSetting('addsup_autosave', $USER->id) <> 1) ? 'checked' : '' ?> />
+            <?= $string['enable'] ?> <input type="radio" name="addsup_autosave" value="1" <?= (\block_elbp\Setting::getSetting('addsup_autosave', $USER->id) == 1) ? 'checked' : '' ?> /> &nbsp;&nbsp;
+            <?= $string['disable'] ?> <input type="radio" name="addsup_autosave" value="0" <?= (\block_elbp\Setting::getSetting('addsup_autosave', $USER->id) <> 1) ? 'checked' : '' ?> />
 
             <br><br>
             <input type="submit" name="save_settings" value="<?= $string['save'] ?>" />

@@ -33,8 +33,8 @@
 require_once '../../../../config.php';
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
-$ELBP = ELBP\ELBP::instantiate();
-$DBC = new ELBP\DB();
+$ELBP = block_elbp\ELBP::instantiate();
+$DBC = new block_elbp\DB();
 
 $id = required_param('id', PARAM_INT);
 $view = optional_param('view', 'main', PARAM_ALPHA);
@@ -47,14 +47,14 @@ if (!$access['god']){
 // Need to be logged in to view this page
 require_login();
 
-$OBJ = new \ELBP\Plugins\CustomPlugin($id);
+$OBJ = new \block_elbp\Plugins\CustomPlugin($id);
 if (!$OBJ->isValid())
 {
     exit;
 }
 
 
-$TPL = new \ELBP\Template();
+$TPL = new \block_elbp\Template();
 $MSGS['errors'] = '';
 $MSGS['success'] = '';
 
@@ -99,7 +99,7 @@ if ($view == 'permissions'){
 try {
     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/config.html' );
     $TPL->display();
-} catch (\ELBP\ELBPException $e){
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
 }
 

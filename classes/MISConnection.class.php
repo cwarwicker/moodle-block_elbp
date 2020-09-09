@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 /**
  * 
@@ -274,7 +274,7 @@ class MISConnection {
  
     /**
      * Set field mapping information for a particular field
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $name
      * @param type $field
      * @param type $alias

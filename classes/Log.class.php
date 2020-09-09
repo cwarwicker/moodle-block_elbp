@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 
 global $DB;
@@ -185,7 +185,7 @@ class Log {
 //                        if ($att){
 //                            $comment = $DB->get_record("lbp_target_comments", array("id" => $att->value));
 //                            if ($comment){
-//                                $target = new \ELBP\Plugins\Targets\Target($comment->targetid);
+//                                $target = new \block_elbp\Plugins\Targets\Target($comment->targetid);
 //                                if ($target){
 //                                    $info .= "\"{$target->getName()}\": <em><small>'".substr($comment->comments, 0, 25)."..'</small></em> ";
 //                                }

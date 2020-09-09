@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 /**
  *
@@ -68,7 +68,7 @@ class CustomPlugin {
 
     /**
      * Construct the plugin object
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $id
      */
     public function __construct($id = false) {
@@ -79,7 +79,7 @@ class CustomPlugin {
         if ($check)
         {
 
-            $this->ELBPDB = new \ELBP\DB();
+            $this->ELBPDB = new \block_elbp\DB();
 
             $this->id = $check->id;
             $this->name = $check->name;
@@ -93,8 +93,8 @@ class CustomPlugin {
             $this->connection = new \Anon;
             $this->connection->connect = function() {
                 try {
-                    throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp'), get_string('nomisconnection', 'block_elbp'), false, get_string('admin:setupmisconnectionplugin', 'block_elbp'));
-                } catch (\ELBP\ELBPException $e){
+                    throw new \block_elbp\ELBPException( get_string('plugin', 'block_elbp'), get_string('nomisconnection', 'block_elbp'), false, get_string('admin:setupmisconnectionplugin', 'block_elbp'));
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
             };
@@ -120,7 +120,7 @@ class CustomPlugin {
             if ($this->connection && $this->connection->connect()){
                 $core = $this->getMainMIS();
                 if ($core){
-                    $pluginConn = new \ELBP\MISConnection($core->id, true);
+                    $pluginConn = new \block_elbp\MISConnection($core->id, true);
                     if ($pluginConn->isValid()){
                         $this->useMIS = true;
                         $this->plugin_connection = $pluginConn;
@@ -319,7 +319,7 @@ class CustomPlugin {
 
     /**
      * Get a given MIS connection by name, linked to this plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $name
      * @return type
      */
@@ -332,7 +332,7 @@ class CustomPlugin {
 
     /**
      * Get a given MIS connection by ID, linked to this plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $id
      * @return type
      */
@@ -360,7 +360,7 @@ class CustomPlugin {
         }
 
         try {
-            $MIS = \ELBP\MIS\Manager::instantiate( $name );
+            $MIS = \block_elbp\MIS\Manager::instantiate( $name );
             $this->connection = $MIS;
         }
         catch(ELBPException $e){
@@ -464,7 +464,7 @@ class CustomPlugin {
 
     /**
      * Clear the permissions from this plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      */
     private function clearPermissions(){
 
@@ -479,7 +479,7 @@ class CustomPlugin {
      * Add a role's permission to the permissions array to save later
      * @param type $roleID
      * @param type $permission
-     * @return \ELBP\Plugins\CustomPlugin
+     * @return \block_elbp\Plugins\CustomPlugin
      */
     private function addPermission($roleID, $permission){
 
@@ -495,7 +495,7 @@ class CustomPlugin {
 
     /**
      * Save the permissions in our permissions array to the database
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      */
     private function savePermissions(){
 
@@ -544,7 +544,7 @@ class CustomPlugin {
 
     /**
      * Given a particular user and a particular student they are looking at, find out what permissions they have on this plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $USER
      * @global type $ELBP
      * @param type $studentID
@@ -559,7 +559,7 @@ class CustomPlugin {
         if (!$studentID) $studentID = $this->student->id;
         if (!$userID) $userID = $USER->id;
 
-        $ELBPDB = new \ELBP\DB();
+        $ELBPDB = new \block_elbp\DB();
 
         $roles = array();
         $return = array();
@@ -660,7 +660,7 @@ class CustomPlugin {
 
     /**
      * Do we have a specific permission loaded into our permission array for this user?
-     * @global \ELBP\Plugins\type $USER
+     * @global \block_elbp\Plugins\type $USER
      * @param type $permission
      * @param array $permissions
      * @return type
@@ -681,7 +681,7 @@ class CustomPlugin {
 
         $this->attributes = "";
 
-        $setting = \ELBP\Setting::getSetting("attributes", null, $this->id, true);
+        $setting = \block_elbp\Setting::getSetting("attributes", null, $this->id, true);
 
         $this->attributes = $setting;
 
@@ -706,7 +706,7 @@ class CustomPlugin {
     public function countAttributes()
     {
 
-        $FORM = new \ELBP\ELBPForm();
+        $FORM = new \block_elbp\ELBPForm();
         $FORM->load( $this->getDefaultAttributes() );
         $elements = $FORM->getElements();
         return count($elements);
@@ -759,7 +759,7 @@ class CustomPlugin {
     public function getElementsFromAttributeString()
     {
 
-        $FORM = new \ELBP\ELBPForm();
+        $FORM = new \block_elbp\ELBPForm();
 
         // Load student
         if ($this->student){
@@ -777,7 +777,7 @@ class CustomPlugin {
 
     /**
      * If we are using Multi Report, get a specific item
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $itemID
      * @return boolean
      */
@@ -793,7 +793,7 @@ class CustomPlugin {
 
     /**
      * If we are using Multi report, get all items for this student
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
     public function getMultiItems()
@@ -868,7 +868,7 @@ class CustomPlugin {
 
     /**
      * Load attributes set for this student/item
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $itemID
      * @return type
      */
@@ -885,7 +885,7 @@ class CustomPlugin {
         {
 
             // Generate new IDs
-            \ELBP\ELBPFORM::generateNewIDs($attributes);
+            \block_elbp\ELBPFORM::generateNewIDs($attributes);
 
             // Wipe all values
             foreach($attributes as $attribute)
@@ -1038,7 +1038,7 @@ class CustomPlugin {
 
     /**
      * Create a new custom plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public function createPlugin(){
@@ -1062,7 +1062,7 @@ class CustomPlugin {
 
     /**
      * Delete all data related to a custom plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
     public function delete(){
@@ -1093,7 +1093,7 @@ class CustomPlugin {
             "setting" => $setting,
             "value" => $value
         ));
-        return \ELBP\Setting::setSetting($setting, $value, $userID, $this->id, true);
+        return \block_elbp\Setting::setSetting($setting, $value, $userID, $this->id, true);
     }
 
     /**
@@ -1104,7 +1104,7 @@ class CustomPlugin {
      */
     public function getSetting($setting, $userID = null)
     {
-        return \ELBP\Setting::getSetting($setting, $userID, $this->id, true);
+        return \block_elbp\Setting::getSetting($setting, $userID, $this->id, true);
     }
 
     /**
@@ -1115,13 +1115,13 @@ class CustomPlugin {
 
         // Check if this user has set their own colours
         if ($this->student){
-            $col = \ELBP\Setting::getSetting("header_bg_col", $this->student->id, $this->id, true);
+            $col = \block_elbp\Setting::getSetting("header_bg_col", $this->student->id, $this->id, true);
             if ($col){
                 return $col;
             }
         }
 
-        $col = \ELBP\Setting::getSetting("header_bg_col", null, $this->id, true);
+        $col = \block_elbp\Setting::getSetting("header_bg_col", null, $this->id, true);
 
         return ($col) ? $col : '#ffffff';
 
@@ -1135,13 +1135,13 @@ class CustomPlugin {
 
         // Check if this user has set their own colours
         if ($this->student){
-            $col = \ELBP\Setting::getSetting("header_font_col", $this->student->id, $this->id, true);
+            $col = \block_elbp\Setting::getSetting("header_font_col", $this->student->id, $this->id, true);
             if ($col){
                 return $col;
             }
         }
 
-        $col = \ELBP\Setting::getSetting("header_font_col", null, $this->id, true);
+        $col = \block_elbp\Setting::getSetting("header_font_col", null, $this->id, true);
 
         return ($col) ? $col : '#000000';
 
@@ -1168,7 +1168,7 @@ class CustomPlugin {
 
 
         // if using gradients:
-        $gradients = \ELBP\Setting::getSetting('elbp_use_gradients');
+        $gradients = \block_elbp\Setting::getSetting('elbp_use_gradients');
 
         if ($bg){
 
@@ -1681,8 +1681,8 @@ class CustomPlugin {
 
     /**
      * Display the main configuration form
-     * @global \ELBP\Plugins\type $CFG
-     * @global \ELBP\Plugins\type $ELBP
+     * @global \block_elbp\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $ELBP
      */
     public function displayConfig(){
 
@@ -1932,7 +1932,7 @@ class CustomPlugin {
 
         $this->connect();
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
 
         $TPL->set("obj", $this);
         $TPL->set("ELBP", $ELBP);
@@ -1945,7 +1945,7 @@ class CustomPlugin {
         try {
             return $TPL->load($CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/'.$structure.'/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
 
@@ -1987,8 +1987,8 @@ class CustomPlugin {
 
     /**
      * Get the data to be put into the display() method
-     * @global \ELBP\Plugins\type $CFG
-     * @global \ELBP\Plugins\type $ELBP
+     * @global \block_elbp\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $ELBP
      * @param type $params
      * @return type
      */
@@ -2006,7 +2006,7 @@ class CustomPlugin {
 
         $output = "";
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("obj", $this);
         $TPL->set("access", $this->access);
         $TPL->set("params", $params);
@@ -2023,7 +2023,7 @@ class CustomPlugin {
 
         try {
             $output .= $TPL->load($CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/'.$structure.'/expanded.html');
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             $output .= $e->getException();
         }
 
@@ -2046,7 +2046,7 @@ class CustomPlugin {
         $TPL->set("sideAttributes", $this->getAttributesForDisplayDisplayType("side", $attributes));
         $TPL->set("permissions", $this->getUserPermissions());
 
-        $FORM = new \ELBP\ELBPForm();
+        $FORM = new \block_elbp\ELBPForm();
         $FORM->loadStudentID($this->student->id);
         $TPL->set("FORM", $FORM);
 
@@ -2070,7 +2070,7 @@ class CustomPlugin {
      */
     private function setDisplayVarsIncremental(&$TPL){
 
-        $FORM = new \ELBP\ELBPForm();
+        $FORM = new \block_elbp\ELBPForm();
         $FORM->loadStudentID($this->student->id);
 
         $TPL->set("attributes", $this->getAttributesForDisplay());
@@ -2162,7 +2162,7 @@ class CustomPlugin {
 
     /**
      * Run the external DB query and return the results
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $sql
      * @param type $vars
      * @return boolean
@@ -2190,7 +2190,7 @@ class CustomPlugin {
 
     /**
      * Run the internal db query and return the results
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $sql
      * @param type $vars
      * @return type
@@ -2258,7 +2258,7 @@ class CustomPlugin {
 
     /**
      * Save a single report
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
     private function saveSingle(){
@@ -2271,7 +2271,7 @@ class CustomPlugin {
         if ($allAttributes)
         {
 
-            $FORM = new \ELBP\ELBPForm();
+            $FORM = new \block_elbp\ELBPForm();
 
             foreach($allAttributes as $definedAttribute)
             {
@@ -2426,8 +2426,8 @@ class CustomPlugin {
 
     /**
      * Save a multiple report
-     * @global \ELBP\Plugins\type $DB
-     * @global \ELBP\Plugins\type $USER
+     * @global \block_elbp\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $USER
      * @param int $itemID (Default: false)
      * @return boolean
      */
@@ -2627,7 +2627,7 @@ class CustomPlugin {
 
     /**
      * Delete a given item from a multiple report
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $itemID
      * @return boolean
      */
@@ -2725,8 +2725,8 @@ class CustomPlugin {
 
     /**
      * Save an inremental report
-     * @global \ELBP\Plugins\type $DB
-     * @global \ELBP\Plugins\type $USER
+     * @global \block_elbp\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $USER
      * @param type $itemID
      * @return boolean
      */
@@ -2926,7 +2926,7 @@ class CustomPlugin {
 
     /**
      * Delete an item from an incremental report
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $itemID
      * @return boolean
      */
@@ -2955,12 +2955,12 @@ class CustomPlugin {
 
     /**
      * The method called from the main ELBP ajax handler script
-     * @global \ELBP\Plugins\type $CFG
-     * @global \ELBP\Plugins\type $DB
-     * @global \ELBP\Plugins\type $USER
+     * @global \block_elbp\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $USER
      * @param type $action
      * @param type $params
-     * @param \ELBP\Plugins\type $ELBP
+     * @param \block_elbp\Plugins\type $ELBP
      * @return boolean
      */
     public function ajax($action, $params, $ELBP){
@@ -2988,10 +2988,10 @@ class CustomPlugin {
 
                 if (!$this->havePermission(self::PERMISSION_VIEW, $permissions)) return false;
 
-                $FORM = new \ELBP\ELBPForm();
+                $FORM = new \block_elbp\ELBPForm();
                 $FORM->loadStudentID($this->student->id);
 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this);
                 $TPL->set("FORM", $FORM);
                 $TPL->set("access", $this->access);
@@ -3044,7 +3044,7 @@ class CustomPlugin {
                 try {
                     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/'.$this->getStructure().'/'.$page.'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;
@@ -3285,10 +3285,10 @@ class CustomPlugin {
                 $permissions = $this->getUserPermissions();
                 if (!$this->havePermission(self::PERMISSION_VIEW, $permissions)) return false;
 
-                $FORM = new \ELBP\ELBPForm();
+                $FORM = new \block_elbp\ELBPForm();
                 $FORM->loadStudentID($this->student->id);
 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this);
                 $TPL->set("FORM", $FORM);
                 $TPL->set("access", $this->access);
@@ -3300,7 +3300,7 @@ class CustomPlugin {
                 try {
                     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/incremental/items.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;
@@ -3315,10 +3315,10 @@ class CustomPlugin {
 
     /**
      * Display a particular item from a multiple report
-     * @global \ELBP\Plugins\type $CFG
-     * @global \ELBP\Plugins\type $ELBP
+     * @global \block_elbp\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $ELBP
      * @global type $OUTPUT
-     * @global \ELBP\Plugins\type $USER
+     * @global \block_elbp\Plugins\type $USER
      * @param type $item
      * @return boolean
      */
@@ -3430,8 +3430,8 @@ class CustomPlugin {
 
     /**
      * Print the report
-     * @global \ELBP\Plugins\type $CFG
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $DB
      * @param type $objectID
      * @param type $studentID
      * @param type $type
@@ -3755,9 +3755,9 @@ class CustomPlugin {
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . $this->getName();
         $title = $this->getName();
         $heading = fullname($this->getStudent()) . ' (' . $this->student->username . ')';
-        $logo = \ELBP\ELBP::getPrintLogo();
+        $logo = \block_elbp\ELBP::getPrintLogo();
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);
@@ -3776,8 +3776,8 @@ class CustomPlugin {
     /**
      * Export the plugin to XML, so that someone else can easily import it
      * (Does not export the data, only the structure of it)
-     * @global \ELBP\Plugins\type $CFG
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $DB
      * @return \SimpleXMLElement
      */
     public function exportXML(){
@@ -3914,7 +3914,7 @@ class CustomPlugin {
 
 
         // Create the plugin
-        $plugin = new \ELBP\Plugins\CustomPlugin();
+        $plugin = new \block_elbp\Plugins\CustomPlugin();
         $plugin->setName($title);
         $pluginID = $plugin->createPlugin();
         $plugin->setID($pluginID);
@@ -4134,15 +4134,15 @@ class CustomPlugin {
 
         $content = $this->getSetting('notify_message') . "\n\n" . $this->getInfoForEvent();
 
-        $Alert = new \ELBP\EmailAlert();
+        $Alert = new \block_elbp\EmailAlert();
         return $Alert->queue("email", $emailToUser, $this->getTitle() . ' :: ' . get_string('notification', 'block_elbp'), $content, nl2br($content));
 
     }
 
     /**
      * Get the content for the triggered alert emails
-     * @global \ELBP\Plugins\Comments\type $CFG
-     * @global \ELBP\Plugins\Comments\type $USER
+     * @global \block_elbp\Plugins\Comments\type $CFG
+     * @global \block_elbp\Plugins\Comments\type $USER
      * @param type $useHtml
      * @param type $tmp
      * @return string
@@ -4200,7 +4200,7 @@ class CustomPlugin {
 
      /**
      * Get the alert events on this plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public function getAlertEvents(){
@@ -4212,7 +4212,7 @@ class CustomPlugin {
 
     /**
      * Get all custom plugins for dashboard
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public static function all(){

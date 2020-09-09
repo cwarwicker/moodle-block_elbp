@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 require_once $CFG->dirroot . '/blocks/elbp/plugins/CourseReports/CourseReport.class.php';
 require_once $CFG->dirroot . '/blocks/elbp/plugins/CourseReports/Periodical/PeriodicalCourseReport.class.php';
@@ -64,7 +64,7 @@ class CourseReports extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Course Reports",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -125,7 +125,7 @@ class CourseReports extends Plugin {
     
     /**
      * Get all the student's courses, taking into account meta/child/both setting
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
     public function getStudentsCourses(){
@@ -134,7 +134,7 @@ class CourseReports extends Plugin {
         
         global $DB;
         
-        $DBC = new \ELBP\DB();
+        $DBC = new \block_elbp\DB();
         
         $courses = $DBC->getStudentsCourses($this->student->id);
         if (!$courses) return $courses; # Empty array
@@ -165,7 +165,7 @@ class CourseReports extends Plugin {
     
     /**
      * Get the student's last course report on a given course
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $courseID
      * @return \stdClass|boolean
      */
@@ -256,7 +256,7 @@ class CourseReports extends Plugin {
     
     /**
      * Truncate related tables and then uninstall plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      */
     public function uninstall() {
         
@@ -305,7 +305,7 @@ class CourseReports extends Plugin {
     
     /**
      * Save configuration
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $MSGS
      * @param type $settings
      * @return boolean
@@ -543,7 +543,7 @@ class CourseReports extends Plugin {
      */
     public function getSummaryBox(){
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         
         $TPL->set("obj", $this);
         $TPL->set("courses", $this->getStudentsCourses());
@@ -552,7 +552,7 @@ class CourseReports extends Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
         
@@ -576,7 +576,7 @@ class CourseReports extends Plugin {
     
     /**
      * Get list of review question values
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public function getReviewValues(){
@@ -617,9 +617,9 @@ class CourseReports extends Plugin {
     
     /**
      * Get a list of course reports for this student
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $courseID
-     * @return \ELBP\Plugins\CourseReports\CourseReport
+     * @return \block_elbp\Plugins\CourseReports\CourseReport
      */
     public function getCourseReports($courseID = false)
     {
@@ -659,10 +659,10 @@ class CourseReports extends Plugin {
     
     /**
      * Get the student's periodical course reports
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param int $limit
      * @param bool $published
-     * @return \ELBP\Plugins\CourseReports\PeriodicalCourseReport|boolean
+     * @return \block_elbp\Plugins\CourseReports\PeriodicalCourseReport|boolean
      */
     public function getPeriodicalReports($limit = 0, $published = false)
     {
@@ -686,7 +686,7 @@ class CourseReports extends Plugin {
         {
             foreach($results as $result)
             {
-                $obj = new \ELBP\Plugins\CourseReports\PeriodicalCourseReport($result->id);
+                $obj = new \block_elbp\Plugins\CourseReports\PeriodicalCourseReport($result->id);
                 if ($obj->isValid())
                 {
                     if ($academicYearUnix && $obj->getCreatedTime() < $academicYearUnix){
@@ -712,7 +712,7 @@ class CourseReports extends Plugin {
                 
         $courses = $this->getStudentsCourses();
                                 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("obj", $this)
             ->set("access", $access)
             ->set("courses", $courses);
@@ -720,7 +720,7 @@ class CourseReports extends Plugin {
         try {
                 $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/courses.html' );
                 $TPL->display();
-            } catch (\ELBP\ELBPException $e){
+            } catch (\block_elbp\ELBPException $e){
                 echo $e->getException();
             }
                 
@@ -731,7 +731,7 @@ class CourseReports extends Plugin {
     
     /**
      * Display the reports on a specific course, through ajax
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $params
      * @param type $access
      */
@@ -743,7 +743,7 @@ class CourseReports extends Plugin {
         $course = $DB->get_record("course", array("id" => $params['courseIDForReport']));
         $reports = $this->getCourseReports($course->id);
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("obj", $this)
             ->set("access", $access)
             ->set("course", $course)
@@ -752,7 +752,7 @@ class CourseReports extends Plugin {
         try {
                 $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/course.html' );
                 $TPL->display();
-            } catch (\ELBP\ELBPException $e){
+            } catch (\block_elbp\ELBPException $e){
                 echo $e->getException();
             }
                 
@@ -762,8 +762,8 @@ class CourseReports extends Plugin {
     
     /**
      * Display the new/edit form through ajax
-     * @global \ELBP\Plugins\type $DB
-     * @global \ELBP\Plugins\type $ELBP
+     * @global \block_elbp\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $ELBP
      * @param type $params
      * @param type $access
      */
@@ -772,10 +772,10 @@ class CourseReports extends Plugin {
         
         global $DB, $ELBP;
         
-        $FORM = new \ELBP\ELBPForm();
+        $FORM = new \block_elbp\ELBPForm();
         $FORM->loadStudentID($this->student->id);
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("obj", $this)
             ->set("ELBP", $ELBP)
             ->set("access", $access)
@@ -800,7 +800,7 @@ class CourseReports extends Plugin {
         }
 
         if ($page == 'new'){
-            $data = \ELBP\Plugins\CourseReports\CourseReport::getDataForNewReportForm($reportID);
+            $data = \block_elbp\Plugins\CourseReports\CourseReport::getDataForNewReportForm($reportID);
             $TPL->set("data",  $data);
             $TPL->set("hooks", $this->callAllHooks($params));
         }
@@ -812,7 +812,7 @@ class CourseReports extends Plugin {
         try {
             $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/new.html' );
             $TPL->display();
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             echo $e->getException();
         }
                 
@@ -824,7 +824,7 @@ class CourseReports extends Plugin {
     /**
      * Display the periodical page through ajax
      * @global type $CFG
-     * @global \ELBP\Plugins\type $ELBP
+     * @global \block_elbp\Plugins\type $ELBP
      * @param type $params
      * @param type $access
      * @return boolean
@@ -833,13 +833,13 @@ class CourseReports extends Plugin {
         
         global $CFG, $ELBP;
         
-        $periodicalReport = new \ELBP\Plugins\CourseReports\PeriodicalCourseReport($params['reportID']);
+        $periodicalReport = new \block_elbp\Plugins\CourseReports\PeriodicalCourseReport($params['reportID']);
         if (!$periodicalReport->isValid()) return false;
         if (!$this->loadStudent($params['studentID'])) return false;
         
         $periodicalReport->setCourseReportsObj($this);
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("report", $periodicalReport);
         $TPL->set("obj", $this);
         $TPL->set("access", $this->getAccess());
@@ -870,11 +870,11 @@ class CourseReports extends Plugin {
     
     /**
      * Handle ajax requests sent to the plugin
-     * @global \ELBP\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $CFG
      * @global type $OUTPUT
      * @param type $action
      * @param type $params
-     * @param \ELBP\Plugins\type $ELBP
+     * @param \block_elbp\Plugins\type $ELBP
      * @return boolean
      */
     public function ajax($action, $params, $ELBP){
@@ -916,7 +916,7 @@ class CourseReports extends Plugin {
                 }
                 
                 // Default - just look for that file
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this)
                     ->set("access", $access);
                 
@@ -927,7 +927,7 @@ class CourseReports extends Plugin {
                 try {
                         $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/'.$params['type'].'.html' );
                         $TPL->display();
-                    } catch (\ELBP\ELBPException $e){
+                    } catch (\block_elbp\ELBPException $e){
                         echo $e->getException();
                     }
 
@@ -949,7 +949,7 @@ class CourseReports extends Plugin {
                 if (!elbp_has_capability('block/elbp:add_course_report', $access)) return false;
                 
                 // Build CourseReport object using params sent
-                $report = new \ELBP\Plugins\CourseReports\CourseReport($params, $this);
+                $report = new \block_elbp\Plugins\CourseReports\CourseReport($params, $this);
                                 
                 if (!$report->save()){
                                                             
@@ -987,7 +987,7 @@ class CourseReports extends Plugin {
                 if (!elbp_has_capability('block/elbp:delete_course_report', $access)) return false;
                 
                 // Build CourseReport object using params sent
-                $report = new \ELBP\Plugins\CourseReports\CourseReport($params['reportID'], $this);
+                $report = new \block_elbp\Plugins\CourseReports\CourseReport($params['reportID'], $this);
                 if (!$report->isValid()) return false;
                 
                 if (!$report->delete()){
@@ -1024,7 +1024,7 @@ class CourseReports extends Plugin {
                 if ($reports)
                 {
                     
-                    $TPL = new \ELBP\Template();
+                    $TPL = new \block_elbp\Template();
                     $TPL->set("reports", $reports);
                     $TPL->set("obj", $this);
                     $output = $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/CourseReports/Periodical/tpl/new.html' );
@@ -1052,10 +1052,10 @@ class CourseReports extends Plugin {
                 // No point having seperate permissions for add & edit, just reuse add
                 if (!elbp_has_capability('block/elbp:add_periodical_course_report', $access)) return false;
                 
-                $report = new \ELBP\Plugins\CourseReports\PeriodicalCourseReport($params['reportID']);
+                $report = new \block_elbp\Plugins\CourseReports\PeriodicalCourseReport($params['reportID']);
                 if (!$report->isValid()) return false;
                 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("report", $report);
                 $TPL->set("reports", $report->getReports());
                 $TPL->set("allReports", $this->getCourseReports());
@@ -1077,7 +1077,7 @@ class CourseReports extends Plugin {
                 if (!elbp_has_capability('block/elbp:delete_periodical_course_report', $access)) return false;
                                 
               
-                $periodical = new \ELBP\Plugins\CourseReports\PeriodicalCourseReport($params['reportID']);                
+                $periodical = new \block_elbp\Plugins\CourseReports\PeriodicalCourseReport($params['reportID']);
                 
                 if (!$periodical->delete()){
                     echo "$('#elbp_periodical_saving_output').html('<div class=\"elbp_err_box\" id=\"add_course_reports_errors\"></div>');";
@@ -1111,7 +1111,7 @@ class CourseReports extends Plugin {
                 foreach( (array)$reportIDs as $reportID )
                 {
                     
-                    $report = new \ELBP\Plugins\CourseReports\CourseReport($reportID);
+                    $report = new \block_elbp\Plugins\CourseReports\CourseReport($reportID);
                     if ($report->isValid() && $report->getStudentID() == $params['studentID'])
                     {
                         $reports[] = $report;
@@ -1124,7 +1124,7 @@ class CourseReports extends Plugin {
                 // Going to use setters instead of an array of params for this. Seems more elegant, will see how it goes
                 $id = (isset($params['periodical_report_id'])) ? $params['periodical_report_id'] : false;
                 
-                $periodical = new \ELBP\Plugins\CourseReports\PeriodicalCourseReport($id);
+                $periodical = new \block_elbp\Plugins\CourseReports\PeriodicalCourseReport($id);
                 $periodical->setCourseReportsObj($this);
                 $periodical->setName($params['periodical_report_name']);
                 $periodical->setComments($params['periodical_report_comments']);
@@ -1186,7 +1186,7 @@ class CourseReports extends Plugin {
     
     /**
      * Print out to simple HTML page
-     * @global \ELBP\Plugins\type $ELBP
+     * @global \block_elbp\Plugins\type $ELBP
      * @param int $reportID If is null, will print all the student's reports
      * @param int $studentID Doesn't actually seem to be used...
      * @param string $type If null will do normal reports, otherwise should be string of "periodical"
@@ -1207,7 +1207,7 @@ class CourseReports extends Plugin {
                 if (is_numeric($reportID))
                 {
                     
-                    $periodicalReport = new \ELBP\Plugins\CourseReports\PeriodicalCourseReport($reportID);
+                    $periodicalReport = new \block_elbp\Plugins\CourseReports\PeriodicalCourseReport($reportID);
                     if (!$periodicalReport->isValid()){
                         echo get_string('invalidaccess', 'block_elbp');
                         return false;
@@ -1233,7 +1233,7 @@ class CourseReports extends Plugin {
         else
         {
             
-            $report = new \ELBP\Plugins\CourseReports\CourseReport($reportID, $this);
+            $report = new \block_elbp\Plugins\CourseReports\CourseReport($reportID, $this);
             if (!$report->isValid()){
                 echo get_string('invalidaccess', 'block_elbp');
                 return false;

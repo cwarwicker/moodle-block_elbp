@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 /**
  * 
@@ -49,7 +49,7 @@ class PersonalTutor {
         global $DBC;
         $this->tutorID = false;
         $this->outputMsg = '';
-        $this->dbc = (!is_null($DBC)) ? $DBC : new \ELBP\DB();
+        $this->dbc = (!is_null($DBC)) ? $DBC : new \block_elbp\DB();
     }
     
     /**
@@ -395,7 +395,7 @@ class PersonalTutor {
             return false;
         }
         
-        $ptRole = \ELBP\Setting::getSetting('elbp_personaltutor');
+        $ptRole = \block_elbp\Setting::getSetting('elbp_personaltutor');
         if (!$ptRole) $ptRole = self::DEFAULT_ROLE;
         
         $personalTutorRole = $this->dbc->getRole($ptRole);
@@ -447,7 +447,7 @@ class PersonalTutor {
             return false;
         }
         
-        $ptRole = \ELBP\Setting::getSetting('elbp_personaltutor');
+        $ptRole = \block_elbp\Setting::getSetting('elbp_personaltutor');
         if (!$ptRole) $ptRole = self::DEFAULT_ROLE;
         
         $personalTutorRole = $this->dbc->getRole($ptRole);
@@ -515,7 +515,7 @@ class PersonalTutor {
      */
     static function getPersonalTutorRole(){
         
-        $ptRole = \ELBP\Setting::getSetting('elbp_personaltutor');
+        $ptRole = \block_elbp\Setting::getSetting('elbp_personaltutor');
         if (!$ptRole) $ptRole = self::DEFAULT_ROLE;
         return $ptRole;
         

@@ -34,8 +34,8 @@ require_once '../../../../config.php';
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 global $DB, $CFG;
 
-$ELBP = ELBP\ELBP::instantiate();
-$DBC = new ELBP\DB();
+$ELBP = block_elbp\ELBP::instantiate();
+$DBC = new block_elbp\DB();
 
 $view = optional_param('view', 'main', PARAM_ALPHA);
 $edittarget = optional_param('edittarget', false, PARAM_INT);
@@ -50,13 +50,13 @@ if (!$access['god']){
 require_login();
 
 try {
-    $TAR = \ELBP\Plugins\Plugin::instaniate("Targets");
-} catch (\ELBP\ELBPException $e){
+    $TAR = \block_elbp\Plugins\Plugin::instaniate("Targets");
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
     exit;
 }
 
-$TPL = new \ELBP\Template();
+$TPL = new \block_elbp\Template();
 $MSGS['errors'] = '';
 $MSGS['success'] = '';
 
@@ -88,7 +88,7 @@ $PAGE->navbar->add( $TAR->getTitle(), $CFG->wwwroot . '/blocks/elbp/plugins/'.$T
 
 echo $OUTPUT->header();
 
-$FORM = new ELBP\ELBPForm();
+$FORM = new block_elbp\ELBPForm();
 $FORM->load($TAR->getDefaultAttributes());
 
 $targets = $DB->get_records('lbp_target_sets', array('deleted' => 0));
@@ -107,7 +107,7 @@ $TPL->set("view", $view);
 $TPL->set("MSGS", $MSGS);
 $TPL->set("OUTPUT", $OUTPUT);
 $TPL->set("FORM", $FORM);
-$TPL->set("data", \ELBP\Plugins\Targets\Target::getDataForNewTargetForm($edittarget, $TAR, true));
+$TPL->set("data", \block_elbp\Plugins\Targets\Target::getDataForNewTargetForm($edittarget, $TAR, true));
 $TPL->set("targets", $targets);
 $TPL->set("edittarget", $edittarget);
 $TPL->set("deletetarget", $deletetarget);
@@ -117,7 +117,7 @@ $TPL->set("deletetarget", $deletetarget);
 try {
     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/Targets/tpl/config.html' );
     $TPL->display();
-} catch (\ELBP\ELBPException $e){
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
 }
 

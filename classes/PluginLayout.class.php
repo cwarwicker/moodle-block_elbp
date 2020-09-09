@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace ELBP;
+namespace block_elbp;
 
 class PluginLayout
 {
@@ -97,7 +97,7 @@ class PluginLayout
     
     /**
      * Save layout record
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @return type
      */
     public function save(){
@@ -275,7 +275,7 @@ class PluginLayout
     
     /**
      * Get all the groups on this layout
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $onlyEnabled
      * @return type
      */
@@ -303,10 +303,10 @@ class PluginLayout
                     foreach($plugins as $plugin)
                     {
                         try {
-                            $obj = \ELBP\Plugins\Plugin::instaniate($plugin->name, $plugin->path);
+                            $obj = \block_elbp\Plugins\Plugin::instaniate($plugin->name, $plugin->path);
                             $obj->ordernum = $plugin->ordernum;
                             $group->plugins[$plugin->id] = $obj;
-                        } catch(\ELBP\ELBPException $e){
+                        } catch(\block_elbp\ELBPException $e){
                             
                         }                        
                     }
@@ -404,7 +404,7 @@ class PluginLayout
         {
             foreach($layouts as $layout)
             {
-                $return[] = new \ELBP\PluginLayout($layout->id);
+                $return[] = new \block_elbp\PluginLayout($layout->id);
             }
         }
         
@@ -414,7 +414,7 @@ class PluginLayout
     
     /**
      * Get the default layout
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @return type
      */
     public static function getDefaultPluginLayout(){
@@ -422,21 +422,21 @@ class PluginLayout
         global $DB;
         
         $record = $DB->get_record("lbp_plugin_layouts", array("isdefault" => 1, "enabled" => 1), "id", IGNORE_MULTIPLE);
-        return ($record) ? new \ELBP\PluginLayout($record->id) : false;
+        return ($record) ? new \block_elbp\PluginLayout($record->id) : false;
         
     }
     
     /**
      * Get a user's layout or the default one
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $userID
-     * @return \ELBP\PluginLayout
+     * @return \block_elbp\PluginLayout
      */
     public static function getUsersLayout($userID, $courseID = false){
                 
         // First check if this indivdual user has an overriden layout        
-        $layoutID = \ELBP\Setting::getSetting('plugins_layout', $userID);
-        $layout = new \ELBP\PluginLayout($layoutID);
+        $layoutID = \block_elbp\Setting::getSetting('plugins_layout', $userID);
+        $layout = new \block_elbp\PluginLayout($layoutID);
         if ($layout->isValid() && $layout->isEnabled())
         {
             return $layout;
@@ -445,8 +445,8 @@ class PluginLayout
         // Then check if the course has a layout
         if ($courseID && $courseID > 0 && $courseID <> SITEID)
         {
-            $layoutID = \ELBP\Setting::getSetting('course_'.$courseID.'_plugins_layout');
-            $layout = new \ELBP\PluginLayout($layoutID);
+            $layoutID = \block_elbp\Setting::getSetting('course_'.$courseID.'_plugins_layout');
+            $layout = new \block_elbp\PluginLayout($layoutID);
             if ($layout->isValid() && $layout->isEnabled())
             {
                 return $layout;
@@ -458,14 +458,14 @@ class PluginLayout
             // If we didn't pass a courseID through in the URL, check all the user's courses and see if any
             // have an overriden layout. If they have more than 1 course with a layout, we will just use the
             // first one we come across, as there is no real way to make a choice between them
-            $ELBPDB = new \ELBP\DB();
+            $ELBPDB = new \block_elbp\DB();
             $courses = $ELBPDB->getStudentsCourses($userID);
             if ($courses)
             {
                 foreach($courses as $course)
                 {
-                    $layoutID = \ELBP\Setting::getSetting('course_'.$course->id.'_plugins_layout');
-                    $layout = new \ELBP\PluginLayout($layoutID);
+                    $layoutID = \block_elbp\Setting::getSetting('course_'.$course->id.'_plugins_layout');
+                    $layout = new \block_elbp\PluginLayout($layoutID);
                     if ($layout->isValid() && $layout->isEnabled())
                     {
                         return $layout;
@@ -476,7 +476,7 @@ class PluginLayout
         }
         
         // Otherwise, just get the site default
-        return \ELBP\PluginLayout::getDefaultPluginLayout();
+        return \block_elbp\PluginLayout::getDefaultPluginLayout();
         
     }
     

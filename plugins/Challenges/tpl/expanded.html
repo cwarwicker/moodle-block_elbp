@@ -42,13 +42,13 @@
 
                             <?php if ($obj->getSetting('use_confidentiality') == 1 && $obj->getStudentID() == $USER->id): ?>
                                 <br>
-                                <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" />
+                                <img class="elbp_tooltip" title="<?= \block_elbp\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" />
                                 <b><?= $string['confidentiality'] ?></b>
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 <?php if ($cLevels): ?>
                                     <?php foreach($cLevels as $cLevel): ?>
                                         <?php $sel = ( (isset($challenge->userChallenge->confidentialityid) && $challenge->userChallenge->confidentialityid == $cLevel->id) || (!isset($challenge->userChallenge->confidentialityid) && $cLevel->id == ELBP_CONFIDENTIALITY_GLOBAL) ) ? 'checked' : ''; ?>
-                                        <span title="<?= \ELBP\Confidentiality::getHelpString($cLevel->id); ?>">
+                                        <span title="<?= \block_elbp\Confidentiality::getHelpString($cLevel->id); ?>">
                                             <input type="radio" name="challenge_confidentiality" value="<?= $cLevel->id ?>" <?= $sel ?>  /> <?= $cLevel->name ?>
                                         </span>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

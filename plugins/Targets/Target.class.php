@@ -30,13 +30,13 @@
  *
  */
 
-namespace ELBP\Plugins\Targets;
+namespace block_elbp\Plugins\Targets;
 
 
 /**
  *
  */
-class Target extends \ELBP\BasePluginObject {
+class Target extends \block_elbp\BasePluginObject {
 
     private $id = false;
     private $name;
@@ -122,7 +122,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Is the target achieved?
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return boolean
      */
     public function isAchieved(){
@@ -137,7 +137,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Is the target ignored?
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return boolean
      */
     public function isIgnored(){
@@ -160,7 +160,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Is the target linked to a tutorial?
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return type
      */
     public function isLinkedToTutorial(){
@@ -174,7 +174,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Is the target linked to a tutorial?
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return type
      */
     public function isLinkedToAdditionalSupport(){
@@ -228,7 +228,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Get the name of the target's status
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return boolean
      */
     public function getStatusName(){
@@ -250,7 +250,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Get the image icon of the target's status
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return boolean
      */
     public function getStatusImage(){
@@ -293,7 +293,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Get the student record
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return type
      */
     public function getStudent(){
@@ -306,7 +306,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Get the course record
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return type
      */
     public function getCourse(){
@@ -368,7 +368,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Get the record of the achieved status
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return type
      */
     public function findAchievedStatus(){
@@ -903,7 +903,7 @@ class Target extends \ELBP\BasePluginObject {
         unset($data['staffID']);
 
         // Attributes
-        $TAR = new \ELBP\Plugins\Targets();
+        $TAR = new \block_elbp\Plugins\Targets();
         $this->setSubmittedAttributes($data, $TAR);
 
     }
@@ -973,7 +973,7 @@ class Target extends \ELBP\BasePluginObject {
         ob_clean();
 
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . get_string('target', 'block_elbp') . ' - ' . $this->getName();
-        $logo = \ELBP\ELBP::getPrintLogo();
+        $logo = \block_elbp\ELBP::getPrintLogo();
         $title = get_string('target', 'block_elbp');
         $heading = fullname($this->getStudent()) . ' (' . $this->student->username . ')';
 
@@ -1045,7 +1045,7 @@ class Target extends \ELBP\BasePluginObject {
         $txt .= $this->displayPdfComments();
 
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);
@@ -1086,7 +1086,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Load attributes on this target
-     * @global \ELBP\Plugins\Targets\type $DB
+     * @global \block_elbp\Plugins\Targets\type $DB
      * @return type
      */
     public function loadAttributes(){
@@ -1542,7 +1542,7 @@ class Target extends \ELBP\BasePluginObject {
     /**
      * Get content for event triggered alert emails
      * @global type $CFG
-     * @global \ELBP\Plugins\Targets\type $USER
+     * @global \block_elbp\Plugins\Targets\type $USER
      * @param type $useHtml
      * @param type $tmpTarget
      * @return string
@@ -1651,7 +1651,7 @@ class Target extends \ELBP\BasePluginObject {
 
     /**
      * Get either current data if editing a target, or blank required data for new target
-     * @global \ELBP\Plugins\Targets\type $ELBP
+     * @global \block_elbp\Plugins\Targets\type $ELBP
      * @param type $id
      * @return string|boolean
      */

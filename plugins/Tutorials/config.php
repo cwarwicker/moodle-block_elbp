@@ -33,8 +33,8 @@
 require_once '../../../../config.php';
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
-$ELBP = ELBP\ELBP::instantiate();
-$DBC = new ELBP\DB();
+$ELBP = block_elbp\ELBP::instantiate();
+$DBC = new block_elbp\DB();
 
 $view = optional_param('view', 'main', PARAM_ALPHA);
 
@@ -47,13 +47,13 @@ if (!$access['god']){
 require_login();
 
 try {
-    $TUT = \ELBP\Plugins\Plugin::instaniate("Tutorials");
-} catch (\ELBP\ELBPException $e){
+    $TUT = \block_elbp\Plugins\Plugin::instaniate("Tutorials");
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
     exit;
 }
 
-$TPL = new \ELBP\Template();
+$TPL = new \block_elbp\Template();
 $MSGS['errors'] = '';
 $MSGS['success'] = '';
 
@@ -86,7 +86,7 @@ $PAGE->navbar->add( $TUT->getTitle(), $CFG->wwwroot . '/blocks/elbp/plugins/'.$T
 
 echo $OUTPUT->header();
 
-$FORM = new ELBP\ELBPForm();
+$FORM = new block_elbp\ELBPForm();
 $FORM->load( $TUT->getDefaultAttributes() );
 
 $hooks = $ELBP->getAllPossibleHooks();
@@ -100,7 +100,7 @@ $TPL->set("FORM", $FORM);
 try {
     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/Tutorials/tpl/config.html' );
     $TPL->display();
-} catch (\ELBP\ELBPException $e){
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
 }
 

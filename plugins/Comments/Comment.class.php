@@ -30,12 +30,12 @@
  *
  */
 
-namespace ELBP\Plugins\Comments;
+namespace block_elbp\Plugins\Comments;
 
 /**
  *
  */
-class Comment extends \ELBP\BasePluginObject {
+class Comment extends \block_elbp\BasePluginObject {
 
     private $id = false;
     private $studentID;
@@ -56,7 +56,7 @@ class Comment extends \ELBP\BasePluginObject {
 
     /**
      * Construct Comment object
-     * @global \ELBP\Plugins\Comments\type $DB
+     * @global \block_elbp\Plugins\Comments\type $DB
      * @param type $id
      */
     public function __construct($id) {
@@ -124,7 +124,7 @@ class Comment extends \ELBP\BasePluginObject {
 
     /**
      * Get the student
-     * @global \ELBP\Plugins\Comments\type $DB
+     * @global \block_elbp\Plugins\Comments\type $DB
      * @return type
      */
     public function getStudent(){
@@ -145,7 +145,7 @@ class Comment extends \ELBP\BasePluginObject {
 
     /**
      * Get the user who set the comment
-     * @global \ELBP\Plugins\Comments\type $DB
+     * @global \block_elbp\Plugins\Comments\type $DB
      * @return type
      */
     public function getSetByUser(){
@@ -287,7 +287,7 @@ class Comment extends \ELBP\BasePluginObject {
 
     /**
      * Load the attributes set for this comment
-     * @global \ELBP\Plugins\Comments\type $DB
+     * @global \block_elbp\Plugins\Comments\type $DB
      * @return type
      */
     public function loadAttributes(){
@@ -305,7 +305,7 @@ class Comment extends \ELBP\BasePluginObject {
     /**
      * Print the comment out to a simple HTML page
      * @global type $CFG
-     * @global \ELBP\Plugins\Comments\type $USER
+     * @global \block_elbp\Plugins\Comments\type $USER
      */
     public function printOut()
     {
@@ -315,7 +315,7 @@ class Comment extends \ELBP\BasePluginObject {
         ob_clean();
 
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . get_string('comment', 'block_elbp') . ' - ' . $this->getDate('d m Y');
-        $logo = \ELBP\ELBP::getPrintLogo();
+        $logo = \block_elbp\ELBP::getPrintLogo();
         $title = get_string('comment', 'block_elbp');
         $heading = fullname($this->getStudent()) . ' (' . $this->student->username . ')';
 
@@ -384,7 +384,7 @@ class Comment extends \ELBP\BasePluginObject {
 
 
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);
@@ -492,7 +492,7 @@ class Comment extends \ELBP\BasePluginObject {
 
     /**
      * Resolve the comment
-     * @global \ELBP\Plugins\Comments\type $DB
+     * @global \block_elbp\Plugins\Comments\type $DB
      * @param type $val
      * @return boolean
      */
@@ -844,15 +844,15 @@ class Comment extends \ELBP\BasePluginObject {
         unset($data['comment_published_portal']);
 
         // Attributes - FIrstly get all possible attributes and loop through them
-        $OBJ = new \ELBP\Plugins\Comments();
+        $OBJ = new \block_elbp\Plugins\Comments();
         $this->setSubmittedAttributes($data, $OBJ);
 
     }
 
     /**
      * Get the content for the triggered alert emails
-     * @global \ELBP\Plugins\Comments\type $CFG
-     * @global \ELBP\Plugins\Comments\type $USER
+     * @global \block_elbp\Plugins\Comments\type $CFG
+     * @global \block_elbp\Plugins\Comments\type $USER
      * @param type $useHtml
      * @param type $tmp
      * @return string

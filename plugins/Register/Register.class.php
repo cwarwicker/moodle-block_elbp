@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 /**
  *
@@ -56,7 +56,7 @@ class Register extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Register",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -76,7 +76,7 @@ class Register extends Plugin {
             if ($this->connection && $this->connection->connect()){
                 $core = $this->getMainMIS();
                 if ($core){
-                    $pluginConn = new \ELBP\MISConnection($core->id);
+                    $pluginConn = new \block_elbp\MISConnection($core->id);
                     if ($pluginConn->isValid()){
                         $this->useMIS = true;
                         $this->plugin_connection = $pluginConn;
@@ -318,7 +318,7 @@ class Register extends Plugin {
      */
     public function getDisplay($params = array()) {
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
 
         $this->connect();
 
@@ -334,7 +334,7 @@ class Register extends Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/expanded.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
 
@@ -346,7 +346,7 @@ class Register extends Plugin {
      */
     public function getSummaryBox(){
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
 
         $this->connect();
 
@@ -356,7 +356,7 @@ class Register extends Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
 
@@ -364,11 +364,11 @@ class Register extends Plugin {
 
     /**
      * Handle ajax requests sent to the plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $USER
      * @param type $action
      * @param type $params
-     * @param \ELBP\Plugins\type $ELBP
+     * @param \block_elbp\Plugins\type $ELBP
      * @return boolean
      */
     public function ajax($action, $params, $ELBP){
@@ -387,14 +387,14 @@ class Register extends Plugin {
                 $access = $ELBP->getUserPermissions($params['studentID']);
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this)
                     ->set("access", $access);
 
                 try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/'.$params['type'].'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;
@@ -406,7 +406,7 @@ class Register extends Plugin {
 
     /**
      * Get all the user's register events
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return \Anon|boolean
      */
     public function getAllUserRegisterEvents(){
@@ -473,7 +473,7 @@ class Register extends Plugin {
 
     /**
      * Get user's register events
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
     public function getUserRegisterEvents(){
@@ -505,7 +505,7 @@ class Register extends Plugin {
 
     /**
      * Get the value to put in the table cell of a register event
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $event
      * @param type $week
      * @return string|boolean
@@ -629,7 +629,7 @@ class Register extends Plugin {
 
     /**
      * Get all the value keys and their meanings
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return \stdClass
      */
     public function getAllValueInfo(){
@@ -660,7 +660,7 @@ class Register extends Plugin {
 
     /**
      * Save configuration
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $MSGS
      * @param type $settings
      * @return boolean
@@ -721,7 +721,7 @@ class Register extends Plugin {
             }
 
             // Set the mappings
-            $conn = new \ELBP\MISConnection($core->id);
+            $conn = new \block_elbp\MISConnection($core->id);
             if ($conn->isValid())
             {
 
@@ -756,7 +756,7 @@ class Register extends Plugin {
 
     /**
      * Run the csv data import
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $file
      * @param type $fromCron
      * @return type
@@ -1077,7 +1077,7 @@ class Register extends Plugin {
             return false;
         }
 
-        $conn = new \ELBP\MISConnection($core->id);
+        $conn = new \block_elbp\MISConnection($core->id);
         if (!$conn->isValid()){
             $MSGS['errors'][] = get_string('mis:connectioninvalid', 'block_elbp');
             return false;
@@ -1190,7 +1190,7 @@ class Register extends Plugin {
 
     /**
      * Get the register events from MIS
-     * @global \ELBP\Plugins\type $MSGS
+     * @global \block_elbp\Plugins\type $MSGS
      * @return \stdClass|boolean
      */
     private function getMisRegisterEvents()
@@ -1357,7 +1357,7 @@ class Register extends Plugin {
             $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . get_string('register', 'block_elbp');
             $title = get_string('register', 'block_elbp');
             $heading = fullname($this->getStudent()) . ' (' . $this->student->username . ')';
-            $logo = \ELBP\ELBP::getPrintLogo();
+            $logo = \block_elbp\ELBP::getPrintLogo();
 
             $start_date = $this->getStartDate();
             $end_date = $this->getEndDate();
@@ -1416,7 +1416,7 @@ class Register extends Plugin {
             $txt .= "<style type='text/css'>table#register{ font-size:12px;width:100%; } table#register th{background-color:#000;color:#fff;} table#register td{border:1px solid grey;} table#register td:empty{background-color:grey;} table#register th, table#register th{padding:2px;}</style>";
 
 
-            $TPL = new \ELBP\Template();
+            $TPL = new \block_elbp\Template();
             $TPL->set("logo", $logo);
             $TPL->set("pageTitle", $pageTitle);
             $TPL->set("title", $title);

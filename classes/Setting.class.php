@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 /**
  * 
@@ -101,7 +101,7 @@ class Setting
     
     /**
      * Set a setting
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $setting Setting name
      * @param null $value Value
      * @param type $userID (optional)
@@ -168,7 +168,7 @@ class Setting
     
     /**
      * Delete a setting completely
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $setting
      * @param null $value
      * @param type $userID

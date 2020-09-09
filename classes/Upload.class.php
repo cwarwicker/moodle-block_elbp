@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 /**
  *
@@ -58,7 +58,7 @@ class Upload {
     /**
      * Set the mime types we are allowing
      * @param type $mimes
-     * @return \ELBP\Upload
+     * @return \block_elbp\Upload
      */
     public function setMimeTypes($mimes){
         $this->mime_types = $mimes;
@@ -68,7 +68,7 @@ class Upload {
     /**
      * Set the directory we are uploading to
      * @param type $dir
-     * @return \ELBP\Upload
+     * @return \block_elbp\Upload
      */
     public function setUploadDir($dir){
         $this->upload_dir = $dir;
@@ -78,7 +78,7 @@ class Upload {
     /**
      * Set the max file size we are allowing
      * @param type $size
-     * @return \ELBP\Upload
+     * @return \block_elbp\Upload
      */
     public function setMaxSize($size){
         $this->max_size = $size;
@@ -105,7 +105,7 @@ class Upload {
     /**
      * Set the _FILES file into the object
      * @param type $file
-     * @return \ELBP\Upload
+     * @return \block_elbp\Upload
      */
     public function setFile($file){
         $this->file = $file;

@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 class DB
 {
@@ -132,8 +132,8 @@ class DB
      
         $params = array();
         
-        $excludeCourses = explode(",", \ELBP\Setting::getSetting('exclude_courses'));
-        $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
+        $excludeCourses = explode(",", \block_elbp\Setting::getSetting('exclude_courses'));
+        $includedCategories = explode(",", \block_elbp\Setting::getSetting('specific_course_cats'));
 
         $exclude = array();
         $categories = array();
@@ -245,8 +245,8 @@ class DB
         $params[] = $userID;
         $params[] = CONTEXT_COURSE;
         
-        $excludeCourses = explode(",", \ELBP\Setting::getSetting('exclude_courses'));
-        $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
+        $excludeCourses = explode(",", \block_elbp\Setting::getSetting('exclude_courses'));
+        $includedCategories = explode(",", \block_elbp\Setting::getSetting('specific_course_cats'));
 
         $exclude = array();
         $categories = array();
@@ -353,8 +353,8 @@ class DB
         $params = array();
         $sql = array();
         
-        $role = \ELBP\Setting::getSetting('elbp_asl');
-        if (!$role) $role = \ELBP\ASL::DEFAULT_ROLE;
+        $role = \block_elbp\Setting::getSetting('elbp_asl');
+        if (!$role) $role = \block_elbp\ASL::DEFAULT_ROLE;
         
         $sql['select'] = " SELECT COUNT(DISTINCT r.id) ";
         $sql['from']   = " FROM {role_assignments} r ";
@@ -384,8 +384,8 @@ class DB
         $params = array();
         $sql = array();
         
-        $role = \ELBP\Setting::getSetting('elbp_asl');
-        if (!$role) $role = \ELBP\ASL::DEFAULT_ROLE;
+        $role = \block_elbp\Setting::getSetting('elbp_asl');
+        if (!$role) $role = \block_elbp\ASL::DEFAULT_ROLE;
         
         $sql['select'] = " SELECT COUNT(DISTINCT r.id) ";
         $sql['from']   = " FROM {role_assignments} r ";
@@ -502,8 +502,8 @@ class DB
     public function getStudentsOnAsl($tutorID)
     {
         
-        $role = \ELBP\Setting::getSetting('elbp_asl');
-        if (!$role) $role = \ELBP\ASL::DEFAULT_ROLE;
+        $role = \block_elbp\Setting::getSetting('elbp_asl');
+        if (!$role) $role = \block_elbp\ASL::DEFAULT_ROLE;
         
         $params = array($tutorID, CONTEXT_USER, $this->getRole($role));
         $sql = array();
@@ -533,8 +533,8 @@ class DB
     public function getAllStudentsWithAdditionalSupport()
     {
         
-        $role = \ELBP\Setting::getSetting('elbp_asl');
-        if (!$role) $role = \ELBP\ASL::DEFAULT_ROLE;
+        $role = \block_elbp\Setting::getSetting('elbp_asl');
+        if (!$role) $role = \block_elbp\ASL::DEFAULT_ROLE;
         
         $params = array(CONTEXT_USER, $this->getRole($role));
         $sql = array();
@@ -599,8 +599,8 @@ class DB
     public function getAslOnStudent($studentID)
     {
         
-        $role = \ELBP\Setting::getSetting('elbp_asl');
-        if (!$role) $role = \ELBP\ASL::DEFAULT_ROLE;
+        $role = \block_elbp\Setting::getSetting('elbp_asl');
+        if (!$role) $role = \block_elbp\ASL::DEFAULT_ROLE;
         
         $params = array($studentID, CONTEXT_USER, $this->getRole($role));
         $sql = array();
@@ -629,7 +629,7 @@ class DB
     public function getTutorsOnStudent($studentID)
     {
         
-        $role = \ELBP\PersonalTutor::getPersonalTutorRole();
+        $role = \block_elbp\PersonalTutor::getPersonalTutorRole();
         $params = array($studentID, CONTEXT_USER, $this->getRole( $role ));
         $sql = array();
         
@@ -796,7 +796,7 @@ class DB
         
         $params[] = $tutorID;
         $params[] = CONTEXT_USER;
-        $params[] = $this->getRole( \ELBP\PersonalTutor::getPersonalTutorRole() );
+        $params[] = $this->getRole( \block_elbp\PersonalTutor::getPersonalTutorRole() );
         
        
         
@@ -855,7 +855,7 @@ class DB
     
     /**
      * For a given course category, get all the sub categories beneath it
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $catID
      * @return boolean
      */
@@ -911,7 +911,7 @@ class DB
 
     /**
      * 
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $courseID
      * @return type
      */
@@ -1138,7 +1138,7 @@ class DB
                 
         if (is_null($tutorID)) $tutorID = $USER->id;
         
-        $role = $this->getRole( \ELBP\PersonalTutor::getPersonalTutorRole() );
+        $role = $this->getRole( \block_elbp\PersonalTutor::getPersonalTutorRole() );
         
         $params = array($tutorID, CONTEXT_USER, $role, $menteeID);
         $sql = array();

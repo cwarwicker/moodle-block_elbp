@@ -24,7 +24,7 @@ if (!isset($_GET['studentID']) || !isset($_GET['courseID'])) exit;
 $studentID = $_GET['studentID'];
 $courseID = $_GET['courseID'];
 
-$ELBP = \ELBP\ELBP::instantiate();
+$ELBP = \block_elbp\ELBP::instantiate();
 
 $access = $ELBP->getUserPermissions($studentID);
 if (!$ELBP->anyPermissionsTrue($access));

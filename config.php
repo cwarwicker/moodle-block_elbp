@@ -37,11 +37,11 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 require_login();
 
 
-$ELBP = ELBP\ELBP::instantiate();
+$ELBP = block_elbp\ELBP::instantiate();
 $ELBP->loadStudent(null);
 $ELBP->loadCourse(null);
 
-$DBC = new ELBP\DB();
+$DBC = new block_elbp\DB();
 
 $view = optional_param('view', 'main', PARAM_ALPHA);
 $id = optional_param('id', false, PARAM_INT);
@@ -60,7 +60,7 @@ if ($view == 'course' && $id && !\has_capability('block/elbp:edit_course_setting
 }
 
 
-$TPL = new \ELBP\Template();
+$TPL = new \block_elbp\Template();
 $MSGS['errors'] = '';
 $MSGS['success'] = '';
 $FORMVALS = array();

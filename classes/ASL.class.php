@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 /**
  * 
@@ -52,7 +52,7 @@ class ASL {
     public function __construct() {
         global $DBC;
         $this->outputMsg = '';
-        $this->dbc = (!is_null($DBC)) ? $DBC : new \ELBP\DB();
+        $this->dbc = (!is_null($DBC)) ? $DBC : new \block_elbp\DB();
     }
     
     /**
@@ -207,7 +207,7 @@ class ASL {
         }
         
         // If we've defined a different role to use, use that, otherwise use the default
-        $role = \ELBP\Setting::getSetting('elbp_asl');
+        $role = \block_elbp\Setting::getSetting('elbp_asl');
         if (!$role) $role = self::DEFAULT_ROLE;
         
         $aslRole = $this->dbc->getRole($role);
@@ -251,7 +251,7 @@ class ASL {
             return false;
         }
         
-        $role = \ELBP\Setting::getSetting('elbp_asl');
+        $role = \block_elbp\Setting::getSetting('elbp_asl');
         if (!$role) $role = self::DEFAULT_ROLE;
         
         $aslRole = $this->dbc->getRole($role);
@@ -301,7 +301,7 @@ class ASL {
         }
         
         // Get defined role or default role
-        $role = \ELBP\Setting::getSetting('elbp_asl');
+        $role = \block_elbp\Setting::getSetting('elbp_asl');
         if (!$role) $role = self::DEFAULT_ROLE;
         
         $aslRole = $this->dbc->getRole($role);

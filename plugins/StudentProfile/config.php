@@ -36,8 +36,8 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 // Need to be logged in to view this page
 require_login();
 
-$ELBP = ELBP\ELBP::instantiate();
-$DBC = new ELBP\DB();
+$ELBP = block_elbp\ELBP::instantiate();
+$DBC = new block_elbp\DB();
 
 $view = optional_param('view', 'main', PARAM_ALPHA);
 
@@ -47,13 +47,13 @@ if (!$access['god']){
 }
 
 try {
-    $SP = \ELBP\Plugins\Plugin::instaniate("StudentProfile");
-} catch (\ELBP\ELBPException $e){
+    $SP = \block_elbp\Plugins\Plugin::instaniate("StudentProfile");
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
     exit;
 }
 
-$TPL = new \ELBP\Template();
+$TPL = new \block_elbp\Template();
 $MSGS['errors'] = '';
 $MSGS['success'] = '';
 
@@ -92,7 +92,7 @@ $TPL->set("MSGS", $MSGS);
 if ($view == 'mis'){
     $core = $SP->getMainMIS();
     if ($core){
-        $conn = new \ELBP\MISConnection($core->id);
+        $conn = new \block_elbp\MISConnection($core->id);
         $TPL->set("conn", $conn);
     }
 } elseif ($view == 'data'){
@@ -117,7 +117,7 @@ if ($view == 'mis'){
 try {
     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/StudentProfile/tpl/config.html' );
     $TPL->display();
-} catch (\ELBP\ELBPException $e){
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
 }
 

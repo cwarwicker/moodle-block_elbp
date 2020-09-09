@@ -45,8 +45,8 @@ $studentID = optional_param('student', null, PARAM_INT);
 $type = optional_param('type', null, PARAM_TEXT);
 $custom = optional_param('custom', false, PARAM_INT);
 
-$ELBP = ELBP\ELBP::instantiate();
-$DBC = new ELBP\DB();
+$ELBP = block_elbp\ELBP::instantiate();
+$DBC = new block_elbp\DB();
 
 $string = $ELBP->getString();
 

@@ -33,8 +33,8 @@
 require_once '../../../../config.php';
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
-$ELBP = ELBP\ELBP::instantiate();
-$DBC = new ELBP\DB();
+$ELBP = block_elbp\ELBP::instantiate();
+$DBC = new block_elbp\DB();
 
 $view = optional_param('view', 'main', PARAM_ALPHA);
 
@@ -47,13 +47,13 @@ if (!$access['god']){
 require_login();
 
 try {
-    $OBJ = \ELBP\Plugins\Plugin::instaniate("CourseReports");
-} catch (\ELBP\ELBPException $e){
+    $OBJ = \block_elbp\Plugins\Plugin::instaniate("CourseReports");
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
     exit;
 }
 
-$TPL = new \ELBP\Template();
+$TPL = new \block_elbp\Template();
 $MSGS['errors'] = '';
 $MSGS['success'] = '';
 
@@ -87,22 +87,22 @@ echo $OUTPUT->header();
 
 
 $TPL->set("OBJ", $OBJ);
-$TPL->set("FORM", new \ELBP\ELBPForm());
+$TPL->set("FORM", new \block_elbp\ELBPForm());
 $TPL->set("view", $view);
 $TPL->set("MSGS", $MSGS);
 $TPL->set("OUTPUT", $OUTPUT);
 
 // Settings for display
 $settings = array();
-$settings['course_types'] = \ELBP\Setting::getSetting('course_types', null, $OBJ->getID());
-$settings['course_name'] = \ELBP\Setting::getSetting('course_name', null, $OBJ->getID());
+$settings['course_types'] = \block_elbp\Setting::getSetting('course_types', null, $OBJ->getID());
+$settings['course_name'] = \block_elbp\Setting::getSetting('course_name', null, $OBJ->getID());
 
 $TPL->set("settings", $settings);
 
 try {
     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/'.$OBJ->getName().'/tpl/config.html' );
     $TPL->display();
-} catch (\ELBP\ELBPException $e){
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
 }
 

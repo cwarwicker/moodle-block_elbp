@@ -53,7 +53,7 @@ class clean_up extends \core\task\scheduled_task
         global $DB;
 
         // Clean up old alerts in the queue
-        $cleaned = \ELBP\Alert::gc();
+        $cleaned = \block_elbp\Alert::gc();
         mtrace("Deleted {$cleaned} old queued alerts from lbp_alert_queue");
 
         // TODO: Clean-up old Attendance data we don't need any more.

@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 /**
  *

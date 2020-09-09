@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP\Plugins\Attachments;
+namespace block_elbp\Plugins\Attachments;
 
 /**
  * 
@@ -143,7 +143,7 @@ class Attachment {
     
     /**
      * Get the user who uploaded the attachment
-     * @global \ELBP\Plugins\Attachments\type $DB
+     * @global \block_elbp\Plugins\Attachments\type $DB
      * @return type
      */
     public function getUploadedBy(){
@@ -161,7 +161,7 @@ class Attachment {
     
     /**
      * Count the attachments on this attachment
-     * @global \ELBP\Plugins\Attachments\type $DB
+     * @global \block_elbp\Plugins\Attachments\type $DB
      * @return type
      */
     public function countComments(){
@@ -171,8 +171,8 @@ class Attachment {
     
     /**
      * Delete the attachment from the DB and delete the actual file
-     * @global \ELBP\Plugins\Attachments\type $CFG
-     * @global \ELBP\Plugins\Attachments\type $DB
+     * @global \block_elbp\Plugins\Attachments\type $CFG
+     * @global \block_elbp\Plugins\Attachments\type $DB
      * @return boolean
      */
     public function delete(){
@@ -218,7 +218,7 @@ class Attachment {
     
     /**
      * Load any comments on this attachment
-     * @global \ELBP\Plugins\Attachments\type $DB
+     * @global \block_elbp\Plugins\Attachments\type $DB
      * @return type
      */
     public function loadComments(){
@@ -407,7 +407,7 @@ class Attachment {
     
     /**
      * Delete a given comment from the attachment
-     * @global \ELBP\Plugins\Attachments\type $DB
+     * @global \block_elbp\Plugins\Attachments\type $DB
      * @param type $commentID
      * @return int|boolean
      */

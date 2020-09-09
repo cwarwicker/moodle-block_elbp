@@ -998,13 +998,13 @@ function elbp_switch_user_bar()
 
         if ($cID == 'mentees')
         {
-            $DBC = new ELBP\DB();
+            $DBC = new block_elbp\DB();
             $students = $DBC->getMenteesOnTutor($USER->id);
             $style = '';
         }
         elseif (ctype_digit($cID) && in_array($cID, $courseIDs))
         {
-            $DBC = new ELBP\DB();
+            $DBC = new block_elbp\DB();
             $students = $DBC->getStudentsOnCourse($cID);
             $style = '';
         }
@@ -1062,7 +1062,7 @@ function elbp_display_attribute_creation_js($obj)
 
     global $CFG, $OUTPUT;
 
-    $FORM = new ELBP\ELBPForm();
+    $FORM = new block_elbp\ELBPForm();
     $FORM->load( $obj->getDefaultAttributes() );
     $elements = $FORM->getElements();
 
@@ -1889,7 +1889,7 @@ function elbp_display_attribute_creation_form($obj)
 
     global $CFG, $OUTPUT;
 
-    $FORM = new \ELBP\ELBPForm();
+    $FORM = new \block_elbp\ELBPForm();
     $FORM->load( $obj->getDefaultAttributes() );
 
     $types = $FORM->getSupportedTypes();
@@ -2095,14 +2095,14 @@ function elbp_display_attribute_creation_form($obj)
 
 }
 
-function elbp_get_attribute_edit_form( \ELBP\ELBPFormElement $element )
+function elbp_get_attribute_edit_form( \block_elbp\ELBPFormElement $element )
 {
 
     global $CFG;
 
     $output = "";
 
-    $FORM = new \ELBP\ELBPForm();
+    $FORM = new \block_elbp\ELBPForm();
     $types = $FORM->getSupportedTypes();
     $validation = $FORM->getSupportValidationTypes();
 
@@ -2324,7 +2324,7 @@ function elbp_save_attribute_script($obj)
 
     if(isset($_POST['submit_attributes'])){
 
-        $form = new \ELBP\ELBPForm();
+        $form = new \block_elbp\ELBPForm();
 
         $elementNames = (isset($_POST['elementNames'])) ? $_POST['elementNames'] : array();
         $elementTypes = (isset($_POST['elementTypes'])) ? $_POST['elementTypes'] : array();
@@ -2348,7 +2348,7 @@ function elbp_save_attribute_script($obj)
             foreach($keys as $i)
             {
 
-                $element = new \ELBP\ELBPFormElement();
+                $element = new \block_elbp\ELBPFormElement();
 
                 // Reset variables
                 $options = false;
@@ -2494,7 +2494,7 @@ function elbp_event_trigger($event, $pluginID, $studentID, $content, $htmlConten
 {
 
     // Trigger email alerts
-    $obj = new \ELBP\EmailAlert();
+    $obj = new \block_elbp\EmailAlert();
     $obj->run($event, $pluginID, $studentID, $content, $htmlContent, $confidentialityLevel);
 
     // Trigger SMS alerts
@@ -2518,10 +2518,10 @@ function elbp_event_trigger_student($event, $pluginID, $studentID, $content, $ht
     // Trigger email alerts
 
     // Check if this plugin has disabled student alerts
-    $setting = (int)\ELBP\Setting::getSetting('plugin_stud_alerts_enabled', null, $pluginID);
+    $setting = (int)\block_elbp\Setting::getSetting('plugin_stud_alerts_enabled', null, $pluginID);
     if ($setting !== 0)
     {
-        $obj = new \ELBP\EmailAlert();
+        $obj = new \block_elbp\EmailAlert();
         $obj->runStudent($event, $pluginID, $studentID, $content, $htmlContent);
     }
 
@@ -2542,7 +2542,7 @@ function event_course_user_enrolled($data)
 
     global $DB;
 
-    $ELBPDB = new \ELBP\DB();
+    $ELBPDB = new \block_elbp\DB();
 
     // Get context & role assignment
     $context = $DB->get_record("context", array("contextlevel" => CONTEXT_COURSE, "instanceid" => $data->courseid));
@@ -2561,7 +2561,7 @@ function event_course_user_enrolled($data)
         foreach($assigned as $record)
         {
 
-            $PT = new \ELBP\PersonalTutor();
+            $PT = new \block_elbp\PersonalTutor();
             $PT->loadTutorID($record->tutorid);
             $PT->assignMentee($data->userid);
 
@@ -2596,7 +2596,7 @@ function event_group_user_added($data){
         foreach($assigned as $record)
         {
 
-            $PT = new \ELBP\PersonalTutor();
+            $PT = new \block_elbp\PersonalTutor();
             $PT->loadTutorID($record->tutorid);
             $PT->assignMentee($data->userid);
 
@@ -2625,7 +2625,7 @@ function event_group_user_removed($data){
         foreach($assigned as $record)
         {
 
-            $PT = new \ELBP\PersonalTutor();
+            $PT = new \block_elbp\PersonalTutor();
             $PT->loadTutorID($record->tutorid);
             $PT->removeMentee($data->userid);
 

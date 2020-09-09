@@ -35,8 +35,8 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
 require_login();
 
-$ELBP = ELBP\ELBP::instantiate( array("load_plugins" => true) ); # False because profile is done manually and others are done by ajax
-$DBC = new ELBP\DB();
+$ELBP = block_elbp\ELBP::instantiate( array("load_plugins" => true) ); # False because profile is done manually and others are done by ajax
+$DBC = new block_elbp\DB();
 
 $userID = optional_param('id', false, PARAM_INT);
 $courseID = optional_param('courseid', SITEID, PARAM_INT);
@@ -66,7 +66,7 @@ if (!$ELBP->anyPermissionsTrue($access)){
 }
 
 // Get plugin groups
-$layout = \ELBP\PluginLayout::getUsersLayout($userID, $courseID);
+$layout = \block_elbp\PluginLayout::getUsersLayout($userID, $courseID);
 $groups = array();
 $group = false;
 if ($layout){
@@ -144,7 +144,7 @@ if ( $access['user'] == 0 || ($access['user'] == 1 && elbp_has_capability('block
 
 
 // If not plugins are installed, display that message and don't auto install the student profile one
-if (!\ELBP\Plugins\Plugin::anyPluginsAvailable()){
+if (!\block_elbp\Plugins\Plugin::anyPluginsAvailable()){
     echo "<p class='elbp_centre'>".get_string('noplugins', 'block_elbp')."</p>";
     echo $OUTPUT->footer();
     exit;
@@ -155,7 +155,7 @@ $html .= $ELBP->getStudentProgressBar();
 
 // Student Profile - This is always at the top, not in any group so we can do this one manually
 try {
-    $plugin = ELBP\Plugins\Plugin::instaniate("StudentProfile");
+    $plugin = block_elbp\Plugins\Plugin::instaniate("StudentProfile");
     
     if ($plugin->isEnabled())
     {
@@ -176,14 +176,14 @@ try {
 }
 
 
-$TPL = new ELBP\Template();
+$TPL = new block_elbp\Template();
 
 $TPL->set("layout", $layout);
 $TPL->set("groups", $groups);
 
 try {
     $html .= $TPL->load($CFG->dirroot . '/blocks/elbp/tpl/view.html');
-} catch (\ELBP\ELBPException $e){
+} catch (\block_elbp\ELBPException $e){
     $html .= $e->getException();
 }
 
@@ -193,13 +193,13 @@ echo $html;
 
 
 // I'm not sure how to inject HTML after all the Moodle code but before the </body> so this is the best I can do atm
-$TPL = new ELBP\Template();
+$TPL = new block_elbp\Template();
 try {
     $TPL->set("access", $ELBP->getAccess());
     $TPL->set("ELBP", $ELBP);
     $TPL->load($CFG->dirroot . '/blocks/elbp/tpl/footer.html');
     $TPL->display();
-} catch (\ELBP\ELBPException $e){
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
 }
 

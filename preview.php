@@ -38,8 +38,8 @@ $t = optional_param('t', get_string('blockconfig:plugintitle', 'block_elbp'), PA
 $attributes = unserialize(urldecode($s));
 $t = urldecode($t);
 
-$ELBP = \ELBP\ELBP::instantiate( array("load_plugins" => false) );
-$FORM = new \ELBP\ELBPForm();
+$ELBP = \block_elbp\ELBP::instantiate( array("load_plugins" => false) );
+$FORM = new \block_elbp\ELBPForm();
 $FORM->loadStudentID($USER->id); # As an example, load ourselves as the student
 
 $PAGE->set_context( context_course::instance(SITEID) );

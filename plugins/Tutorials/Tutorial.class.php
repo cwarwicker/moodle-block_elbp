@@ -30,12 +30,12 @@
  *
  */
 
-namespace ELBP\Plugins\Tutorials;
+namespace block_elbp\Plugins\Tutorials;
 
 /**
  *
  */
-class Tutorial extends \ELBP\BasePluginObject {
+class Tutorial extends \block_elbp\BasePluginObject {
 
     private $id = false;
     private $studentID;
@@ -62,7 +62,7 @@ class Tutorial extends \ELBP\BasePluginObject {
     /**
      * Construct tutorial object
      * @global type $CFG
-     * @global \ELBP\Plugins\Tutorials\type $DB
+     * @global \block_elbp\Plugins\Tutorials\type $DB
      * @param type $param
      * @param type $TutorialsObj
      */
@@ -149,7 +149,7 @@ class Tutorial extends \ELBP\BasePluginObject {
 
     /**
      * Get the student record
-     * @global \ELBP\Plugins\Tutorials\type $DB
+     * @global \block_elbp\Plugins\Tutorials\type $DB
      * @return type
      */
     public function getStudent(){
@@ -162,7 +162,7 @@ class Tutorial extends \ELBP\BasePluginObject {
 
     /**
      * Get the course record if this is linked to a course
-     * @global \ELBP\Plugins\Tutorials\type $DB
+     * @global \block_elbp\Plugins\Tutorials\type $DB
      * @return type
      */
     public function getCourse(){
@@ -248,8 +248,8 @@ class Tutorial extends \ELBP\BasePluginObject {
 
     /**
      * Get all the targets linked to this tutorial
-     * @global \ELBP\Plugins\Tutorials\type $DB
-     * @return \ELBP\Plugins\Targets\Target
+     * @global \block_elbp\Plugins\Tutorials\type $DB
+     * @return \block_elbp\Plugins\Targets\Target
      */
     public function getAllTargets(){
 
@@ -269,7 +269,7 @@ class Tutorial extends \ELBP\BasePluginObject {
             {
                 foreach($check as $record)
                 {
-                    $target = new \ELBP\Plugins\Targets\Target($record->value);
+                    $target = new \block_elbp\Plugins\Targets\Target($record->value);
                     if ($target->isValid()){
                         $results[$target->getID()] = $target;
                     }
@@ -322,7 +322,7 @@ class Tutorial extends \ELBP\BasePluginObject {
 
     /**
      * Load the tutorial's attributes
-     * @global \ELBP\Plugins\Tutorials\type $DB
+     * @global \block_elbp\Plugins\Tutorials\type $DB
      * @return type
      */
     public function loadAttributes(){
@@ -394,7 +394,7 @@ class Tutorial extends \ELBP\BasePluginObject {
     /**
      * Save the tutorial
      * @global type $USER
-     * @global \ELBP\Plugins\Tutorials\type $DB
+     * @global \block_elbp\Plugins\Tutorials\type $DB
      * @return boolean
      */
     public function save()
@@ -713,7 +713,7 @@ class Tutorial extends \ELBP\BasePluginObject {
 
         global $ELBP, $DB;
 
-        $ELBPDB = new \ELBP\DB();
+        $ELBPDB = new \block_elbp\DB();
 
         $tutorials = $this->Tutorials;
 
@@ -808,7 +808,7 @@ class Tutorial extends \ELBP\BasePluginObject {
 
         if ($tutorials->hasHookEnabled("Attendance/Course")){
 
-            $ELBPDB = new \ELBP\DB();
+            $ELBPDB = new \block_elbp\DB();
             $ATT = $ELBP->getPlugin("Attendance");
 
             if ($ATT){
@@ -888,7 +888,7 @@ class Tutorial extends \ELBP\BasePluginObject {
                 {
                     foreach($check as $target)
                     {
-                        $obj = new \ELBP\Plugins\Targets\Target($target->value);
+                        $obj = new \block_elbp\Plugins\Targets\Target($target->value);
                         if ($obj->isValid())
                         {
                             $oldTargets[] = $obj;
@@ -950,7 +950,7 @@ class Tutorial extends \ELBP\BasePluginObject {
         if ($tutorials->hasHookEnabled("Targets/Targets") && $ELBP->getPlugin("Targets"))
         {
 
-            $targetsObj = \ELBP\Plugins\Plugin::instaniate("Targets");
+            $targetsObj = \block_elbp\Plugins\Plugin::instaniate("Targets");
 
             $targetList = array();
 
@@ -963,7 +963,7 @@ class Tutorial extends \ELBP\BasePluginObject {
                     foreach($this->attributes['Targets'] as $targetID)
                     {
 
-                        $obj = new \ELBP\Plugins\Targets\Target($targetID);
+                        $obj = new \block_elbp\Plugins\Targets\Target($targetID);
                         if ($obj->isValid())
                         {
                             $targetList[] = $obj;
@@ -1121,8 +1121,8 @@ class Tutorial extends \ELBP\BasePluginObject {
 
     /**
      * Get content for event triggered alert emails
-     * @global \ELBP\Plugins\Tutorials\type $CFG
-     * @global \ELBP\Plugins\Tutorials\type $USER
+     * @global \block_elbp\Plugins\Tutorials\type $CFG
+     * @global \block_elbp\Plugins\Tutorials\type $USER
      * @param type $useHtml
      * @param type $tmp
      * @return string
@@ -1167,7 +1167,7 @@ class Tutorial extends \ELBP\BasePluginObject {
                             if (!is_array($targetList)) $targetList = array($targetList);
                             foreach($targetList as $targetListed)
                             {
-                                $oldTargetObj = new \ELBP\Plugins\Targets\Target($targetListed);
+                                $oldTargetObj = new \block_elbp\Plugins\Targets\Target($targetListed);
                                 if ($oldTargetObj->isValid())
                                 {
                                     $oldTargets .= $oldTargetObj->getName() . ", ";
@@ -1234,7 +1234,7 @@ class Tutorial extends \ELBP\BasePluginObject {
                         $targetOutput = '';
                         foreach($value as $targetID)
                         {
-                            $targetObj = new \ELBP\Plugins\Targets\Target($targetID);
+                            $targetObj = new \block_elbp\Plugins\Targets\Target($targetID);
                             if ($targetObj->isValid())
                             {
                                 $targetOutput .= $targetObj->getName() . ", ";
@@ -1277,7 +1277,7 @@ class Tutorial extends \ELBP\BasePluginObject {
         ob_clean();
 
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . get_string('tutorial', 'block_elbp') . ' - ' . $this->getTutorialDate('D jS M Y');
-        $logo = \ELBP\ELBP::getPrintLogo();
+        $logo = \block_elbp\ELBP::getPrintLogo();
         $title = get_string('tutorial', 'block_elbp');
         $heading = fullname($this->getStudent()) . ' (' . $this->student->username . ')';
 
@@ -1438,7 +1438,7 @@ class Tutorial extends \ELBP\BasePluginObject {
         if ($this->Tutorials->hasHookEnabled("Targets/Targets"))
         {
 
-            $targetsObj = \ELBP\Plugins\Plugin::instaniate("Targets");
+            $targetsObj = \block_elbp\Plugins\Plugin::instaniate("Targets");
             $targetAttributes = $targetsObj->getAttributesForDisplay();
 
             $targetList = array();
@@ -1452,7 +1452,7 @@ class Tutorial extends \ELBP\BasePluginObject {
                     foreach($this->attributes['Targets'] as $targetID)
                     {
 
-                        $obj = new \ELBP\Plugins\Targets\Target($targetID);
+                        $obj = new \block_elbp\Plugins\Targets\Target($targetID);
                         if ($obj->isValid())
                         {
                             $targetList[] = $obj;
@@ -1524,7 +1524,7 @@ class Tutorial extends \ELBP\BasePluginObject {
 
 
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);

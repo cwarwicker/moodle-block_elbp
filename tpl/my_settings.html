@@ -9,7 +9,7 @@
     <select name='plugins_layout'>
         <?php if ($layouts): ?>
             <?php foreach($layouts as $layout): ?>
-            <option value="<?= $layout->getID() ?>" <?= (($userLayout = \ELBP\PluginLayout::getUsersLayout($studentID)) && $userLayout->getID() == $layout->getID()) ? 'selected' : '' ?> ><?= $layout->getName() ?></option>
+            <option value="<?= $layout->getID() ?>" <?= (($userLayout = \block_elbp\PluginLayout::getUsersLayout($studentID)) && $userLayout->getID() == $layout->getID()) ? 'selected' : '' ?> ><?= $layout->getName() ?></option>
             <?php endforeach; ?>
         <?php endif; ?>
     </select>

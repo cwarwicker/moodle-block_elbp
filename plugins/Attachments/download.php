@@ -38,9 +38,9 @@ require_login();
 
 $id = required_param('id', PARAM_INT);
 
-$ELBP = ELBP\ELBP::instantiate();
+$ELBP = block_elbp\ELBP::instantiate();
 
-$attachment = new \ELBP\Plugins\Attachments\Attachment($id);
+$attachment = new \block_elbp\Plugins\Attachments\Attachment($id);
 if (!$attachment->isValid() || $attachment->isDeleted()){
     print_error( get_string('invalidrecord', 'block_elbp') );
 }

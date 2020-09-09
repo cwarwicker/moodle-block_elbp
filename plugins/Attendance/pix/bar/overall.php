@@ -26,7 +26,7 @@ require_once PCHART_PATH.'class/pData.class.php';
 if (!isset($_GET['studentID'])) exit;
 $studentID = $_GET['studentID'];
 
-$ELBP = \ELBP\ELBP::instantiate();
+$ELBP = \block_elbp\ELBP::instantiate();
 
 $access = $ELBP->getUserPermissions($studentID);
 if (!$ELBP->anyPermissionsTrue($access));

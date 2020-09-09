@@ -45,7 +45,7 @@ class block_elbp_observer {
         if ($data->contextlevel == CONTEXT_COURSE){
             global $DB;
     
-            $ELBPDB = new \ELBP\DB();
+            $ELBPDB = new \block_elbp\DB();
 
             // Get context & role assignment
             $context = $DB->get_record("context", array("contextlevel" => CONTEXT_COURSE, "instanceid" => $data->courseid));
@@ -64,7 +64,7 @@ class block_elbp_observer {
                 foreach($assigned as $record)
                 {
 
-                    $PT = new \ELBP\PersonalTutor();
+                    $PT = new \block_elbp\PersonalTutor();
                     $PT->loadTutorID($record->tutorid);
                     $PT->assignMentee($data->relateduserid);
 
@@ -100,7 +100,7 @@ class block_elbp_observer {
                 foreach($assigned as $record)
                 {
 
-                    $PT = new \ELBP\PersonalTutor();
+                    $PT = new \block_elbp\PersonalTutor();
                     $PT->loadTutorID($record->tutorid);
                     $PT->assignMentee($data->userid);
 
@@ -125,7 +125,7 @@ class block_elbp_observer {
                 foreach($assigned as $record)
                 {
 
-                    $PT = new \ELBP\PersonalTutor();
+                    $PT = new \block_elbp\PersonalTutor();
                     $PT->loadTutorID($record->tutorid);
                     $PT->removeMentee($data->userid);
 

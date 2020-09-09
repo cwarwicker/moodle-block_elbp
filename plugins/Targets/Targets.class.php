@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 require_once $CFG->dirroot . '/blocks/elbp/plugins/Targets/Target.class.php';
 require_once $CFG->dirroot . '/blocks/elbp/plugins/Targets/TargetSets.class.php';
@@ -59,7 +59,7 @@ class Targets extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Targets",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -128,7 +128,7 @@ class Targets extends Plugin {
 
     /**
      * Truncate related tables and uninstall plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      */
     public function uninstall() {
 
@@ -178,13 +178,13 @@ class Targets extends Plugin {
 
         $output = "";
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("obj", $this);
         $TPL->set("access", $this->access);
 
         try {
             $output .= $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/Targets/tpl/expanded.html');
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             $output .= $e->getException();
         }
 
@@ -199,7 +199,7 @@ class Targets extends Plugin {
      */
     public function getSummaryBox(){
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
 
 
 
@@ -210,7 +210,7 @@ class Targets extends Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/Targets/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
 
@@ -219,11 +219,11 @@ class Targets extends Plugin {
     /**
      * Handle ajax requests sent to the plugin
      * @global type $CFG
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $USER
      * @param type $action
      * @param null $params
-     * @param \ELBP\Plugins\type $ELBP
+     * @param \block_elbp\Plugins\type $ELBP
      * @return boolean
      */
     public function ajax($action, $params, $ELBP){
@@ -255,10 +255,10 @@ class Targets extends Plugin {
                     $filtering = $this->getTargetFiltering();
                 }
 
-                $FORM = new \ELBP\ELBPForm();
+                $FORM = new \block_elbp\ELBPForm();
                 $FORM->loadStudentID($this->student->id);
 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this);
                 $TPL->set("targets", $targets);
                 $TPL->set("FORM", $FORM);
@@ -319,7 +319,7 @@ class Targets extends Plugin {
 //                    $TPL->set("targetobject", $targetobject);
                     $TPL->set("targets", $targets);
 
-                    $TPL->set("data", \ELBP\Plugins\Targets\Target::getDataForNewTargetForm($targetID, $this));
+                    $TPL->set("data", \block_elbp\Plugins\Targets\Target::getDataForNewTargetForm($targetID, $this));
 
                     if (isset($params['loadedFrom'])) $TPL->set("loadedFrom", $params['loadedFrom']);
                     if (isset($params['putInto'])) $TPL->set("putInto", $params['putInto']);
@@ -330,7 +330,7 @@ class Targets extends Plugin {
                 try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/Targets/tpl/'.$page.'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;
@@ -346,7 +346,7 @@ class Targets extends Plugin {
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                 if (!elbp_has_capability('block/elbp:add_target', $access)) return false;
 
-                $target = new \ELBP\Plugins\Targets\Target($params, $this);
+                $target = new \block_elbp\Plugins\Targets\Target($params, $this);
 
                 // If the target exists, check to make sure the student ID on it is the same as the one we specified
                 if ($target->getID() > 0 && $target->getStudentID() <> $params['studentID']) return false;
@@ -418,7 +418,7 @@ class Targets extends Plugin {
                             echo "ELBP.Targets.tmp_deadline = '".$target->getDueDate('d-m-Y')."';";
                             echo "if( $('#new_added_target_id_{$target->getID()}').length == 0 ){  $('#{$params['putInto']}').append('{$info}');  }";
 
-                            $autoSave = \ELBP\Setting::getSetting('addsup_autosave', $USER->id);
+                            $autoSave = \block_elbp\Setting::getSetting('addsup_autosave', $USER->id);
                             if ($autoSave == 1){
                                 echo "if (ELBP.{$params['loadedFrom']}.auto_save !== undefined) { ELBP.{$params['loadedFrom']}.auto_save(); }";
                             }
@@ -428,7 +428,7 @@ class Targets extends Plugin {
                         {
                             $info = "<tr class=\'added_target_row\' id=\'new_added_target_id_{$target->getID()}\'><td>{$target->getSetDate()}</td><td><a href=\'#\' onclick=\'ELBP.{$params['loadedFrom']}.edit_target({$target->getID()}, \"{$loadedFromTitle}\");return false;\'>".elbp_html($target->getName())."</a></td><td>{$target->getStatusName()}</td><td>{$target->getDueDate()}</td><td><a href=\'#\' onclick=\'ELBP.{$params['loadedFrom']}.remove_target({$target->getID()});return false;\' title=\'".get_string('remove', 'block_elbp')."\'><img src=\'".$CFG->wwwroot."/blocks/elbp/pix/remove.png\' alt=\'".get_string('remove', 'block_elbp')."\' /></a><input type=\'hidden\' name=\'Targets\' value=\'{$target->getID()}\' /></td></tr>";
                             echo "$('#{$params['putInto']}').append('{$info}');";
-                            $autoSave = \ELBP\Setting::getSetting('tutorial_autosave', $USER->id);
+                            $autoSave = \block_elbp\Setting::getSetting('tutorial_autosave', $USER->id);
                             if ($autoSave == 1){
                                 echo "if (ELBP.{$params['loadedFrom']}.auto_save !== undefined) { ELBP.{$params['loadedFrom']}.auto_save(); }";
                             }
@@ -464,7 +464,7 @@ class Targets extends Plugin {
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                 if (!elbp_has_capability('block/elbp:delete_target', $access)) return false;
 
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID'], $this);
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID'], $this);
                 if (!$target->isValid()) return false;
 
                 // check to make sure the student ID on it is the same as the one we specified
@@ -491,7 +491,7 @@ class Targets extends Plugin {
 
                 if (elbp_is_empty($params['comment'])) return false;
 
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID'], $this);
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID'], $this);
                 if (!$target->isValid()) return false;
 
                 // We have the permission to do this?
@@ -537,7 +537,7 @@ class Targets extends Plugin {
 
                 if (!$params || !isset($params['targetID']) || !isset($params['commentID'])) return false;
 
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID'], $this);
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID'], $this);
                 if (!$target->isValid()) return false;
 
                 // We have the permission to do this?
@@ -573,7 +573,7 @@ class Targets extends Plugin {
 
                 if (!$params || !isset($params['targetID']) || !isset($params['statusID'])) return false;
 
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID'], $this);
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID'], $this);
                 if (!$target->isValid()) return false;
 
                 // We have the permission to do this?
@@ -653,10 +653,10 @@ class Targets extends Plugin {
 
                 if (!$users) exit;
 
-                $target = new \ELBP\Plugins\Targets\Target($targetID);
+                $target = new \block_elbp\Plugins\Targets\Target($targetID);
                 if (!$target->isValid()) exit;
 
-                $obj = new \ELBP\EmailAlert();
+                $obj = new \block_elbp\EmailAlert();
                 $subject = get_string('target', 'block_elbp');
                 $content = $target->getInfoForEventTrigger(false);
                 $htmlContent = nl2br($content);
@@ -774,7 +774,7 @@ class Targets extends Plugin {
 
             $id = $_POST['id'];
 
-            $newtargets = new \ELBP\Plugins\Targets\TargetSets($id);
+            $newtargets = new \block_elbp\Plugins\Targets\TargetSets($id);
             $newtargets->setUserID($USER->id);
             $newtargets->setName($_POST['target_name']);
             $newtargets->setDeleted(0);
@@ -789,7 +789,7 @@ class Targets extends Plugin {
 //            }
 
             $setid = $newtargets->Save();
-            $data = \ELBP\Plugins\Targets\Target::getDataForNewTargetForm();
+            $data = \block_elbp\Plugins\Targets\Target::getDataForNewTargetForm();
             $clearattributes = $newtargets->ClearAttributes($id);
 
             foreach ($data['atts'] as $atts)
@@ -799,7 +799,7 @@ class Targets extends Plugin {
 
                 if ($atts)
                 {
-                    $newattribute = new \ELBP\Plugins\Targets\TargetSets();
+                    $newattribute = new \block_elbp\Plugins\Targets\TargetSets();
                     $newattribute->setTargetsetid($setid);
                     $newattribute->setField($names);
                     $newattribute->setValue($_POST[$n]);
@@ -814,7 +814,7 @@ class Targets extends Plugin {
         {
             $id = $_POST['delete_id'];
 
-            $deletetarget = new \ELBP\Plugins\Targets\TargetSets($id);
+            $deletetarget = new \block_elbp\Plugins\Targets\TargetSets($id);
             $deletetarget->setDeleted(1);
             $deletetarget->Save();
 
@@ -1026,7 +1026,7 @@ class Targets extends Plugin {
      * Get the student's targets
      * @param type $statusID If set, only targets with this status
      * @param type $courseID If set, only targets linked to this course
-     * @return boolean|\ELBP\Plugins\Targets\Target
+     * @return boolean|\block_elbp\Plugins\Targets\Target
      */
     public function getUserTargets($statusID = null, $courseID = null){
 
@@ -1193,7 +1193,7 @@ class Targets extends Plugin {
         if (!$this->isEnabled()) return false;
 
         if (!isset($params['table']) || !isset($params['where'])){
-            throw new \ELBP\ELBPException( $this->title, get_string('retrievehookinvalidparams', 'block_elbp'), "table,where" );
+            throw new \block_elbp\ELBPException( $this->title, get_string('retrievehookinvalidparams', 'block_elbp'), "table,where" );
             return false;
         }
 
@@ -1214,7 +1214,7 @@ class Targets extends Plugin {
         if (!$this->isEnabled()) return false;
 
         if (!isset($params['table']) || !isset($params['where']) || !isset($params['value'])){
-            throw new \ELBP\ELBPException( $this->title, get_string('retrievehookinvalidparams', 'block_elbp'), "table,where,value" );
+            throw new \block_elbp\ELBPException( $this->title, get_string('retrievehookinvalidparams', 'block_elbp'), "table,where,value" );
             return false;
         }
 
@@ -1260,7 +1260,7 @@ class Targets extends Plugin {
         {
             foreach($list as $target)
             {
-                $targetObj = new \ELBP\Plugins\Targets\Target($target->$params['value']);
+                $targetObj = new \block_elbp\Plugins\Targets\Target($target->$params['value']);
                 if ($targetObj->isAchieved()){
                     $cnt++;
                 }
@@ -1284,7 +1284,7 @@ class Targets extends Plugin {
         if (!$this->isEnabled()) return false;
 
         if (!isset($params['table']) || !isset($params['where']) || !isset($params['value'])){
-            throw new \ELBP\ELBPException( $this->title, get_string('retrievehookinvalidparams', 'block_elbp'), "table,where,value" );
+            throw new \block_elbp\ELBPException( $this->title, get_string('retrievehookinvalidparams', 'block_elbp'), "table,where,value" );
             return false;
         }
 
@@ -1342,7 +1342,7 @@ class Targets extends Plugin {
         {
             foreach($list as $target)
             {
-                $targetObj = new \ELBP\Plugins\Targets\Target($target->$params['value']);
+                $targetObj = new \block_elbp\Plugins\Targets\Target($target->$params['value']);
                 if (!$targetObj->isAchieved()){
                     $cnt++;
                 }
@@ -1361,7 +1361,7 @@ class Targets extends Plugin {
      * @global type $DB
      * @param array $params
      * @return boolean|string
-     * @throws \ELBP\ELBPException
+     * @throws \block_elbp\ELBPException
      */
     public function _retrieveHook_List($params)
     {
@@ -1371,7 +1371,7 @@ class Targets extends Plugin {
         if (!$this->isEnabled()) return false;
 
         if (!isset($params['table']) || !isset($params['where']) || !isset($params['value'])){
-            throw new \ELBP\ELBPException( $this->title, get_string('retrievehookinvalidparams', 'block_elbp'), "table,where,value" );
+            throw new \block_elbp\ELBPException( $this->title, get_string('retrievehookinvalidparams', 'block_elbp'), "table,where,value" );
             return false;
         }
 
@@ -1422,7 +1422,7 @@ class Targets extends Plugin {
             foreach($records as $record)
             {
 
-                $target = new \ELBP\Plugins\Targets\Target($record->$params['value']);
+                $target = new \block_elbp\Plugins\Targets\Target($record->$params['value']);
                 if ($target->isValid())
                 {
 
@@ -1452,9 +1452,9 @@ class Targets extends Plugin {
         global $DB;
 
         $cnt = 0;
-        $EmailAlert = new \ELBP\EmailAlert();
+        $EmailAlert = new \block_elbp\EmailAlert();
 
-        $ELBPDB = new \ELBP\DB();
+        $ELBPDB = new \block_elbp\DB();
 
         // Firstly find the users who have this event enabled for alerts
         $userEvents = $DB->get_records_sql("SELECT a.*, e.name
@@ -1540,7 +1540,7 @@ class Targets extends Plugin {
                                     );
 
                                     // If this returns true that means we have sent this exact alert within the last week, so skip
-                                    $checkHistory = \ELBP\Alert::checkHistory( $params );
+                                    $checkHistory = \block_elbp\Alert::checkHistory( $params );
                                     if ($checkHistory){
                                         continue;
                                     }
@@ -1563,7 +1563,7 @@ class Targets extends Plugin {
                                         )
                                     );
 
-                                    $historyID = \ELBP\Alert::logHistory($params);
+                                    $historyID = \block_elbp\Alert::logHistory($params);
 
                                     // Now queue it, sending the history ID as well so we can update when actually sent
                                     $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
@@ -1653,7 +1653,7 @@ class Targets extends Plugin {
                                         );
 
                                         // If this returns true that means we have sent this exact alert within the last week, so skip
-                                        $checkHistory = \ELBP\Alert::checkHistory( $params );
+                                        $checkHistory = \block_elbp\Alert::checkHistory( $params );
                                         if ($checkHistory){
                                             continue;
                                         }
@@ -1676,7 +1676,7 @@ class Targets extends Plugin {
                                             )
                                         );
 
-                                        $historyID = \ELBP\Alert::logHistory($params);
+                                        $historyID = \block_elbp\Alert::logHistory($params);
 
                                         // Now queue it, sending the history ID as well so we can update when actually sent
                                         $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
@@ -1757,7 +1757,7 @@ class Targets extends Plugin {
                                             );
 
                                             // If this returns true that means we have sent this exact alert within the last week, so skip
-                                            $checkHistory = \ELBP\Alert::checkHistory( $params );
+                                            $checkHistory = \block_elbp\Alert::checkHistory( $params );
                                             if ($checkHistory){
                                                 continue;
                                             }
@@ -1780,7 +1780,7 @@ class Targets extends Plugin {
                                                 )
                                             );
 
-                                            $historyID = \ELBP\Alert::logHistory($params);
+                                            $historyID = \block_elbp\Alert::logHistory($params);
 
                                             // Now queue it, sending the history ID as well so we can update when actually sent
                                             $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
@@ -1832,7 +1832,7 @@ class Targets extends Plugin {
             if (is_numeric($targetID))
             {
 
-                $target = new \ELBP\Plugins\Targets\Target($targetID);
+                $target = new \block_elbp\Plugins\Targets\Target($targetID);
                 if (!$target->isValid()){
                     return false;
                 }
@@ -1893,7 +1893,7 @@ class Targets extends Plugin {
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . get_string('targets', 'block_elbp');
         $title = get_string('targets', 'block_elbp');
         $heading = fullname($this->getStudent()) . ' (' . $this->student->username . ')';
-        $logo = \ELBP\ELBP::getPrintLogo();
+        $logo = \block_elbp\ELBP::getPrintLogo();
 
         $txt = "";
 
@@ -1975,7 +1975,7 @@ class Targets extends Plugin {
         }
 
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);

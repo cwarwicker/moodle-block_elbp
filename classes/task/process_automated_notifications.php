@@ -53,7 +53,7 @@ class process_automated_notifications extends \core\task\scheduled_task
 
         // Process automatic events, such as checking that attendance has not dropped below a given percentage or that a target hasn't passewd its deadline, etc...
         // This could potentially take a while, as people who have the alert enabled for a course means we will have to loop through all users in that course and then potentially loop through all their targets or similar.
-        $processed = \ELBP\Alert::processAuto();
+        $processed = \block_elbp\Alert::processAuto();
         mtrace("Processed {$processed} automated alerts");
 
     }

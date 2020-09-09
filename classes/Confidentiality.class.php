@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 define("ELBP_CONFIDENTIALITY_GLOBAL", 1);
 define("ELBP_CONFIDENTIALITY_RESTRICTED", 2);
@@ -43,7 +43,7 @@ class Confidentiality {
     
     /**
      * Construct the object and get all the confidentiality levels from the DB
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      */
     public function __construct() {
         

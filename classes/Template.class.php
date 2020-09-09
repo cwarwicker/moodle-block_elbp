@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 /**
  * 
@@ -63,7 +63,7 @@ class Template {
      * Set a variable to be used in the template
      * @param type $var
      * @param type $val
-     * @return \ELBP\Template
+     * @return \block_elbp\Template
      */
     public function set($var, $val)
     {
@@ -84,14 +84,14 @@ class Template {
      * Load a template file
      * @param type $template
      * @return type
-     * @throws \ELBP\ELBPException
+     * @throws \block_elbp\ELBPException
      */
     public function load($template)
     {
                 
         $this->output = ''; # Reset output
                         
-        if (!file_exists($template)) throw new \ELBP\ELBPException( get_string('template', 'block_elbp'), get_string('filenotfound', 'block_elbp'), $template, get_string('programming:createfileorchangepath', 'block_elbp'));
+        if (!file_exists($template)) throw new \block_elbp\ELBPException( get_string('template', 'block_elbp'), get_string('filenotfound', 'block_elbp'), $template, get_string('programming:createfileorchangepath', 'block_elbp'));
         if (!empty($this->variables)) extract($this->variables);
                 
         flush();

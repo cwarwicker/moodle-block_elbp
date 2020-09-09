@@ -28,28 +28,28 @@
 
   <small><strong><?= $string['elbp:config:gradients'] ?></strong> - <?= $string['elbp:config:gradients:desc'] ?></small>
   <br>
-  <input type="checkbox" name="elbp_use_gradients" <?= (\ELBP\Setting::getSetting('elbp_use_gradients') == 1) ? 'checked' : '' ?> />
+  <input type="checkbox" name="elbp_use_gradients" <?= (\block_elbp\Setting::getSetting('elbp_use_gradients') == 1) ? 'checked' : '' ?> />
 
 
   <br><br>
 
   <small><strong><?= $string['elbp:config:emailalerts'] ?></strong> - <?= $string['elbp:config:emailalerts:desc'] ?></small>
   <br>
-  <input type="checkbox" name="enable_email_alerts" <?= (\ELBP\Setting::getSetting('enable_email_alerts') == 1) ? 'checked' : '' ?> />
+  <input type="checkbox" name="enable_email_alerts" <?= (\block_elbp\Setting::getSetting('enable_email_alerts') == 1) ? 'checked' : '' ?> />
 
   <br><br>
 
   <small><strong><?= $string['academicyear'] ?></strong> - <?= $string['academicyear:desc'] ?></small>
   <br>
-  <small><?= $string['enabled'] ?>:</small> <input type="checkbox" name="academic_year_enabled" <?= (\ELBP\Setting::getSetting('academic_year_enabled') == 1) ? 'checked' : '' ?> /><br>
+  <small><?= $string['enabled'] ?>:</small> <input type="checkbox" name="academic_year_enabled" <?= (\block_elbp\Setting::getSetting('academic_year_enabled') == 1) ? 'checked' : '' ?> /><br>
   <small><?= $string['date'] ?>:</small> <input type="text" name="academic_year_start_date" value="<?= $ELBP->getAcademicYearStartDate() ?>" class="elbp_datepicker" />
 
   <br><br>
 
   <small><strong><?= $string['studentprogressbar'] ?></strong> - <?= $string['enabledisable'] ?></small><br>
-  <!-- <input type='radio' name='enable_student_progress_bar' value='calculated' disabled <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') == 'calculated') ? 'checked' : '' ?> /> <?= $string['calculatedprogress'] ?> - FEATURE IS BEING RE-WRITTEN AND WILL BE BACK IN A LATER VERSION<br> -->
-  <input type='radio' name='enable_student_progress_bar' value='manual' <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') == 'manual') ? 'checked' : '' ?> /> <small><?= $string['manualprogress'] ?></small><br>
-  <input type='radio' name='enable_student_progress_bar' value='none' <?= (\ELBP\Setting::getSetting('enable_student_progress_bar') != 'calculated' && \ELBP\Setting::getSetting('enable_student_progress_bar') != 'manual' ) ? 'checked' : '' ?> /> <small><?= $string['none'] ?></small><br>
+  <!-- <input type='radio' name='enable_student_progress_bar' value='calculated' disabled <?= (\block_elbp\Setting::getSetting('enable_student_progress_bar') == 'calculated') ? 'checked' : '' ?> /> <?= $string['calculatedprogress'] ?> - FEATURE IS BEING RE-WRITTEN AND WILL BE BACK IN A LATER VERSION<br> -->
+  <input type='radio' name='enable_student_progress_bar' value='manual' <?= (\block_elbp\Setting::getSetting('enable_student_progress_bar') == 'manual') ? 'checked' : '' ?> /> <small><?= $string['manualprogress'] ?></small><br>
+  <input type='radio' name='enable_student_progress_bar' value='none' <?= (\block_elbp\Setting::getSetting('enable_student_progress_bar') != 'calculated' && \block_elbp\Setting::getSetting('enable_student_progress_bar') != 'manual' ) ? 'checked' : '' ?> /> <small><?= $string['none'] ?></small><br>
 
   <br>
 
@@ -88,25 +88,25 @@
     <h2><?= $string['systemroles'] ?></h2>
     <small><strong><?= $string['frontpageteacherrole'] ?></strong> - <?= $string['frontpageteacherrole:desc'] ?></small>
     <br>
-    <input type="text" name="elbp_frontpageteacher" value="<?= \ELBP\Setting::getSetting('elbp_frontpageteacher') ?>" />
+    <input type="text" name="elbp_frontpageteacher" value="<?= \block_elbp\Setting::getSetting('elbp_frontpageteacher') ?>" />
     <br><br>
 
     <small><strong><?= $string['personaltutorrole'] ?></strong> - <?= $string['personaltutorrole:desc'] ?></small>
     <br>
-    <input type="text" name="elbp_personaltutor" value="<?= \ELBP\Setting::getSetting('elbp_personaltutor') ?>" />
+    <input type="text" name="elbp_personaltutor" value="<?= \block_elbp\Setting::getSetting('elbp_personaltutor') ?>" />
     <br><br>
 
     <small><strong><?= $string['aslrole'] ?></strong> - <?= $string['aslrole:desc'] ?></small>
     <br>
-    <input type="text" name="elbp_asl" value="<?= \ELBP\Setting::getSetting('elbp_asl') ?>" />
+    <input type="text" name="elbp_asl" value="<?= \block_elbp\Setting::getSetting('elbp_asl') ?>" />
     <br><br>
 
     <small><strong><?= $string['elbpadminrole'] ?></strong> - <?= $string['elbpadminrole:desc'] ?></small>
     <br>
-    <input type="text" name="elbp_admin" value="<?= \ELBP\Setting::getSetting('elbp_admin') ?>" />
+    <input type="text" name="elbp_admin" value="<?= \block_elbp\Setting::getSetting('elbp_admin') ?>" />
     <br><br>
 
-    <?php if( !\ELBP\Setting::getSetting('elbp_frontpageteacher') || !\ELBP\Setting::getSetting('elbp_personaltutor') || !\ELBP\Setting::getSetting('elbp_asl') || !\ELBP\Setting::getSetting('elbp_admin') ): ?>
+    <?php if( !\block_elbp\Setting::getSetting('elbp_frontpageteacher') || !\block_elbp\Setting::getSetting('elbp_personaltutor') || !\block_elbp\Setting::getSetting('elbp_asl') || !\block_elbp\Setting::getSetting('elbp_admin') ): ?>
         <span><?= $string['missingroles'] ?></span><br>
         <a href="<?= $CFG->wwwroot ?>/blocks/elbp/admin/createroles.php" class="btn btn-primary"><?= $string['autocreate'] ?></a>
         <br><br>
@@ -130,7 +130,7 @@
 
     <small><strong><?= $string['excludecourses'] ?></strong> - <?= $string['excludecourses:desc'] ?></small>
     <br>
-    <input type="text" class="elbp_max" name="exclude_courses" value="<?= \ELBP\Setting::getSetting('exclude_courses') ?>" />
+    <input type="text" class="elbp_max" name="exclude_courses" value="<?= \block_elbp\Setting::getSetting('exclude_courses') ?>" />
 
     <br><br><br>
 
@@ -167,7 +167,7 @@
     </small>
     <br>
     <?php if ($ELBP->getSetting('print_logo') !== false): ?>
-    <img style="max-height:50px;" src="<?= \ELBP\ELBP::getPrintLogo() ?>" /> &nbsp;
+    <img style="max-height:50px;" src="<?= \block_elbp\ELBP::getPrintLogo() ?>" /> &nbsp;
         <input type="checkbox" name="logo_delete_current" value="1" /> <?= get_string('delete') ?><br><br>
     <?php endif; ?>
     <input type="file" name="logo" value="" />

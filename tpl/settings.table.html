@@ -37,11 +37,11 @@
                 <?php foreach($events as $event): ?>
 
                     <?php if(method_exists($plugin, '_getEventRequiredScripts_'.strtolower(str_replace(' ', '_', $event->name)))): ?>
-                        <?= call_user_func_array(array($plugin, '_getEventRequiredScripts_'.strtolower(str_replace(' ', '_', $event->name))), array($event, \ELBP\Alert::getUserAlerts($event->id, $type, $value) )); ?>
+                        <?= call_user_func_array(array($plugin, '_getEventRequiredScripts_'.strtolower(str_replace(' ', '_', $event->name))), array($event, \block_elbp\Alert::getUserAlerts($event->id, $type, $value) )); ?>
                     <?php endif; ?>
 
 
-                    <?php if ( $userEvents = \ELBP\Alert::getUserAlerts($event->id, $type, $value) ): ?>
+                    <?php if ( $userEvents = \block_elbp\Alert::getUserAlerts($event->id, $type, $value) ): ?>
                         <?php $n = 0; ?>
                         <?php foreach($userEvents as $userEvent): ?>
                             <tr>
@@ -56,7 +56,7 @@
                                 </td>
                                 <td>
                                     <?php if($n == 0): ?>
-                                        <input type="checkbox" name="alerts[]" value="<?= $event->id ?>" <?= (\ELBP\Alert::userWantsEventAlerts($USER->id, $event->id, $type, $value) == true) ? 'checked' : ''; ?> />
+                                        <input type="checkbox" name="alerts[]" value="<?= $event->id ?>" <?= (\block_elbp\Alert::userWantsEventAlerts($USER->id, $event->id, $type, $value) == true) ? 'checked' : ''; ?> />
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -73,7 +73,7 @@
                                 -
                                 <?php endif; ?>
                             </td>
-                            <td><input type="checkbox" name="alerts[]" value="<?= $event->id ?>" <?= (\ELBP\Alert::userWantsEventAlerts($USER->id, $event->id, $type, $value) == true) ? 'checked' : ''; ?> /></td>
+                            <td><input type="checkbox" name="alerts[]" value="<?= $event->id ?>" <?= (\block_elbp\Alert::userWantsEventAlerts($USER->id, $event->id, $type, $value) == true) ? 'checked' : ''; ?> /></td>
                         </tr>
                     <?php endif; ?>
 

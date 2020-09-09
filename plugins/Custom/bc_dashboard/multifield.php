@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace ELBP\bc_dashboard\Custom;
+namespace block_elbp\bc_dashboard\Custom;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
@@ -38,7 +38,7 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
  *
  * @author cwarwicker
  */
-class multifield extends \BCDB\Report\Element {
+class multifield extends \block_bc_dashboard\Report\Element {
     
     protected $level = 'aggregate';
     protected $type = 'function';
@@ -46,7 +46,7 @@ class multifield extends \BCDB\Report\Element {
     public function __construct($params = null) {
        
         $this->options = array(
-            array('select', get_string('reportoption:plugin', 'block_bc_dashboard'), \ELBP\Plugins\CustomPlugin::all()), # Plugin
+            array('select', get_string('reportoption:plugin', 'block_bc_dashboard'), \block_elbp\Plugins\CustomPlugin::all()), # Plugin
             array('multiselect', get_string('reportoption:fields', 'block_bc_dashboard'), array()), # Fields to combine
             array('select', get_string('reportoption:groupby', 'block_bc_dashboard'), array()), # Field to group by
             array('text', get_string('reportoption:groupbyvalue', 'block_bc_dashboard'), ''), # Value to group by
@@ -61,7 +61,7 @@ class multifield extends \BCDB\Report\Element {
                 
         // Plugin
         $pluginID = $this->getParam(0);
-        $plugin = new \ELBP\Plugins\CustomPlugin($pluginID);
+        $plugin = new \block_elbp\Plugins\CustomPlugin($pluginID);
         if (!$plugin->isValid()){
             return false;
         }
@@ -136,7 +136,7 @@ class multifield extends \BCDB\Report\Element {
                 
         // Load object
         $pluginID = $this->getParam(0);
-        $this->object = new \ELBP\Plugins\CustomPlugin($pluginID);
+        $this->object = new \block_elbp\Plugins\CustomPlugin($pluginID);
         if (!$this->object) return false;
         
         $alias = $this->getAliasName();

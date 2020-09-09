@@ -30,12 +30,12 @@
  *
  */
 
-namespace ELBP\Plugins\AdditionalSupport;
+namespace block_elbp\Plugins\AdditionalSupport;
 
 /**
  *
  */
-class Session extends \ELBP\BasePluginObject {
+class Session extends \block_elbp\BasePluginObject {
 
     private $id = false;
     private $studentID;
@@ -120,7 +120,7 @@ class Session extends \ELBP\BasePluginObject {
 
     /**
      * Get the student loaded in the object
-     * @global \ELBP\Plugins\AdditionalSupport\type $DB
+     * @global \block_elbp\Plugins\AdditionalSupport\type $DB
      * @return type
      */
     public function getStudent(){
@@ -141,7 +141,7 @@ class Session extends \ELBP\BasePluginObject {
 
     /**
      * Get the user who set this session
-     * @global \ELBP\Plugins\AdditionalSupport\type $DB
+     * @global \block_elbp\Plugins\AdditionalSupport\type $DB
      * @return type
      */
     public function getSetByUser(){
@@ -203,7 +203,7 @@ class Session extends \ELBP\BasePluginObject {
 
     /**
      * Load session attributes
-     * @global \ELBP\Plugins\AdditionalSupport\type $DB
+     * @global \block_elbp\Plugins\AdditionalSupport\type $DB
      * @return type
      */
     public function loadAttributes(){
@@ -255,8 +255,8 @@ class Session extends \ELBP\BasePluginObject {
 
     /**
      * Get all the targets assigned to this session
-     * @global \ELBP\Plugins\AdditionalSupport\type $DB
-     * @return \ELBP\Plugins\Targets\Target
+     * @global \block_elbp\Plugins\AdditionalSupport\type $DB
+     * @return \block_elbp\Plugins\Targets\Target
      */
     public function getAllTargets(){
 
@@ -275,7 +275,7 @@ class Session extends \ELBP\BasePluginObject {
             {
                 foreach($check as $record)
                 {
-                    $target = new \ELBP\Plugins\Targets\Target($record->value);
+                    $target = new \block_elbp\Plugins\Targets\Target($record->value);
                     if ($target->isValid()){
                         $results[$target->getID()] = $target;
                     }
@@ -511,7 +511,7 @@ class Session extends \ELBP\BasePluginObject {
         {
 
             $targetList = array();
-            $targetsObj = \ELBP\Plugins\Plugin::instaniate("Targets");
+            $targetsObj = \block_elbp\Plugins\Plugin::instaniate("Targets");
 
             $output .= "<div class='elbp_summary_table'>";
                 $output .= "<p class='elbp_centre'><b>".get_string('targetssetinthissession', 'block_elbp')."</b></p><br>";
@@ -522,7 +522,7 @@ class Session extends \ELBP\BasePluginObject {
                     foreach($this->attributes['Targets'] as $targetID)
                     {
 
-                        $obj = new \ELBP\Plugins\Targets\Target($targetID);
+                        $obj = new \block_elbp\Plugins\Targets\Target($targetID);
                         if ($obj->isValid())
                         {
                             $targetList[] = $obj;
@@ -817,7 +817,7 @@ class Session extends \ELBP\BasePluginObject {
                         // This additional support session
 
                         $events = $this->AdditionalSupport->getEvents();
-                        $DBC = new \ELBP\DB();
+                        $DBC = new \block_elbp\DB();
 
                         if (!is_array($value)) $value = array($value);
                         foreach($value as $val)
@@ -936,7 +936,7 @@ class Session extends \ELBP\BasePluginObject {
                         // This additional support session
 
                         $events = $this->AdditionalSupport->getEvents();
-                        $DBC = new \ELBP\DB();
+                        $DBC = new \block_elbp\DB();
 
                         if (!is_array($value)) $value = array($value);
 
@@ -1108,7 +1108,7 @@ class Session extends \ELBP\BasePluginObject {
         ob_clean();
 
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . get_string('additionalsupportsession', 'block_elbp') . ' - ' . $this->getDate('d M Y');
-        $logo = \ELBP\ELBP::getPrintLogo();
+        $logo = \block_elbp\ELBP::getPrintLogo();
         $title = get_string('additionalsupportsession', 'block_elbp');
         $heading = fullname($this->getStudent()) . ' (' . $this->student->username . ')';
 
@@ -1290,7 +1290,7 @@ class Session extends \ELBP\BasePluginObject {
         $txt .= "<small>".get_string('tutorsignature', 'block_elbp')."_________________________________________________________________________ ".get_string('date')."___________________</small><br>";
         $txt .= "</div>";
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);
@@ -1717,7 +1717,7 @@ class Session extends \ELBP\BasePluginObject {
         unset($data['courseID']);
 
         // Attributes - FIrstly get all possible attributes and loop through them
-        $OBJ = new \ELBP\Plugins\AdditionalSupport();
+        $OBJ = new \block_elbp\Plugins\AdditionalSupport();
         $this->setSubmittedAttributes($data, $OBJ);
 
 
@@ -1726,7 +1726,7 @@ class Session extends \ELBP\BasePluginObject {
     /**
      * Get the content to go in the event trigger email
      * @global type $CFG
-     * @global \ELBP\Plugins\AdditionalSupport\type $USER
+     * @global \block_elbp\Plugins\AdditionalSupport\type $USER
      * @param type $useHtml
      * @param type $tmp
      * @return string
@@ -1766,7 +1766,7 @@ class Session extends \ELBP\BasePluginObject {
                         if (!is_array($value)) $value = array($value);
                         foreach($value as $targetID)
                         {
-                            $targetObj = new \ELBP\Plugins\Targets\Target($targetID);
+                            $targetObj = new \block_elbp\Plugins\Targets\Target($targetID);
                             if ($targetObj->isValid())
                             {
 
@@ -1848,7 +1848,7 @@ class Session extends \ELBP\BasePluginObject {
 
                         foreach($value as $targetID)
                         {
-                            $targetObj = new \ELBP\Plugins\Targets\Target($targetID);
+                            $targetObj = new \block_elbp\Plugins\Targets\Target($targetID);
                             if ($targetObj->isValid())
                             {
                                 $targetOutput .= $targetObj->getName();

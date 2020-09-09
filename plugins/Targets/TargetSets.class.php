@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP\Plugins\Targets;
+namespace block_elbp\Plugins\Targets;
 require_once $CFG->dirroot . '/blocks/elbp/plugins/Targets/Target.class.php';
 
 class TargetSets {

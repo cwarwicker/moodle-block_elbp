@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 require_once 'Session.class.php';
 
@@ -60,7 +60,7 @@ class AdditionalSupport extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Additional Support",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -96,7 +96,7 @@ class AdditionalSupport extends Plugin {
 //        if (!parent::loadStudent($studentID)) return false;
 //
 //        // If student not linked to an ASL, disable on this student's ELBP
-//        $ELBPDB = new \ELBP\DB();
+//        $ELBPDB = new \block_elbp\DB();
 //        if ($ELBPDB->countStudentAsls($this->student->id) == 0){
 //            $this->disable();
 //            return false;
@@ -181,7 +181,7 @@ class AdditionalSupport extends Plugin {
     /**
      * Save the config
      * @global type $MSGS
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $settings
      * @return boolean
      */
@@ -237,7 +237,7 @@ class AdditionalSupport extends Plugin {
 
         global $USER;
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
 
         $TPL->set("obj", $this);
 
@@ -248,7 +248,7 @@ class AdditionalSupport extends Plugin {
 
         $hasAdditionalSupport = false;
 
-        $ELBPDB = new \ELBP\DB();
+        $ELBPDB = new \block_elbp\DB();
         if ($ELBPDB->countStudentAsls($this->student->id) > 0){
             $hasAdditionalSupport = true;
         }
@@ -258,7 +258,7 @@ class AdditionalSupport extends Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
 
@@ -266,9 +266,9 @@ class AdditionalSupport extends Plugin {
 
     /**
      * Get all the user's additional support sessions
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param int $limit
-     * @return boolean|\ELBP\Plugins\AdditionalSupport\Session
+     * @return boolean|\block_elbp\Plugins\AdditionalSupport\Session
      */
     private function getUserSessions($limit = null)
     {
@@ -289,7 +289,7 @@ class AdditionalSupport extends Plugin {
             foreach($records as $record)
             {
 
-                $obj = new \ELBP\Plugins\AdditionalSupport\Session($record->id);
+                $obj = new \block_elbp\Plugins\AdditionalSupport\Session($record->id);
 
                 // If we're using academic year and the date of this session was prior to that, don't include
                 if ($academicYearUnix && $obj->getSetTime() < $academicYearUnix){
@@ -332,7 +332,7 @@ class AdditionalSupport extends Plugin {
         if (!is_null($sessionID))
         {
 
-            $session = new \ELBP\Plugins\AdditionalSupport\Session($sessionID);
+            $session = new \block_elbp\Plugins\AdditionalSupport\Session($sessionID);
             if (!$session->isValid()){
                 return false;
             }
@@ -357,11 +357,11 @@ class AdditionalSupport extends Plugin {
 
     /**
      * Handle ajax requests sent to the plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $USER
      * @param type $action
      * @param null $params
-     * @param \ELBP\Plugins\type $ELBP
+     * @param \block_elbp\Plugins\type $ELBP
      * @return boolean
      */
     public function ajax($action, $params, $ELBP){
@@ -384,7 +384,7 @@ class AdditionalSupport extends Plugin {
                 if (!isset($params['type'])) return false;
                 $page = $params['type'];
 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this)
                     ->set("access", $access)
                     ->set("page", $page)
@@ -399,10 +399,10 @@ class AdditionalSupport extends Plugin {
 
                  // if new or edit target need the data
                  if ($page == 'new'){
-                     $FORM = new \ELBP\ELBPForm();
+                     $FORM = new \block_elbp\ELBPForm();
                      $FORM->loadStudentID($this->student->id);
 
-                     $data = \ELBP\Plugins\AdditionalSupport\Session::getDataForNewSessionForm($sessionID);
+                     $data = \block_elbp\Plugins\AdditionalSupport\Session::getDataForNewSessionForm($sessionID);
                      $TPL->set("data", $data);
                      $TPL->set("attributes", $this->getAttributesForDisplay());
                      $TPL->set("FORM", $FORM);
@@ -417,7 +417,7 @@ class AdditionalSupport extends Plugin {
                  if ($page == 'new' && $this->getSetting('interested_parties_enabled') == 1){
 
                       $value = (isset($data['hookAtts']['Interested Parties'])) ? $data['hookAtts']['Interested Parties'] : '';
-                      $element = new \ELBP\ELBPFORMElement();
+                      $element = new \block_elbp\ELBPFORMElement();
                       $element->setType("User Picker");
                       $element->setName( get_string('interestedparties', 'block_elbp') );
                       $element->setValue($value);
@@ -429,7 +429,7 @@ class AdditionalSupport extends Plugin {
                 try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/'.$page.'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;
@@ -445,7 +445,7 @@ class AdditionalSupport extends Plugin {
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                 if (!elbp_has_capability('block/elbp:add_additional_support_session', $access)) return false;
 
-                $session = new \ELBP\Plugins\AdditionalSupport\Session($params);
+                $session = new \block_elbp\Plugins\AdditionalSupport\Session($params);
                 $session->setAdditionalSupportObj($this);
 
                 $auto = (isset($params['auto']) && $params['auto'] == 1);
@@ -511,14 +511,14 @@ JS;
                 if (!elbp_has_capability('block/elbp:edit_additional_support_session', $access)) return false;
 
                 // Load up the Session
-                $session = new \ELBP\Plugins\AdditionalSupport\Session($params['sessionID']);
+                $session = new \block_elbp\Plugins\AdditionalSupport\Session($params['sessionID']);
                 if (!$session->isValid()) return false;
 
                 // Make sure this session is for the student we've said it is
                 if ($session->getStudentID() <> $params['studentID']) return false;
 
                 // Load the target
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID']);
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID']);
                 if (!$target->isValid()) return false;
 
                 // Make sure this target is in this session
@@ -556,7 +556,7 @@ JS;
                 if (!elbp_has_capability('block/elbp:edit_additional_support_target_confidence', $access)) return false;
 
                 // Load up the Session
-                $session = new \ELBP\Plugins\AdditionalSupport\Session($params['sessionID']);
+                $session = new \block_elbp\Plugins\AdditionalSupport\Session($params['sessionID']);
                 if (!$session->isValid()) return false;
 
                 // Make sure this session is for the student we've said it is
@@ -564,7 +564,7 @@ JS;
 
                 // Load the target
                 $targetsObj = $ELBP->getPlugin("Targets");
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID']);
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID']);
                 $target->setTargetsObject($targetsObj);
                 if (!$target->isValid()) return false;
 
@@ -626,7 +626,7 @@ JS;
 
                 if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID']) || !isset($params['sessionID']) || !isset($params['targetID']) || !isset($params['statusID'])) return false;
 
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID'], $ELBP->getPlugin("Targets"));
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID'], $ELBP->getPlugin("Targets"));
                 if (!$target->isValid()) return false;
 
                 // We have the permission to do this?
@@ -667,7 +667,7 @@ JS;
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                 if (!elbp_has_capability('block/elbp:delete_additional_support_session', $access)) return false;
 
-                $session = new \ELBP\Plugins\AdditionalSupport\Session($params['sessionID']);
+                $session = new \block_elbp\Plugins\AdditionalSupport\Session($params['sessionID']);
                 if (!$session->isValid()) return false;
                 if ($session->getStudentID() <> $params['studentID']) return false;
 
@@ -697,7 +697,7 @@ JS;
 
                 if (elbp_is_empty($params['comment'])) return false;
 
-                $session = new \ELBP\Plugins\AdditionalSupport\Session($params['sessionID'], $this);
+                $session = new \block_elbp\Plugins\AdditionalSupport\Session($params['sessionID'], $this);
                 if (!$session->isValid()) return false;
 
                 // We have the permission to do this?
@@ -747,7 +747,7 @@ JS;
 
                 if (!$params || !isset($params['sessionID']) || !isset($params['commentID'])) return false;
 
-                $session = new \ELBP\Plugins\AdditionalSupport\Session($params['sessionID'], $this);
+                $session = new \block_elbp\Plugins\AdditionalSupport\Session($params['sessionID'], $this);
                 if (!$session->isValid()) return false;
 
                 // We have the permission to do this?
@@ -818,7 +818,7 @@ JS;
                 if (!$params || !isset($params['targetID']) || !isset($params['studentID']) || !$this->loadStudent($params['studentID'])) return false;
 
                 // Load the target
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID']);
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID']);
                 if (!$target->isValid()) return false;
 
                 // Target cannot be linked to any tutorials
@@ -899,7 +899,7 @@ JS;
     /**
      * Get all the targets that are NOT linked to ANY additional support sessions
      * @global type $CFG
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
     private function getExistingTargets(){

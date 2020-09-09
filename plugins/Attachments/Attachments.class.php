@@ -30,14 +30,14 @@
  *
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 require_once 'Attachment.class.php';
 
 /**
  *
  */
-class Attachments extends \ELBP\Plugins\Plugin {
+class Attachments extends \block_elbp\Plugins\Plugin {
 
     protected $tables = array(
         'lbp_attachments',
@@ -60,7 +60,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Attachments",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -81,7 +81,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
      * Get the user's attachments
      * @global type $DB
      * @param int $limit Limit to this number
-     * @return \ELBP\Plugins\Attachments\Attachment
+     * @return \block_elbp\Plugins\Attachments\Attachment
      */
     public function getUserAttachments($limit = 0){
 
@@ -101,7 +101,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
         {
             foreach($results as $result)
             {
-                $att = new \ELBP\Plugins\Attachments\Attachment($result->id);
+                $att = new \block_elbp\Plugins\Attachments\Attachment($result->id);
 
                 // Academic year
                 if ($academicYearUnix && $att->getUploadedUnix() < $academicYearUnix){
@@ -174,7 +174,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
 
     /**
      * Insert attachment to the DB
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $USER
      * @param type $title
      * @param type $filename
@@ -253,7 +253,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
 
     /**
      * Uninstall the plugin and truncate data from its tables
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      */
     public function uninstall() {
 
@@ -283,7 +283,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
      */
     public function getSummaryBox(){
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
 
         $TPL->set("obj", $this);
         $TPL->set("attachments", $this->getUserAttachments(5));
@@ -291,7 +291,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
 
@@ -299,8 +299,8 @@ class Attachments extends \ELBP\Plugins\Plugin {
 
     /**
      * Handle AJAX requests sent to the plugin
-     * @global \ELBP\Plugins\type $DB
-     * @global \ELBP\Plugins\type $USER
+     * @global \block_elbp\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $USER
      * @param type $action
      * @param null $params
      * @param type $ELBP
@@ -325,7 +325,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
                 // Attachments
                 $attachments = $this->getUserAttachments();
 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this)
                     ->set("access", $access)
                     ->set("attachments", $attachments);
@@ -333,7 +333,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
                 try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/Attachments/tpl/'.$params['type'].'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;
@@ -350,7 +350,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
 
                 // Attachment is valid?
-                $attachment = new \ELBP\Plugins\Attachments\Attachment($params['id']);
+                $attachment = new \block_elbp\Plugins\Attachments\Attachment($params['id']);
                 if (!$attachment->isValid()) return false;
 
                 // Does the file actually exist on the server?
@@ -384,7 +384,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
 
                 if (elbp_is_empty($params['comment'])) return false;
 
-                $attachment = new \ELBP\Plugins\Attachments\Attachment($params['id']);
+                $attachment = new \block_elbp\Plugins\Attachments\Attachment($params['id']);
                 if (!$attachment->isValid()) return false;
 
                 // We have the permission to do this?
@@ -437,7 +437,7 @@ class Attachments extends \ELBP\Plugins\Plugin {
                 $comment = $DB->get_record("lbp_attachment_comments", array("id" => $commentID));
                 if (!$comment) return false;
 
-                $attachment = new \ELBP\Plugins\Attachments\Attachment($comment->attachmentid);
+                $attachment = new \block_elbp\Plugins\Attachments\Attachment($comment->attachmentid);
                 if (!$attachment->isValid()) return false;
 
                 // We have the permission to do this?

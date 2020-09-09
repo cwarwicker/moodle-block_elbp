@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace ELBP\bc_dashboard\Custom;
+namespace block_elbp\bc_dashboard\Custom;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
@@ -38,7 +38,7 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
  *
  * @author cwarwicker
  */
-class singlefield extends \BCDB\Report\Element {
+class singlefield extends \block_bc_dashboard\Report\Element {
     
     protected $level = 'aggregate';
     protected $type = 'function';
@@ -46,7 +46,7 @@ class singlefield extends \BCDB\Report\Element {
     public function __construct($params = null) {
         
         $this->options = array(
-            array('select', get_string('reportoption:plugin', 'block_bc_dashboard'), \ELBP\Plugins\CustomPlugin::all()), # Plugin
+            array('select', get_string('reportoption:plugin', 'block_bc_dashboard'), \block_elbp\Plugins\CustomPlugin::all()), # Plugin
             array('select', get_string('reportoption:fields', 'block_bc_dashboard'), array()), # Fields to choose from
             array('select', get_string('reportoption:count', 'block_bc_dashboard'), array('total' => get_string('total', 'block_bc_dashboard'), 'average' => get_string('average', 'block_bc_dashboard')))
         );
@@ -59,7 +59,7 @@ class singlefield extends \BCDB\Report\Element {
         
         // Plugin
         $pluginID = $this->getParam(0);
-        $plugin = new \ELBP\Plugins\CustomPlugin($pluginID);
+        $plugin = new \block_elbp\Plugins\CustomPlugin($pluginID);
         if (!$plugin->isValid()){
             return false;
         }
@@ -128,7 +128,7 @@ class singlefield extends \BCDB\Report\Element {
     public function call(&$results) {                
         
         $pluginID = $this->getParam(0);
-        $this->object = new \ELBP\Plugins\CustomPlugin($pluginID);
+        $this->object = new \block_elbp\Plugins\CustomPlugin($pluginID);
         if (!$this->object) return false;
         
         $structure = $this->object->getStructure();

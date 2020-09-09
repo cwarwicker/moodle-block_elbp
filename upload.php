@@ -59,7 +59,7 @@ if (isset($_FILES['file'])){
         exit;
     }
 
-    $Upload = new \ELBP\Upload();
+    $Upload = new \block_elbp\Upload();
 
     // If there was a problem uploading the temporary file - stop
     if ($_FILES['file']['error'] > 0){

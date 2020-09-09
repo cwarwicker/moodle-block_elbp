@@ -342,7 +342,7 @@ elseif($page == 'edit'){
 
                     <?php if (isset($data['hookAtts']['Targets']) && !empty($data['hookAtts']['Targets'])): ?>
                         <?php foreach((array)$data['hookAtts']['Targets'] as $targetID): ?>
-                            <?php $target = new \ELBP\Plugins\Targets\Target($targetID); ?>
+                            <?php $target = new \block_elbp\Plugins\Targets\Target($targetID); ?>
 
                             <?php if ($target->isValid()): ?>
                             <tr id='new_added_target_id_<?= $targetID ?>' class='added_target_row'>
@@ -404,4 +404,4 @@ elseif($page == 'edit'){
 </script>
 
 
-<?= \ELBP\ELBPFORM::getEndCode(); ?>
+<?= \block_elbp\ELBPFORM::getEndCode(); ?>

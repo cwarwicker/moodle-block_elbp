@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP\MIS;
+namespace block_elbp\MIS;
 
 // >>BEDCOLL TODO add in post-connection execuet to mis
 
@@ -129,26 +129,26 @@ abstract class Manager {
             
             $record = self::getMISConnection($params);
             if (!$record){
-                throw new \ELBP\ELBPException( get_string('mismanager', 'block_elbp'),  get_string('misconnectionnotfound', 'block_elbp'), $params );
+                throw new \block_elbp\ELBPException( get_string('mismanager', 'block_elbp'),  get_string('misconnectionnotfound', 'block_elbp'), $params );
                 return false;
             }
             
             $className = ucfirst($record->type);
             $fileName = $CFG->dirroot . '/blocks/elbp/classes/db/'.$className.'.class.php';
             if (!file_exists($fileName)){
-                throw new \ELBP\ELBPException( get_string('mismanager', 'block_elbp'),  get_string('filenotfound', 'block_elbp'), $className .'.class.php' );
+                throw new \block_elbp\ELBPException( get_string('mismanager', 'block_elbp'),  get_string('filenotfound', 'block_elbp'), $className .'.class.php' );
                 return false;
             }
             
             require_once $fileName;
-            $className = 'ELBP\MIS\\'.$className;
+            $className = 'block_elbp\MIS\\'.$className;
             return new $className($record);
             
         }
         elseif (is_array($params) || is_object($params))
         {
             if (!isset($params['type'])){
-                throw new \ELBP\ELBPException( get_string('mismanager', 'block_elbp'),  get_string('missingparams', 'block_elbp'), 'type' );
+                throw new \block_elbp\ELBPException( get_string('mismanager', 'block_elbp'),  get_string('missingparams', 'block_elbp'), 'type' );
                 return false;
             }
 
@@ -156,12 +156,12 @@ abstract class Manager {
             $className = ucfirst($params['type']);
             $fileName = $CFG->dirroot . '/blocks/elbp/classes/db/'.$className.'.class.php';
             if (!file_exists($fileName)){
-                throw new \ELBP\ELBPException( get_string('mismanager', 'block_elbp'),  get_string('filenotfound', 'block_elbp'), $className .'.class.php' );
+                throw new \block_elbp\ELBPException( get_string('mismanager', 'block_elbp'),  get_string('filenotfound', 'block_elbp'), $className .'.class.php' );
                 return false;
             }
             
             require_once $fileName;
-            $className = 'ELBP\MIS\\'.$className;
+            $className = 'block_elbp\MIS\\'.$className;
             return new $className();
             
         }

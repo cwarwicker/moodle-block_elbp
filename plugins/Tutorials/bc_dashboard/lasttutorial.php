@@ -29,11 +29,11 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  *
  */
-namespace ELBP\bc_dashboard\Tutorials;
+namespace block_elbp\bc_dashboard\Tutorials;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
-class lasttutorial extends \BCDB\Report\Element {
+class lasttutorial extends \block_bc_dashboard\Report\Element {
 
     protected $level = 'aggregate';
     protected $type = 'hybrid'; // This means it uses SQL to get the data, but for each indivudla user row, we want to run a function on that data
@@ -41,7 +41,7 @@ class lasttutorial extends \BCDB\Report\Element {
 
     public function __construct($params = null) {
 
-        $this->object = \ELBP\Plugins\Plugin::instaniate("Tutorials");
+        $this->object = \block_elbp\Plugins\Plugin::instaniate("Tutorials");
         parent::__construct($params);
 
     }

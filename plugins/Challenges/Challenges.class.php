@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 /**
  * 
@@ -53,7 +53,7 @@ class Challenges extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Challenges",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -286,10 +286,10 @@ class Challenges extends Plugin {
             
         }
         
-        $confidentiality = new \ELBP\Confidentiality();
+        $confidentiality = new \block_elbp\Confidentiality();
         $cLevels = $confidentiality->getAllLevels();
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("obj", $this);
         $TPL->set("access", $this->access);      
         $TPL->set("params", $params);
@@ -299,7 +299,7 @@ class Challenges extends Plugin {
         
         try {
             $output .= $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/expanded.html');
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             $output .= $e->getException();
         }
 
@@ -313,17 +313,17 @@ class Challenges extends Plugin {
      */
     public function getSummaryBox(){
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         
         $TPL->set("obj", $this);
         $TPL->set("access", $this->access);      
         $TPL->set("challenges", $this->getUserChallenges());
-        $TPL->set("CONF", new \ELBP\Confidentiality());
+        $TPL->set("CONF", new \block_elbp\Confidentiality());
                         
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
         
@@ -331,7 +331,7 @@ class Challenges extends Plugin {
     
     /**
      * Handle AJAX requests sent to the plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $USER
      * @param type $action
      * @param type $params
@@ -354,14 +354,14 @@ class Challenges extends Plugin {
                 $access = $ELBP->getUserPermissions($params['studentID']);
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                                 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this)
                     ->set("access", $access);
                 
                 try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/'.$params['type'].'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;                
@@ -464,7 +464,7 @@ class Challenges extends Plugin {
     
     /**
      * Save the configuration settings
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $MSGS
      * @param type $settings
      * @return boolean
@@ -536,7 +536,7 @@ class Challenges extends Plugin {
     
     /**
      * Get all the possible challenges we can choose from
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public function getAllPossibleChallenges(){
@@ -572,7 +572,7 @@ class Challenges extends Plugin {
     
     /**
      * Get the challenges for the student
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
     private function getUserChallenges(){
@@ -591,7 +591,7 @@ class Challenges extends Plugin {
     
     /**
      * Get a specific challenge record for the student
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $challengeID
      * @return boolean
      */
@@ -611,7 +611,7 @@ class Challenges extends Plugin {
     /**
      * Get the content for the event triggered emails
      * @global type $CFG
-     * @global \ELBP\Plugins\type $USER
+     * @global \block_elbp\Plugins\type $USER
      * @return string
      */
     public function getInfoForEventTrigger($challenge)

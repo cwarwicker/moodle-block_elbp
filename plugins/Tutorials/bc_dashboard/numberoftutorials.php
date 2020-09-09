@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace ELBP\bc_dashboard\Tutorials;
+namespace block_elbp\bc_dashboard\Tutorials;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
@@ -38,14 +38,14 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
  *
  * @author cwarwicker
  */
-class numberoftutorials extends \BCDB\Report\Element {
+class numberoftutorials extends \block_bc_dashboard\Report\Element {
     
     protected $level = 'aggregate';
     protected $type = 'sql';
 
     public function __construct($params = null) {
         
-        $this->object = \ELBP\Plugins\Plugin::instaniate("Tutorials");
+        $this->object = \block_elbp\Plugins\Plugin::instaniate("Tutorials");
         
         // What options can they choose?
         $this->options = array(

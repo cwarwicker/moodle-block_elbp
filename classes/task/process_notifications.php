@@ -54,7 +54,7 @@ class process_notifications extends \core\task\scheduled_task
     public function execute() {
 
         // Send messages
-        $sent = \ELBP\Alert::processQueue(self::MESSAGES_PER_TASK);
+        $sent = \block_elbp\Alert::processQueue(self::MESSAGES_PER_TASK);
         mtrace("Processed {$sent} messages from the queue");
 
     }

@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 require_once $CFG->dirroot.'/course/lib.php';
 
@@ -163,7 +163,7 @@ class ELBPForm {
                 foreach($elementsArray as $element)
                 {
 
-                    $el = \ELBP\ELBPFormElement::create($element);
+                    $el = \block_elbp\ELBPFormElement::create($element);
                     $el->loadObject($this->obj);
 
                     if ($this->studentID){
@@ -1189,7 +1189,7 @@ class ELBPFormElement {
 
                             // By default get the first 100 users
                             $limit = 100;
-                            $ELBPDB = new \ELBP\DB();
+                            $ELBPDB = new \block_elbp\DB();
                             $users = $ELBPDB->getUsers($limit);
                             if ($users)
                             {
@@ -1366,7 +1366,7 @@ class ELBPFormElement {
 
                     if ($this->studentID)
                     {
-                        $ELBPDB = new \ELBP\DB();
+                        $ELBPDB = new \block_elbp\DB();
                         $courses = $ELBPDB->getStudentsCourses($this->studentID);
                         if ($courses)
                         {
@@ -1461,7 +1461,7 @@ class ELBPFormElement {
      */
     public static function create($params){
 
-        $obj = new \ELBP\ELBPFormElement();
+        $obj = new \block_elbp\ELBPFormElement();
 
         if (is_array($params))
         {

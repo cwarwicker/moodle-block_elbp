@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 /**
  * 
@@ -50,7 +50,7 @@ class Example extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Plugin Name",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -110,14 +110,14 @@ class Example extends Plugin {
      */
     public function getSummaryBox(){
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         
         $TPL->set("obj", $this);
                 
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
         
@@ -125,7 +125,7 @@ class Example extends Plugin {
     
     /**
      * Handle ajax requests sent to the plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $USER
      * @param type $action
      * @param type $params
@@ -148,14 +148,14 @@ class Example extends Plugin {
                 $access = $ELBP->getUserPermissions($params['studentID']);
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                                 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this)
                     ->set("access", $access);
                 
                 try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/'.$params['type'].'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;                

@@ -30,12 +30,12 @@
  *
  */
 
-namespace ELBP\Plugins\CourseReports;
+namespace block_elbp\Plugins\CourseReports;
 
 /**
  *
  */
-class CourseReport extends \ELBP\BasePluginObject {
+class CourseReport extends \block_elbp\BasePluginObject {
 
     private $id = false;
     private $studentID;
@@ -109,7 +109,7 @@ class CourseReport extends \ELBP\BasePluginObject {
         if (!$this->id) return false;
 
         // Check if they are still enrolled on this course
-        $ELBPDB = new \ELBP\DB();
+        $ELBPDB = new \block_elbp\DB();
         if (!$ELBPDB->isUserOnCourse($this->studentID, $this->courseID)) return false;
 
         return true;
@@ -150,7 +150,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Get the student record
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return type
      */
     public function getStudent(){
@@ -163,7 +163,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Get the course record
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return type
      */
     public function getCourse(){
@@ -226,7 +226,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Get the user record of the person who set the report
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return type
      */
     public function getSetByUser(){
@@ -244,7 +244,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Get the name of the course and the date of the report in a string
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return string
      */
     public function getShortDetail(){
@@ -298,7 +298,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Get all the review questions that have been set on this report, out of the db
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return type
      */
     private function getAllReviews(){
@@ -319,7 +319,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Get just the report review records for this report
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return type
      */
     public function getAllReviewValues(){
@@ -399,7 +399,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Delete the course report
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return boolean
      */
     public function delete(){
@@ -427,7 +427,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Save the course report (insert/update)
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @global type $USER
      * @return boolean
      */
@@ -768,7 +768,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Load the course report's attributes into the object
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return type
      */
     public function loadAttributes(){
@@ -1092,9 +1092,9 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Get the content for the event triggered emails
-     * @global \ELBP\Plugins\CourseReports\type $CFG
-     * @global \ELBP\Plugins\CourseReports\type $USER
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $CFG
+     * @global \block_elbp\Plugins\CourseReports\type $USER
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @param type $useHtml
      * @param type $tmp
      * @return string
@@ -1240,7 +1240,7 @@ class CourseReport extends \ELBP\BasePluginObject {
         ob_clean();
 
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . get_string('coursereport', 'block_elbp');
-        $logo = \ELBP\ELBP::getPrintLogo();
+        $logo = \block_elbp\ELBP::getPrintLogo();
         $title = get_string('coursereport', 'block_elbp');
         $heading = fullname($this->getStudent()) . ' (' . $this->student->username . ')';
         $attributes = $this->CourseReports->getAttributesForDisplay();
@@ -1466,7 +1466,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
 
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);
@@ -1485,7 +1485,7 @@ class CourseReport extends \ELBP\BasePluginObject {
 
     /**
      * Get either the blank required data if we're creating a new report, or the current data if editing
-     * @global \ELBP\Plugins\CourseReports\type $ELBP
+     * @global \block_elbp\Plugins\CourseReports\type $ELBP
      * @param type $id
      * @return boolean
      */

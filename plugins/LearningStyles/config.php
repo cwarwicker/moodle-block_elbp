@@ -33,8 +33,8 @@
 require_once '../../../../config.php';
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
-$ELBP = ELBP\ELBP::instantiate();
-$DBC = new ELBP\DB();
+$ELBP = block_elbp\ELBP::instantiate();
+$DBC = new block_elbp\DB();
 
 $view = optional_param('view', 'main', PARAM_ALPHA);
 
@@ -47,13 +47,13 @@ if (!$access['god']){
 require_login();
 
 try {
-    $OBJ = \ELBP\Plugins\Plugin::instaniate("LearningStyles");
-} catch (\ELBP\ELBPException $e){
+    $OBJ = \block_elbp\Plugins\Plugin::instaniate("LearningStyles");
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
     exit;
 }
 
-$TPL = new \ELBP\Template();
+$TPL = new \block_elbp\Template();
 $MSGS['errors'] = '';
 $MSGS['success'] = '';
 
@@ -94,7 +94,7 @@ $TPL->set("questions", $OBJ->getQuestions());
 try {
     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/'.$OBJ->getName().'/tpl/config.html' );
     $TPL->display();
-} catch (\ELBP\ELBPException $e){
+} catch (\block_elbp\ELBPException $e){
     echo $e->getException();
 }
 

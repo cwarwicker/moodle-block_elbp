@@ -50,7 +50,7 @@ class plugin_crons extends \core\task\scheduled_task
      */
     public function execute() {
 
-        $ELBP = \ELBP\ELBP::instantiate();
+        $ELBP = \block_elbp\ELBP::instantiate();
 
         $plugins = $ELBP->getPlugins();
         if ($plugins)

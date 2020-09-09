@@ -30,9 +30,9 @@
  * 
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
-use ELBP\ELBP;
+use block_elbp\ELBP;
 
 require_once 'Comment.class.php';
 
@@ -57,7 +57,7 @@ class Comments extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Comments",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -111,7 +111,7 @@ class Comments extends Plugin {
     
     /**
      * Get the img path for the negative icon
-     * @global \ELBP\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $CFG
      * @return type
      */
     public function getNegativeIconImage(){
@@ -151,7 +151,7 @@ class Comments extends Plugin {
      * Get the comments for a user
      * @global type $USER
      * @param type $limit
-     * @return \ELBP\Plugins\Comments\Comment|boolean
+     * @return \block_elbp\Plugins\Comments\Comment|boolean
      */
     public function getUserComments($limit = null)
     {
@@ -171,7 +171,7 @@ class Comments extends Plugin {
             foreach($records as $record)
             {
                 
-                $obj = new \ELBP\Plugins\Comments\Comment($record->id);
+                $obj = new \block_elbp\Plugins\Comments\Comment($record->id);
                 
                 if ($obj->isValid())
                 {
@@ -215,7 +215,7 @@ class Comments extends Plugin {
             if (is_numeric($commentID))
             {
             
-                $comment = new \ELBP\Plugins\Comments\Comment($commentID);
+                $comment = new \block_elbp\Plugins\Comments\Comment($commentID);
                 if (!$comment->isValid()){
                     return false;
                 }
@@ -271,7 +271,7 @@ class Comments extends Plugin {
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . get_string('comments', 'block_elbp');
         $title = get_string('comments', 'block_elbp');
         $heading = fullname($this->getStudent()) . ' (' . $this->student->username . ')';
-        $logo = \ELBP\ELBP::getPrintLogo();
+        $logo = \block_elbp\ELBP::getPrintLogo();
         
         $txt = "";
                         
@@ -347,7 +347,7 @@ class Comments extends Plugin {
         }
 
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);
@@ -563,7 +563,7 @@ class Comments extends Plugin {
      */
     public function getSummaryBox(){
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         
         $listLimit = $this->getSetting('limit_summary_list');
         $comments = $this->getUserComments($listLimit);
@@ -576,7 +576,7 @@ class Comments extends Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
         
@@ -592,10 +592,10 @@ class Comments extends Plugin {
     
     /**
      * Handle AJAX requests sent to the plugin.
-     * @global \ELBP\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $CFG
      * @param type $action
      * @param int $params
-     * @param \ELBP\Plugins\type $ELBP
+     * @param \block_elbp\Plugins\type $ELBP
      * @return boolean
      */
     public function ajax($action, $params, $ELBP){
@@ -618,7 +618,7 @@ class Comments extends Plugin {
                 $page = $params['type'];
                                 
                                 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this)
                     ->set("access", $access)
                     ->set("page", $page)
@@ -635,9 +635,9 @@ class Comments extends Plugin {
                  
                  // if new or edit target need the data
                  if ($page == 'new'){
-                     $FORM = new \ELBP\ELBPForm();
+                     $FORM = new \block_elbp\ELBPForm();
                      $FORM->loadStudentID($this->student->id);
-                     $TPL->set("data", \ELBP\Plugins\Comments\Comment::getDataForNewCommentForm($commentID));
+                     $TPL->set("data", \block_elbp\Plugins\Comments\Comment::getDataForNewCommentForm($commentID));
                      $TPL->set("attributes", $this->getAttributesForDisplay());
                      $TPL->set("FORM", $FORM);
                      
@@ -651,7 +651,7 @@ class Comments extends Plugin {
                 try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/'.$page.'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;                
@@ -667,7 +667,7 @@ class Comments extends Plugin {
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                 if (!elbp_has_capability('block/elbp:add_comment', $access)) return false;                
                                 
-                $comment = new \ELBP\Plugins\Comments\Comment($params);
+                $comment = new \block_elbp\Plugins\Comments\Comment($params);
                 $comment->setCommentsObj($this);                
                 
                 // If the record exists, check to make sure the student ID on it is the same as the one we specified
@@ -711,7 +711,7 @@ class Comments extends Plugin {
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                 if (!elbp_has_capability('block/elbp:delete_comment', $access)) return false;                
                                 
-                $comment = new \ELBP\Plugins\Comments\Comment($params['commentID']);
+                $comment = new \block_elbp\Plugins\Comments\Comment($params['commentID']);
                 $comment->setCommentsObj($this);
                 
                 // If the record exists, check to make sure the student ID on it is the same as the one we specified
@@ -740,7 +740,7 @@ class Comments extends Plugin {
                 if (!elbp_has_capability('block/elbp:mark_comment_resolved', $access)) return false;    
                 
                                 
-                $comment = new \ELBP\Plugins\Comments\Comment($params['commentID']);
+                $comment = new \block_elbp\Plugins\Comments\Comment($params['commentID']);
                 $comment->setCommentsObj($this);
                 
                 // If the record exists, check to make sure the student ID on it is the same as the one we specified
@@ -789,7 +789,7 @@ class Comments extends Plugin {
     
     /**
      * Save the configuration
-     * @global \ELBP\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $CFG
      * @global type $MSGS
      * @param type $settings
      * @return boolean
@@ -902,8 +902,8 @@ class Comments extends Plugin {
      
      /**
       * Mass acctions for this plugin in the dashboard students list
-      * @global \ELBP\Plugins\type $CFG
-      * @global \ELBP\Plugins\type $DB
+      * @global \block_elbp\Plugins\type $CFG
+      * @global \block_elbp\Plugins\type $DB
       * @param type $action
       * @param type $students
       * @param string $params
@@ -921,7 +921,7 @@ class Comments extends Plugin {
              
              case 'add_comment':
                                                    
-                 $data = \ELBP\Plugins\Comments\Comment::getDataForNewCommentForm(false, $this);
+                 $data = \block_elbp\Plugins\Comments\Comment::getDataForNewCommentForm(false, $this);
 
                  $errors = array();
                  $data2 = (isset($_POST['params'])) ? $_POST['params'] : false;
@@ -940,7 +940,7 @@ class Comments extends Plugin {
                             $d = \elbp_parse_text_code($d, array('student' => $user));
                         }
 
-                        $comment = new \ELBP\Plugins\Comments\Comment($data2);
+                        $comment = new \block_elbp\Plugins\Comments\Comment($data2);
                         $comment->setCommentsObj($this);
                         
                         if ($comment->save()){

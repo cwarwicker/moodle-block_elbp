@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP\Plugins\CourseReports;
+namespace block_elbp\Plugins\CourseReports;
 
 /**
  * 
@@ -151,7 +151,7 @@ class PeriodicalCourseReport {
     
     /**
      * Get the student record of the report
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return type
      */
     public function getStudent(){
@@ -180,7 +180,7 @@ class PeriodicalCourseReport {
     
     /**
      * Get the user record of the person who created the report
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return type
      */
     public function getCreatedByUser(){
@@ -243,7 +243,7 @@ class PeriodicalCourseReport {
     
     /**
      * Get the attributes on this periodical report
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @return type
      */
     public function getAttributes(){
@@ -280,7 +280,7 @@ class PeriodicalCourseReport {
     
     /**
      * Get a specific attribute's value
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @param type $attribute
      * @return type
      */
@@ -367,9 +367,9 @@ class PeriodicalCourseReport {
     
     /**
      * Add a course report onto this periodical report
-     * @param \ELBP\Plugins\CourseReports\CourseReport $report
+     * @param \block_elbp\Plugins\CourseReports\CourseReport $report
      */
-    public function setReport( \ELBP\Plugins\CourseReports\CourseReport $report){
+    public function setReport( \block_elbp\Plugins\CourseReports\CourseReport $report){
         $this->reports[$report->getID()] = $report;
     }
     
@@ -396,8 +396,8 @@ class PeriodicalCourseReport {
     
     /**
      * Load all the course reports linked to this periodical report
-     * @global \ELBP\Plugins\CourseReports\type $DB
-     * @return \ELBP\Plugins\CourseReports\CourseReport
+     * @global \block_elbp\Plugins\CourseReports\type $DB
+     * @return \block_elbp\Plugins\CourseReports\CourseReport
      */
     public function loadReports(){
         
@@ -410,7 +410,7 @@ class PeriodicalCourseReport {
         {
             foreach($reports as $report)
             {
-                $reportObj = new \ELBP\Plugins\CourseReports\CourseReport($report->reportid, $this->CourseReports);
+                $reportObj = new \block_elbp\Plugins\CourseReports\CourseReport($report->reportid, $this->CourseReports);
                 if ($reportObj->isValid())
                 {
                     $return[$report->reportid] = $reportObj;
@@ -441,7 +441,7 @@ class PeriodicalCourseReport {
     
     /**
      * Save this periodical report (insert/update)
-     * @global \ELBP\Plugins\CourseReports\type $DB
+     * @global \block_elbp\Plugins\CourseReports\type $DB
      * @global type $USER
      * @global type $ELBP
      * @return boolean
@@ -651,7 +651,7 @@ class PeriodicalCourseReport {
     /**
      * Print the periodical report out to simple HTML page
      * @global type $CFG
-     * @global \ELBP\Plugins\CourseReports\type $ELBP
+     * @global \block_elbp\Plugins\CourseReports\type $ELBP
      */
     public function printOut(){
         
@@ -662,7 +662,7 @@ class PeriodicalCourseReport {
         echo $ELBP->loadJavascript(true);
                 
         $pageTitle = fullname($this->student) . ' (' . $this->student->username . ') - ' . get_string('coursereport:periodical', 'block_elbp');
-        $logo = \ELBP\ELBP::getPrintLogo();
+        $logo = \block_elbp\ELBP::getPrintLogo();
         $title = get_string('coursereport:periodical', 'block_elbp');
         $heading = fullname($this->student) . ' (' . $this->student->username . ')';
         $this->CourseReports->loadStudent( $this->student->id );
@@ -670,7 +670,7 @@ class PeriodicalCourseReport {
         $txt = "";
         
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("report", $this);
         $TPL->set("obj", $this->CourseReports);
         $TPL->set("access", $this->CourseReports->getAccess());
@@ -698,7 +698,7 @@ class PeriodicalCourseReport {
         
         
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("logo", $logo);
         $TPL->set("pageTitle", $pageTitle);
         $TPL->set("title", $title);

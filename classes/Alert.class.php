@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 /**
  * Class for different types of alerts which can be sent.
@@ -43,7 +43,7 @@ abstract class Alert {
     
     /**
      * Clear the array of users to be alerted
-     * @return \ELBP\Alert
+     * @return \block_elbp\Alert
      */
     public function reset(){
         $this->alertedUsers = array();
@@ -92,7 +92,7 @@ abstract class Alert {
     
     /**
      * Check if a given user has a given mass event setting
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $userID
      * @param type $eventID
      * @param type $type
@@ -154,7 +154,7 @@ abstract class Alert {
         if ($records)
         {
             
-            $EmailAlert = new \ELBP\EmailAlert();
+            $EmailAlert = new \block_elbp\EmailAlert();
             
             foreach($records as $record)
             {
@@ -203,7 +203,7 @@ abstract class Alert {
         if ($events)
         {
          
-            $ELBP = \ELBP\ELBP::instantiate();
+            $ELBP = \block_elbp\ELBP::instantiate();
             
             foreach($events as $event)
             {
@@ -397,7 +397,7 @@ abstract class Alert {
     
     /**
      * Check if a given user wants a given alert for a given type (e.g. course, student, mass
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $userID
      * @param type $eventID
      * @param type $type
@@ -433,7 +433,7 @@ abstract class Alert {
     
     /**
      * Update what alerts users want
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $userID
      * @param type $eventID
      * @param type $courseID
@@ -532,7 +532,7 @@ abstract class Alert {
     
     /**
      * Get a user's events
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @global type $USER
      * @param type $eventID
      * @param type $courseID
@@ -567,7 +567,7 @@ abstract class Alert {
     
     /**
      * Delete all of a user's alerts for a given thing (course, student, mass)
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $userID
      * @param type $type
      * @param type $id

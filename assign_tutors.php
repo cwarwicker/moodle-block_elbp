@@ -37,8 +37,8 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 $type = optional_param('type', false, PARAM_ALPHA);
 
 
-$ELBP = ELBP\ELBP::instantiate();
-$DBC = new ELBP\DB();
+$ELBP = block_elbp\ELBP::instantiate();
+$DBC = new block_elbp\DB();
 
 $courseID = SITEID; # Front Page
 
@@ -183,7 +183,7 @@ if ($type == 'student')
         if (!$error)
         {
             
-            $PT = new \ELBP\PersonalTutor();
+            $PT = new \block_elbp\PersonalTutor();
             
             foreach($selectedTutors as $tutor)
             {
@@ -398,7 +398,7 @@ elseif ($type == 'course')
             {
             
 
-                $PT = new ELBP\PersonalTutor();
+                $PT = new block_elbp\PersonalTutor();
 
                 foreach($selectedTutors as $tutor)
                 {
@@ -431,7 +431,7 @@ elseif ($type == 'course')
             {
             
 
-                $PT = new ELBP\PersonalTutor();
+                $PT = new block_elbp\PersonalTutor();
 
                 foreach($selectedTutors as $tutor)
                 {
@@ -494,7 +494,7 @@ elseif ($type == 'course')
             if (!$error)
             {
 
-                $PT = new \ELBP\PersonalTutor();
+                $PT = new \block_elbp\PersonalTutor();
 
                 foreach($selectedTutors as $tutor)
                 {
@@ -696,7 +696,7 @@ elseif ($type == 'courses')
         if (!$error)
         {
             
-            $PT = new ELBP\PersonalTutor();
+            $PT = new block_elbp\PersonalTutor();
             
             foreach($selectedTutors as $tutor)
             {
@@ -811,7 +811,7 @@ HTML;
 elseif ($type == 'bulk')
 {
     
-    $PT = new ELBP\PersonalTutor();
+    $PT = new block_elbp\PersonalTutor();
     
     if (isset($_POST['upload'])){
 
@@ -880,7 +880,7 @@ elseif ($type == 'bulk')
             {
                 
                 $PT->setAssignBy($studentField);
-                $ELBPDB = new \ELBP\DB();
+                $ELBPDB = new \block_elbp\DB();
                 
                 while( ($row = fgetcsv($fh)) !== false )
                 {

@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 /**
  * 
@@ -62,7 +62,7 @@ class LearningStyles extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Learning Styles",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -473,7 +473,7 @@ class LearningStyles extends Plugin {
      */
     public function getSummaryBox(){
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         
         $TPL->set("obj", $this);
         $TPL->set("access", $this->access);      
@@ -483,7 +483,7 @@ class LearningStyles extends Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
         
@@ -498,7 +498,7 @@ class LearningStyles extends Plugin {
         
         $output = "";
         
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("obj", $this);
         $TPL->set("access", $this->access);      
         $TPL->set("params", $params);
@@ -508,7 +508,7 @@ class LearningStyles extends Plugin {
         
         try {
             $output .= $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/expanded.html');
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             $output .= $e->getException();
         }
 
@@ -518,7 +518,7 @@ class LearningStyles extends Plugin {
     
     /**
      * Handle ajax requests sent to the plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @global type $USER
      * @param type $action
      * @param type $params
@@ -541,7 +541,7 @@ class LearningStyles extends Plugin {
                 $access = $ELBP->getUserPermissions($params['studentID']);
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this)
                     ->set("access", $access);
                 
@@ -556,7 +556,7 @@ class LearningStyles extends Plugin {
                 try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/'.$params['type'].'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 exit;                
@@ -629,7 +629,7 @@ class LearningStyles extends Plugin {
     
     /**
      * Calculate score based on answers given
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
     private function calculateScores(){
@@ -695,7 +695,7 @@ class LearningStyles extends Plugin {
     
     /**
      * Get all the learning styles out of the db
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public function getFlatLearningStyles(){
@@ -705,7 +705,7 @@ class LearningStyles extends Plugin {
     
     /**
      * Get the learning styles out of the db, including parent/child relationships
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public function getLearningStyles(){
@@ -738,7 +738,7 @@ class LearningStyles extends Plugin {
     
     /**
      * Get all the questions out of the db
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public function getQuestions(){
@@ -765,7 +765,7 @@ class LearningStyles extends Plugin {
     
     /**
      * Get a list of the questions and the student's answers to them
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return \stdClass|boolean
      */
     public function getListUserAnswers(){
@@ -812,7 +812,7 @@ class LearningStyles extends Plugin {
     
     /**
      * Get the relevant points for each answer the student gave
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $answerID
      * @return string
      */
@@ -844,7 +844,7 @@ class LearningStyles extends Plugin {
     
     /**
      * Get the possible answers to a question
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $questionID
      * @return type
      */

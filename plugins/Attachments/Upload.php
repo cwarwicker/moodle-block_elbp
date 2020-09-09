@@ -49,7 +49,7 @@ if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $CFG->ww
     exit;
 }
 
-$ELBP = ELBP\ELBP::instantiate();
+$ELBP = block_elbp\ELBP::instantiate();
 $ATT = $ELBP->getPlugin("Attachments");
 
 // Student ID?
@@ -82,7 +82,7 @@ if (isset($_FILES['file'])){
         exit;
     }
     
-    $Upload = new \ELBP\Upload();
+    $Upload = new \block_elbp\Upload();
     
     // If there was a problem uploading the temporary file - stop
     if ($_FILES['file']['error'] > 0){

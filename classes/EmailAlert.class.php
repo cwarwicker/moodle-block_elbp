@@ -30,7 +30,7 @@
  * 
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 /**
  * 
@@ -50,7 +50,7 @@ class EmailAlert extends Alert {
         
         global $DB;
                         
-        if (\ELBP\Setting::getSetting('enable_email_alerts') != 1) return false;
+        if (\block_elbp\Setting::getSetting('enable_email_alerts') != 1) return false;
                 
         // Check plugin exists
         $plugin = $DB->get_record("lbp_plugins", array("id" => $pluginID, "enabled" => 1), "id, title");
@@ -89,9 +89,9 @@ class EmailAlert extends Alert {
         
         global $DB;
         
-        $ELBP = new \ELBP\ELBP();
+        $ELBP = new \block_elbp\ELBP();
         
-        if (\ELBP\Setting::getSetting('enable_email_alerts') != 1) return false;
+        if (\block_elbp\Setting::getSetting('enable_email_alerts') != 1) return false;
         
         // Check plugin exists
         $plugin = $DB->get_record("lbp_plugins", array("id" => $pluginID, "enabled" => 1), "id, title");
@@ -105,7 +105,7 @@ class EmailAlert extends Alert {
         $student = $DB->get_record("user", array("id" => $studentID, "deleted" => 0));
         if (!$student) return false;
         
-        $conf = new \ELBP\Confidentiality();
+        $conf = new \block_elbp\Confidentiality();
         
         $subject = $plugin->title . " :: " . $eventName;
                 
@@ -148,7 +148,7 @@ class EmailAlert extends Alert {
         
         
         // Now find all the users who want email alerts for anyone on a course, that this student is on
-        $ELBPDB = new \ELBP\DB();
+        $ELBPDB = new \block_elbp\DB();
         $courses = $ELBPDB->getStudentsCourses($studentID);
         if ($courses)
         {

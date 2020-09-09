@@ -36,7 +36,7 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 // Need to be logged in to view this page
 require_login();
 
-$ELBP = ELBP\ELBP::instantiate();
+$ELBP = block_elbp\ELBP::instantiate();
 
 $access = $ELBP->getCoursePermissions(SITEID);
 if (!$access['god'] && $view != 'course'){

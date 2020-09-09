@@ -44,7 +44,7 @@ if (!isset($_SESSION['pp_user'])){
 $PAGE->set_url( $CFG->wwwroot . '/blocks/elbp/js/ajaxHandler.php' );
 $PAGE->set_context( context_course::instance(1) ); # Don't see why Moodle insists on this
 
-$ELBP = ELBP\ELBP::instantiate();
+$ELBP = block_elbp\ELBP::instantiate();
 
 if (isset($_POST['plugin']) && $_POST['plugin']){
     $ELBP->handleAjaxRequest($_POST['plugin'], $_POST['action'], $_POST['params']);
@@ -127,7 +127,7 @@ JS;
                     if (isset($dbPlugin->custom))
                     {
 
-                        $plugin = new ELBP\Plugins\CustomPlugin($dbPlugin->getID());
+                        $plugin = new block_elbp\Plugins\CustomPlugin($dbPlugin->getID());
                         if (isset($params['student']) && $params['student'] > 0){
                             $access = $ELBP->getUserPermissions($params['student']);
                             if ($access){
@@ -148,7 +148,7 @@ JS;
                     {
 
                         try {
-                            $plugin = ELBP\Plugins\Plugin::instaniate($dbPlugin->getName(), $dbPlugin->getPath());
+                            $plugin = block_elbp\Plugins\Plugin::instaniate($dbPlugin->getName(), $dbPlugin->getPath());
                             if (isset($params['student']) && $params['student'] > 0){
                                 $access = $ELBP->getUserPermissions($params['student']);
                                 if ($access){
@@ -176,7 +176,7 @@ JS;
 
 
 
-            $TPL = new ELBP\Template();
+            $TPL = new block_elbp\Template();
             $TPL->set("plugins", $plugins)
                 ->set("groupID", $groupID)
                 ->set("string", $ELBP->getString());
@@ -194,20 +194,20 @@ JS;
 
         // Try to call plugin
         try {
-            $plugin = ELBP\Plugins\Plugin::instaniate($params['pluginname']);
+            $plugin = block_elbp\Plugins\Plugin::instaniate($params['pluginname']);
             $access = $ELBP->getUserPermissions($params['student']);
             if ($access) $plugin->loadStudent($params['student']);
             $plugin->loadCourse( $params['course'] );
             $plugin->setAccess($access);
             $plugin->display($params);
             exit;
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
 
             // Check if custom
             $check = $DB->get_record("lbp_custom_plugins", array("name" => $params['pluginname']));
             if ($check)
             {
-                $plugin = new \ELBP\Plugins\CustomPlugin($check->id);
+                $plugin = new \block_elbp\Plugins\CustomPlugin($check->id);
                 $plugin->loadStudent($params['student']);
                 if ($access) $plugin->loadStudent($params['student']);
                 $plugin->loadCourse( $params['course'] );
@@ -227,21 +227,21 @@ JS;
 
     case 'test_mis_connection':
         try {
-            $MIS = \ELBP\MIS\Manager::instantiate( $params );
+            $MIS = \block_elbp\MIS\Manager::instantiate( $params );
             $MIS->show_conn_err = false;
             $try = $MIS->connect( array("host"=>$params['host'], "user"=>$params['user'], "pass"=>$params['pass'], "db"=>$params['db']) );
             if (!$try){
                 echo "<img src='{$CFG->wwwroot}/blocks/elbp/pix/error.png' /><br><small>{$MIS->getError()}</small>";
             }
             else echo "<img src='{$CFG->wwwroot}/blocks/elbp/pix/success.png' />";
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             echo "<img src='{$CFG->wwwroot}/blocks/elbp/pix/error.png' /> <small>".$e->getMessage()."<br>".$e->getExpected()."</small></span>";
         }
     break;
 
     case 'switch_user':
 
-        $DBC = new ELBP\DB();
+        $DBC = new block_elbp\DB();
 
         switch($params['action'])
         {
@@ -307,12 +307,12 @@ JS;
         $user = $DB->get_record("user", array("id" => $params['student']));
         if (!$user) exit;
 
-        $TPL = new ELBP\Template();
+        $TPL = new block_elbp\Template();
         $TPL->set("plugins", $ELBP->getPlugins())
             ->set("string", $ELBP->getString())
             ->set("studentID", $params['student'])
             ->set("userFullName", fullname($user) . " ({$user->username})")
-            ->set("layouts", \ELBP\PluginLayout::getAllPluginLayouts(true));
+            ->set("layouts", \block_elbp\PluginLayout::getAllPluginLayouts(true));
         $TPL->load($CFG->dirroot . '/blocks/elbp/tpl/my_settings.html');
         $TPL->display();
         exit;
@@ -407,7 +407,7 @@ JS;
 
             case 'search_courses':
 
-                $DBC = new ELBP\DB();
+                $DBC = new block_elbp\DB();
 
                 $search = trim($params['search']);
 
@@ -445,7 +445,7 @@ JS;
         {
             case 'search_users':
 
-                $DBC = new ELBP\DB();
+                $DBC = new block_elbp\DB();
 
                 $search = trim($params['search']);
                 $limit = 100;
@@ -514,7 +514,7 @@ JS;
             $params['num'] = $_POST['num'];
         }
 
-        $element = \ELBP\ELBPFormElement::create($params);
+        $element = \block_elbp\ELBPFormElement::create($params);
         $form = \elbp_get_attribute_edit_form($element);
         echo $form;
 
@@ -542,7 +542,7 @@ JS;
 
     case 'get_alerts_table':
 
-        $DBC = new \ELBP\DB();
+        $DBC = new \block_elbp\DB();
 
         if (!in_array($params['type'], array('course', 'student', 'mentees', 'addsup'))){
             exit;
@@ -562,8 +562,8 @@ JS;
             $title = get_string('alladdsup', 'block_elbp');
         }
 
-        $ELBP = new \ELBP\ELBP();
-        $TPL = new \ELBP\Template();
+        $ELBP = new \block_elbp\ELBP();
+        $TPL = new \block_elbp\Template();
 
         $TPL->set("ELBP", $ELBP);
         $TPL->set("type", $params['type']);

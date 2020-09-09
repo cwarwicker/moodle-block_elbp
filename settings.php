@@ -34,8 +34,8 @@ require_once '../../config.php';
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
 $MSGS = array('errors' => '', 'success' => '');
-$ELBP = ELBP\ELBP::instantiate();
-$TPL = new \ELBP\Template();
+$ELBP = block_elbp\ELBP::instantiate();
+$TPL = new \block_elbp\Template();
 
 
 // Need to be logged in to view this page
@@ -65,7 +65,7 @@ echo $OUTPUT->header();
 $TPL->set("ELBP", $ELBP);
 $TPL->set("MSGS", $MSGS);
 
-$DBC = new \ELBP\DB();
+$DBC = new \block_elbp\DB();
 
 // Get courses and students for the drop-down menus
 $TPL->set("userCourses", $DBC->getTeachersCourses($USER->id));

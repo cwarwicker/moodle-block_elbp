@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 /**
  *
@@ -54,7 +54,7 @@ class StudentProfile extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Student Profile",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -74,7 +74,7 @@ class StudentProfile extends Plugin {
             if ($this->connection && $this->connection->connect()){
                 $core = $this->getMainMIS();
                 if ($core){
-                    $pluginConn = new \ELBP\MISConnection($core->id);
+                    $pluginConn = new \block_elbp\MISConnection($core->id);
                     if ($pluginConn->isValid()){
                         $this->useMIS = true;
                         $this->plugin_connection = $pluginConn;
@@ -297,8 +297,8 @@ class StudentProfile extends Plugin {
         if (!$this->isEnabled()) return;
         if (!$this->student) return;
 
-        $TPL = new \ELBP\Template();
-        $conf = new \ELBP\Confidentiality();
+        $TPL = new \block_elbp\Template();
+        $conf = new \block_elbp\Confidentiality();
 
         if (is_null($access)) $access = $this->access;
 
@@ -486,7 +486,7 @@ class StudentProfile extends Plugin {
 
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/StudentProfile/tpl/profile.html');
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
 
@@ -495,7 +495,7 @@ class StudentProfile extends Plugin {
     /**
      * Save configuration
      * @global type $MSGS
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $settings
      * @return boolean
      */
@@ -634,7 +634,7 @@ class StudentProfile extends Plugin {
                 }
 
                 // Set the mappings
-                $conn = new \ELBP\MISConnection($core->id);
+                $conn = new \block_elbp\MISConnection($core->id);
                 if ($conn->isValid())
                 {
 
@@ -718,7 +718,7 @@ class StudentProfile extends Plugin {
             return false;
         }
 
-        $conn = new \ELBP\MISConnection($core->id);
+        $conn = new \block_elbp\MISConnection($core->id);
         if (!$conn->isValid()){
             $MSGS['errors'][] = get_string('mis:connectioninvalid', 'block_elbp');
             return false;
@@ -874,7 +874,7 @@ class StudentProfile extends Plugin {
 
     /**
      * Handle ajax requests sent to plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $action
      * @param type $params
      * @param type $ELBP
@@ -1333,7 +1333,7 @@ class StudentProfile extends Plugin {
 
     /**
      * Run csv data import
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $file
      * @param type $fromCron
      * @return type

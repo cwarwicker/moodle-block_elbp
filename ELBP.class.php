@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP;
+namespace block_elbp;
 
 if(!defined('ELBP')) define('ELBP', true);
 
@@ -135,7 +135,7 @@ class ELBP
      */
     public function getELBPShortName(){
 
-        $setting = \ELBP\Setting::getSetting('elbp_title_short');
+        $setting = \block_elbp\Setting::getSetting('elbp_title_short');
         return ($setting) ? $setting : get_string('elbp', 'block_elbp');
 
     }
@@ -146,7 +146,7 @@ class ELBP
      */
     public function getELBPFullName(){
 
-        $setting = \ELBP\Setting::getSetting('elbp_title_full');
+        $setting = \block_elbp\Setting::getSetting('elbp_title_full');
         return ($setting) ? $setting : get_string('elbpex', 'block_elbp');
 
     }
@@ -157,7 +157,7 @@ class ELBP
      */
     public function getELBPMyName(){
 
-        $setting = \ELBP\Setting::getSetting('elbp_title_my');
+        $setting = \block_elbp\Setting::getSetting('elbp_title_my');
         return ($setting) ? $setting : get_string('myelbp', 'block_elbp');
 
     }
@@ -168,7 +168,7 @@ class ELBP
      */
     public function getThemeLayout(){
 
-        $setting = \ELBP\Setting::getSetting('theme_layout');
+        $setting = \block_elbp\Setting::getSetting('theme_layout');
         return ($setting) ? $setting : 'login';
 
     }
@@ -179,20 +179,20 @@ class ELBP
      */
     public function getDockPosition(){
 
-        $setting = \ELBP\Setting::getSetting('dock_position');
+        $setting = \block_elbp\Setting::getSetting('dock_position');
         return ($setting) ? $setting : 'bottom';
 
     }
 
     /**
      * Get the www path to the logo we want to use when printing things
-     * @global \ELBP\type $CFG
+     * @global \block_elbp\type $CFG
      * @return type
      */
     public static function getPrintLogo(){
 
         global $CFG;
-        $logo = \ELBP\Setting::getSetting('print_logo');
+        $logo = \block_elbp\Setting::getSetting('print_logo');
         return ($logo) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($CFG->dataroot . DIRECTORY_SEPARATOR . 'ELBP' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $logo) : false;
 
     }
@@ -204,7 +204,7 @@ class ELBP
      */
     public function getSetting($setting){
 
-        return \ELBP\Setting::getSetting($setting);
+        return \block_elbp\Setting::getSetting($setting);
 
     }
 
@@ -217,7 +217,7 @@ class ELBP
     }
 
     /**
-     * Get the \ELBP\DB() object loaded in the constructor
+     * Get the \block_elbp\DB() object loaded in the constructor
      * @return type
      */
     public function getDB(){
@@ -412,7 +412,7 @@ class ELBP
             $pluginGroup = $this->DB->get_record("lbp_plugin_groups", array("id" => $groupID));
             if ($pluginGroup)
             {
-                $layout = new \ELBP\PluginLayout($pluginGroup->layoutid);
+                $layout = new \block_elbp\PluginLayout($pluginGroup->layoutid);
                 $group = $layout->getGroup($groupID);
                 if ($group)
                 {
@@ -559,7 +559,7 @@ class ELBP
 
     /**
      * Get all general reporting elements, not specific to a plugin
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @return type
      */
     public function getReportingElements(){
@@ -641,7 +641,7 @@ class ELBP
                 {
 
                     $student = reset($students);
-                    $currentRank = \ELBP\Setting::getSetting('student_progress_rank', $student->id);
+                    $currentRank = \block_elbp\Setting::getSetting('student_progress_rank', $student->id);
 
                     // Is this rank one of the options?
                     if (in_array($currentRank, $options['ranks']))
@@ -717,11 +717,11 @@ class ELBP
 
     /**
      * Display the configuration page
-     * @global \ELBP\type $CFG
+     * @global \block_elbp\type $CFG
      * @global type $MSGS
      * @global type $FORMVALS
      * @global type $OUTPUT
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @param type $view
      * @return boolean
      */
@@ -729,7 +729,7 @@ class ELBP
     {
         global $CFG, $DB, $MSGS, $FORMVALS, $OUTPUT, $PAGE, $DBC;
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("ELBP", $this);
         try {
             $TPL->set("MSGS", $MSGS)->set("FORMVALS", $FORMVALS)->set("OUTPUT", $OUTPUT);
@@ -744,7 +744,7 @@ class ELBP
                   require_once './classes/df_hub/stats.php';
 
                   // Recent activity
-                  $TPL->set("logs", \ELBP\Log::parseListOfLogs( \ELBP\Log::getRecentLogs(15) ));
+                  $TPL->set("logs", \block_elbp\Log::parseListOfLogs( \block_elbp\Log::getRecentLogs(15) ));
 
                   // DF Hub Site
                   $site = new \DF\Site();
@@ -762,7 +762,7 @@ class ELBP
                 // MIS configuration
                 case 'mis':
 
-                    $TPL->set("connections", \ELBP\MIS\Manager::listConnections());
+                    $TPL->set("connections", \block_elbp\MIS\Manager::listConnections());
 
                     $plugins = $this->getAllPlugins();
                     usort($plugins, function($a, $b){
@@ -781,7 +781,7 @@ class ELBP
                         // Include class
                         require_once $type;
 
-                        $className = '\ELBP\MIS\\'.$typeName;
+                        $className = '\block_elbp\MIS\\'.$typeName;
 
                         $types = call_user_func( array($className, 'getAcceptedTypes') );
 
@@ -797,7 +797,7 @@ class ELBP
 
                     ksort($PAGE->theme->layouts);
                     $categories = \core_course_category::make_categories_list();
-                    $includedCategories = explode(",", \ELBP\Setting::getSetting('specific_course_cats'));
+                    $includedCategories = explode(",", \block_elbp\Setting::getSetting('specific_course_cats'));
 
                     $setting = $this->getSetting('manual_student_progress');
 
@@ -830,7 +830,7 @@ class ELBP
                     $TPL->set("dir_external", $external);
                     $TPL->set("groups", $this->getAllPluginGroups());
                     $TPL->set("block_version", $this->getBlockVersion());
-                    $TPL->set("layouts", \ELBP\PluginLayout::getAllPluginLayouts());
+                    $TPL->set("layouts", \block_elbp\PluginLayout::getAllPluginLayouts());
 
                 break;
 
@@ -842,7 +842,7 @@ class ELBP
                     $tables = false;
 
                     // Use an MIS connection DB object to connect to the actual Moodle database
-                    $conn = \ELBP\MIS\Manager::getMoodleConnectionType();
+                    $conn = \block_elbp\MIS\Manager::getMoodleConnectionType();
 
                     // Only supports MySQL at the moment, as I don't know how to replicate it with others
                     if ($conn){
@@ -856,7 +856,7 @@ class ELBP
                             $TPL->set("tables", $tables);
                             $TPL->set("purgeTables", self::getSupportDBTablesForPurging());
 
-                        } catch (\ELBP\ELBPException $e){
+                        } catch (\block_elbp\ELBPException $e){
 
                         }
 
@@ -881,7 +881,7 @@ class ELBP
                     // If we are forcing an uninstall, that's because we messed something up and can't load
                     // the plugin object
                     if ($pluginID && $force == 1){
-                        \ELBP\Plugins\Plugin::forceUninstall($pluginID);
+                        \block_elbp\Plugins\Plugin::forceUninstall($pluginID);
                         $MSGS['success'] = get_string('pluginuninstalled', 'block_elbp') . ' - ' . $pluginID;
                         $this->displayConfig('plugins');
                         return false;
@@ -922,7 +922,7 @@ class ELBP
                         print_error( get_string('invalidcourse', 'block_elbp') . '!' );
                     }
 
-                    $layouts = \ELBP\PluginLayout::getAllPluginLayouts(true);
+                    $layouts = \block_elbp\PluginLayout::getAllPluginLayouts(true);
 
                     $default = $this->getSetting('course_' . $id . '_plugins_layout');
 
@@ -938,7 +938,7 @@ class ELBP
 
             $TPL->load($this->CFG->dirroot . '/blocks/elbp/tpl/config/'.$view.'.html');
             $TPL->display();
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             echo $e->getException();
         }
     }
@@ -956,7 +956,7 @@ class ELBP
             "setting" => $setting,
             "value" => (is_null($value)) ? '' : $value
         ));
-        return \ELBP\Setting::setSetting($setting, $value, $userID);
+        return \block_elbp\Setting::setSetting($setting, $value, $userID);
     }
 
     /**
@@ -971,7 +971,7 @@ class ELBP
         elbp_log(LOG_MODULE_ELBP, LOG_ELEMENT_ELBP_SETTINGS, LOG_ACTION_ELBP_SETTINGS_DELETED_SETTING, $userID, array(
             "setting" => $setting
         ));
-        return \ELBP\Setting::deleteSetting($setting, $userID);
+        return \block_elbp\Setting::deleteSetting($setting, $userID);
 
     }
 
@@ -1014,8 +1014,8 @@ class ELBP
 
     /**
      * Save Environment data
-     * @global \ELBP\type $DB
-     * @global \ELBP\type $MSGS
+     * @global \block_elbp\type $DB
+     * @global \block_elbp\type $MSGS
      * @return boolean
      */
     private function saveConfigEnv()
@@ -1064,8 +1064,8 @@ class ELBP
 
     /**
      * Save User Actions configuration and run POST scripts
-     * @global \ELBP\type $MSGS
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $MSGS
+     * @global \block_elbp\type $DB
      * @return boolean
      */
     private function saveConfigActions()
@@ -1116,7 +1116,7 @@ class ELBP
             if($settings['clear_mentees_for'] == 'ALL')
             {
                 // first clear the records from the role assignments table
-                $DB->delete_records_select("role_assignments","roleid = ?",array(getRole(\ELBP\PersonalTutor::getPersonalTutorRole())));
+                $DB->delete_records_select("role_assignments","roleid = ?",array(getRole(\block_elbp\PersonalTutor::getPersonalTutorRole())));
 
                 // next clear the lbp_tutor_assignments table
                 $DB->delete_records("lbp_tutor_assignments");
@@ -1137,14 +1137,14 @@ class ELBP
                     $tutorID = $user->id;
                 }
                 #use getMenteeonTutor to get mentees of stated tutor
-                $DBC = new \ELBP\DB();
+                $DBC = new \block_elbp\DB();
                 $mentees = $DBC->getMenteesOnTutor($tutorID);
 
                 if($mentees){
 
                     $errors = 0;
                     foreach($mentees as $mentee){
-                        $PT = new \ELBP\PersonalTutor();
+                        $PT = new \block_elbp\PersonalTutor();
                         $PT->loadTutorID($user->id);
                         if(!$PT->removeMentee($mentee->id)){
                             $errors ++;
@@ -1399,7 +1399,7 @@ class ELBP
 
     /**
      * Save the course config settings
-     * @global \ELBP\type $MSGS
+     * @global \block_elbp\type $MSGS
      */
     private function saveConfigCourse()
     {
@@ -1435,7 +1435,7 @@ class ELBP
 
     /**
      * Run csv data import
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $file
      * @param type $fromCron
      * @return type
@@ -1522,7 +1522,7 @@ class ELBP
             }
 
             if ($errorCount == 0){
-                $tutor = new \ELBP\PersonalTutor;
+                $tutor = new \block_elbp\PersonalTutor;
                 $tutor->loadTutorID($record->tutorid);
                 $tutor->assignMentee($record->studentid);
             }
@@ -1538,14 +1538,14 @@ class ELBP
     /**
      * Save main ELBP configuration data.
      * This is stuff like the name.
-     * @global \ELBP\type $MSGS
+     * @global \block_elbp\type $MSGS
      * @return boolean
      */
     private function saveConfigMain(){}
 
     /**
      * Save the Settings configuration data
-     * @global \ELBP\type $MSGS
+     * @global \block_elbp\type $MSGS
      * @return boolean
      */
     private function saveConfigSettings()
@@ -1735,8 +1735,8 @@ class ELBP
     /**
      * Save plugins configuration / run POST scripts
      * This is stuff like installing new plugins, uninstalling, enabling, etc...
-     * @global \ELBP\type $DB
-     * @global \ELBP\type $MSGS
+     * @global \block_elbp\type $DB
+     * @global \block_elbp\type $MSGS
      * @return boolean
      */
     private function saveConfigPlugins()
@@ -1758,10 +1758,10 @@ class ELBP
 
             try
             {
-                $plugin = \ELBP\Plugins\Plugin::instaniate($name, $_POST['plugin_path']);
+                $plugin = \block_elbp\Plugins\Plugin::instaniate($name, $_POST['plugin_path']);
                 $MSGS['success'] = get_string('installed', 'block_elbp') . ' ' . $plugin->getName() . ' ' . get_string('plugin', 'block_elbp');
             }
-            catch (\ELBP\ELBPException $e){
+            catch (\block_elbp\ELBPException $e){
                 $MSGS['errors'] = $e->getException();
             }
 
@@ -1787,7 +1787,7 @@ class ELBP
             }
 
             // Create the plugin record
-            $plugin = new \ELBP\Plugins\CustomPlugin();
+            $plugin = new \block_elbp\Plugins\CustomPlugin();
             $plugin->setName($title);
             $plugin->createPlugin();
             $MSGS['success'] = get_string('created', 'block_elbp') . ' ' . $plugin->getTitle() . ' ' . get_string('plugin', 'block_elbp');
@@ -1837,12 +1837,12 @@ class ELBP
 
             try
             {
-                $plugin = \ELBP\Plugins\Plugin::instaniate($check->name);
+                $plugin = \block_elbp\Plugins\Plugin::instaniate($check->name);
                 $plugin->uninstall();
                 $MSGS['success'] = get_string('pluginuninstalled', 'block_elbp');
                 return true;
             }
-            catch (\ELBP\ELBPException $e){
+            catch (\block_elbp\ELBPException $e){
                 $MSGS['errors'] = $e->getException();
                 return false;
             }
@@ -1856,7 +1856,7 @@ class ELBP
             $check = $this->DB->get_record("lbp_custom_plugins", array("id" => $_POST['plugin_id']));
             if (!$check) return false;
 
-            $plugin = new \ELBP\Plugins\CustomPlugin($check->id);
+            $plugin = new \block_elbp\Plugins\CustomPlugin($check->id);
             if ($plugin)
             {
                 $plugin->delete();
@@ -1893,7 +1893,7 @@ class ELBP
             if ($getPlugin){
                 try {
 
-                    $upgradePlugin = \ELBP\Plugins\Plugin::instaniate($getPlugin->name);
+                    $upgradePlugin = \block_elbp\Plugins\Plugin::instaniate($getPlugin->name);
                     $blockVersion = $this->getBlockVersion();
                     $pluginVersion = $upgradePlugin->getVersion();
 
@@ -1909,7 +1909,7 @@ class ELBP
                     $MSGS['success'] = get_string('pluginupdated', 'block_elbp');
                     return true;
 
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     $MSGS['errors'] = $e->getMessage();
                     return false;
                 }
@@ -1927,7 +1927,7 @@ class ELBP
             $check = $DB->get_record("lbp_custom_plugins", array("id" => $pluginID));
             if (!$check) return false;
 
-            $plugin = new \ELBP\Plugins\CustomPlugin($pluginID);
+            $plugin = new \block_elbp\Plugins\CustomPlugin($pluginID);
             if (!$plugin->isValid()) return false;
 
             $XML = $plugin->exportXML();
@@ -1947,7 +1947,7 @@ class ELBP
         {
 
             $file = $_FILES['plugin_xml'];
-            $result = \ELBP\Plugins\CustomPlugin::createFromXML($file['tmp_name']);
+            $result = \block_elbp\Plugins\CustomPlugin::createFromXML($file['tmp_name']);
 
             if ($result['success'] == true){
                 $MSGS['success'] = $result['output'];
@@ -1992,7 +1992,7 @@ class ELBP
                 foreach($layoutIDs as $layoutNum => $layoutID)
                 {
 
-                    $layout = new \ELBP\PluginLayout($layoutID);
+                    $layout = new \block_elbp\PluginLayout($layoutID);
                     $layout->setName($layoutNames[$layoutNum]);
                     $layout->setDefault( (isset($layoutDefaults[$layoutNum])) ? $layoutDefaults[$layoutNum] : 0 );
                     $layout->setEnabled( (isset($layoutEnableds[$layoutNum])) ? $layoutEnableds[$layoutNum] : 0 );
@@ -2172,8 +2172,8 @@ class ELBP
     /**
      * Save MIS configuration.
      * This is stuff like new MIS connections. Linking MIS connections to Plugins. etc...
-     * @global \ELBP\type $MSGS
-     * @global \ELBP\type $FORMVALS
+     * @global \block_elbp\type $MSGS
+     * @global \block_elbp\type $FORMVALS
      * @return boolean
      */
     private function saveConfigMIS()
@@ -2392,15 +2392,15 @@ class ELBP
 
     /**
      * Save the user's settings
-     * @global \ELBP\type $USER
-     * @global \ELBP\type $MSGS
+     * @global \block_elbp\type $USER
+     * @global \block_elbp\type $MSGS
      * @return boolean
      */
     public function saveUserSettings(){
 
         global $USER, $MSGS, $DB;
 
-        $DBC = new \ELBP\DB();
+        $DBC = new \block_elbp\DB();
 
 
         // Resetting alerts?
@@ -2421,7 +2421,7 @@ class ELBP
         {
             if (isset($_POST[$setting]))
             {
-                \ELBP\Setting::setSetting($setting, $_POST[$setting], $USER->id);
+                \block_elbp\Setting::setSetting($setting, $_POST[$setting], $USER->id);
             }
         }
 
@@ -2434,7 +2434,7 @@ class ELBP
         {
 
             // First delete any existing alerts for this thing
-            \ELBP\Alert::deleteUserAlerts($USER->id, $type, $id);
+            \block_elbp\Alert::deleteUserAlerts($USER->id, $type, $id);
 
             // Loop through alerts
             if (isset($_POST['alerts']))
@@ -2449,7 +2449,7 @@ class ELBP
                         $attributes = $_POST['alert_attributes'][$eventID];
                     }
 
-                    \ELBP\Alert::updateUserAlert($USER->id, $eventID, $type, $id, 1, $attributes);
+                    \block_elbp\Alert::updateUserAlert($USER->id, $eventID, $type, $id, 1, $attributes);
 
                 }
             }
@@ -3070,7 +3070,7 @@ class ELBP
 
     /**
      * Load the required javascript
-     * @global \ELBP\type $CFG
+     * @global \block_elbp\type $CFG
      * @global type $PAGE
      * @param type $simple If true will be returned in <script> tags. Else will be put into $PAGE object
      * @return type
@@ -3096,8 +3096,8 @@ class ELBP
 
     /**
      * Load required css
-     * @global \ELBP\type $CFG
-     * @global \ELBP\type $PAGE
+     * @global \block_elbp\type $CFG
+     * @global \block_elbp\type $PAGE
      * @param type $simple If true will be returned in <link> tags. Else put into $PAGE object.
      * @return type
      */
@@ -3190,7 +3190,7 @@ class ELBP
             {
 
                 // Get the plugin's name
-                $name = \ELBP\Plugins\Plugin::getPluginName($record->pluginid);
+                $name = \block_elbp\Plugins\Plugin::getPluginName($record->pluginid);
 
                 if ($name)
                 {
@@ -4442,7 +4442,7 @@ class ELBP
 
     /**
      * Get the new version from the version.php file
-     * @global \ELBP\type $CFG
+     * @global \block_elbp\type $CFG
      * @return type
      */
     public function getNewBlockVersion(){
@@ -4457,8 +4457,8 @@ class ELBP
     /**
      * Execute a command from the ELBP command line tool
      * I will delete this soon, it's pretty pointless.
-     * @global \ELBP\type $CFG
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $CFG
+     * @global \block_elbp\type $DB
      * @param type $action
      * @return string
      */
@@ -4558,7 +4558,7 @@ class ELBP
                 if ($user)
                 {
 
-                    $ELBPDB = new \ELBP\DB();
+                    $ELBPDB = new \block_elbp\DB();
                     $tutors = $ELBPDB->getTutorsOnStudent($user->id);
                     $output = "";
 
@@ -4692,7 +4692,7 @@ class ELBP
                 $cnt = count($options['ranks']);
 
                 // Current rank for this student
-                $currentRank = \ELBP\Setting::getSetting('student_progress_rank', $this->student->id);
+                $currentRank = \block_elbp\Setting::getSetting('student_progress_rank', $this->student->id);
 
                 $descriptions = "";
 
@@ -4759,7 +4759,7 @@ class ELBP
 
     /**
      * Get the current block version in the DB
-     * @global \ELBP\type $DB
+     * @global \block_elbp\type $DB
      * @return type
      */
     public static function getBlockVersionStatic(){
@@ -4807,8 +4807,8 @@ class ELBP
     public static function isAcademicYearEnabled()
     {
 
-        $enabled = \ELBP\Setting::getSetting('academic_year_enabled');
-        $year = \ELBP\Setting::getSetting('academic_year_start_date');
+        $enabled = \block_elbp\Setting::getSetting('academic_year_enabled');
+        $year = \block_elbp\Setting::getSetting('academic_year_start_date');
 
         return ($enabled == 1 && $year);
 
@@ -4820,7 +4820,7 @@ class ELBP
      */
     public function getAcademicYearStartDate(){
 
-        $year = \ELBP\Setting::getSetting('academic_year_start_date');
+        $year = \block_elbp\Setting::getSetting('academic_year_start_date');
         if ($year > 0){
             return date('d-m-Y', $year);
         } else {
@@ -4832,7 +4832,7 @@ class ELBP
     /**
      * Instantiate self
      * @param type $options
-     * @return \ELBP\ELBP
+     * @return \block_elbp\ELBP
      */
     public static function instantiate( $options = null )
     {

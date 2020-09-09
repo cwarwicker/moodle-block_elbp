@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace ELBP\MIS;
+namespace block_elbp\MIS;
 
 /**
  * 
@@ -47,7 +47,7 @@ class Oracle extends Manager {
      * Construct object
      * @param mixed $params If null we're building dynamically with parameters. If array/object
      * @return boolean
-     * @throws \ELBP\ELBPException
+     * @throws \block_elbp\ELBPException
      */
     public function __construct($params = null) {
         
@@ -55,7 +55,7 @@ class Oracle extends Manager {
         if (extension_loaded('pdo_oci')) $this->extension = 'pdo_oci';
                 
         if (!$this->extension){
-            throw new \ELBP\ELBPException( get_string('mismanager', 'block_elbp'), get_string('noextension', 'block_elbp'), implode(', ', self::$acceptedTypes), get_string('installextension', 'block_elbp') );
+            throw new \block_elbp\ELBPException( get_string('mismanager', 'block_elbp'), get_string('noextension', 'block_elbp'), implode(', ', self::$acceptedTypes), get_string('installextension', 'block_elbp') );
             return false;
         }
         

@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 /**
  *
@@ -61,7 +61,7 @@ class Attendance extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Attendance & Punctuality",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -111,10 +111,10 @@ class Attendance extends Plugin {
 
         $this->types = array();
 
-        $setting = \ELBP\Setting::getSetting("enabled_types", null, $this->id);
+        $setting = \block_elbp\Setting::getSetting("enabled_types", null, $this->id);
         $types = explode("|", $setting);
 
-        $setting = \ELBP\Setting::getSetting("enabled_types_short", null, $this->id);
+        $setting = \block_elbp\Setting::getSetting("enabled_types_short", null, $this->id);
         $short = explode("|", $setting);
 
         for ($i = 0; $i < count($types); $i++)
@@ -134,7 +134,7 @@ class Attendance extends Plugin {
 
         $this->periods = array();
 
-        $setting = \ELBP\Setting::getSetting("enabled_periods", null, $this->id);
+        $setting = \block_elbp\Setting::getSetting("enabled_periods", null, $this->id);
         $periods = explode("|", $setting);
 
         for ($i = 0; $i < count($periods); $i++)
@@ -384,13 +384,13 @@ class Attendance extends Plugin {
 
         $output = "";
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("ATT", $this);
 
 
         try {
             $output .= $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/Attendance/tpl/expanded.html');
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             $output .= $e->getException();
         }
 
@@ -588,7 +588,7 @@ class Attendance extends Plugin {
             }
 
             // Set the mappings
-            $conn = new \ELBP\MISConnection($core->id);
+            $conn = new \block_elbp\MISConnection($core->id);
             if ($conn->isValid())
             {
 
@@ -694,7 +694,7 @@ class Attendance extends Plugin {
             if ($this->connection && $this->connection->connect()){
                 $core = $this->getMainMIS();
                 if ($core){
-                    $pluginConn = new \ELBP\MISConnection($core->id);
+                    $pluginConn = new \block_elbp\MISConnection($core->id);
                     if ($pluginConn->isValid()){
                         $this->useMIS = true;
                         $this->plugin_connection = $pluginConn;
@@ -777,7 +777,7 @@ class Attendance extends Plugin {
             return false;
         }
 
-        $conn = new \ELBP\MISConnection($core->id);
+        $conn = new \block_elbp\MISConnection($core->id);
         if (!$conn->isValid()){
             $MSGS['errors'][] = get_string('mis:connectioninvalid', 'block_elbp');
             return false;
@@ -1014,7 +1014,7 @@ class Attendance extends Plugin {
      */
     public function getSummaryBox(){
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
 
         $courses = $this->getStudentsCourses();
 
@@ -1042,7 +1042,7 @@ class Attendance extends Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/Attendance/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
 
@@ -1075,7 +1075,7 @@ class Attendance extends Plugin {
                 $trackingColspan = 1 + ( count($this->getTypes()) * count($this->getPeriods()) );
                 $trackingDays = $this->getSetting('track_days');
 
-                $TPL = new \ELBP\Template();
+                $TPL = new \block_elbp\Template();
                 $TPL->set("obj", $this)
                     ->set("types", $this->getTypes())
                     ->set("periods", $this->getPeriods())
@@ -1086,7 +1086,7 @@ class Attendance extends Plugin {
                 try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/Attendance/tpl/'.$params['type'].'.html' );
                     $TPL->display();
-                } catch (\ELBP\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                 }
                 
@@ -1141,7 +1141,7 @@ class Attendance extends Plugin {
 
     /**
      * Truncate the attendance tables and then uninstall the plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      */
     public function uninstall() {
 
@@ -1443,9 +1443,9 @@ class Attendance extends Plugin {
         global $DB;
 
         $cnt = 0;
-        $EmailAlert = new \ELBP\EmailAlert();
+        $EmailAlert = new \block_elbp\EmailAlert();
 
-        $ELBPDB = new \ELBP\DB();
+        $ELBPDB = new \block_elbp\DB();
 
         // Firstly find the users who have this event enabled for alerts
         $userEvents = $DB->get_records_sql("SELECT a.*, e.name
@@ -1525,7 +1525,7 @@ class Attendance extends Plugin {
                     }
 
                     // If this returns true that means we have sent this exact alert within the last week, so skip
-                    $checkHistory = \ELBP\Alert::checkHistory( $params );
+                    $checkHistory = \block_elbp\Alert::checkHistory( $params );
                     if ($checkHistory){
                         continue;
                     }
@@ -1590,7 +1590,7 @@ class Attendance extends Plugin {
 
                             if ($courseID > 0) $params['attributes']['course'] = $courseID;
 
-                            $historyID = \ELBP\Alert::logHistory($params);
+                            $historyID = \block_elbp\Alert::logHistory($params);
 
                             // Now queue it, sending the history ID as well so we can update when actually sent
                             $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
@@ -1640,7 +1640,7 @@ class Attendance extends Plugin {
                             );
 
                             // If this returns true that means we have sent this exact alert within the last week, so skip
-                            $checkHistory = \ELBP\Alert::checkHistory( $params );
+                            $checkHistory = \block_elbp\Alert::checkHistory( $params );
                             if ($checkHistory){
                                 continue;
                             }
@@ -1703,7 +1703,7 @@ class Attendance extends Plugin {
                                         )
                                     );
 
-                                    $historyID = \ELBP\Alert::logHistory($params);
+                                    $historyID = \block_elbp\Alert::logHistory($params);
 
                                     $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
                                     $cnt++;
@@ -1758,7 +1758,7 @@ class Attendance extends Plugin {
                             );
 
                             // If this returns true that means we have sent this exact alert within the last week, so skip
-                            $checkHistory = \ELBP\Alert::checkHistory( $params );
+                            $checkHistory = \block_elbp\Alert::checkHistory( $params );
                             if ($checkHistory){
                                 continue;
                             }
@@ -1826,7 +1826,7 @@ class Attendance extends Plugin {
                                         $params['attributes']['course'] = $courseID;
                                     }
 
-                                    $historyID = \ELBP\Alert::logHistory($params);
+                                    $historyID = \block_elbp\Alert::logHistory($params);
 
                                     // Now queue it, sending the history ID as well so we can update when actually sent
                                     $EmailAlert->queue("email", $user, $subject, $content, nl2br($content), $historyID);
@@ -2200,7 +2200,7 @@ class Attendance extends Plugin {
 
     /**
      * Run the data import to import CSV into database
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $file If not from cron this will be a $_FILES file, otherwise we'll mimic that with the path
      * @param bool $fromCron
      * @return type

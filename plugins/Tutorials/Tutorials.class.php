@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 require_once $CFG->dirroot . '/blocks/elbp/plugins/Tutorials/Tutorial.class.php';
 
@@ -57,7 +57,7 @@ class Tutorials extends Plugin {
                 "name" => strip_namespace(get_class($this)),
                 "title" => "Tutorials",
                 "path" => null,
-                "version" => \ELBP\ELBP::getBlockVersionStatic()
+                "version" => \block_elbp\ELBP::getBlockVersionStatic()
             ) );
         }
         else
@@ -130,7 +130,7 @@ class Tutorials extends Plugin {
 
     /**
      * Truncate related tables and uninstall plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      */
     public function uninstall() {
 
@@ -228,13 +228,13 @@ class Tutorials extends Plugin {
 
         $output = "";
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("obj", $this);
         $TPL->set("access", $this->access);
 
         try {
             $output .= $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/expanded.html');
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             $output .= $e->getException();
         }
 
@@ -249,7 +249,7 @@ class Tutorials extends Plugin {
      */
     public function getSummaryBox(){
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
 
         $listLimit = $this->getSetting('tutorials_limit_summary_list');
         $tutorials = $this->getUserTutorials(null, $listLimit);
@@ -260,7 +260,7 @@ class Tutorials extends Plugin {
         try {
             return $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/summary.html');
         }
-        catch (\ELBP\ELBPException $e){
+        catch (\block_elbp\ELBPException $e){
             return $e->getException();
         }
 
@@ -270,7 +270,7 @@ class Tutorials extends Plugin {
      * Get the user's tutorials
      * @param type $courseID
      * @param type $limit
-     * @return boolean|\ELBP\Plugins\Tutorials\Tutorial
+     * @return boolean|\block_elbp\Plugins\Tutorials\Tutorial
      */
     public function getUserTutorials($courseID = null, $limit = null)
     {
@@ -316,7 +316,7 @@ class Tutorials extends Plugin {
     /**
      * Get all the targets that are NOT linked to ANY tutorials
      * @global type $CFG
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
     private function getExistingTargets(){
@@ -350,10 +350,10 @@ class Tutorials extends Plugin {
 
     /**
      * Handle ajax requests sent to plugin
-     * @global \ELBP\Plugins\type $CFG
+     * @global \block_elbp\Plugins\type $CFG
      * @param type $action
      * @param type $params
-     * @param \ELBP\Plugins\type $ELBP
+     * @param \block_elbp\Plugins\type $ELBP
      * @return boolean
      */
     public function ajax($action, $params, $ELBP){
@@ -377,7 +377,7 @@ class Tutorials extends Plugin {
 
                  $page = $params['type'];
 
-                 $TPL = new \ELBP\Template();
+                 $TPL = new \block_elbp\Template();
                  $TPL->set("obj", $this);
                  $TPL->set("ELBP", $ELBP);
                  $TPL->set("access", $this->access);
@@ -394,9 +394,9 @@ class Tutorials extends Plugin {
 
                  // if new or edit target need the data
                  if ($page == 'new'){
-                     $FORM = new \ELBP\ELBPForm();
+                     $FORM = new \block_elbp\ELBPForm();
                      $FORM->loadStudentID($this->student->id);
-                     $TPL->set("data", \ELBP\Plugins\Tutorials\Tutorial::getDataForNewTutorialForm($tutorialID));
+                     $TPL->set("data", \block_elbp\Plugins\Tutorials\Tutorial::getDataForNewTutorialForm($tutorialID));
                      $TPL->set("attributes", $this->getAttributesForDisplay());
                      $TPL->set("FORM", $FORM);
                      $TPL->set("hooks", $this->callAllHooks($params));
@@ -406,7 +406,7 @@ class Tutorials extends Plugin {
                  try {
                     $TPL->load( $this->CFG->dirroot . '/blocks/elbp/plugins/Tutorials/tpl/'.$page.'.html' );
                     $TPL->display();
-                 } catch (\ELBP\ELBPException $e){
+                 } catch (\block_elbp\ELBPException $e){
                     echo $e->getException();
                  }
 
@@ -424,7 +424,7 @@ class Tutorials extends Plugin {
                 if (!$ELBP->anyPermissionsTrue($access)) return false;
                 if (!elbp_has_capability('block/elbp:add_tutorial', $access)) return false;
 
-                $tutorial = new \ELBP\Plugins\Tutorials\Tutorial($params, $this);
+                $tutorial = new \block_elbp\Plugins\Tutorials\Tutorial($params, $this);
 
 
                 $auto = (isset($params['auto']) && $params['auto'] == 1);
@@ -490,14 +490,14 @@ JS;
                 if (!elbp_has_capability('block/elbp:remove_target', $access)) return false;
 
                 // Load up the tutorial
-                $tutorial = new \ELBP\Plugins\Tutorials\Tutorial($params['tutorialID']);
+                $tutorial = new \block_elbp\Plugins\Tutorials\Tutorial($params['tutorialID']);
                 if (!$tutorial->isValid()) return false;
 
                 // Make sure this tutorial is for the student we've said it is
                 if ($tutorial->getStudentID() <> $params['studentID']) return false;
 
                 // Load the target
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID']);
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID']);
                 if (!$target->isValid()) return false;
 
                 // Make sure this target is on this tutorial
@@ -528,7 +528,7 @@ JS;
                 if (!elbp_has_capability('block/elbp:delete_tutorial', $access)) return false;
 
                 // Load up the tutorial
-                $tutorial = new \ELBP\Plugins\Tutorials\Tutorial($params['tutorialID']);
+                $tutorial = new \block_elbp\Plugins\Tutorials\Tutorial($params['tutorialID']);
                 if (!$tutorial->isValid()) return false;
 
                 // Make sure this tutorial is for the student we've said it is
@@ -556,7 +556,7 @@ JS;
                 if (!$params || !isset($params['targetID']) || !isset($params['studentID']) || !$this->loadStudent($params['studentID'])) return false;
 
                 // Load the target
-                $target = new \ELBP\Plugins\Targets\Target($params['targetID']);
+                $target = new \block_elbp\Plugins\Targets\Target($params['targetID']);
                 if (!$target->isValid()) return false;
 
                 // Target cannot be linked to any tutorials
@@ -587,8 +587,8 @@ JS;
     /**
      * Save configuration
      * @global type $MSGS
-     * @global \ELBP\Plugins\type $ELBP
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $ELBP
+     * @global \block_elbp\Plugins\type $DB
      * @param type $settings
      * @return boolean
      */
@@ -723,7 +723,7 @@ JS;
         if (is_numeric($tutorialID))
         {
 
-            $tutorial = new \ELBP\Plugins\Tutorials\Tutorial($tutorialID);
+            $tutorial = new \block_elbp\Plugins\Tutorials\Tutorial($tutorialID);
             if (!$tutorial->isValid()){
                 return false;
             }

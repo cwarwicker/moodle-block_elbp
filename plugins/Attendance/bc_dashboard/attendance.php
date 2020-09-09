@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace ELBP\bc_dashboard\Attendance;
+namespace block_elbp\bc_dashboard\Attendance;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
@@ -38,14 +38,14 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
  *
  * @author cwarwicker
  */
-class attendance extends \BCDB\Report\Element {
+class attendance extends \block_bc_dashboard\Report\Element {
     
     protected $level = 'aggregate';
     protected $type = 'sql';
 
     public function __construct($params = null) {
         
-        $this->object = \ELBP\Plugins\Plugin::instaniate("Attendance");
+        $this->object = \block_elbp\Plugins\Plugin::instaniate("Attendance");
         
         // Get types and periods for options
         $types = $this->object->getTypes();

@@ -1,6 +1,6 @@
 <?php if(!defined('ELBP')) exit; ?>
 
-<?php $conf = new \ELBP\Confidentiality(); ?>
+<?php $conf = new \block_elbp\Confidentiality(); ?>
 
 <script>
     
@@ -39,7 +39,7 @@
         <th><?= $string['fieldname'] ?></th>
         <th><?= $string['fieldtitle'] ?></th>
         <th><?= $string['order'] ?></th>
-        <th><?= $string['confidentiality'] ?> <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" /></th>
+        <th><?= $string['confidentiality'] ?> <img class="elbp_tooltip" title="<?= \block_elbp\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" /></th>
     </tr>
     
 <?php foreach( (array)$fields as $field ): ?>
@@ -49,7 +49,7 @@
     <td><input type='text' class='elbp_small' name='profile_fields_order[<?= $field->id ?>]' value='<?= $field->ordernum ?>' /> </td>
     <td>
         <select name="profile_fields_confidentiality[<?= $field->id ?>]">
-            <?php $conf = new \ELBP\Confidentiality(); ?>
+            <?php $conf = new \block_elbp\Confidentiality(); ?>
             <?php foreach($conf->getLevels() as $level => $levelName): ?>
             <option value="<?= $level ?>" <?= ($field->confidentialityid == $level) ? 'selected' : ''; ?> ><?= $levelName ?></option>
             <?php endforeach; ?>
@@ -78,7 +78,7 @@
         <th><?= $string['fieldname'] ?></th>
         <th><?= $string['fieldtitle'] ?></th>
         <th><?= $string['order'] ?></th>
-        <th><?= $string['confidentiality'] ?> <img class="elbp_tooltip" title="<?= \ELBP\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" /></th>
+        <th><?= $string['confidentiality'] ?> <img class="elbp_tooltip" title="<?= \block_elbp\Confidentiality::getHelpString(); ?>" src="<?= elbp_image_url('help') ?>" alt="<?= get_string('help') ?>" /></th>
     </tr>
 </table>
 <input type="submit" name="submit_new_fields" value="<?= $string['save'] ?>" />

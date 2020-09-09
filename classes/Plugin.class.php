@@ -30,7 +30,7 @@
  *
  */
 
-namespace ELBP\Plugins;
+namespace block_elbp\Plugins;
 
 /**
  *
@@ -89,8 +89,8 @@ namespace ELBP\Plugins;
         $this->connection = new \Anon;
         $this->connection->connect = function() {
             try {
-                throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp') . ' - ' . $this->name, get_string('nomisconnection', 'block_elbp'), false, get_string('admin:setupmisconnectionplugin', 'block_elbp'));
-            } catch (\ELBP\ELBPException $e){
+                throw new \block_elbp\ELBPException( get_string('plugin', 'block_elbp') . ' - ' . $this->name, get_string('nomisconnection', 'block_elbp'), false, get_string('admin:setupmisconnectionplugin', 'block_elbp'));
+            } catch (\block_elbp\ELBPException $e){
                 echo $e->getException();
             }
         };
@@ -98,7 +98,7 @@ namespace ELBP\Plugins;
 
         $this->CFG = $CFG;
         $this->DB = $DB;
-        $this->ELBPDB = new \ELBP\DB();
+        $this->ELBPDB = new \block_elbp\DB();
 
         // Building up the object for installation, without checking the DB
         if (is_array($data))
@@ -106,7 +106,7 @@ namespace ELBP\Plugins;
 
             // Data must contain: name, title, version, path. Anything else is optional
             if (!isset($data['name']) || !isset($data['title']) || !isset($data['version'])){
-                throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $this->name, get_string('invaliddataarray', 'block_elbp') . '<br>' . print_r($data, true), get_string('programming:nametitleversionpath', 'block_elbp') );
+                throw new \block_elbp\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $this->name, get_string('invaliddataarray', 'block_elbp') . '<br>' . print_r($data, true), get_string('programming:nametitleversionpath', 'block_elbp') );
                 return;
             }
 
@@ -133,7 +133,7 @@ namespace ELBP\Plugins;
         }
 
         if (!$check){
-            throw new \ELBP\ELBPException(get_string('plugin', 'block_elbp'). ' - ' . $this->name, get_string('noplugininstalled', 'block_elbp') . ":<br>" . elbp_html($data), get_string('pluginidorname', 'block_elbp'));
+            throw new \block_elbp\ELBPException(get_string('plugin', 'block_elbp'). ' - ' . $this->name, get_string('noplugininstalled', 'block_elbp') . ":<br>" . elbp_html($data), get_string('pluginidorname', 'block_elbp'));
             return;
         }
 
@@ -299,7 +299,7 @@ namespace ELBP\Plugins;
 
     /**
      * Load all the possible hooks related to this plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      */
     public function loadHooks(){
 
@@ -355,7 +355,7 @@ namespace ELBP\Plugins;
         if (file_exists($file))
         {
             require_once $file;
-            $className = "\\ELBP\\Plugins\\{$this->name}\\Extras\\{$extra}";
+            $className = "\\block_elbp\\Plugins\\{$this->name}\\Extras\\{$extra}";
             return new $className;
         }
 
@@ -639,7 +639,7 @@ namespace ELBP\Plugins;
             "setting" => $setting,
             "value" => $value
         ));
-        return \ELBP\Setting::setSetting($setting, $value, $userID, $this->id);
+        return \block_elbp\Setting::setSetting($setting, $value, $userID, $this->id);
     }
 
     /**
@@ -650,7 +650,7 @@ namespace ELBP\Plugins;
      */
     public function getSetting($setting, $userID = null)
     {
-        return \ELBP\Setting::getSetting($setting, $userID, $this->id);
+        return \block_elbp\Setting::getSetting($setting, $userID, $this->id);
     }
 
     /**
@@ -682,13 +682,13 @@ namespace ELBP\Plugins;
 
         // Check if this user has set their own colours
         if ($this->student){
-            $col = \ELBP\Setting::getSetting("header_bg_col", $this->student->id, $this->id);
+            $col = \block_elbp\Setting::getSetting("header_bg_col", $this->student->id, $this->id);
             if ($col){
                 return $col;
             }
         }
 
-        $col = \ELBP\Setting::getSetting("header_bg_col", null, $this->id);
+        $col = \block_elbp\Setting::getSetting("header_bg_col", null, $this->id);
 
         return ($col) ? $col : '#ffffff';
 
@@ -702,13 +702,13 @@ namespace ELBP\Plugins;
 
         // Check if this user has set their own colours
         if ($this->student){
-            $col = \ELBP\Setting::getSetting("header_font_col", $this->student->id, $this->id);
+            $col = \block_elbp\Setting::getSetting("header_font_col", $this->student->id, $this->id);
             if ($col){
                 return $col;
             }
         }
 
-        $col = \ELBP\Setting::getSetting("header_font_col", null, $this->id);
+        $col = \block_elbp\Setting::getSetting("header_font_col", null, $this->id);
 
         return ($col) ? $col : '#000000';
 
@@ -735,7 +735,7 @@ namespace ELBP\Plugins;
 
 
         // if using gradients:
-        $gradients = \ELBP\Setting::getSetting('elbp_use_gradients');
+        $gradients = \block_elbp\Setting::getSetting('elbp_use_gradients');
 
         if ($bg){
 
@@ -864,7 +864,7 @@ namespace ELBP\Plugins;
         }
 
         try {
-            $MIS = \ELBP\MIS\Manager::instantiate( $name );
+            $MIS = \block_elbp\MIS\Manager::instantiate( $name );
             $this->connection = $MIS;
         }
         catch(ELBPException $e){
@@ -957,7 +957,7 @@ namespace ELBP\Plugins;
      * @return type
      */
     public function isAcademicYearEnabled(){
-        return (\ELBP\ELBP::isAcademicYearEnabled() && $this->getSetting('override_academic_year') != 1);
+        return (\block_elbp\ELBP::isAcademicYearEnabled() && $this->getSetting('override_academic_year') != 1);
     }
 
     /**
@@ -966,7 +966,7 @@ namespace ELBP\Plugins;
      */
     public function getAcademicYearUnix(){
         if (!$this->isAcademicYearEnabled()) return false;
-        return \ELBP\Setting::getSetting('academic_year_start_date');
+        return \block_elbp\Setting::getSetting('academic_year_start_date');
     }
 
     /**
@@ -1123,14 +1123,14 @@ namespace ELBP\Plugins;
 
         $output = "";
 
-        $TPL = new \ELBP\Template();
+        $TPL = new \block_elbp\Template();
         $TPL->set("obj", $this);
         $TPL->set("access", $this->access);
         $TPL->set("params", $params);
 
         try {
             $output .= $TPL->load($this->CFG->dirroot . '/blocks/elbp/plugins/'.$this->name.'/tpl/expanded.html');
-        } catch (\ELBP\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e){
             $output .= $e->getException();
         }
 
@@ -1234,7 +1234,7 @@ namespace ELBP\Plugins;
 
         $this->attributes = "";
 
-        $setting = \ELBP\Setting::getSetting("attributes", null, $this->id);
+        $setting = \block_elbp\Setting::getSetting("attributes", null, $this->id);
 
         $this->attributes = $setting;
 
@@ -1287,7 +1287,7 @@ namespace ELBP\Plugins;
     public function getElementsFromAttributeString($pluginObj = false)
     {
 
-        $FORM = new \ELBP\ELBPForm();
+        $FORM = new \block_elbp\ELBPForm();
 
         // Load student
         if ($this->student){
@@ -1320,7 +1320,7 @@ namespace ELBP\Plugins;
     public function countAttributes()
     {
 
-        $FORM = new \ELBP\ELBPForm();
+        $FORM = new \block_elbp\ELBPForm();
         $FORM->load( $this->getDefaultAttributes() );
         $elements = $FORM->getElements();
         return count($elements);
@@ -1330,7 +1330,7 @@ namespace ELBP\Plugins;
     /**
      * Set the global ELBP object into the plugin
      * @param type $obj
-     * @return \ELBP\Plugins\Plugin
+     * @return \block_elbp\Plugins\Plugin
      */
     public function setELBPObject($obj){
         $this->ELBP = $obj;
@@ -1417,7 +1417,7 @@ namespace ELBP\Plugins;
 
 
         // Overall student progress definitions
-        $setting = \ELBP\Setting::getSetting('enable_student_progress_bar');
+        $setting = \block_elbp\Setting::getSetting('enable_student_progress_bar');
         if ($setting == 'calculated' && $this->supportsStudentProgress())
         {
 
@@ -1558,7 +1558,7 @@ namespace ELBP\Plugins;
 
     /**
      * Get all reporting elements for this plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public function getReportingElements(){
@@ -1570,7 +1570,7 @@ namespace ELBP\Plugins;
 
     /**
      * Get the stringname of a specific reporting element
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $id
      * @return type
      */
@@ -1617,7 +1617,7 @@ namespace ELBP\Plugins;
 
     /**
      * Get the alert events on this plugin
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @return type
      */
     public function getAlertEvents(){
@@ -1679,7 +1679,7 @@ namespace ELBP\Plugins;
         // File doesn't exist, so throw exception
         if (!file_exists($file)){
             if ($_SUPPRESS_ELBP_ERR !== true){
-                throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $pluginName, get_string('filenotfound', 'block_elbp'), $file, sprintf( get_string('programming:createfileorchangepathoruninstall', 'block_elbp'), $pluginName) );
+                throw new \block_elbp\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $pluginName, get_string('filenotfound', 'block_elbp'), $file, sprintf( get_string('programming:createfileorchangepathoruninstall', 'block_elbp'), $pluginName) );
             }
             return false;
         }
@@ -1691,12 +1691,12 @@ namespace ELBP\Plugins;
         // Attempt to create new instance of object & make sure it's an extension of ELBPPLugin
         try
         {
-            $namespace = '\ELBP\\Plugins\\'.$pluginName;
+            $namespace = '\block_elbp\\Plugins\\'.$pluginName;
             if (class_exists($namespace)){
                 $obj = new $namespace();
             } else {
                 if ($_SUPPRESS_ELBP_ERR !== true){
-                    throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $pluginName, get_string('exception:noclass', 'block_elbp'), $namespace );
+                    throw new \block_elbp\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $pluginName, get_string('exception:noclass', 'block_elbp'), $namespace );
                 }
                 return false;
             }
@@ -1704,13 +1704,13 @@ namespace ELBP\Plugins;
         }
 
         // Catch the exception and try to install the plugin
-        catch (\ELBP\ELBPException $e)
+        catch (\block_elbp\ELBPException $e)
         {
 
             if (class_exists($namespace)){
 
                 // if we've got this far than the class file exists, but the record in the DB doesn't, so let's try and install it
-                $namespace = '\ELBP\\Plugins\\'.$pluginName;
+                $namespace = '\block_elbp\\Plugins\\'.$pluginName;
                 $obj = new $namespace(true);
 
                 // If we can't install it, then something is just wrong
@@ -1729,7 +1729,7 @@ namespace ELBP\Plugins;
 
             } else {
                 if ($_SUPPRESS_ELBP_ERR !== true){
-                    throw new \ELBP\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $pluginName, get_string('exception:noclass', 'block_elbp'), $namespace );
+                    throw new \block_elbp\ELBPException( get_string('plugin', 'block_elbp'). ' - ' . $pluginName, get_string('exception:noclass', 'block_elbp'), $namespace );
                 }
                 return false;
             }
@@ -1744,7 +1744,7 @@ namespace ELBP\Plugins;
 
     /**
      * Force a plugin uninstall when the object can't load, e.g. source code was removed
-     * @global \ELBP\Plugins\type $DB
+     * @global \block_elbp\Plugins\type $DB
      * @param type $pluginName
      * @return type
      */

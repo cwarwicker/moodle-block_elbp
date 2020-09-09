@@ -38,7 +38,7 @@ function xmldb_block_elbp_upgrade($oldversion = 0)
     
     $result = true;
     
-    $ELBP = \ELBP\ELBP::instantiate( array('load_custom' => false) );
+    $ELBP = \block_elbp\ELBP::instantiate( array('load_custom' => false) );
     $result = $ELBP->upgrade($oldversion);
     
     return $result;

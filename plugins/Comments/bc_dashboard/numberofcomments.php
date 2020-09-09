@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace ELBP\bc_dashboard\Comments;
+namespace block_elbp\bc_dashboard\Comments;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
@@ -38,14 +38,14 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
  *
  * @author cwarwicker
  */
-class numberofcomments extends \BCDB\Report\Element {
+class numberofcomments extends \block_bc_dashboard\Report\Element {
     
     protected $level = 'aggregate';
     protected $type = 'sql';
 
     public function __construct($params = null) {
         
-        $this->object = \ELBP\Plugins\Plugin::instaniate("Comments");
+        $this->object = \block_elbp\Plugins\Plugin::instaniate("Comments");
                 
         // What options can they choose?
         $this->options = array(
