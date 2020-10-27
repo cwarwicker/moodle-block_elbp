@@ -117,7 +117,7 @@ class Tutorials extends Plugin {
         $DB->insert_record("lbp_alert_events", array("pluginid" => $pluginID, "name" => "Tutorial Updated", "description" => "A tutorial is updated (date, targets, etc...)", "auto" => 0, "enabled" => 1));
 
 
-        // Reporting elements for bc_dashboard reporting wizard
+        // Reporting elements for df_dashboard reporting wizard
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:tutorials:numtutorials", "getstringcomponent" => "block_elbp"));
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:tutorials:avgtutorials", "getstringcomponent" => "block_elbp"));
         $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $pluginID, "getstringname" => "reports:tutorials:percentwithtutorials", "getstringcomponent" => "block_elbp"));
@@ -156,7 +156,7 @@ class Tutorials extends Plugin {
         // [Upgrades here]
         if ($this->version < 2013111101){
 
-            // Reporting elements for bc_dashboard reporting wizard
+            // Reporting elements for df_dashboard reporting wizard
             $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:tutorials:numtutorials", "getstringcomponent" => "block_elbp"));
             $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => $this->id, "getstringname" => "reports:tutorials:avgtutorials", "getstringcomponent" => "block_elbp"));
 

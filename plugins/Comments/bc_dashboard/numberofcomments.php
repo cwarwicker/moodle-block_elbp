@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace block_elbp\bc_dashboard\Comments;
+namespace block_elbp\df_dashboard\Comments;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
@@ -38,7 +38,7 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
  *
  * @author cwarwicker
  */
-class numberofcomments extends \block_bc_dashboard\Report\Element {
+class numberofcomments extends \block_df_dashboard\Report\Element {
     
     protected $level = 'aggregate';
     protected $type = 'sql';
@@ -50,7 +50,7 @@ class numberofcomments extends \block_bc_dashboard\Report\Element {
         // What options can they choose?
         $this->options = array(
             array('select', get_string('reportoption:type', 'block_elbp'), array('all' => get_string('all', 'block_elbp'), 'positive' => get_string('positive', 'block_elbp'), 'negative' => get_string('negative', 'block_elbp'))),
-            array('select', get_string('reportoption:count', 'block_bc_dashboard'), array('total' => get_string('total', 'block_bc_dashboard'), 'average' => get_string('average', 'block_bc_dashboard'), 'percent' => get_string('percent', 'block_bc_dashboard')))
+            array('select', get_string('reportoption:count', 'block_df_dashboard'), array('total' => get_string('total', 'block_df_dashboard'), 'average' => get_string('average', 'block_df_dashboard'), 'percent' => get_string('percent', 'block_df_dashboard')))
         );            
         
         parent::__construct($params);

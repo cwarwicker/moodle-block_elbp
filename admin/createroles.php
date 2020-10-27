@@ -15,13 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Electronic Learning Blue Print
- *
- * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
- * reports, qualification progress, etc... as well as unlimited custom sections.
+ * This file automatically creates any missing ELBP roles.
  *
  * @package     block_elbp
- * @copyright   2017-onwards Conn Warwicker
+ * @copyright   2011-2017 Bedford College, 2017 onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
  * @link        https://github.com/cwarwicker/moodle-block_elbp
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,8 +27,8 @@
  *
  */
 
-require_once '../../../config.php';
-require_once $CFG->dirroot . '/blocks/elbp/lib.php';
+require_once('../../../config.php');
+require_once($CFG->dirroot . '/blocks/elbp/lib.php');
 
 // Need to be logged in to view this page
 require_login();
@@ -39,18 +36,16 @@ require_login();
 $ELBP = block_elbp\ELBP::instantiate();
 
 $access = $ELBP->getCoursePermissions(SITEID);
-if (!$access['god'] && $view != 'course'){
+if (!$access['god'] && $view != 'course') {
     print_error( get_string('invalidaccess', 'block_elbp') );
 }
 
 // Required data
 $systemContext = \context_system::instance();
-
-
 $results = array('errors' => array(), 'success' => array());
 
 // Front page teacher
-if (!$ELBP->getSetting('elbp_frontpageteacher')){
+if (!$ELBP->getSetting('elbp_frontpageteacher')) {
 
     $name = get_string('frontpageteacherrolename', 'block_elbp');
     $shortname = 'elbp_frontpageteacher';
@@ -58,14 +53,14 @@ if (!$ELBP->getSetting('elbp_frontpageteacher')){
     $id = create_role($name, $shortname, $desc, 'frontpage');
 
     // If it created successfully
-    if ($id){
+    if ($id) {
 
         // Set the role contexts
         set_role_contextlevels($id, array(CONTEXT_COURSE));
 
-        // Update the block/elbp:view_elbp capability and block/bc_dashboard:view_bc_dashboard
+        // Update the block/elbp:view_elbp capability and block/df_dashboard:view_df_dashboard
         assign_capability('block/elbp:view_elbp', CAP_ALLOW, $id, $systemContext);
-        assign_capability('block/bc_dashboard:view_bc_dashboard', CAP_ALLOW, $id, $systemContext);
+        assign_capability('block/df_dashboard:view_df_dashboard', CAP_ALLOW, $id, $systemContext);
 
         // Update elbp setting
         $ELBP->updateSetting('elbp_frontpageteacher', $shortname);
@@ -80,10 +75,8 @@ if (!$ELBP->getSetting('elbp_frontpageteacher')){
 
 }
 
-
-
 // Personal Tutor
-if (!$ELBP->getSetting('elbp_personaltutor')){
+if (!$ELBP->getSetting('elbp_personaltutor')) {
 
     $name = get_string('personaltutorrolename', 'block_elbp');
     $shortname = 'elbp_personaltutor';
@@ -91,7 +84,7 @@ if (!$ELBP->getSetting('elbp_personaltutor')){
     $id = create_role($name, $shortname, $desc, 'teacher');
 
     // If it created successfully
-    if ($id){
+    if ($id) {
 
         // Set the role contexts
         set_role_contextlevels($id, array(CONTEXT_USER));
@@ -112,9 +105,8 @@ if (!$ELBP->getSetting('elbp_personaltutor')){
 
 }
 
-
 // Additional Support Tutor
-if (!$ELBP->getSetting('elbp_asl')){
+if (!$ELBP->getSetting('elbp_asl')) {
 
     $name = get_string('addsuptutorrolename', 'block_elbp');
     $shortname = 'elbp_addsuptutor';
@@ -122,7 +114,7 @@ if (!$ELBP->getSetting('elbp_asl')){
     $id = create_role($name, $shortname, $desc, 'teacher');
 
     // If it created successfully
-    if ($id){
+    if ($id) {
 
         // Set the role contexts
         set_role_contextlevels($id, array(CONTEXT_USER));
@@ -142,10 +134,8 @@ if (!$ELBP->getSetting('elbp_asl')){
     }
 }
 
-
-
 // ELBP Manager/Admin
-if (!$ELBP->getSetting('elbp_admin')){
+if (!$ELBP->getSetting('elbp_admin')) {
 
     $name = get_string('elbpadminrolename', 'block_elbp');
     $shortname = 'elbp_manager';
@@ -153,14 +143,14 @@ if (!$ELBP->getSetting('elbp_admin')){
     $id = create_role($name, $shortname, $desc, 'frontpage');
 
     // If it created successfully
-    if ($id){
+    if ($id) {
 
         // Set the role contexts
         set_role_contextlevels($id, array(CONTEXT_COURSE));
 
-        // Update the block/elbp:view_elbp capability & view_bc_dashboard
+        // Update the block/elbp:view_elbp capability & view_df_dashboard
         assign_capability('block/elbp:elbp_admin', CAP_ALLOW, $id, $systemContext);
-        assign_capability('block/bc_dashboard:view_bc_dashboard', CAP_ALLOW, $id, $systemContext);
+        assign_capability('block/df_dashboard:view_df_dashboard', CAP_ALLOW, $id, $systemContext);
 
         // Update the elbp setting
         $ELBP->updateSetting('elbp_admin', $shortname);
@@ -173,10 +163,6 @@ if (!$ELBP->getSetting('elbp_admin')){
         $results['errors'][] = sprintf(get_string('errors:createnewrole', 'block_elbp'), $shortname);
     }
 }
-
-
-
-
 
 // Set up PAGE
 $PAGE->set_context( context_course::instance(SITEID) );
@@ -192,23 +178,21 @@ $PAGE->navbar->add( get_string('createroles', 'block_elbp'), $CFG->wwwroot . '/b
 
 echo $OUTPUT->header();
 
-if ($results['success']){
+if ($results['success']) {
     echo "<div class='process-output-success'>";
-        foreach($results['success'] as $msg)
-        {
-            echo $msg . "<br><br>";
-        }
+    foreach ($results['success'] as $msg) {
+        echo $msg . "<br><br>";
+    }
     echo "</div>";
     echo "<br>";
 }
 
 
-if ($results['errors']){
+if ($results['errors']) {
     echo "<div class='process-output-error'>";
-        foreach($results['errors'] as $msg)
-        {
-            echo $msg . "<br><br>";
-        }
+    foreach ($results['errors'] as $msg) {
+        echo $msg . "<br><br>";
+    }
     echo "</div>";
     echo "<br>";
 }

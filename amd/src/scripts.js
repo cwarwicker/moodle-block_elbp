@@ -58,6 +58,9 @@ define(['jquery', 'jqueryui', 'block_elbp/minicolors', 'block_elbp/raty', 'block
 
         var url = ELBP.www + "/blocks/elbp/js/ajaxHandler.php";
 
+        // Append sesskey to all AJAX parameters.
+        params.sesskey = M.cfg.sesskey;
+
         if (callBefore){
             callBefore();
         }

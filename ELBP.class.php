@@ -572,7 +572,7 @@ class ELBP
 
 
      /**
-     * For the bc_dashboard reporting wizard - get all the data we can about Targets for these students,
+     * For the df_dashboard reporting wizard - get all the data we can about Targets for these students,
      * then return the elements that we want.
      * @param type $students
      * @param type $elements
@@ -747,7 +747,7 @@ class ELBP
                   $TPL->set("logs", \block_elbp\Log::parseListOfLogs( \block_elbp\Log::getRecentLogs(15) ));
 
                   // DF Hub Site
-                  $site = new \DF\Site();
+                  $site = new \local_df_hub\site();
                   $TPL->set("site", $site);
 
                   // Plugins

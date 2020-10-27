@@ -57,8 +57,8 @@ class block_elbp extends block_base
 
         $this->content = new stdClass();
 
-        $check_block = $DB->get_record("block", array("name" => "bc_dashboard"));
-        $this->bc_dashboard_installed = ($check_block !== false);
+        $check_block = $DB->get_record("block", array("name" => "df_dashboard"));
+        $this->df_dashboard_installed = ($check_block !== false);
 
         $this->elbp = block_elbp\ELBP::instantiate();
         $this->title = $this->elbp->getELBPFullName();
@@ -127,7 +127,7 @@ class block_elbp extends block_base
             if ($access['god'] || $access['teacher'])
             {
                 $myStudentsLink = ($COURSE->id <> SITEID) ? 'index.php?Qs=/view/course/' . $COURSE->id : '';
-                $this->content->text .= '<li><img src="'.$this->imgdir.'group_blue.png" alt="" /> <a href="'. $CFG->wwwroot . '/blocks/bc_dashboard/'.$myStudentsLink.'">'.get_string('mystudents', 'block_elbp').'</a></li>';
+                $this->content->text .= '<li><img src="'.$this->imgdir.'group_blue.png" alt="" /> <a href="'. $CFG->wwwroot . '/blocks/df_dashboard/'.$myStudentsLink.'">'.get_string('mystudents', 'block_elbp').'</a></li>';
                 $this->content->text .= '<li><img src="'.$this->imgdir.'settings.png" alt="" /> <a href="'. $CFG->wwwroot . '/blocks/elbp/settings.php">'.get_string('mysettings', 'block_elbp').'</a></li>';
             }
 
@@ -139,8 +139,8 @@ class block_elbp extends block_base
             // WLBP Manager link
             if ($access['god'] || $access['elbpadmin'])
             {
-                if ($this->bc_dashboard_installed){
-                    $this->content->text .= '<li><img src="'.$this->imgdir.'admin.png" alt="" /> <a href="'.$CFG->wwwroot.'/blocks/bc_dashboard/index.php?Qs=/view/admin">'.get_string('manager', 'block_elbp').'</a></li>';
+                if ($this->df_dashboard_installed){
+                    $this->content->text .= '<li><img src="'.$this->imgdir.'admin.png" alt="" /> <a href="'.$CFG->wwwroot.'/blocks/df_dashboard/index.php?Qs=/view/admin">'.get_string('manager', 'block_elbp').'</a></li>';
                 }
             }
 

@@ -84,7 +84,7 @@ Viewing a Student's Customised Plugin (Personal Skills Development):
 Requirements
 ------------
 - Moodle 3.4, 3.5, 3.6, 3.7
-- Plugin block_bc_dashboard installed
+- Plugin block_df_dashboard installed
 - Plugin local_df_hub installed
 
 Installation

@@ -180,17 +180,17 @@ $string['badges:desc'] = 'Show Moodle Badges on Student Profile';
 $string['barchart'] = 'Bar Chart';
 
 // Reporting elements
-$string['bc_dashboard:Attendance:attendance'] = 'Attendance';
-$string['bc_dashboard:Comments:numberofcomments'] = 'No. Comments';
-$string['bc_dashboard:Custom:lastupdate'] = 'Last Update';
-$string['bc_dashboard:Custom:multifield'] = 'Multi Field Count';
-$string['bc_dashboard:Custom:numberofrecords'] = 'No. Records';
-$string['bc_dashboard:Custom:numberwithrecords'] = 'No. w/ records';
-$string['bc_dashboard:Custom:numberwithoutrecords'] = 'No. w/o records';
-$string['bc_dashboard:Custom:singlefield'] = 'Single Field Count';
-$string['bc_dashboard:Targets:numberoftargets'] = 'No. Targets';
-$string['bc_dashboard:Tutorials:numberoftutorials'] = 'No. Tutorials';
-$string['bc_dashboard:Tutorials:lasttutorial'] = 'Last Tutorial';
+$string['df_dashboard:Attendance:attendance'] = 'Attendance';
+$string['df_dashboard:Comments:numberofcomments'] = 'No. Comments';
+$string['df_dashboard:Custom:lastupdate'] = 'Last Update';
+$string['df_dashboard:Custom:multifield'] = 'Multi Field Count';
+$string['df_dashboard:Custom:numberofrecords'] = 'No. Records';
+$string['df_dashboard:Custom:numberwithrecords'] = 'No. w/ records';
+$string['df_dashboard:Custom:numberwithoutrecords'] = 'No. w/o records';
+$string['df_dashboard:Custom:singlefield'] = 'Single Field Count';
+$string['df_dashboard:Targets:numberoftargets'] = 'No. Targets';
+$string['df_dashboard:Tutorials:numberoftutorials'] = 'No. Tutorials';
+$string['df_dashboard:Tutorials:lasttutorial'] = 'Last Tutorial';
 
 $string['bestresults'] = 'Best Results';
 $string['blockconfig'] = 'Block Configuration';
@@ -441,7 +441,7 @@ $string['draft'] = 'Draft';
 $string['due'] = 'Due';
 
 // E
-$string['elbp:elbp_admin'] = 'ELBP Administrator - Ability to search/view any ELBP (Requires the bc_dashboard block)';
+$string['elbp:elbp_admin'] = 'ELBP Administrator - Ability to search/view any ELBP (Requires the df_dashboard block)';
 $string['elbp:view_elbp'] = 'View a student\'s ELBP.';
 $string['elbp:add_target'] = 'Add targets';
 $string['elbp:add_target_comment'] = 'Add comments to targets';

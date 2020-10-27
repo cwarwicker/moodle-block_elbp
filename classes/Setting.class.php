@@ -115,9 +115,9 @@ class Setting
         global $DB;
         
         $params = array();
-        
-        if ($value == '') $value = null;
-        
+
+        if ($value === '') $value = null;
+
         // Check if setting already exists given these parameters
         $sql = " setting = ? ";
         $params[] = $setting;

@@ -586,19 +586,26 @@ namespace block_elbp\Plugins;
 
     /**
      * Save the settings just sent in the plugin configuration form
+     * Each plugin should have their own saveConfig() method which loads up the settings array from the
+     * optional params and passes it into the parent method for processing.
      * @param type $settings
      */
-    public function saveConfig($settings)
+    public function saveConfig($settings = false)
     {
 
-        if (isset($settings['submitconfig']))
+        // Require the sesskey before submitting any forms.
+        require_sesskey();
+
+        $submission = array(
+            'submitconfig' => optional_param('submitconfig', false, PARAM_TEXT),
+        );
+
+        if ($submission['submitconfig'])
         {
 
-            // Remove so doesn't get put into lbp_settings
-            unset($settings['submitconfig']);
 
             // Enabled is stored in the plugins table, not the settings table, so do that differently
-            if (isset($settings['enabled']))
+            if (isset($settings['enabled']) && $settings['enabled'] !== false)
             {
                 $this->setEnabled($settings['enabled']);
                 $this->updatePlugin();
@@ -606,7 +613,7 @@ namespace block_elbp\Plugins;
             }
 
             // Title is stored in the plugins table, not the settings table
-            if (isset($settings['plugin_title']))
+            if (isset($settings['plugin_title']) && $settings['plugin_title'] !== false)
             {
                 $title = trim($settings['plugin_title']);
                 if (!empty($title)){
@@ -621,7 +628,9 @@ namespace block_elbp\Plugins;
             }
 
             foreach( (array)$settings as $setting => $value ){
-                $this->updateSetting($setting, $value);
+                if ($value !== false) {
+                    $this->updateSetting($setting, $value);
+                }
             }
         }
     }
@@ -1407,8 +1416,8 @@ namespace block_elbp\Plugins;
         // EMail alerts for the plugin
 
         // Students
-        $enable = ( $this->getSetting('plugin_stud_alerts_enabled') !== 0) ? 'checked' : '';
-        $disable = ( $this->getSetting('plugin_stud_alerts_enabled') === 0) ? 'checked' : '';
+        $enable = ( $this->getSetting('plugin_stud_alerts_enabled') !== '0') ? 'checked' : '';
+        $disable = ( $this->getSetting('plugin_stud_alerts_enabled') === '0') ? 'checked' : '';
         $output .= "<small><strong>".get_string('blockconfig:alerts:stud', 'block_elbp')."</strong> - ".get_string('blockconfig:alerts:stud:desc', 'block_elbp')."</small><br>";
         $output .= "<input type='radio' name='plugin_stud_alerts_enabled' value='1' {$enable} /> <label>".get_string('enable')."</label>  &nbsp;";
         $output .= "&nbsp; <input type='radio' name='plugin_stud_alerts_enabled' value='0' {$disable} /> <label>".get_string('disable')."</label>";

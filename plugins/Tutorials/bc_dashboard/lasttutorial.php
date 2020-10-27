@@ -29,11 +29,11 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  *
  */
-namespace block_elbp\bc_dashboard\Tutorials;
+namespace block_elbp\df_dashboard\Tutorials;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
-class lasttutorial extends \block_bc_dashboard\Report\Element {
+class lasttutorial extends \block_df_dashboard\Report\Element {
 
     protected $level = 'aggregate';
     protected $type = 'hybrid'; // This means it uses SQL to get the data, but for each indivudla user row, we want to run a function on that data

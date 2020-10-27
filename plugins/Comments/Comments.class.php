@@ -971,7 +971,7 @@ class Comments extends Plugin {
                 $hidden = "";
 
                 foreach($students as $user){
-                    $output .= bcdb_get_user_name($user->id) . ", ";
+                    $output .= df_dashboard_get_user_name($user->id) . ", ";
                     $hidden .= "<input type='hidden' name='students[]' value='{$user->id}' />";
                 }
 
@@ -1038,7 +1038,7 @@ class Comments extends Plugin {
                                 }
                             </script>";
 
-                bcdb_confirmation_page(get_string('addcomment', 'block_elbp'), $output);
+                df_dashboard_confirmation_page(get_string('addcomment', 'block_elbp'), $output);
                 
                 return false;
                                       

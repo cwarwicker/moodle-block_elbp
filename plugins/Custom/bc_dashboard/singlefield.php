@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace block_elbp\bc_dashboard\Custom;
+namespace block_elbp\df_dashboard\Custom;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
@@ -38,7 +38,7 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
  *
  * @author cwarwicker
  */
-class singlefield extends \block_bc_dashboard\Report\Element {
+class singlefield extends \block_df_dashboard\Report\Element {
     
     protected $level = 'aggregate';
     protected $type = 'function';
@@ -46,9 +46,9 @@ class singlefield extends \block_bc_dashboard\Report\Element {
     public function __construct($params = null) {
         
         $this->options = array(
-            array('select', get_string('reportoption:plugin', 'block_bc_dashboard'), \block_elbp\Plugins\CustomPlugin::all()), # Plugin
-            array('select', get_string('reportoption:fields', 'block_bc_dashboard'), array()), # Fields to choose from
-            array('select', get_string('reportoption:count', 'block_bc_dashboard'), array('total' => get_string('total', 'block_bc_dashboard'), 'average' => get_string('average', 'block_bc_dashboard')))
+            array('select', get_string('reportoption:plugin', 'block_df_dashboard'), \block_elbp\Plugins\CustomPlugin::all()), # Plugin
+            array('select', get_string('reportoption:fields', 'block_df_dashboard'), array()), # Fields to choose from
+            array('select', get_string('reportoption:count', 'block_df_dashboard'), array('total' => get_string('total', 'block_df_dashboard'), 'average' => get_string('average', 'block_df_dashboard')))
         );
         
         parent::__construct($params);

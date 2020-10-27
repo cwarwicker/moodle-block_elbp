@@ -36,68 +36,68 @@ $elements = array(
     
     'Attendance:attendance' => array(
         'sub' => 'Attendance',
-        'file' => '/blocks/elbp/plugins/Attendance/bc_dashboard/attendance.php',
-        'class' => '\block_elbp\bc_dashboard\Attendance\attendance',
+        'file' => '/blocks/elbp/plugins/Attendance/df_dashboard/attendance.php',
+        'class' => '\block_elbp\df_dashboard\Attendance\attendance',
     ),
     
     'Comments:numberofcomments' => array(
         'sub' => 'Comments',
-        'file' => '/blocks/elbp/plugins/Comments/bc_dashboard/numberofcomments.php',
-        'class' => '\block_elbp\bc_dashboard\Comments\numberofcomments',
+        'file' => '/blocks/elbp/plugins/Comments/df_dashboard/numberofcomments.php',
+        'class' => '\block_elbp\df_dashboard\Comments\numberofcomments',
     ),
     
     'Custom:lastupdate' => array(
         'sub' => 'Custom',
-        'file' => '/blocks/elbp/plugins/Custom/bc_dashboard/lastupdate.php',
-        'class' => '\block_elbp\bc_dashboard\Custom\lastupdate',
+        'file' => '/blocks/elbp/plugins/Custom/df_dashboard/lastupdate.php',
+        'class' => '\block_elbp\df_dashboard\Custom\lastupdate',
     ),
     
     'Custom:multifield' => array(
         'sub' => 'Custom',
-        'file' => '/blocks/elbp/plugins/Custom/bc_dashboard/multifield.php',
-        'class' => '\block_elbp\bc_dashboard\Custom\multifield',
+        'file' => '/blocks/elbp/plugins/Custom/df_dashboard/multifield.php',
+        'class' => '\block_elbp\df_dashboard\Custom\multifield',
     ),
     
     'Custom:numberofrecords' => array(
         'sub' => 'Custom',
-        'file' => '/blocks/elbp/plugins/Custom/bc_dashboard/numberofrecords.php',
-        'class' => '\block_elbp\bc_dashboard\Custom\numberofrecords',
+        'file' => '/blocks/elbp/plugins/Custom/df_dashboard/numberofrecords.php',
+        'class' => '\block_elbp\df_dashboard\Custom\numberofrecords',
     ),
     
     'Custom:numberwithoutrecords' => array(
         'sub' => 'Custom',
-        'file' => '/blocks/elbp/plugins/Custom/bc_dashboard/numberwithoutrecords.php',
-        'class' => '\block_elbp\bc_dashboard\Custom\numberwithoutrecords',
+        'file' => '/blocks/elbp/plugins/Custom/df_dashboard/numberwithoutrecords.php',
+        'class' => '\block_elbp\df_dashboard\Custom\numberwithoutrecords',
     ),
     
     'Custom:numberwithrecords' => array(
         'sub' => 'Custom',
-        'file' => '/blocks/elbp/plugins/Custom/bc_dashboard/numberwithrecords.php',
-        'class' => '\block_elbp\bc_dashboard\Custom\numberwithrecords',
+        'file' => '/blocks/elbp/plugins/Custom/df_dashboard/numberwithrecords.php',
+        'class' => '\block_elbp\df_dashboard\Custom\numberwithrecords',
     ),
     
     'Custom:singlefield' => array(
         'sub' => 'Custom',
-        'file' => '/blocks/elbp/plugins/Custom/bc_dashboard/singlefield.php',
-        'class' => '\block_elbp\bc_dashboard\Custom\singlefield',
+        'file' => '/blocks/elbp/plugins/Custom/df_dashboard/singlefield.php',
+        'class' => '\block_elbp\df_dashboard\Custom\singlefield',
     ),
     
     'Targets:numberoftargets' => array(
         'sub' => 'Targets',
-        'file' => '/blocks/elbp/plugins/Targets/bc_dashboard/numberoftargets.php',
-        'class' => '\block_elbp\bc_dashboard\Targets\numberoftargets',
+        'file' => '/blocks/elbp/plugins/Targets/df_dashboard/numberoftargets.php',
+        'class' => '\block_elbp\df_dashboard\Targets\numberoftargets',
     ),
     
     'Tutorials:numberoftutorials' => array(
         'sub' => 'Tutorials',
-        'file' => '/blocks/elbp/plugins/Tutorials/bc_dashboard/numberoftutorials.php',
-        'class' => '\block_elbp\bc_dashboard\Tutorials\numberoftutorials',
+        'file' => '/blocks/elbp/plugins/Tutorials/df_dashboard/numberoftutorials.php',
+        'class' => '\block_elbp\df_dashboard\Tutorials\numberoftutorials',
     ),
     
     'Tutorials:lasttutorial' => array(
         'sub' => 'Tutorials',
-        'file' => '/blocks/elbp/plugins/Tutorials/bc_dashboard/lasttutorial.php',
-        'class' => '\block_elbp\bc_dashboard\Tutorials\lasttutorial',
+        'file' => '/blocks/elbp/plugins/Tutorials/df_dashboard/lasttutorial.php',
+        'class' => '\block_elbp\df_dashboard\Tutorials\lasttutorial',
     )
     
     

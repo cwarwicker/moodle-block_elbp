@@ -35,6 +35,6 @@ $plugin->requires = 2017111300;
 $plugin->cron = 3600; # Run every hour
 $plugin->component = 'block_elbp';
 $plugin->dependencies = array(
-    'block_bc_dashboard' => 2020081300,
+    'block_df_dashboard' => 2020081300,
     'local_df_hub' => 2020031900
 );

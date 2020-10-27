@@ -29,7 +29,7 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  * 
  */
-namespace block_elbp\bc_dashboard\Custom;
+namespace block_elbp\df_dashboard\Custom;
 
 require_once $CFG->dirroot . '/blocks/elbp/lib.php';
 
@@ -38,7 +38,7 @@ require_once $CFG->dirroot . '/blocks/elbp/lib.php';
  *
  * @author cwarwicker
  */
-class numberwithrecords extends \block_bc_dashboard\Report\Element {
+class numberwithrecords extends \block_df_dashboard\Report\Element {
     
     protected $level = 'aggregate';
     protected $type = 'function';
@@ -46,7 +46,7 @@ class numberwithrecords extends \block_bc_dashboard\Report\Element {
     public function __construct($params = null) {
        
         $this->options = array(
-            array('select', get_string('reportoption:plugin', 'block_bc_dashboard'), \block_elbp\Plugins\CustomPlugin::all()) # Plugin
+            array('select', get_string('reportoption:plugin', 'block_df_dashboard'), \block_elbp\Plugins\CustomPlugin::all()) # Plugin
         );
         
         parent::__construct($params);

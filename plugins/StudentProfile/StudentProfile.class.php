@@ -1693,7 +1693,7 @@ class StudentProfile extends Plugin {
 
 
     /**
-     * For the bc_dashboard reporting wizard - get all the data we can about Targets for these students,
+     * For the df_dashboard reporting wizard - get all the data we can about Targets for these students,
      * then return the elements that we want.
      * @param type $students
      * @param type $elements
