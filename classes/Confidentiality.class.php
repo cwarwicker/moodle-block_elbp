@@ -21,7 +21,7 @@
  * reports, qualification progress, etc... as well as unlimited custom sections.
  * 
  * @package     block_elbp
- * @copyright   2017-onwards Conn Warwicker
+ * @copyright   2011-2017 Bedford College, 2017 onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
  * @link        https://github.com/cwarwicker/moodle-block_elbp
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

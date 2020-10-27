@@ -21,7 +21,7 @@
  * when one of their students Total Attendance drops below 75%, etc...
  *
  * @package     block_elbp
- * @copyright   2017-onwards Conn Warwicker
+ * @copyright   2011-2017 Bedford College, 2017 onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
  * @link        https://github.com/cwarwicker/moodle-block_elbp
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
