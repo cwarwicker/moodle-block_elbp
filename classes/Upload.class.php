@@ -32,6 +32,8 @@
 
 namespace block_elbp;
 
+defined('MOODLE_INTERNAL') or die();
+
 /**
  *
  */
@@ -60,7 +62,7 @@ class Upload {
      * @param type $mimes
      * @return \block_elbp\Upload
      */
-    public function setMimeTypes($mimes){
+    public function setMimeTypes($mimes) {
         $this->mime_types = $mimes;
         return $this;
     }
@@ -70,7 +72,7 @@ class Upload {
      * @param type $dir
      * @return \block_elbp\Upload
      */
-    public function setUploadDir($dir){
+    public function setUploadDir($dir) {
         $this->upload_dir = $dir;
         return $this;
     }
@@ -80,7 +82,7 @@ class Upload {
      * @param type $size
      * @return \block_elbp\Upload
      */
-    public function setMaxSize($size){
+    public function setMaxSize($size) {
         $this->max_size = $size;
         return $this;
     }
@@ -89,7 +91,7 @@ class Upload {
      * Get the max file size allowed. Either set by us, or get the server default.
      * @return type
      */
-    private function getMaxSize(){
+    private function getMaxSize() {
         return (is_null($this->max_size)) ? return_bytes_from_upload_max_filesize( ini_get('upload_max_filesize') ) : return_bytes_from_upload_max_filesize($this->max_size);
     }
 
@@ -98,7 +100,7 @@ class Upload {
      * ???
      * @return type
      */
-    private function getMaxSizeString(){
+    private function getMaxSizeString() {
         return (is_null($this->max_size)) ? ini_get('upload_max_filesize') : $this->max_size;
     }
 
@@ -107,24 +109,24 @@ class Upload {
      * @param type $file
      * @return \block_elbp\Upload
      */
-    public function setFile($file){
+    public function setFile($file) {
         $this->file = $file;
         return $this;
     }
 
-    public function getFileNameWithoutExtension(){
-      return \elbp_get_file_name($this->file['name']);
+    public function getFileNameWithoutExtension() {
+        return \elbp_get_file_name($this->file['name']);
     }
 
-    public function getRealFilename(){
-      return $this->file['name'];
+    public function getRealFilename() {
+        return $this->file['name'];
     }
 
     /**
      * Get any error messages
      * @return type
      */
-    public function getErrorMessage(){
+    public function getErrorMessage() {
         return $this->error_msg;
     }
 
@@ -132,7 +134,7 @@ class Upload {
      * Get the result of the upload
      * @return bool
      */
-    public function getResult(){
+    public function getResult() {
         return $this->result;
     }
 
@@ -140,36 +142,34 @@ class Upload {
      * If there are errors, get a string for what that error type was
      * @return string
      */
-    public function getUploadErrorCodeMessage(){
+    public function getUploadErrorCodeMessage() {
 
-        if ($this->file['error'] > 0)
-        {
-            switch($this->file['error'])
-            {
+        if ($this->file['error'] > 0) {
+            switch ($this->file['error']) {
                 case UPLOAD_ERR_INI_SIZE:
                 case UPLOAD_ERR_FORM_SIZE:
                     return get_string('uploads:filetoolarge', 'block_elbp');
-                break;
+                    break;
 
                 case UPLOAD_ERR_PARTIAL:
                     return get_string('uploads:onlypartial', 'block_elbp');
-                break;
+                    break;
 
                 case UPLOAD_ERR_NO_FILE:
                     return get_string('uploads:filenotset', 'block_elbp');
-                break;
+                    break;
 
                 case UPLOAD_ERR_NO_TMP_DIR:
                     return get_string('uploads:notmpdir', 'block_elbp');
-                break;
+                    break;
 
                 case UPLOAD_ERR_CANT_WRITE:
                     return get_string('uploads:dirnoexist', 'block_elbp');
-                break;
+                    break;
 
                 case UPLOAD_ERR_EXTENSION:
                     return get_string('uploads:phpextension', 'block_elbp');
-                break;
+                    break;
 
             }
         }
@@ -182,60 +182,60 @@ class Upload {
      * Run the file upload
      * @return type
      */
-    public function doUpload(){
+    public function doUpload() {
 
         // Make sure required things are set:
 
         $fInfo = \finfo_open(FILEINFO_MIME_TYPE);
-            $mime = \finfo_file($fInfo, $this->file['tmp_name']);
+        $mime = \finfo_file($fInfo, $this->file['tmp_name']);
         \finfo_close($fInfo);
 
         // Mime types not set
-        if (is_null($this->mime_types)){
-            return array('success' => false,'error' => get_string('uploads:mimetypesnotset', 'block_elbp'));
+        if (is_null($this->mime_types)) {
+            return array('success' => false, 'error' => get_string('uploads:mimetypesnotset', 'block_elbp'));
         }
 
         // Upload directory not set
-        if (is_null($this->upload_dir)){
-            return array('success' => false,'error' => get_string('uploads:uploaddirnotset', 'block_elbp'));
+        if (is_null($this->upload_dir)) {
+            return array('success' => false, 'error' => get_string('uploads:uploaddirnotset', 'block_elbp'));
         }
 
         // File not set
-        if (is_null($this->file)){
-            return array('success' => false,'error' => get_string('uploads:filenotset', 'block_elbp'));
+        if (is_null($this->file)) {
+            return array('success' => false, 'error' => get_string('uploads:filenotset', 'block_elbp'));
         }
 
         // Check size of file
-        if ($this->file['size'] > $this->getMaxSize()){
-            return array('success' => false,'error' => get_string('uploads:filetoolarge', 'block_elbp') . " ( ".convert_bytes_to_hr($this->file['size'])." ::: {$this->getMaxSizeString()} )");
+        if ($this->file['size'] > $this->getMaxSize()) {
+            return array('success' => false, 'error' => get_string('uploads:filetoolarge', 'block_elbp') . " ( ".convert_bytes_to_hr($this->file['size'])." ::: {$this->getMaxSizeString()} )");
         }
 
         // Check mime type
-        if ($this->mime_types && !in_array($mime, $this->mime_types)){
-            return array('success' => false,'error' => get_string('uploads:invalidmimetype', 'block_elbp') . " ( {$mime} )");
+        if ($this->mime_types && !in_array($mime, $this->mime_types)) {
+            return array('success' => false, 'error' => get_string('uploads:invalidmimetype', 'block_elbp') . " ( {$mime} )");
         }
 
         // Check upload directory exists and is writable
-        if (!is_dir($this->upload_dir)){
-            return array('success' => false,'error' => get_string('uploads:dirnoexist', 'block_elbp'));
+        if (!is_dir($this->upload_dir)) {
+            return array('success' => false, 'error' => get_string('uploads:dirnoexist', 'block_elbp'));
         }
 
         // Get the ext and name from the file
         $fileExt = elbp_get_file_extension($this->file['name']);
         $fileName = $this->file['name'];
 
-        if (!isset($this->doNotChangeFileName) || !$this->doNotChangeFileName){
+        if (!isset($this->doNotChangeFileName) || !$this->doNotChangeFileName) {
 
             $fileName = 'elbp-' . elbp_generate_random_string(15, true) . '-' . $this->getFileNameWithoutExtension();
 
             // If filename already exists, try a different one
-            while (file_exists($this->upload_dir . $fileName . '.' . $fileExt)){
+            while (file_exists($this->upload_dir . $fileName . '.' . $fileExt)) {
                 $fileName = 'elbp-' . elbp_generate_random_string(15, true) . '-' . $this->getFileNameWithoutExtension();
             }
 
         }
 
-        if (!isset($this->doNotChangeFileName) || !$this->doNotChangeFileName){
+        if (!isset($this->doNotChangeFileName) || !$this->doNotChangeFileName) {
             $this->filename = $fileName . '.' . $fileExt;
         } else {
             $this->filename = $fileName;
@@ -243,7 +243,7 @@ class Upload {
 
         // Try and move the file
         $result = move_uploaded_file($this->file['tmp_name'], $this->upload_dir . $this->filename);
-        if (!$result){
+        if (!$result) {
             return array('success' => false, 'error' => get_string('uploads:unknownerror', 'block_elbp') . '['.$this->file['error'].']');
         }
 

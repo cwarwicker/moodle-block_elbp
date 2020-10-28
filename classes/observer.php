@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2011-2017 Bedford College, 2017 onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,42 +27,47 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once $CFG->dirroot . '/blocks/elbp/lib.php';
+require_once($CFG->dirroot . '/blocks/elbp/lib.php');
 
 class block_elbp_observer {
-    
+
     /**
-}
      * @param \core\event\base $data
+     * @return bool
+     * @throws dml_exception
      */
     public static function eblp_user_enrolment(\core\event\base $data) {
-        
-        if ($data->contextlevel == CONTEXT_COURSE){
+
+        if ($data->contextlevel == CONTEXT_COURSE) {
             global $DB;
-    
+
             $ELBPDB = new \block_elbp\DB();
 
             // Get context & role assignment
             $context = $DB->get_record("context", array("contextlevel" => CONTEXT_COURSE, "instanceid" => $data->courseid));
-            if (!$context) return true;
+            if (!$context) {
+                return true;
+            }
 
             $role = $DB->get_record("role_assignments", array("userid" => $data->relateduserid, "contextid" => $context->id));
-            if (!$role) return true;
+            if (!$role) {
+                return true;
+            }
 
             // Must be student
-            if ($role->roleid <> $ELBPDB->getRole("student")) return true;
+            if ($role->roleid <> $ELBPDB->getRole("student")) {
+                return true;
+            }
 
             // Find any PTs assigned to this course and add this user to them
             $assigned = $DB->get_records("lbp_tutor_assignments", array("courseid" => $data->courseid));
-            if ($assigned)
-            {
-                foreach($assigned as $record)
-                {
+            if ($assigned) {
+                foreach ($assigned as $record) {
 
                     $PT = new \block_elbp\PersonalTutor();
                     $PT->loadTutorID($record->tutorid);
@@ -71,34 +76,30 @@ class block_elbp_observer {
                 }
             }
         }
-        
 
     }
-    
-    
+
+
     /**
      * @param \core\event\base $data
      */
     public static function eblp_user_unenrolment(\core\event\base $data) {
-        
-        
+
     }
-    
-    
+
+
     /**
      * @param \core\event\base $data
      */
     public static function elbp_group_member_added(\core\event\base $data) {
-                
-        if ($data->contextlevel == CONTEXT_COURSE){
+
+        if ($data->contextlevel == CONTEXT_COURSE) {
             global $DB;
 
             // Find any PTs assigned to this group
             $assigned = $DB->get_records("lbp_tutor_assignments", array("groupid" => $data->objectid));
-            if ($assigned)
-            {
-                foreach($assigned as $record)
-                {
+            if ($assigned) {
+                foreach ($assigned as $record) {
 
                     $PT = new \block_elbp\PersonalTutor();
                     $PT->loadTutorID($record->tutorid);
@@ -108,22 +109,20 @@ class block_elbp_observer {
             }
         }
     }
-    
-    
+
+
     /**
      * @param \core\event\base $data
      */
     public static function elbp_group_member_removed(\core\event\base $data) {
-        
-        if ($data->contextlevel == CONTEXT_COURSE){
+
+        if ($data->contextlevel == CONTEXT_COURSE) {
             global $DB;
 
             // Find any PTs assigned to this group
             $assigned = $DB->get_records("lbp_tutor_assignments", array("groupid" => $data->objectid));
-            if ($assigned)
-            {
-                foreach($assigned as $record)
-                {
+            if ($assigned) {
+                foreach ($assigned as $record) {
 
                     $PT = new \block_elbp\PersonalTutor();
                     $PT->loadTutorID($record->tutorid);
@@ -133,5 +132,5 @@ class block_elbp_observer {
             }
         }
     }
-   
+
 }

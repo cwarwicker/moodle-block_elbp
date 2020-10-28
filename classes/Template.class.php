@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2011-2017 Bedford College, 2017 onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,19 +27,21 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
 
 namespace block_elbp;
 
+defined('MOODLE_INTERNAL') or die();
+
 /**
- * 
+ *
  */
 class Template {
-    
+
     private $variables;
     private $output;
-    
+
     /**
      * Construct the template and set the global variables all templates will need access to
      * @global type $CFG
@@ -47,7 +49,7 @@ class Template {
      * @global type $USER
      */
     public function __construct() {
-        
+
         global $CFG, $OUTPUT, $USER;
         $this->variables = array();
         $this->output = '';
@@ -55,61 +57,61 @@ class Template {
         $this->set("CFG", $CFG);
         $this->set("OUTPUT", $OUTPUT);
         $this->set("USER", $USER);
-        
+
     }
-    
-    
+
+
     /**
      * Set a variable to be used in the template
      * @param type $var
      * @param type $val
      * @return \block_elbp\Template
      */
-    public function set($var, $val)
-    {
+    public function set($var, $val) {
         $this->variables[$var] = $val;
         return $this;
     }
-    
+
     /**
      * Get all variables set in the template
      * @return type
      */
-    public function getVars()
-    {
+    public function getVars() {
         return $this->variables;
     }
-    
+
     /**
      * Load a template file
      * @param type $template
      * @return type
      * @throws \block_elbp\ELBPException
      */
-    public function load($template)
-    {
-                
+    public function load($template) {
+
         $this->output = ''; # Reset output
-                        
-        if (!file_exists($template)) throw new \block_elbp\ELBPException( get_string('template', 'block_elbp'), get_string('filenotfound', 'block_elbp'), $template, get_string('programming:createfileorchangepath', 'block_elbp'));
-        if (!empty($this->variables)) extract($this->variables);
-                
+
+        if (!file_exists($template)) {
+            throw new \block_elbp\ELBPException( get_string('template', 'block_elbp'), get_string('filenotfound', 'block_elbp'), $template, get_string('programming:createfileorchangepath', 'block_elbp'));
+        }
+        if (!empty($this->variables)) {
+            extract($this->variables);
+        }
+
         flush();
         ob_start();
-            include $template;
+        include($template);
         $output = ob_get_clean();
-        
+
         $this->output = $output;
-        return $this->output;        
-        
+        return $this->output;
+
     }
-    
+
     /**
      * Echo the template file
      */
-    public function display()
-    {
+    public function display() {
         echo $this->output;
     }
-    
+
 }
