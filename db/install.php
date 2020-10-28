@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2011-2017 Bedford College, 2017 onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,33 +27,32 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
+defined('MOODLE_INTERNAL') or die();
 
-function xmldb_block_elbp_install()
-{
-    
+function xmldb_block_elbp_install() {
+
     global $DB;
-     
-    
+
     // Confidentiality levels
     $DB->insert_record("lbp_confidentiality", array("id" => 1, "name" => "GLOBAL"));
     $DB->insert_record("lbp_confidentiality", array("id" => 2, "name" => "RESTRICTED"));
     $DB->insert_record("lbp_confidentiality", array("id" => 3, "name" => "PRIVATE"));
     $DB->insert_record("lbp_confidentiality", array("id" => 4, "name" => "PERSONAL"));
-    
+
     // Reporting elements
     $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => null, "getstringname" => "reports:elbp:personaltutors", "getstringcomponent" => "block_elbp"));
     $DB->insert_record("lbp_plugin_report_elements", array("pluginid" => null, "getstringname" => "reports:elbp:trafficlightstatus", "getstringcomponent" => "block_elbp"));
-    
+
     // Create default plugin layout and group
     $layoutID = $DB->insert_record("lbp_plugin_layouts", array("name" => "Default Layout", "enabled" => 1, "isdefault" => 1));
     $DB->insert_record("lbp_plugin_groups", array("name" => "ELBP", "enabled" => 1, "ordernum" => 0, "layoutid" => $layoutID));
-    
+
     // Create MoodleData directory
     \elbp_create_data_directory('install');
     \elbp_create_data_directory('uploads');
-    
+
     return true;
-    
+
 }

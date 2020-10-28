@@ -26,6 +26,8 @@
  * Originally developed at Bedford College, now maintained by Conn Warwicker
  *
  */
+defined('MOODLE_INTERNAL') or die();
+
 $tasks = array(
 
     // Run the plugin crons every minute.
