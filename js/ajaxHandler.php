@@ -30,13 +30,13 @@
  *
  */
 
-require '../../../config.php';
-require '../lib.php';
+require('../../../config.php');
+require('../lib.php');
 
 set_time_limit(0);
 
 // Require login unless we are logged in from Parent Portal
-if (!isset($_SESSION['pp_user'])){
+if (!isset($_SESSION['pp_user'])) {
     require_login();
 }
 
@@ -54,7 +54,7 @@ $PAGE->set_context( context_course::instance(1) ); # Don't see why Moodle insist
 
 $ELBP = block_elbp\ELBP::instantiate();
 
-if (isset($_POST['plugin']) && $_POST['plugin']){
+if (isset($_POST['plugin']) && $_POST['plugin']) {
     $ELBP->handleAjaxRequest($_POST['plugin'], $_POST['action'], $_POST['params']);
     exit;
 }
@@ -62,8 +62,7 @@ if (isset($_POST['plugin']) && $_POST['plugin']){
 $params = @$_POST['params'];
 
 // Not a plugin specific, so let's check what it is
-switch($_POST['action'])
-{
+switch ($_POST['action']) {
 
 
     case 'get_initial_state':
@@ -76,18 +75,13 @@ switch($_POST['action'])
 
         // Plugin icons
         $icons = "";
-        if ($ELBP->getPlugins())
-        {
-            foreach($ELBP->getPlugins() as $plugin)
-            {
-                if ($plugin->isCustom())
-                {
+        if ($ELBP->getPlugins()) {
+            foreach ($ELBP->getPlugins() as $plugin) {
+                if ($plugin->isCustom()) {
                     $name = $plugin->getName();
                     $name = str_replace(" ", "_", $name);
                     $icons .= "ELBP.pluginIcons['{$name}'] = '{$plugin->getDockIconPath()}';\n";
-                }
-                else
-                {
+                } else {
                     $icons .= "ELBP.pluginIcons['{$plugin->getName()}'] = '{$plugin->getDockIconPath()}';\n";
                 }
             }
@@ -109,36 +103,34 @@ ELBP.strings = $strings;
 [/ELBP:JS]
 JS;
 
-            exit;
+        exit;
 
-    break;
+        break;
 
     // This is for loading an HTML template into some content, e.g. loading the list of plugins in a group
     case 'load_template':
 
-        if (!isset($params['type']) || !isset($params['id'])) exit;
+        if (!isset($params['type']) || !isset($params['id'])) {
+            exit;
+        }
 
         // Load up a list of plugins into a group
-        if ($params['type'] == 'group')
-        {
+        if ($params['type'] == 'group') {
             $groupID = $params['id'];
             // Get all plugins in this group
             $dbPlugins = $ELBP->getPlugins($groupID);
 
             $plugins = array();
 
-            if ($dbPlugins)
-            {
-                foreach($dbPlugins as $dbPlugin)
-                {
+            if ($dbPlugins) {
+                foreach ($dbPlugins as $dbPlugin) {
 
-                    if (isset($dbPlugin->custom))
-                    {
+                    if (isset($dbPlugin->custom)) {
 
                         $plugin = new block_elbp\Plugins\CustomPlugin($dbPlugin->getID());
-                        if (isset($params['student']) && $params['student'] > 0){
+                        if (isset($params['student']) && $params['student'] > 0) {
                             $access = $ELBP->getUserPermissions($params['student']);
-                            if ($access){
+                            if ($access) {
                                 $plugin->loadStudent($params['student']);
                                 $plugin->loadCourse($params['course']);
                                 $plugin->setAccess($access);
@@ -147,19 +139,17 @@ JS;
 
                         // We are checking here as well, because certain plugins may not want to be viewed 100% of the time
                         // E.g. Only show Additional Support plugin if student is linked to an ASL
-                        if ($plugin->isEnabled()){
+                        if ($plugin->isEnabled()) {
                             $plugins[] = $plugin;
                         }
 
-                    }
-                    else
-                    {
+                    } else {
 
                         try {
                             $plugin = block_elbp\Plugins\Plugin::instaniate($dbPlugin->getName(), $dbPlugin->getPath());
-                            if (isset($params['student']) && $params['student'] > 0){
+                            if (isset($params['student']) && $params['student'] > 0) {
                                 $access = $ELBP->getUserPermissions($params['student']);
-                                if ($access){
+                                if ($access) {
                                     $plugin->loadStudent($params['student']);
                                     $plugin->loadCourse($params['course']);
                                     $plugin->setAccess($access);
@@ -168,12 +158,11 @@ JS;
 
                             // We are checking here as well, because certain plugins may not want to be viewed 100% of the time
                             // E.g. Only show Additional Support plugin if student is linked to an ASL
-                            if ($plugin->isEnabled()){
+                            if ($plugin->isEnabled()) {
                                 $plugins[] = $plugin;
                             }
 
-                        }
-                        catch (\ELBPException $e){
+                        } catch (\ELBPException $e) {
                             echo $e->getException();
                         }
 
@@ -181,8 +170,6 @@ JS;
 
                 }
             }
-
-
 
             $TPL = new block_elbp\Template();
             $TPL->set("plugins", $plugins)
@@ -193,31 +180,35 @@ JS;
             exit;
         }
 
-
-    break;
+        break;
 
     case 'load_expanded':
 
-        if (!isset($params['pluginname']) || !isset($params['student'])) exit;
+        if (!isset($params['pluginname']) || !isset($params['student'])) {
+            exit;
+        }
 
         // Try to call plugin
         try {
             $plugin = block_elbp\Plugins\Plugin::instaniate($params['pluginname']);
             $access = $ELBP->getUserPermissions($params['student']);
-            if ($access) $plugin->loadStudent($params['student']);
+            if ($access) {
+                $plugin->loadStudent($params['student']);
+            }
             $plugin->loadCourse( $params['course'] );
             $plugin->setAccess($access);
             $plugin->display($params);
             exit;
-        } catch (\block_elbp\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e) {
 
             // Check if custom
             $check = $DB->get_record("lbp_custom_plugins", array("name" => $params['pluginname']));
-            if ($check)
-            {
+            if ($check) {
                 $plugin = new \block_elbp\Plugins\CustomPlugin($check->id);
                 $plugin->loadStudent($params['student']);
-                if ($access) $plugin->loadStudent($params['student']);
+                if ($access) {
+                    $plugin->loadStudent($params['student']);
+                }
                 $plugin->loadCourse( $params['course'] );
                 $plugin->setAccess($access);
                 $plugin->display($params);
@@ -231,52 +222,50 @@ JS;
 
 
 
-    break;
+        break;
 
     case 'test_mis_connection':
         try {
             $MIS = \block_elbp\MIS\Manager::instantiate( $params );
             $MIS->show_conn_err = false;
-            $try = $MIS->connect( array("host"=>$params['host'], "user"=>$params['user'], "pass"=>$params['pass'], "db"=>$params['db']) );
-            if (!$try){
+            $try = $MIS->connect( array("host" => $params['host'], "user" => $params['user'], "pass" => $params['pass'], "db" => $params['db']) );
+            if (!$try) {
                 echo "<img src='{$CFG->wwwroot}/blocks/elbp/pix/error.png' /><br><small>{$MIS->getError()}</small>";
+            } else {
+                echo "<img src='{$CFG->wwwroot}/blocks/elbp/pix/success.png' />";
             }
-            else echo "<img src='{$CFG->wwwroot}/blocks/elbp/pix/success.png' />";
-        } catch (\block_elbp\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e) {
             echo "<img src='{$CFG->wwwroot}/blocks/elbp/pix/error.png' /> <small>".$e->getMessage()."<br>".$e->getExpected()."</small></span>";
         }
-    break;
+        break;
 
     case 'switch_user':
 
         $DBC = new block_elbp\DB();
 
-        switch($params['action'])
-        {
+        switch ($params['action']) {
 
             case 'load_users':
 
                 $param = $params['param'];
 
-                if ($param == 'other')
-                {
+                if ($param == 'other') {
 
                     echo "$('#switch_user_select').after(' <span id=\"find_other_user\"><input type=\"text\" id=\"search_other_student\" value=\"\" placeholder=\"".get_string('username')."\" /> <input type=\"button\" name=\"load_other_student\" value=\"".get_string('go', 'block_elbp')."\" class=\"elbp_small\" onclick=\"ELBP.switch_search_user( $(\'#search_other_student\').val() );return false;\" /></span>');";
 
-                }
-                else
-                {
+                } else {
 
                     // If a digit it's a course ID
-                    if (ctype_digit($param)) $students = $DBC->getStudentsOnCourse($param);
-                    // Else it's mentees
-                    else $students = $DBC->getMenteesOnTutor($USER->id);
+                    if (ctype_digit($param)) {
+                        $students = $DBC->getStudentsOnCourse($param);
+                    } else {
+                        // Else its mentees.
+                        $students = $DBC->getMenteesOnTutor($USER->id);
+                    }
 
-                    if ($students)
-                    {
+                    if ($students) {
 
-                        foreach($students as $student)
-                        {
+                        foreach ($students as $student) {
                             echo "$('#switch_user_users').append('<option value=\"{$student->id}\">{$student->username} ::: ".elbp_html(fullname($student))."</option>');";
                         }
 
@@ -287,23 +276,23 @@ JS;
 
 
 
-            break;
+                break;
 
 
         }
 
 
-    break;
+        break;
 
     case 'load_my_settings':
 
         $userID = (isset($params['userID'])) ? $params['userID'] : false;
 
         // If we are trying to change the settings of another user, make sure we can
-        if ($userID){
+        if ($userID) {
 
             $access = $ELBP->getUserPermissions($userID);
-            if (!elbp_has_capability('block/elbp:change_others_settings', $access)){
+            if (!elbp_has_capability('block/elbp:change_others_settings', $access)) {
                 exit;
             }
 
@@ -313,7 +302,9 @@ JS;
         }
 
         $user = $DB->get_record("user", array("id" => $params['student']));
-        if (!$user) exit;
+        if (!$user) {
+            exit;
+        }
 
         $TPL = new block_elbp\Template();
         $TPL->set("plugins", $ELBP->getPlugins())
@@ -325,18 +316,18 @@ JS;
         $TPL->display();
         exit;
 
-    break;
+        break;
 
     case 'save_my_settings':
 
         $data = $params['data'];
 
         $userID = (isset($params['userID'])) ? $params['userID'] : $params['student'];
-        if ($userID){
+        if ($userID) {
 
             $access = $ELBP->getUserPermissions($userID);
 
-            if (!elbp_has_capability('block/elbp:change_others_settings', $access)){
+            if (!elbp_has_capability('block/elbp:change_others_settings', $access)) {
                 exit;
             }
 
@@ -345,20 +336,20 @@ JS;
         }
 
         $user = $DB->get_record("user", array("id" => $userID));
-        if (!$user) exit;
+        if (!$user) {
+            exit;
+        }
 
         $plugins = $ELBP->getPlugins();
 
         // Loop through plugins and see if we have a value in the array for the bg & font colours
         // If we do, add/update them as user setting for this user
 
-        if ($plugins)
-        {
+        if ($plugins) {
 
-            foreach($plugins as $plugin)
-            {
+            foreach ($plugins as $plugin) {
 
-                if ($plugin->isCustom()){
+                if ($plugin->isCustom()) {
                     $bg = $plugin->getName() . "_bg_custom";
                     $font = $plugin->getName() . "_font_custom";
                 } else {
@@ -366,11 +357,11 @@ JS;
                     $font = $plugin->getName() . "_font";
                 }
 
-                if (isset($data[$bg])){
+                if (isset($data[$bg])) {
                     $plugin->updateSetting("header_bg_col", $data[$bg], $userID);
                 }
 
-                if (isset($data[$font])){
+                if (isset($data[$font])) {
                     $plugin->updateSetting("header_font_col", $data[$font], $userID);
                 }
 
@@ -380,28 +371,30 @@ JS;
 
 
         // Layout setting
-        if (elbp_has_capability('block/elbp:change_users_plugins_layout', $access)){
+        if (elbp_has_capability('block/elbp:change_users_plugins_layout', $access)) {
             $ELBP->updateSetting('plugins_layout', $data['plugins_layout'], $userID);
         }
 
 
-    break;
+        break;
 
     case 'course_picker':
 
-        switch($params['action'])
-        {
+        switch ($params['action']) {
             case 'choose_category':
 
-                if (!ctype_digit($params['catID'])) exit;
+                if (!ctype_digit($params['catID'])) {
+                    exit;
+                }
 
                 // Get courses in that cat
                 $courses = get_courses($params['catID'], "c.shortname ASC, c.fullname ASC");
-                if (!$courses) exit;
+                if (!$courses) {
+                    exit;
+                }
 
-                foreach($courses as $course)
-                {
-                    if (isset($params['use']) && !empty($params['use'])){
+                foreach ($courses as $course) {
+                    if (isset($params['use']) && !empty($params['use'])) {
                         $field = $params['use'];
                         echo "<option value='".elbp_html($course->$field)."'>{$course->shortname}: {$course->fullname}</option>";
                     } else {
@@ -411,7 +404,7 @@ JS;
 
                 exit;
 
-            break;
+                break;
 
             case 'search_courses':
 
@@ -420,19 +413,24 @@ JS;
                 $search = trim($params['search']);
 
                 // If search is empty, get all courses for this cat again, else filter by search
-                if (empty($search)){
-                    if (!ctype_digit($params['catID'])) $params['catID'] = 'all';
+                if (empty($search)) {
+                    if (!ctype_digit($params['catID'])) {
+                        $params['catID'] = 'all';
+                    }
                     $courses = get_courses($params['catID'], "c.shortname ASC, c.fullname ASC");
                 } else {
-                    if (!ctype_digit($params['catID'])) $params['catID'] = null;
+                    if (!ctype_digit($params['catID'])) {
+                        $params['catID'] = null;
+                    }
                     $courses = $DBC->searchCourse($search, $params['catID']);
                 }
 
-                if (!$courses) exit;
+                if (!$courses) {
+                    exit;
+                }
 
-                foreach($courses as $course)
-                {
-                    if (isset($params['use']) && !empty($params['use'])){
+                foreach ($courses as $course) {
+                    if (isset($params['use']) && !empty($params['use'])) {
                         $use = $params['use'];
                         echo "<option value='".elbp_html($course->$use)."'>{$course->shortname}: {$course->fullname}</option>";
                     } else {
@@ -442,15 +440,14 @@ JS;
 
                 exit;
 
-            break;
+                break;
         }
 
-    break;
+        break;
 
     case 'user_picker':
 
-        switch($params['action'])
-        {
+        switch ($params['action']) {
             case 'search_users':
 
                 $DBC = new block_elbp\DB();
@@ -459,35 +456,35 @@ JS;
                 $limit = 100;
 
                 // If search is empty, get all courses for this cat again, else filter by search
-                if (empty($search)){
+                if (empty($search)) {
                     $users = $DBC->getUsers($limit);
                 } else {
                     $users = $DBC->searchUser($search, null, $limit);
                 }
 
-                if (!$users) exit;
+                if (!$users) {
+                    exit;
+                }
 
-                foreach($users as $user)
-                {
+                foreach ($users as $user) {
                     echo "<option value='".elbp_html($user->username)."'>".fullname($user)." ({$user->username})</option>";
                 }
 
-                if (count($users) == $limit)
-                {
+                if (count($users) == $limit) {
                     echo "<option value=''>---- ".get_string('moreresults', 'block_elbp')." ----</option>";
                 }
 
                 exit;
 
-            break;
+                break;
         }
 
-    break;
+        break;
 
     case 'execute':
 
         // Must have CLI capability - This is an Admin only thing, so doesn't use the elbp_has_capability
-        if (!has_capability('block/elbp:use_quick_tool', context_system::instance())){
+        if (!has_capability('block/elbp:use_quick_tool', context_system::instance())) {
             exit;
         }
 
@@ -495,30 +492,27 @@ JS;
         echo nl2br($ELBP->executeAjaxCommand($params['action']));
         exit;
 
-    break;
+        break;
 
     case 'search_load_student':
 
         $search = $params['search'];
 
         $user = $DB->get_record("user", array("username" => $search, "deleted" => 0));
-        if ($user)
-        {
+        if ($user) {
             echo "$('#switch_users_loading').html('".get_string('loading', 'block_elbp')." ".fullname($user)." ({$user->username}) ...');";
             echo "window.location.href = '{$CFG->wwwroot}/blocks/elbp/view.php?id={$user->id}';";
-        }
-        else
-        {
+        } else {
             echo "alert('".get_string('nosuchuser', 'block_elbp')."');";
         }
 
         exit;
 
-    break;
+        break;
 
     case 'edit_plugin_attribute':
 
-        if (isset($_POST['num'])){
+        if (isset($_POST['num'])) {
             $params['num'] = $_POST['num'];
         }
 
@@ -526,17 +520,17 @@ JS;
         $form = \elbp_get_attribute_edit_form($element);
         echo $form;
 
-    break;
+        break;
 
     case 'set_student_manual_progress':
 
         // Must have capability
         $access = $ELBP->getUserPermissions($params['studentID']);
-        if (!\elbp_has_capability('block/elbp:update_student_manual_progress', $access)){
+        if (!\elbp_has_capability('block/elbp:update_student_manual_progress', $access)) {
             exit;
         }
 
-        if ($ELBP->updateSetting('student_progress_rank', $params['rank'], $params['studentID'])){
+        if ($ELBP->updateSetting('student_progress_rank', $params['rank'], $params['studentID'])) {
 
             echo "$('.elbp_progress_traffic_light').addClass('elbp_progress_traffic_light_trans');";
             echo "$('#elbp_progress_traffic_light_{$params['rank']}').removeClass('elbp_progress_traffic_light_trans');";
@@ -545,28 +539,32 @@ JS;
 
         exit;
 
-    break;
+        break;
 
 
     case 'get_alerts_table':
 
         $DBC = new \block_elbp\DB();
 
-        if (!in_array($params['type'], array('course', 'student', 'mentees', 'addsup'))){
+        if (!in_array($params['type'], array('course', 'student', 'mentees', 'addsup'))) {
             exit;
         }
 
-        if ($params['type'] == 'course'){
+        if ($params['type'] == 'course') {
             $course = $DBC->getCourse( array('type' => 'id', 'val' => $params['value']) );
-            if (!$course) exit;
+            if (!$course) {
+                exit;
+            }
             $title = $course->fullname;
-        } elseif ($params['type'] == 'student'){
+        } else if ($params['type'] == 'student') {
             $student = $DBC->getUser( array('type' => 'id', 'val' => $params['value']) );
-            if (!$student) exit;
+            if (!$student) {
+                exit;
+            }
             $title = \fullname($student) . " ({$student->username})";
-        } elseif ($params['type'] == 'mentees'){
+        } else if ($params['type'] == 'mentees') {
             $title = get_string('allmentees', 'block_elbp');
-        } elseif ($params['type'] == 'addsup'){
+        } else if ($params['type'] == 'addsup') {
             $title = get_string('alladdsup', 'block_elbp');
         }
 
@@ -582,7 +580,7 @@ JS;
         $TPL->display();
         exit;
 
-    break;
+        break;
 
 
 }
