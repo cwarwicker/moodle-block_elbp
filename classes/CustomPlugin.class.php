@@ -32,6 +32,8 @@
 
 namespace block_elbp\Plugins;
 
+defined('MOODLE_INTERNAL') or die();
+
 /**
  *
  */
@@ -76,8 +78,7 @@ class CustomPlugin {
         global $DB;
 
         $check = $DB->get_record("lbp_custom_plugins", array("id" => $id));
-        if ($check)
-        {
+        if ($check) {
 
             $this->ELBPDB = new \block_elbp\DB();
 
@@ -90,11 +91,11 @@ class CustomPlugin {
             // Set connection object to default and method so we can just call it later regardless of
             // whether we've got a connection object or not. Basically it's all of this because I
             // can't be arsed to do a check to see if the connection property is there or not
-            $this->connection = new \Anon;
+            $this->connection = new \block_elbp\Anon;
             $this->connection->connect = function() {
                 try {
                     throw new \block_elbp\ELBPException( get_string('plugin', 'block_elbp'), get_string('nomisconnection', 'block_elbp'), false, get_string('admin:setupmisconnectionplugin', 'block_elbp'));
-                } catch (\block_elbp\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e) {
                     echo $e->getException();
                 }
             };
@@ -111,20 +112,19 @@ class CustomPlugin {
      * This is only used for external database reports, when we need to connect using an
      * MIS connection to another db
      */
-    public function connect(){
+    public function connect() {
 
-        if ($this->getStructure() == 'ext_db'){
+        if ($this->getStructure() == 'ext_db') {
 
             $this->mis_connection = $this->getMISConnection("core");
             $this->loadMISConnection();
-            if ($this->connection && $this->connection->connect()){
+            if ($this->connection && $this->connection->connect()) {
                 $core = $this->getMainMIS();
-                if ($core){
+                if ($core) {
                     $pluginConn = new \block_elbp\MISConnection($core->id, true);
-                    if ($pluginConn->isValid()){
+                    if ($pluginConn->isValid()) {
                         $this->useMIS = true;
                         $this->plugin_connection = $pluginConn;
-                        #$this->setupMisRequirements();
                     }
                 }
             }
@@ -137,7 +137,7 @@ class CustomPlugin {
      * Is the plugin valid?
      * @return type
      */
-    public function isValid(){
+    public function isValid() {
         return ($this->id !== false);
     }
 
@@ -145,7 +145,7 @@ class CustomPlugin {
      * Yes
      * @return boolean
      */
-    public function isCustom(){
+    public function isCustom() {
         return true;
     }
 
@@ -153,28 +153,27 @@ class CustomPlugin {
      * Just too complicated at the moment, maybe in the future
      * @return type
      */
-    public function isCronEnabled()
-    {
+    public function isCronEnabled() {
         return false;
     }
 
-    public function getID(){
+    public function getID() {
         return $this->id;
     }
 
-    public function setID($id){
+    public function setID($id) {
         $this->id = $id;
     }
 
 
-    public function setName($name){
+    public function setName($name) {
         $this->name = $name;
         return $this;
     }
 
 
 
-    public function getDBTables(){
+    public function getDBTables() {
         return false;
     }
 
@@ -183,19 +182,21 @@ class CustomPlugin {
      * Also use this check to just say it's disabled if the user doesn't have permission to view it
      * @return boolean
      */
-    public function isEnabled(){
+    public function isEnabled() {
 
-        if ($this->student){
+        if ($this->student) {
 
             $permissions = $this->getUserPermissions();
-            if (!$this->havePermission(self::PERMISSION_VIEW, $permissions)) return false;
+            if (!$this->havePermission(self::PERMISSION_VIEW, $permissions)) {
+                return false;
+            }
 
         }
 
         return ($this->enabled == 1);
     }
 
-    public function setEnabled($val){
+    public function setEnabled($val) {
         $this->enabled = $val;
         return $this;
     }
@@ -205,11 +206,11 @@ class CustomPlugin {
      * Doesn't have a path as it's a custom plugin
      * @return string
      */
-    public function getPath(){
+    public function getPath() {
         return "";
     }
 
-    public function getTitle(){
+    public function getTitle() {
         return $this->getName();
     }
 
@@ -217,7 +218,7 @@ class CustomPlugin {
      * Get the title/name. Same thing in custom plugins.
      * @return type
      */
-    public function getName(){
+    public function getName() {
         return $this->name;
     }
 
@@ -225,7 +226,7 @@ class CustomPlugin {
      * Get the name with all spaces removed
      * @return type
      */
-    public function getNameString(){
+    public function getNameString() {
         return str_replace(" ", "_", $this->name);
     }
 
@@ -233,7 +234,7 @@ class CustomPlugin {
      * Doesn't have one
      * @return string
      */
-    public function getVersionDateString(){
+    public function getVersionDateString() {
         return "";
     }
 
@@ -241,7 +242,7 @@ class CustomPlugin {
      * Doesn't have one
      * @return string
      */
-    public function getVersion(){
+    public function getVersion() {
         return "";
     }
 
@@ -249,11 +250,11 @@ class CustomPlugin {
      * Doesn't have one
      * @return string
      */
-    public function hasDuplicatePath(){
+    public function hasDuplicatePath() {
         return false;
     }
 
-    public function hasPluginBox(){
+    public function hasPluginBox() {
         return true;
     }
 
@@ -261,34 +262,34 @@ class CustomPlugin {
      * Set the access levels which were calculated for this context
      * @param type $access
      */
-    public function setAccess($access){
+    public function setAccess($access) {
         $this->access = $access;
     }
 
-    public function getAccess(){
+    public function getAccess() {
         return $this->access;
     }
 
-    public function getErrors(){
+    public function getErrors() {
         return $this->errors;
     }
 
-    public function getStudentID(){
-        if ($this->student){
+    public function getStudentID() {
+        if ($this->student) {
             return $this->student->id;
         }
         return false;
     }
 
-    public function getStudent(){
+    public function getStudent() {
         return $this->student;
     }
 
-    public function getStudentAttributes(){
+    public function getStudentAttributes() {
         return $this->studentattributes;
     }
 
-    public function getConfigPath(){
+    public function getConfigPath() {
         return 'blocks/elbp/plugins/Custom/config.php?id=' . $this->id;
     }
 
@@ -296,11 +297,11 @@ class CustomPlugin {
      * Get which structure we are using, e.g. Simple Report, Multi Report, Incremental Report, etc...
      * @return boolean
      */
-    public function getStructure(){
+    public function getStructure() {
 
         $structure = $this->getSetting("plugin_structure");
 
-        if (!in_array($structure, array('single', 'multi', 'incremental', 'int_db', 'ext_db'))){
+        if (!in_array($structure, array('single', 'multi', 'incremental', 'int_db', 'ext_db'))) {
             return false;
         }
 
@@ -312,7 +313,7 @@ class CustomPlugin {
      * Get the main MIS connection linked to this plugin
      * @return type
      */
-    public function getMainMIS(){
+    public function getMainMIS() {
         $this->mis_connection = $this->getMISConnection("core"); // Do this again here as we don't want to connect properly
         return $this->mis_connection;
     }
@@ -323,10 +324,9 @@ class CustomPlugin {
      * @param type $name
      * @return type
      */
-    protected function getMISConnection($name)
-    {
+    protected function getMISConnection($name) {
         global $DB;
-        $record = $DB->get_record("lbp_custom_plugin_mis", array("pluginid"=>$this->id, "name"=>$name));
+        $record = $DB->get_record("lbp_custom_plugin_mis", array("pluginid" => $this->id, "name" => $name));
         return $record;
     }
 
@@ -336,10 +336,9 @@ class CustomPlugin {
      * @param type $id
      * @return type
      */
-    protected function getMISConnectionByID($id)
-    {
+    protected function getMISConnectionByID($id) {
         global $DB;
-        return $DB->get_record("lbp_mis_connections", array("id"=>$id));
+        return $DB->get_record("lbp_mis_connections", array("id" => $id));
     }
 
 
@@ -347,23 +346,24 @@ class CustomPlugin {
      * Load the core MIS connection for this plugin (or any mis connection if name specified)
      * @param type $name
      */
-    public function loadMISConnection($name = false)
-    {
+    public function loadMISConnection($name = false) {
 
-        if (!$name)
-        {
+        if (!$name) {
             // Get the name of the core one
-            if (!$this->mis_connection) return false;
+            if (!$this->mis_connection) {
+                return false;
+            }
             $conn = $this->getMISConnectionByID($this->mis_connection->misid);
-            if (!$conn) return false;
+            if (!$conn) {
+                return false;
+            }
             $name = $conn->name;
         }
 
         try {
             $MIS = \block_elbp\MIS\Manager::instantiate( $name );
             $this->connection = $MIS;
-        }
-        catch(ELBPException $e){
+        } catch (ELBPException $e) {
             echo $e->getException();
         }
     }
@@ -373,14 +373,14 @@ class CustomPlugin {
      * @param type $groupID
      * @return boolean
      */
-    public function isInPluginGroup($groupID){
+    public function isInPluginGroup($groupID) {
 
         $check = $this->DB->get_record("lbp_custom_plugin_grp_plugin", array("pluginid" => $this->id, "groupid" => $groupID));
         return ($check) ? true : false;
 
     }
 
-    public function getPermissions(){
+    public function getPermissions() {
         return $this->permissions;
     }
 
@@ -390,7 +390,7 @@ class CustomPlugin {
      * @param type $permission
      * @return type
      */
-    public function roleHasPermission($roleID, $permission){
+    public function roleHasPermission($roleID, $permission) {
 
         return (isset($this->permissions[$roleID]) && in_array($permission, $this->permissions[$roleID]));
 
@@ -400,22 +400,19 @@ class CustomPlugin {
      * Load up the permissions for this plugin, so we can work out who can do what
      * @global type $DB
      */
-    private function loadPermissions(){
+    private function loadPermissions() {
 
         global $DB;
 
         // If no permissions defined at all, load defaults, otherwise use ones we setup
         $check = $DB->get_records("lbp_custom_plugin_permission", array("pluginid" => $this->id));
-        if ($check)
-        {
+        if ($check) {
 
             // Reset to blank array
             $this->permissions = array();
-            foreach($check as $permission)
-            {
+            foreach ($check as $permission) {
 
-                if (!isset($this->permissions[$permission->roleid]) || !is_array($this->permissions[$permission->roleid]))
-                {
+                if (!isset($this->permissions[$permission->roleid]) || !is_array($this->permissions[$permission->roleid])) {
                     $this->permissions[$permission->roleid] = array();
                 }
 
@@ -423,9 +420,7 @@ class CustomPlugin {
 
             }
 
-        }
-        else
-        {
+        } else {
             $this->loadDefaultPermissions();
         }
 
@@ -435,7 +430,7 @@ class CustomPlugin {
      * Get the default permissions to use if we haven't saved any in the plugin configuration
      * 1 = Manager, 2 = Course Creator, 3 = Teacher, 4 = Non-Editing teacher, 5 = Student, 7 = Authenticated User
      */
-    private function loadDefaultPermissions(){
+    private function loadDefaultPermissions() {
 
         $this->permissions = array(
 
@@ -466,7 +461,7 @@ class CustomPlugin {
      * Clear the permissions from this plugin
      * @global \block_elbp\Plugins\type $DB
      */
-    private function clearPermissions(){
+    private function clearPermissions() {
 
         global $DB;
 
@@ -481,9 +476,9 @@ class CustomPlugin {
      * @param type $permission
      * @return \block_elbp\Plugins\CustomPlugin
      */
-    private function addPermission($roleID, $permission){
+    private function addPermission($roleID, $permission) {
 
-        if (!isset($this->permissions[$roleID]) || !is_array($this->permissions[$roleID])){
+        if (!isset($this->permissions[$roleID]) || !is_array($this->permissions[$roleID])) {
             $this->permissions[$roleID] = array();
         }
 
@@ -497,18 +492,14 @@ class CustomPlugin {
      * Save the permissions in our permissions array to the database
      * @global \block_elbp\Plugins\type $DB
      */
-    private function savePermissions(){
+    private function savePermissions() {
 
         global $DB;
 
-        if ($this->permissions)
-        {
-            foreach($this->permissions as $roleID => $permissions)
-            {
-                if ($permissions)
-                {
-                    foreach($permissions as $permission)
-                    {
+        if ($this->permissions) {
+            foreach ($this->permissions as $roleID => $permissions) {
+                if ($permissions) {
+                    foreach ($permissions as $permission) {
                         $ins = new \stdClass();
                         $ins->pluginid = $this->id;
                         $ins->roleid = $roleID;
@@ -521,16 +512,15 @@ class CustomPlugin {
 
     }
 
-    public function getPrintLogo($type){
+    public function getPrintLogo($type) {
 
         global $CFG;
         $logo = $this->getSetting($type);
         return ($logo) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($CFG->dataroot . DIRECTORY_SEPARATOR . 'ELBP' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $logo) : false;
 
-
     }
 
-    public function getDockIconPath(){
+    public function getDockIconPath() {
         return $this->getPrintLogo('plugin_icon_dock');
     }
 
@@ -538,7 +528,7 @@ class CustomPlugin {
      * Don't need any specific PHP extensions for custom plugins
      * @return boolean
      */
-    public function getRequiredExtensions(){
+    public function getRequiredExtensions() {
         return false;
     }
 
@@ -551,13 +541,19 @@ class CustomPlugin {
      * @param type $userID
      * @return boolean
      */
-    public function getUserPermissions($studentID = false, $userID = false){
+    public function getUserPermissions($studentID = false, $userID = false) {
 
         global $DB, $USER, $ELBP;
 
-        if (!$studentID && !$this->student) return false;
-        if (!$studentID) $studentID = $this->student->id;
-        if (!$userID) $userID = $USER->id;
+        if (!$studentID && !$this->student) {
+            return false;
+        }
+        if (!$studentID) {
+            $studentID = $this->student->id;
+        }
+        if (!$userID) {
+            $userID = $USER->id;
+        }
 
         $ELBPDB = new \block_elbp\DB();
 
@@ -569,18 +565,18 @@ class CustomPlugin {
         // Start with system roles
         $systemContext = \context_system::instance();
         $check = $DB->get_records("role_assignments", array("contextid" => $systemContext->id, "userid" => $userID), null, "DISTINCT(roleid)");
-        if ($check){
-            foreach($check as $chk){
+        if ($check) {
+            foreach ($check as $chk) {
                 $roles[] = $chk->roleid;
             }
         }
 
         // Next any roles that are assigned to the student in the user context, e.g. Personal Tutor
         $userContext = \context_user::instance($studentID);
-        if ($userContext){
+        if ($userContext) {
             $check = $DB->get_records("role_assignments", array("contextid" => $userContext->id, "userid" => $userID), null, "DISTINCT(roleid)");
-            if ($check){
-                foreach($check as $chk){
+            if ($check) {
+                foreach ($check as $chk) {
                     $roles[] = $chk->roleid;
                 }
             }
@@ -588,13 +584,13 @@ class CustomPlugin {
 
         // Next find any courses the student is enrolled on and get the roles the user has on those courses
         $courses = $ELBPDB->getStudentsCourses($studentID);
-        if ($courses){
-            foreach($courses as $course){
+        if ($courses) {
+            foreach ($courses as $course) {
                 $courseContext = \context_course::instance($course->id);
-                if ($courseContext){
+                if ($courseContext) {
                     $check = $DB->get_records("role_assignments", array("contextid" => $courseContext->id, "userid" => $userID), null, "DISTINCT(roleid)");
-                    if ($check){
-                        foreach($check as $chk){
+                    if ($check) {
+                        foreach ($check as $chk) {
                             $roles[] = $chk->roleid;
                         }
                     }
@@ -605,22 +601,20 @@ class CustomPlugin {
         // Lastly get any roles they have on the front page
         $frontPageContext = \context_course::instance(SITEID);
         $check = $DB->get_records("role_assignments", array("contextid" => $frontPageContext->id, "userid" => $userID), null, "DISTINCT(roleid)");
-        if ($check){
-            foreach($check as $chk){
+        if ($check) {
+            foreach ($check as $chk) {
                 $roles[] = $chk->roleid;
             }
         }
 
         // If it is the same user viewing their own ELBP, add the role of "authenticated user" and we will use that as default for
         // the same user
-        if ($studentID === $userID){
+        if ($studentID === $userID) {
             $authenticatedUserRole = $DB->get_record("role", array("shortname" => "user"));
-            if ($authenticatedUserRole){
+            if ($authenticatedUserRole) {
                 $roles[] = $authenticatedUserRole->id;
             }
         }
-
-
 
         // Remove duplicates
         $roles = array_unique($roles);
@@ -628,19 +622,14 @@ class CustomPlugin {
         $this->userrolepermissions = array();
 
         // Find all permissions these roles have
-        if ($roles)
-        {
-            foreach($roles as $role)
-            {
+        if ($roles) {
+            foreach ($roles as $role) {
 
                 $this->userrolepermissions[$role] = array();
 
-                if (isset($this->permissions[$role]))
-                {
-                    if ($this->permissions[$role])
-                    {
-                        foreach($this->permissions[$role] as $permission)
-                        {
+                if (isset($this->permissions[$role])) {
+                    if ($this->permissions[$role]) {
+                        foreach ($this->permissions[$role] as $permission) {
                             $return[] = $permission;
                             $this->userrolepermissions[$role][] = $permission;
                         }
@@ -665,7 +654,7 @@ class CustomPlugin {
      * @param array $permissions
      * @return type
      */
-    public function havePermission($permission, array $permissions){
+    public function havePermission($permission, array $permissions) {
 
         global $USER;
         return (in_array($permission, $permissions) || is_siteadmin($USER->id));
@@ -677,7 +666,7 @@ class CustomPlugin {
      * Load the attributes for this plugin
      * @return type
      */
-    public function loadDefaultAttributes(){
+    public function loadDefaultAttributes() {
 
         $this->attributes = "";
 
@@ -693,7 +682,7 @@ class CustomPlugin {
      * Get the loaded attributes
      * @return type
      */
-    public function getDefaultAttributes(){
+    public function getDefaultAttributes() {
 
         return ($this->attributes) ? $this->attributes : "";
 
@@ -703,8 +692,7 @@ class CustomPlugin {
      * Count the attribute elements
      * @return type
      */
-    public function countAttributes()
-    {
+    public function countAttributes() {
 
         $FORM = new \block_elbp\ELBPForm();
         $FORM->load( $this->getDefaultAttributes() );
@@ -717,8 +705,7 @@ class CustomPlugin {
      * Return array of elements to be displayed in the output of the as session
      * @return type
      */
-    public function getAttributesForDisplay()
-    {
+    public function getAttributesForDisplay() {
         return $this->getElementsFromAttributeString();
     }
 
@@ -729,20 +716,16 @@ class CustomPlugin {
      * @param type $useThese
      * @return type
      */
-    public function getAttributesForDisplayDisplayType($type, $useThese = null)
-    {
+    public function getAttributesForDisplayDisplayType($type, $useThese = null) {
 
         $elements = (is_null($useThese)) ? $this->getAttributesForDisplay() : $useThese;
 
         $return = array();
 
-        if ($elements)
-        {
-            foreach($elements as $element)
-            {
+        if ($elements) {
+            foreach ($elements as $element) {
                 $element->display = trim($element->display); # Random spaces have been found at the end for some reason
-                if ($element->display == $type)
-                {
+                if ($element->display == $type) {
                     $return[] = $element;
                 }
             }
@@ -756,13 +739,12 @@ class CustomPlugin {
      * Given an attribute string, get the elements from it
      * @return type
      */
-    public function getElementsFromAttributeString()
-    {
+    public function getElementsFromAttributeString() {
 
         $FORM = new \block_elbp\ELBPForm();
 
         // Load student
-        if ($this->student){
+        if ($this->student) {
             $FORM->loadStudentID($this->student->id);
         }
 
@@ -781,11 +763,13 @@ class CustomPlugin {
      * @param type $itemID
      * @return boolean
      */
-    private function getMultiItem($itemID){
+    private function getMultiItem($itemID) {
 
         global $DB;
 
-        if (!$this->student) return false;
+        if (!$this->student) {
+            return false;
+        }
 
         return $DB->get_record("lbp_custom_plugin_items", array("id" => $itemID));
 
@@ -796,23 +780,26 @@ class CustomPlugin {
      * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
-    public function getMultiItems()
-    {
+    public function getMultiItems() {
 
         global $DB;
 
-        if (!$this->student) return false;
+        if (!$this->student) {
+            return false;
+        }
 
         return $DB->get_records("lbp_custom_plugin_items", array("studentid" => $this->student->id, "pluginid" => $this->id, "del" => 0), "settime DESC");
 
     }
 
 
-    public function getMultiItemsByAttribute($att, $value){
+    public function getMultiItemsByAttribute($att, $value) {
 
         global $DB;
 
-        if (!$this->student) return false;
+        if (!$this->student) {
+            return false;
+        }
 
         return $DB->get_records_sql("select i.*
                                     from {lbp_custom_plugin_items} i
@@ -828,22 +815,16 @@ class CustomPlugin {
      * @param type $simple
      * @return type
      */
-    public function loadJavascript($simple = false)
-    {
+    public function loadJavascript($simple = false) {
         global $CFG, $PAGE;
 
         $output = "";
 
-        if ($this->js)
-        {
-            foreach($this->js as $js)
-            {
-                if ($simple)
-                {
+        if ($this->js) {
+            foreach ($this->js as $js) {
+                if ($simple) {
                     $output .= "<script type='text/javascript' src='{$CFG->wwwroot}/{$js}'></script>";
-                }
-                else
-                {
+                } else {
                     $PAGE->requires->js( $js );
                 }
             }
@@ -856,10 +837,10 @@ class CustomPlugin {
      * Load object into all attributes
      * @param type $attributes
      */
-    public function loadObjectIntoAttributes($attributes){
+    public function loadObjectIntoAttributes($attributes) {
 
-        if ($attributes){
-            foreach($attributes as $attribute){
+        if ($attributes) {
+            foreach ($attributes as $attribute) {
                 $attribute->loadObject($this);
             }
         }
@@ -872,7 +853,7 @@ class CustomPlugin {
      * @param type $itemID
      * @return type
      */
-    public function loadAttributes($itemID = null, &$attributes = false){
+    public function loadAttributes($itemID = null, &$attributes = false) {
 
         global $DB;
 
@@ -881,29 +862,23 @@ class CustomPlugin {
         $this->studentattributes = $this->_loadAttributes($check);
 
         // If we've sent an array of attribute formelements, we want to apply the values to these
-        if ($attributes)
-        {
+        if ($attributes) {
 
             // Generate new IDs
             \block_elbp\ELBPFORM::generateNewIDs($attributes);
 
             // Wipe all values
-            foreach($attributes as $attribute)
-            {
+            foreach ($attributes as $attribute) {
                 $attribute->setValue(false);
             }
 
-            foreach($attributes as $attribute)
-            {
+            foreach ($attributes as $attribute) {
 
                 // If the attribute name exists in the defined attributes (ones linked to this target)
                 // Simply add it to the data array
-                if (array_key_exists($attribute->name, $this->studentattributes))
-                {
+                if (array_key_exists($attribute->name, $this->studentattributes)) {
                     $attribute->setValue($this->studentattributes[$attribute->name]);
-                }
-                else
-                {
+                } else {
 
                     // Otherwise
                     // Loop through defined attributes (linked to target) and see if there are any LIKE
@@ -911,26 +886,22 @@ class CustomPlugin {
                     $valueArray = array();
                     $like = false;
 
-                    if ($this->studentattributes)
-                    {
-                        foreach($this->studentattributes as $key => $d)
-                        {
+                    if ($this->studentattributes) {
+                        foreach ($this->studentattributes as $key => $d) {
                             $explode = explode($attribute->name . "_", $key);
-                            if ($explode && count($explode) > 1)
-                            {
+                            if ($explode && count($explode) > 1) {
                                 $valueArray[$explode[1]] = $d;
                                 $like = true;
                             }
                         }
 
-                        if (count($valueArray) == 1){
+                        if (count($valueArray) == 1) {
                             $valueArray = reset($valueArray);
                         }
                     }
 
                     // If we found some, add them
-                    if ($like)
-                    {
+                    if ($like) {
                         $attribute->setValue($valueArray);
                     }
 
@@ -948,29 +919,22 @@ class CustomPlugin {
      * @param type $check
      * @return type
      */
-    protected function _loadAttributes($check){
+    protected function _loadAttributes($check) {
 
         $results = array();
 
-        if ($check)
-        {
-            foreach($check as $att)
-            {
+        if ($check) {
+            foreach ($check as $att) {
                 // If something already set for this, turn it into an array
-                if ( isset($results[$att->field]) && !is_array($results[$att->field]) )
-                {
+                if ( isset($results[$att->field]) && !is_array($results[$att->field]) ) {
                     $tmpArray = array();
                     $tmpArray[] = $results[$att->field];
                     $tmpArray[] = $att->value;
                     $results[$att->field] = $tmpArray;
-                }
-                // If it's already set but it's already been converted to an array, just append new element
-                elseif ( isset($results[$att->field]) && is_array($results[$att->field]) )
-                {
+                } else if ( isset($results[$att->field]) && is_array($results[$att->field]) ) {
+                    // If it's already set but it's already been converted to an array, just append new element
                     $results[$att->field][] = $att->value;
-                }
-                else
-                {
+                } else {
                     $results[$att->field] = $att->value;
                 }
             }
@@ -986,14 +950,15 @@ class CustomPlugin {
      * @param type $studentID
      * @return boolean
      */
-    public function loadStudent($studentID, $itemID = null, &$attributes = false)
-    {
+    public function loadStudent($studentID, $itemID = null, &$attributes = false) {
         global $USER;
 
-        if (!$this->isEnabled()) return false;
+        if (!$this->isEnabled()) {
+            return false;
+        }
 
-        $user = $this->ELBPDB->getUser( array("type"=>"id", "val"=>$studentID) );
-        if ($user){
+        $user = $this->ELBPDB->getUser( array("type" => "id", "val" => $studentID) );
+        if ($user) {
             $this->student = $user;
             $this->loadAttributes($itemID, $attributes);
             $this->loadPermissions($this->student->id, $USER->id);
@@ -1007,10 +972,9 @@ class CustomPlugin {
      * @param type $courseID
      * @return boolean
      */
-    public function loadCourse($courseID)
-    {
-        $course = $this->ELBPDB->getCourse( array("type"=>"id", "val"=>$courseID) );
-        if ($course){
+    public function loadCourse($courseID) {
+        $course = $this->ELBPDB->getCourse( array("type" => "id", "val" => $courseID) );
+        if ($course) {
             $this->course = $course;
             return true;
         }
@@ -1022,12 +986,10 @@ class CustomPlugin {
      * Update the plugin info
      * @return type
      */
-    protected function updatePlugin()
-    {
+    protected function updatePlugin() {
         global $DB;
 
-        if ($this->isValid())
-        {
+        if ($this->isValid()) {
             $record = new \stdClass();
             $record->id = $this->id;
             $record->name = $this->name;
@@ -1041,7 +1003,7 @@ class CustomPlugin {
      * @global \block_elbp\Plugins\type $DB
      * @return type
      */
-    public function createPlugin(){
+    public function createPlugin() {
 
         global $DB;
 
@@ -1051,10 +1013,10 @@ class CustomPlugin {
 
     }
 
-     /**
+    /**
      * Upgrade the plugin from an older version to newer
      */
-    public function upgrade(){
+    public function upgrade() {
 
         return false;
 
@@ -1065,7 +1027,7 @@ class CustomPlugin {
      * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
-    public function delete(){
+    public function delete() {
 
         global $DB;
 
@@ -1087,8 +1049,7 @@ class CustomPlugin {
      * @param type $userID
      * @return type
      */
-    public function updateSetting($setting, $value, $userID = null)
-    {
+    public function updateSetting($setting, $value, $userID = null) {
         elbp_log(LOG_MODULE_ELBP, LOG_ELEMENT_ELBP_SETTINGS, LOG_ACTION_ELBP_SETTINGS_UPDATED_SETTING, $userID, array(
             "setting" => $setting,
             "value" => $value
@@ -1102,8 +1063,7 @@ class CustomPlugin {
      * @param type $userID
      * @return type
      */
-    public function getSetting($setting, $userID = null)
-    {
+    public function getSetting($setting, $userID = null) {
         return \block_elbp\Setting::getSetting($setting, $userID, $this->id, true);
     }
 
@@ -1111,12 +1071,12 @@ class CustomPlugin {
      * Get the background colour to use on the plugin box header
      * @return type
      */
-    public function getHeaderBackgroundColour(){
+    public function getHeaderBackgroundColour() {
 
         // Check if this user has set their own colours
-        if ($this->student){
+        if ($this->student) {
             $col = \block_elbp\Setting::getSetting("header_bg_col", $this->student->id, $this->id, true);
-            if ($col){
+            if ($col) {
                 return $col;
             }
         }
@@ -1131,12 +1091,12 @@ class CustomPlugin {
      * Get the font colour to use on the plugin box header
      * @return type
      */
-    public function getHeaderFontColour(){
+    public function getHeaderFontColour() {
 
         // Check if this user has set their own colours
-        if ($this->student){
+        if ($this->student) {
             $col = \block_elbp\Setting::getSetting("header_font_col", $this->student->id, $this->id, true);
-            if ($col){
+            if ($col) {
                 return $col;
             }
         }
@@ -1151,28 +1111,26 @@ class CustomPlugin {
      * Get the full style to apply to the plugin box header
      * @return type
      */
-    public function getHeaderStyle()
-    {
+    public function getHeaderStyle() {
         $style = "";
         $bg = $this->getHeaderBackgroundColour();
         $font = $this->getHeaderFontColour();
 
         // Make sure they are valid - could type anything into input box and display it on anyone who views
-        if (!preg_match("/^#[a-z0-9]{3,6}$/i", $bg)){
+        if (!preg_match("/^#[a-z0-9]{3,6}$/i", $bg)) {
             $bg = '#ffffff';
         }
 
-        if (!preg_match("/^#[a-z0-9]{3,6}$/i", $font)){
+        if (!preg_match("/^#[a-z0-9]{3,6}$/i", $font)) {
             $font = '#000000';
         }
-
 
         // if using gradients:
         $gradients = \block_elbp\Setting::getSetting('elbp_use_gradients');
 
-        if ($bg){
+        if ($bg) {
 
-            if ($gradients == 1){
+            if ($gradients == 1) {
 
                 $gr = elbp_get_gradient_colour($bg);
                 $rgbBG = elbp_hex_to_rgb($bg);
@@ -1181,7 +1139,7 @@ class CustomPlugin {
                 $hslGR = elbp_convert_rgb_hsl($rgbGR['red'], $rgbGR['green'], $rgbGR['blue']);
 
                 // If gradient is lighter than background, reverse them
-                if ($hslGR[2] > $hslBG[2]){
+                if ($hslGR[2] > $hslBG[2]) {
                     $tmpBG = $bg;
                     $bg = $gr;
                     $gr = $tmpBG;
@@ -1200,8 +1158,9 @@ class CustomPlugin {
 
         }
 
-        // Else:
-        if ($font) $style .= "color: {$font};";
+        if ($font) {
+            $style .= "color: {$font};";
+        }
 
         return $style;
 
@@ -1213,19 +1172,17 @@ class CustomPlugin {
      * Change the colour of the close icon based on colours selected
      * @return type
      */
-    public function getIconHover(){
+    public function getIconHover() {
 
         $font = $this->getHeaderFontColour();
 
-        if (!preg_match("/^#[a-z0-9]{3,6}$/i", $font)){
+        if (!preg_match("/^#[a-z0-9]{3,6}$/i", $font)) {
             $font = '#000000';
         }
 
         $hover = elbp_convert_hex_opposite($font);
 
-        $output = " onmouseover='$(this).css(\"color\", \"{$hover}\");' onmouseout='$(this).css(\"color\", \"{$font}\");' ";
-
-        return $output;
+        return " onmouseover='$(this).css(\"color\", \"{$hover}\");' onmouseout='$(this).css(\"color\", \"{$font}\");' ";
 
     }
 
@@ -1234,35 +1191,31 @@ class CustomPlugin {
      * Save the settings just sent in the plugin configuration form
      * @param type $settings
      */
-    public function saveConfig($settings)
-    {
+    public function saveConfig($settings) {
 
         global $ELBP, $DB, $MSGS;
 
-        if (isset($settings['submitconfig']))
-        {
+        if (isset($settings['submitconfig'])) {
 
             // Remove so doesn't get put into lbp_settings
             unset($settings['submitconfig']);
 
             // Enabled is stored in the plugins table, not the settings table, so do that differently
-            if (isset($settings['enabled']))
-            {
+            if (isset($settings['enabled'])) {
                 $this->setEnabled($settings['enabled']);
                 $this->updatePlugin();
                 unset($settings['enabled']);
             }
 
             // Title is stored in the plugins table, not the settings table
-            if (isset($settings['plugin_title']))
-            {
+            if (isset($settings['plugin_title'])) {
                 $title = trim($settings['plugin_title']);
 
                 // Since we have to pass the title in various js calls (may have to change that), let's just strip
                 // out anything that isn't a-z or space
                 $title = preg_replace("/[^a-z0-9 ]/i", "", $title);
 
-                if (!empty($title)){
+                if (!empty($title)) {
                     $this->setName($title);
                     $this->updatePlugin();
                 }
@@ -1270,113 +1223,81 @@ class CustomPlugin {
                 unset($settings['plugin_title']);
             }
 
-            foreach( (array)$settings as $setting => $value ){
+            foreach ((array)$settings as $setting => $value) {
                 $this->updateSetting($setting, $value);
             }
 
-
             // FILES for icon img
-            if (isset($_FILES['plugin_icon']) && $_FILES['plugin_icon']['error'] == 0){
+            if (isset($_FILES['plugin_icon']) && $_FILES['plugin_icon']['error'] == 0) {
 
-                 $fInfo = \finfo_open(FILEINFO_MIME_TYPE);
-                 $mime = \finfo_file($fInfo, $_FILES['plugin_icon']['tmp_name']);
-                 \finfo_close($fInfo);
+                $fInfo = \finfo_open(FILEINFO_MIME_TYPE);
+                $mime = \finfo_file($fInfo, $_FILES['plugin_icon']['tmp_name']);
+                \finfo_close($fInfo);
 
-                 $explode = explode(".", $_FILES['plugin_icon']['name']);
-                 $ext = $explode[1];
-                 $name = 'custom_plugin_icon-' . $this->id . '.' . $ext;
+                $explode = explode(".", $_FILES['plugin_icon']['name']);
+                $ext = $explode[1];
+                $name = 'custom_plugin_icon-' . $this->id . '.' . $ext;
 
-                 $array = array('image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/pjpeg');
-                 if (in_array($mime, $array))
-                 {
-                      $result = move_uploaded_file($_FILES['plugin_icon']['tmp_name'], $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
-                      if ($result)
-                      {
-                          $this->updateSetting('plugin_icon', $name);
-                          \elbp_create_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
-                      }
-                      else
-                      {
-                          $MSGS['errors'] = '<p>'.get_string('uploads:unknownerror', 'block_elbp').'</p>';
-                      }
-                 }
-                 else
-                 {
-                     $MSGS['errors'] = '<p>'.get_string('uploads:invalidmimetype', 'block_elbp').'</p>';
-                 }
-
+                $array = array('image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/pjpeg');
+                if (in_array($mime, $array)) {
+                    $result = move_uploaded_file($_FILES['plugin_icon']['tmp_name'], $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
+                    if ($result) {
+                        $this->updateSetting('plugin_icon', $name);
+                        \elbp_create_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
+                    } else {
+                        $MSGS['errors'] = '<p>' . get_string('uploads:unknownerror', 'block_elbp') . '</p>';
+                    }
+                } else {
+                    $MSGS['errors'] = '<p>' . get_string('uploads:invalidmimetype', 'block_elbp') . '</p>';
+                }
 
             }
-
-
 
             // FILES for icon dock img
-            if (isset($_FILES['plugin_icon_dock']) && $_FILES['plugin_icon_dock']['error'] == 0){
+            if (isset($_FILES['plugin_icon_dock']) && $_FILES['plugin_icon_dock']['error'] == 0) {
 
-                 $fInfo = \finfo_open(FILEINFO_MIME_TYPE);
-                 $mime = \finfo_file($fInfo, $_FILES['plugin_icon_dock']['tmp_name']);
-                 \finfo_close($fInfo);
+                $fInfo = \finfo_open(FILEINFO_MIME_TYPE);
+                $mime = \finfo_file($fInfo, $_FILES['plugin_icon_dock']['tmp_name']);
+                \finfo_close($fInfo);
 
-                 $explode = explode(".", $_FILES['plugin_icon_dock']['name']);
-                 $ext = $explode[1];
-                 $name = 'custom_plugin_icon_dock-' . $this->id . '.' . $ext;
+                $explode = explode(".", $_FILES['plugin_icon_dock']['name']);
+                $ext = $explode[1];
+                $name = 'custom_plugin_icon_dock-' . $this->id . '.' . $ext;
 
-                 $array = array('image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/pjpeg');
-                 if (in_array($mime, $array))
-                 {
-                      $result = move_uploaded_file($_FILES['plugin_icon_dock']['tmp_name'], $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
-                      if ($result)
-                      {
-                            $this->updateSetting('plugin_icon_dock', $name);
-                            \elbp_create_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
-                      }
-                      else
-                      {
-                          $MSGS['errors'] = '<p>'.get_string('uploads:unknownerror', 'block_elbp').'</p>';
-                      }
-                 }
-                 else
-                 {
-                     $MSGS['errors'] = '<p>'.get_string('uploads:invalidmimetype', 'block_elbp').'</p>';
-                 }
-
+                $array = array('image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/tiff', 'image/pjpeg');
+                if (in_array($mime, $array)) {
+                    $result = move_uploaded_file($_FILES['plugin_icon_dock']['tmp_name'], $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
+                    if ($result) {
+                        $this->updateSetting('plugin_icon_dock', $name);
+                        \elbp_create_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $name);
+                    } else {
+                        $MSGS['errors'] = '<p>' . get_string('uploads:unknownerror', 'block_elbp') . '</p>';
+                    }
+                } else {
+                    $MSGS['errors'] = '<p>' . get_string('uploads:invalidmimetype', 'block_elbp') . '</p>';
+                }
 
             }
 
-
-
-        }
-
-        // Save the attributes for the plugin
-        elseif(isset($_POST['submit_attributes']))
-        {
+        } else if (isset($_POST['submit_attributes'])) {
             \elbp_save_attribute_script($this);
             return true;
-        }
-
-        // Save the title attribute to use in item headings if applicable
-        elseif(isset($_POST['submit_title_attribute']))
-        {
-            if (!empty($settings['title_attribute'])){
+        } else if (isset($_POST['submit_title_attribute'])) {
+            // Save the title attribute to use in item headings if applicable
+            if (!empty($settings['title_attribute'])) {
                 $this->updateSetting('title_attribute', $settings['title_attribute']);
                 $MSGS['success'] = get_string('attributesupdated', 'block_elbp');
             }
             return true;
-        }
-
-        // Save the plugin permissions
-        elseif (isset($_POST['submit_permissions'])){
+        } else if (isset($_POST['submit_permissions'])) {
 
             // Clear permissions
             $this->clearPermissions();
 
             // Insert new permissions (if we tick nothing, it will load default permissions)
-            if ($settings['permissions'])
-            {
-                foreach($settings['permissions'] as $roleID => $permissions)
-                {
-                    foreach($permissions as $permission)
-                    {
+            if ($settings['permissions']) {
+                foreach ($settings['permissions'] as $roleID => $permissions) {
+                    foreach ($permissions as $permission) {
                         $this->addPermission($roleID, $permission);
                     }
                 }
@@ -1388,11 +1309,8 @@ class CustomPlugin {
             $MSGS['success'] = get_string('permissionsupdated', 'block_elbp');
             return true;
 
-        }
-
-        // Run a permission check on a given user and student
-        elseif (isset($_POST['submit_check_permissions']) && !empty($_POST['check_student']) && !empty($_POST['check_staff']))
-        {
+        } else if (isset($_POST['submit_check_permissions']) && !empty($_POST['check_student']) && !empty($_POST['check_staff'])) {
+            // Run a permission check on a given user and student
 
             $studentUsername = trim($_POST['check_student']);
             $staffUsername = trim($_POST['check_staff']);
@@ -1400,11 +1318,11 @@ class CustomPlugin {
             $student = $DB->get_record("user", array("username" => $studentUsername));
             $staff = $DB->get_record("user", array("username" => $staffUsername));
 
-            if (!$student){
+            if (!$student) {
                 $MSGS['errors'] = get_string('nosuchuser', 'block_elbp') . ": " . $studentUsername;
                 return false;
             }
-            if (!$staff){
+            if (!$staff) {
                 $MSGS['errors'] = get_string('nosuchuser', 'block_elbp') . ": " . $staffUsername;
                 return false;
             }
@@ -1413,10 +1331,8 @@ class CustomPlugin {
 
             return true;
 
-        }
-
-        // Save SQL field mappings and query, if we are using a DB report
-        elseif (isset($_POST['submit_definitions'])){
+        } else if (isset($_POST['submit_definitions'])) {
+            // Save SQL field mappings and query, if we are using a DB report
 
             unset($settings['submit_definitions']);
 
@@ -1427,22 +1343,19 @@ class CustomPlugin {
             $settings['query_map_name'] = array_filter($settings['query_map_name']);
 
             // If we have set field mappings
-            if ($settings['query_map_field'] && $settings['query_map_name'])
-            {
+            if ($settings['query_map_field'] && $settings['query_map_name']) {
                 $cnt = count($settings['query_map_field']);
                 $cnt2 = count($settings['query_map_name']);
 
                 // If the mappings and fields are equal
-                if ($cnt == $cnt2)
-                {
+                if ($cnt == $cnt2) {
 
-                    for ($i = 0; $i < $cnt; $i++)
-                    {
+                    for ($i = 0; $i < $cnt; $i++) {
 
                         $field = trim($settings['query_map_field'][$i]);
                         $name = trim($settings['query_map_name'][$i]);
 
-                        if ($field == '' || $name == ''){
+                        if ($field == '' || $name == '') {
                             unset($settings['query_map_field'][$i]);
                             unset($settings['query_map_name'][$i]);
                         }
@@ -1457,52 +1370,42 @@ class CustomPlugin {
             $MSGS['success'] = get_string('settingsupdated', 'block_elbp');
             return true;
 
-        }
-
-        // Run a test query, if we are using a DB report, to see what data it returns
-        elseif (isset($_POST['submit_test_query']))
-        {
+        } else if (isset($_POST['submit_test_query'])) {
+            // Run a test query, if we are using a DB report, to see what data it returns
 
             $sql = $settings['sql_query'];
             $rowType = $settings['row_return_type'];
 
-
             // Internal SQL Query
-            if ($this->getStructure() == 'int_db')
-            {
+            if ($this->getStructure() == 'int_db') {
 
-                if ($rowType == 'single'){
+                if ($rowType == 'single') {
 
                     $result = $DB->get_record_sql($sql);
-                    if ($result)
-                    {
+                    if ($result) {
                         $result = $this->replaceMappedFieldsWithNames($result, $settings);
                     }
 
-                } elseif ($rowType == 'multiple'){
+                } else if ($rowType == 'multiple') {
 
                     $result = $DB->get_records_sql($sql);
-                    if ($result)
-                    {
+                    if ($result) {
                         $result = $this->replaceMappedFieldsWithNames($result, $settings);
                     }
 
                 }
 
-            }
-
-            // External SQL query
-            elseif ($this->getStructure() == 'ext_db' && $this->getMainMIS() !== false)
-            {
+            } else if ($this->getStructure() == 'ext_db' && $this->getMainMIS() !== false) {
+                // External SQL query
 
                 $this->connect();
 
-                if (!$this->mis_connection){
+                if (!$this->mis_connection) {
                     $MSGS['errors'][] = get_string('nocoremis', 'block_elbp');
                     return false;
                 }
 
-                if (!$this->plugin_connection || !$this->plugin_connection->isValid()){
+                if (!$this->plugin_connection || !$this->plugin_connection->isValid()) {
                     $MSGS['errors'][] = get_string('mis:connectioninvalid', 'block_elbp');
                     return false;
                 }
@@ -1510,25 +1413,21 @@ class CustomPlugin {
                 $query = $this->connection->query($sql, null);
                 $results = $this->connection->getRecords($query);
 
-                if ($rowType == 'single'){
+                if ($rowType == 'single') {
 
                     $result = (isset($results[0])) ? $results[0] : false;
-                    if ($result)
-                    {
+                    if ($result) {
                         $result = $this->replaceMappedFieldsWithNames($result, $settings);
                     }
 
-                } elseif ($rowType == 'multiple'){
+                } else if ($rowType == 'multiple') {
 
                     $result = $results;
-                    if ($result)
-                    {
+                    if ($result) {
                         $result = $this->replaceMappedFieldsWithNames($result, $settings);
                     }
 
                 }
-
-
 
             }
 
@@ -1543,7 +1442,7 @@ class CustomPlugin {
      * Get an array of the fields we have mapped to our SQL query
      * @return type
      */
-    public function getMappedFields(){
+    public function getMappedFields() {
         return explode(",", $this->getSetting('query_map_field'));
     }
 
@@ -1551,7 +1450,7 @@ class CustomPlugin {
      * Get an array of the names of these mappings
      * @return type
      */
-    public function getMappedNames(){
+    public function getMappedNames() {
         return explode(",", $this->getSetting('query_map_name'));
     }
 
@@ -1561,42 +1460,42 @@ class CustomPlugin {
      * @param array $vars
      * @return type
      */
-    private function prepareSQL($sql, array $vars){
+    private function prepareSQL($sql, array $vars) {
 
         $params = array();
 
         // User: id
-        if (isset($vars['uid']) && strpos($sql, "%uid%") !== false){
+        if (isset($vars['uid']) && strpos($sql, "%uid%") !== false) {
             $sql = str_replace("%uid%", "?", $sql);
             $params[] = $vars['uid'];
         }
 
         // User: username
-        if (isset($vars['uname']) && strpos($sql, "%uname%") !== false){
+        if (isset($vars['uname']) && strpos($sql, "%uname%") !== false) {
             $sql = str_replace("%uname%", "?", $sql);
             $params[] = $vars['uname'];
         }
 
         // User: idnumber
-        if (isset($vars['uidnum']) && strpos($sql, "%uidnum%") !== false){
+        if (isset($vars['uidnum']) && strpos($sql, "%uidnum%") !== false) {
             $sql = str_replace("%uidnum%", "?", $sql);
             $params[] = $vars['uidnum'];
         }
 
         // Course: id
-        if (isset($vars['cid']) && strpos($sql, "%cid%") !== false){
+        if (isset($vars['cid']) && strpos($sql, "%cid%") !== false) {
             $sql = str_replace("%cid%", "?", $sql);
             $params[] = $vars['cid'];
         }
 
         // Course: shortname
-        if (isset($vars['cshort']) && strpos($sql, "%cshort%") !== false){
+        if (isset($vars['cshort']) && strpos($sql, "%cshort%") !== false) {
             $sql = str_replace("%cshort%", "?", $sql);
             $params[] = $vars['cshort'];
         }
 
         // Course: idnumber
-        if (isset($vars['cidnum']) && strpos($sql, "%cidnum%") !== false){
+        if (isset($vars['cidnum']) && strpos($sql, "%cidnum%") !== false) {
             $sql = str_replace("%cidnum%", "?", $sql);
             $params[] = $vars['cidnum'];
         }
@@ -1628,9 +1527,9 @@ class CustomPlugin {
      * @param type $settings
      * @return type
      */
-    private function replaceMappedFieldsWithNames($data, $settings = null){
+    private function replaceMappedFieldsWithNames($data, $settings = null) {
 
-        if (!is_null($settings)){
+        if (!is_null($settings)) {
             $fields = $settings['query_map_field'];
             $names = $settings['query_map_name'];
             $rowType = $settings['row_return_type'];
@@ -1642,33 +1541,27 @@ class CustomPlugin {
 
         $cnt = count($fields);
 
-        if (is_array($data) && $rowType == 'multiple')
-        {
+        if (is_array($data) && $rowType == 'multiple') {
 
-            foreach($data as &$row)
-            {
+            foreach ($data as &$row) {
 
                 $row = (array)$row;
 
-                for ($i = 0; $i < $cnt; $i++)
-                {
-                    if (isset($row[$fields[$i]])){
+                for ($i = 0; $i < $cnt; $i++) {
+                    if (isset($row[$fields[$i]])) {
                         $row[$names[$i]] = $row[$fields[$i]];
                     }
                 }
             }
 
-        }
-        else
-        {
+        } else {
 
-            if (!is_array($data)){
+            if (!is_array($data)) {
                 $data = (array)$data;
             }
 
-            for ($i = 0; $i < $cnt; $i++)
-            {
-                if (isset($data[$fields[$i]])){
+            for ($i = 0; $i < $cnt; $i++) {
+                if (isset($data[$fields[$i]])) {
                     $data[$names[$i]] = $data[$fields[$i]];
                 }
             }
@@ -1684,7 +1577,7 @@ class CustomPlugin {
      * @global \block_elbp\Plugins\type $CFG
      * @global \block_elbp\Plugins\type $ELBP
      */
-    public function displayConfig(){
+    public function displayConfig() {
 
         global $CFG, $ELBP;
 
@@ -1702,7 +1595,6 @@ class CustomPlugin {
         $output .= "<small><strong>".get_string('blockconfig:plugintitle', 'block_elbp')."</strong> - ".get_string('blockconfig:plugintitle:desc', 'block_elbp')."</small><br>";
         $output .= "<input type='text' name='plugin_title' value='{$this->name}' />";
 
-
         $output .= "<br><br>";
 
         $output .= "<small><strong>".get_string('blockconfig:headerbg', 'block_elbp')."</strong> - ".get_string('blockconfig:headerbg:desc', 'block_elbp')."</small><br>";
@@ -1713,7 +1605,6 @@ class CustomPlugin {
         $output .= "<small><strong>".get_string('blockconfig:headerfont', 'block_elbp')."</strong> - ".get_string('blockconfig:headerfont:desc', 'block_elbp')."</small><br>";
         $output .= "<input type='color' name='header_font_col' value='{$this->getSetting('header_font_col')}' />";
 
-
         $output .= "<br><br>";
 
         $output .= "<h2>".get_string('pluginstructure', 'block_elbp')."</h2>";
@@ -1723,43 +1614,42 @@ class CustomPlugin {
 
         $structure = $this->getStructure();
 
-            $output .= "<tr>";
-                $output .= "<td><input type='radio' name='plugin_structure' value='single' ". ( ($structure == 'single') ? 'checked' : '' ) ." /></td>";
-                $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/report.png' alt='".get_string('singlereport', 'block_elbp')."' /></td>";
-                $output .= "<td>".get_string('singlereport', 'block_elbp')."</td>";
-                $output .= "<td class='report_type_desc'>".get_string('singlereport:desc', 'block_elbp')."</td>";
-            $output .= "</tr>";
+        $output .= "<tr>";
+        $output .= "<td><input type='radio' name='plugin_structure' value='single' ". ( ($structure == 'single') ? 'checked' : '' ) ." /></td>";
+        $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/report.png' alt='".get_string('singlereport', 'block_elbp')."' /></td>";
+        $output .= "<td>".get_string('singlereport', 'block_elbp')."</td>";
+        $output .= "<td class='report_type_desc'>".get_string('singlereport:desc', 'block_elbp')."</td>";
+        $output .= "</tr>";
 
-            $output .= "<tr>";
-                $output .= "<td><input type='radio' name='plugin_structure' value='multi' ". ( ($structure == 'multi') ? 'checked' : '' ) ." /></td>";
-                $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/multi_report.png' alt='".get_string('multireport', 'block_elbp')."' /></td>";
-                $output .= "<td>".get_string('multireport', 'block_elbp')."</td>";
-                $output .= "<td class='report_type_desc'>".get_string('multireport:desc', 'block_elbp')."</td>";
-            $output .= "</tr>";
+        $output .= "<tr>";
+        $output .= "<td><input type='radio' name='plugin_structure' value='multi' ". ( ($structure == 'multi') ? 'checked' : '' ) ." /></td>";
+        $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/multi_report.png' alt='".get_string('multireport', 'block_elbp')."' /></td>";
+        $output .= "<td>".get_string('multireport', 'block_elbp')."</td>";
+        $output .= "<td class='report_type_desc'>".get_string('multireport:desc', 'block_elbp')."</td>";
+        $output .= "</tr>";
 
-            $output .= "<tr>";
-                $output .= "<td><input type='radio' name='plugin_structure' value='incremental' ". ( ($structure == 'incremental') ? 'checked' : '' ) ." /></td>";
-                $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/data_sort.png' alt='".get_string('incrementalreport', 'block_elbp')."' /></td>";
-                $output .= "<td>".get_string('incrementalreport', 'block_elbp')."</td>";
-                $output .= "<td class='report_type_desc'>".get_string('incrementalreport:desc', 'block_elbp')."</td>";
-            $output .= "</tr>";
+        $output .= "<tr>";
+        $output .= "<td><input type='radio' name='plugin_structure' value='incremental' ". ( ($structure == 'incremental') ? 'checked' : '' ) ." /></td>";
+        $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/icons/data_sort.png' alt='".get_string('incrementalreport', 'block_elbp')."' /></td>";
+        $output .= "<td>".get_string('incrementalreport', 'block_elbp')."</td>";
+        $output .= "<td class='report_type_desc'>".get_string('incrementalreport:desc', 'block_elbp')."</td>";
+        $output .= "</tr>";
 
-            $output .= "<tr>";
-                $output .= "<td><input type='radio' name='plugin_structure' value='int_db' ". ( ($structure == 'int_db') ? 'checked' : '' ) ." /></td>";
-                $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/int_db_report.png' alt='".get_string('internaldbreport', 'block_elbp')."' /></td>";
-                $output .= "<td>".get_string('internaldbreport', 'block_elbp')."</td>";
-                $output .= "<td class='report_type_desc'>".get_string('internaldbreport:desc', 'block_elbp')."</td>";
-            $output .= "</tr>";
+        $output .= "<tr>";
+        $output .= "<td><input type='radio' name='plugin_structure' value='int_db' ". ( ($structure == 'int_db') ? 'checked' : '' ) ." /></td>";
+        $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/int_db_report.png' alt='".get_string('internaldbreport', 'block_elbp')."' /></td>";
+        $output .= "<td>".get_string('internaldbreport', 'block_elbp')."</td>";
+        $output .= "<td class='report_type_desc'>".get_string('internaldbreport:desc', 'block_elbp')."</td>";
+        $output .= "</tr>";
 
-            $output .= "<tr>";
-                $output .= "<td><input type='radio' name='plugin_structure' value='ext_db' ". ( ($structure == 'ext_db') ? 'checked' : '' ) ." /></td>";
-                $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/ext_db_report.png' alt='".get_string('externaldbreport', 'block_elbp')."' /></td>";
-                $output .= "<td>".get_string('externaldbreport', 'block_elbp')."</td>";
-                $output .= "<td class='report_type_desc'>".get_string('externaldbreport:desc', 'block_elbp')."</td>";
-            $output .= "</tr>";
+        $output .= "<tr>";
+        $output .= "<td><input type='radio' name='plugin_structure' value='ext_db' ". ( ($structure == 'ext_db') ? 'checked' : '' ) ." /></td>";
+        $output .= "<td><img src='{$CFG->wwwroot}/blocks/elbp/pix/ext_db_report.png' alt='".get_string('externaldbreport', 'block_elbp')."' /></td>";
+        $output .= "<td>".get_string('externaldbreport', 'block_elbp')."</td>";
+        $output .= "<td class='report_type_desc'>".get_string('externaldbreport:desc', 'block_elbp')."</td>";
+        $output .= "</tr>";
 
         $output .= "</table>";
-
 
         $output .= "<br><br>";
 
@@ -1772,34 +1662,33 @@ class CustomPlugin {
 
         $output .= "<small><strong>".get_string('summaryconfig:icon', 'block_elbp')."</strong> - ".get_string('summaryconfig:icon:desc', 'block_elbp')."</small><br>";
         $output .= "<small>";
-            if (is_writable($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads')){
-                $output .= "<b class='elbp_good'>".get_string('dirwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
-            } else {
-                $output .= "<b class='elbp_error'>".get_string('dirnotwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
-            }
+        if (is_writable($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads')) {
+            $output .= "<b class='elbp_good'>".get_string('dirwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
+        } else {
+            $output .= "<b class='elbp_error'>".get_string('dirnotwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
+        }
 
         $output .= "</small><br>";
 
-        if ($this->getSetting('plugin_icon') !== false){
+        if ($this->getSetting('plugin_icon') !== false) {
             $output .= "<img src='".$this->getPrintLogo('plugin_icon')."' alt='' style='width:64px;height:64px;' /><br>";
         }
 
         $output .= "<input type='file' name='plugin_icon' value='' />";
 
-
         $output .= "<br><br>";
 
         $output .= "<small><strong>".get_string('summaryconfig:dockicon', 'block_elbp')."</strong> - ".get_string('summaryconfig:dockicon:desc', 'block_elbp')."</small><br>";
         $output .= "<small>";
-            if (is_writable($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads')){
-                $output .= "<b class='elbp_good'>".get_string('dirwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
-            } else {
-                $output .= "<b class='elbp_error'>".get_string('dirnotwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
-            }
+        if (is_writable($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads')) {
+            $output .= "<b class='elbp_good'>".get_string('dirwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
+        } else {
+            $output .= "<b class='elbp_error'>".get_string('dirnotwritable', 'block_elbp')." : ".$ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'."</b>";
+        }
 
         $output .= "</small><br>";
 
-        if ($this->getSetting('plugin_icon_dock') !== false){
+        if ($this->getSetting('plugin_icon_dock') !== false) {
             $output .= "<img src='". $CFG->wwwroot . "/blocks/elbp/download.php?f=".\elbp_get_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $this->getSetting('plugin_icon_dock'))."' alt='' style='width:64px;height:64px;' /><br>";
         }
 
@@ -1809,8 +1698,7 @@ class CustomPlugin {
         $output .= "<h2>".get_string('notificationconfig', 'block_elbp')."</h2>";
         $output .= "<small>".get_string('notificationconfig:desc', 'block_elbp')."</small><br><br>";
 
-        if ($structure == 'single' || $structure == 'multi' || $structure == 'incremental')
-        {
+        if ($structure == 'single' || $structure == 'multi' || $structure == 'incremental') {
 
             $enable = ($this->isNotifyEnabled()) ? 'checked' : '';
             $disable = (!$this->isNotifyEnabled()) ? 'checked' : '';
@@ -1825,9 +1713,7 @@ class CustomPlugin {
             $output .= "<small><strong>".get_string('notificationconfig:emailcontent', 'block_elbp')."</strong> - ".get_string('notificationconfig:emailcontent:desc', 'block_elbp')."</small><br>";
             $output .= "<textarea name='notify_message'>{$this->getSetting('notify_message')}</textarea><br><br>";
 
-        }
-        else
-        {
+        } else {
             $output .= "<small>".get_string('notavailable')."</small>";
         }
 
@@ -1836,13 +1722,13 @@ class CustomPlugin {
     }
 
 
-    public function getAttributeNameFromID($id){
+    public function getAttributeNameFromID($id) {
 
         $atts = $this->getAttributesForDisplay();
 
-        if ($atts){
-            foreach($atts as $att){
-                if ($att->id == $id){
+        if ($atts) {
+            foreach ($atts as $att) {
+                if ($att->id == $id) {
                     return $att->name;
                 }
             }
@@ -1858,16 +1744,26 @@ class CustomPlugin {
      * @param type $na
      * @return string
      */
-    public function getAttribute($name, $na = true){
+    public function getAttribute($name, $na = true) {
 
         // First check to do is see if it's an array. If it is, we will implode it to a string
-        if (isset($this->studentattributes[$name]) && is_array($this->studentattributes[$name]) && !empty($this->studentattributes[$name])) return implode(", ", $this->studentattributes[$name]);
-        if (isset($this->studentattributes[$name]) && is_array($this->studentattributes[$name]) && empty($this->studentattributes[$name]) && $na) return get_string('na', 'block_elbp');
+        if (isset($this->studentattributes[$name]) && is_array($this->studentattributes[$name]) && !empty($this->studentattributes[$name])) {
+            return implode(", ", $this->studentattributes[$name]);
+        }
+        if (isset($this->studentattributes[$name]) && is_array($this->studentattributes[$name]) && empty($this->studentattributes[$name]) && $na) {
+            return get_string('na', 'block_elbp');
+        }
 
         // Not an array - string/int (well...string)
-        if (isset($this->studentattributes[$name]) && $this->studentattributes[$name] == '' && $na) return get_string('na', 'block_elbp');
-        if (isset($this->studentattributes[$name])) return $this->studentattributes[$name];
-        if ($na) return get_string('na', 'block_elbp');
+        if (isset($this->studentattributes[$name]) && $this->studentattributes[$name] == '' && $na) {
+            return get_string('na', 'block_elbp');
+        }
+        if (isset($this->studentattributes[$name])) {
+            return $this->studentattributes[$name];
+        }
+        if ($na) {
+            return get_string('na', 'block_elbp');
+        }
         return "";
     }
 
@@ -1877,20 +1773,18 @@ class CustomPlugin {
      * @param type $name
      * @return type
      */
-    public function getAttributeAsIs($name){
+    public function getAttributeAsIs($name) {
         return (isset($this->studentattributes[$name])) ? $this->studentattributes[$name] : false;
     }
 
 
-    public function hasRecords(){
+    public function hasRecords() {
 
         $structure = $this->getStructure();
 
-        if ($structure == 'single'){
+        if ($structure == 'single') {
             return (!empty($this->studentattributes));
-        }
-
-        elseif ($structure == 'multi' || $structure == 'incremental'){
+        } else if ($structure == 'multi' || $structure == 'incremental') {
             return ($this->getMultiItems());
         }
 
@@ -1903,10 +1797,11 @@ class CustomPlugin {
      * Display the summary box of the plugin
      * @return type
      */
-    public function displaySummaryBox()
-    {
+    public function displaySummaryBox() {
 
-        if (!$this->isEnabled()) return;
+        if (!$this->isEnabled()) {
+            return;
+        }
 
         $output = "";
 
@@ -1920,13 +1815,13 @@ class CustomPlugin {
      * Load the summary box
      * @return type
      */
-    public function getSummaryBox(){
+    public function getSummaryBox() {
 
         global $CFG, $ELBP;
 
         $structure = $this->getStructure();
 
-        if ($structure === false){
+        if ($structure === false) {
             return get_string('custompluginnostructure', 'block_elbp');
         }
 
@@ -1938,14 +1833,13 @@ class CustomPlugin {
         $TPL->set("ELBP", $ELBP);
 
         $method = "setDisplayVars".$structure;
-        if (method_exists($this, $method)){
+        if (method_exists($this, $method)) {
             $this->$method($TPL);
         }
 
         try {
             return $TPL->load($CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/'.$structure.'/summary.html');
-        }
-        catch (\block_elbp\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e) {
             return $e->getException();
         }
 
@@ -1955,30 +1849,33 @@ class CustomPlugin {
     /**
      * Display the full plugin
      */
-    public function display($params = array())
-    {
+    public function display($params = array()) {
 
         global $CFG, $OUTPUT;
 
-        if (!$this->isEnabled()) return;
-        if (!$this->student) return;
+        if (!$this->isEnabled()) {
+            return;
+        }
+        if (!$this->student) {
+            return;
+        }
 
         $title = str_replace(" ", "_", $this->name);
 
         $output = "";
         $output .= "<div id='elbp_popup_header_plugin_{$this->name}' class='elbp_popup_header' title='".get_string('closepopup', 'block_elbp')."' style='{$this->getHeaderStyle()}'>";
-            $output .= "<table class='elbp_popup_header_table'>";
-                $output .= "<tr>";
-                    $output .= "<td>{$this->getName()}</td>";
-                    $output .= "<td class='elbp_popup_close'><a href='#' id='close_expanded_view' onclick='ELBP.unpop(\"{$title}\", \"".elbp_html($this->name)."\");return false;'><i class='icon-remove-sign icon-medium' style='{$this->getHeaderStyle()}' {$this->getIconHover()} ></i></a></td>";
-                $output .= "</tr>";
-            $output .= "</table>";
+        $output .= "<table class='elbp_popup_header_table'>";
+        $output .= "<tr>";
+        $output .= "<td>{$this->getName()}</td>";
+        $output .= "<td class='elbp_popup_close'><a href='#' id='close_expanded_view' onclick='ELBP.unpop(\"{$title}\", \"".elbp_html($this->name)."\");return false;'><i class='icon-remove-sign icon-medium' style='{$this->getHeaderStyle()}' {$this->getIconHover()} ></i></a></td>";
+        $output .= "</tr>";
+        $output .= "</table>";
         $output .= "</div>";
 
         $output .= "<div id='elbp_popup_content'>";
-            $output .= "<div class='elbp_centre'>".$OUTPUT->user_picture($this->student, array("courseid"=>1, "size"=>50, "link" => false))."</div><br>";
-            $output .= "<h1 class='elbp_centre'>".fullname($this->student)." ({$this->student->username})</h1>";
-            $output .= $this->getDisplay($params);
+        $output .= "<div class='elbp_centre'>".$OUTPUT->user_picture($this->student, array("courseid" => 1, "size" => 50, "link" => false))."</div><br>";
+        $output .= "<h1 class='elbp_centre'>".fullname($this->student)." ({$this->student->username})</h1>";
+        $output .= $this->getDisplay($params);
         $output .= "</div>";
 
         echo $output;
@@ -1992,13 +1889,13 @@ class CustomPlugin {
      * @param type $params
      * @return type
      */
-    public function getDisplay($params = array()){
+    public function getDisplay($params = array()) {
 
         global $CFG, $ELBP;
 
         $structure = $this->getStructure();
 
-        if ($structure === false){
+        if ($structure === false) {
             return get_string('custompluginnostructure', 'block_elbp');
         }
 
@@ -2015,7 +1912,7 @@ class CustomPlugin {
         $structure = ucfirst($structure);
 
         $method = "setDisplayVars".$structure;
-        if (method_exists($this, $method)){
+        if (method_exists($this, $method)) {
             $this->$method($TPL);
         }
 
@@ -2023,7 +1920,7 @@ class CustomPlugin {
 
         try {
             $output .= $TPL->load($CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/'.$structure.'/expanded.html');
-        } catch (\block_elbp\ELBPException $e){
+        } catch (\block_elbp\ELBPException $e) {
             $output .= $e->getException();
         }
 
@@ -2035,7 +1932,7 @@ class CustomPlugin {
      * Set specific variables to be used in the display for the Single Report
      * @param type $TPL
      */
-    private function setDisplayVarsSingle(&$TPL){
+    private function setDisplayVarsSingle(&$TPL) {
 
         $attributes = $this->getAttributesForDisplay();
 
@@ -2056,7 +1953,7 @@ class CustomPlugin {
      * Set specific variables to be used in the display for the Multi Report
      * @param type $TPL
      */
-    private function setDisplayVarsMulti(&$TPL){
+    private function setDisplayVarsMulti(&$TPL) {
 
         $items = $this->getMultiItems();
         $TPL->set("items", $items);
@@ -2068,7 +1965,7 @@ class CustomPlugin {
      * Set specific variables to be used in the display for the Incremental Report
      * @param type $TPL
      */
-    private function setDisplayVarsIncremental(&$TPL){
+    private function setDisplayVarsIncremental(&$TPL) {
 
         $FORM = new \block_elbp\ELBPForm();
         $FORM->loadStudentID($this->student->id);
@@ -2079,7 +1976,7 @@ class CustomPlugin {
 
         $items = $this->getMultiItems();
         // Here we want to order in the other direction, with newest appended to bottom of table
-        usort($items, function($a, $b){
+        usort($items, function($a, $b) {
             return ($a->settime > $b->settime);
         });
 
@@ -2092,16 +1989,16 @@ class CustomPlugin {
      * Given the student and course loaded into the plugin, get the values to be used in placeholders
      * @return type
      */
-    private function getSQLVars(){
+    private function getSQLVars() {
 
         $vars = array();
 
-        if ($this->student){
+        if ($this->student) {
             $vars['uid'] = $this->student->id;
             $vars['uname'] = $this->student->username;
             $vars['uidnum'] = $this->student->idnumber;
         }
-        if ($this->course){
+        if ($this->course) {
             $vars['cid'] = $this->course->id;
             $vars['cshort'] = $this->course->shortname;
             $vars['cidnum'] = $this->course->idnumber;
@@ -2115,7 +2012,7 @@ class CustomPlugin {
      * Set specific variables to be used in the display for the Internal DB Report
      * @param type $TPL
      */
-    private function setDisplayVarsInt_db(&$TPL){
+    private function setDisplayVarsInt_db(&$TPL) {
 
         $vars = $this->getSQLVars();
         $data = $this->prepareSQL($this->getSetting('sql_query'), $vars);
@@ -2133,17 +2030,17 @@ class CustomPlugin {
      * Set specific variables to be used in the display for the External DB Report
      * @param type $TPL
      */
-    private function setDisplayVarsExt_db(&$TPL){
+    private function setDisplayVarsExt_db(&$TPL) {
 
         $vars = array();
 
-        if ($this->student){
+        if ($this->student) {
             $vars['uid'] = $this->student->id;
             $vars['uname'] = $this->student->username;
             $vars['uidnum'] = $this->student->idnumber;
         }
 
-        if ($this->course){
+        if ($this->course) {
             $vars['cid'] = $this->course->id;
             $vars['cshort'] = $this->course->shortname;
             $vars['cidnum'] = $this->course->idnumber;
@@ -2167,22 +2064,22 @@ class CustomPlugin {
      * @param type $vars
      * @return boolean
      */
-    private function runExtDBQuery($sql, $vars = null){
+    private function runExtDBQuery($sql, $vars = null) {
 
         global $DB;
 
-        if (!$this->connection) return false;
+        if (!$this->connection) {
+            return false;
+        }
 
         $rowType = $this->getSetting('row_return_type');
 
         $query = $this->connection->query($sql, $vars);
         $results = $this->connection->getRecords($query);
 
-        if ($rowType == 'multiple'){
+        if ($rowType == 'multiple') {
             return $results;
-        }
-        else
-        {
+        } else {
             return (isset($results[0])) ? $results[0] : false;
         }
 
@@ -2195,17 +2092,15 @@ class CustomPlugin {
      * @param type $vars
      * @return type
      */
-    private function runIntDBQuery($sql, $vars = null){
+    private function runIntDBQuery($sql, $vars = null) {
 
         global $DB;
 
         $rowType = $this->getSetting('row_return_type');
 
-        if ($rowType == 'multiple'){
+        if ($rowType == 'multiple') {
             return $DB->get_records_sql($sql, $vars);
-        }
-        else
-        {
+        } else {
             return $DB->get_record_sql($sql, $vars);
         }
 
@@ -2216,23 +2111,25 @@ class CustomPlugin {
      * currently loaded student
      * @param type $data
      */
-    private function setSubmittedAttributes($data){
+    private function setSubmittedAttributes($data) {
 
-        if (isset($data['studentID'])) unset($data['studentID']);
-        if (isset($data['courseID'])) unset($data['courseID']);
+        if (isset($data['studentID'])) {
+            unset($data['studentID']);
+        }
+        if (isset($data['courseID'])) {
+            unset($data['courseID']);
+        }
 
         $possibleAttributes = $this->getElementsFromAttributeString();
 
         $this->studentattributes = array();
 
-        if ($possibleAttributes)
-        {
-            foreach($possibleAttributes as $attribute)
-            {
+        if ($possibleAttributes) {
+            foreach ($possibleAttributes as $attribute) {
 
                 // If we submitted something for that attribute, add it to the target object
-                if (isset($data[$attribute->name])){
-                    if (isset($attribute->options) && $attribute->options && !is_array($data[$attribute->name])){
+                if (isset($data[$attribute->name])) {
+                    if (isset($attribute->options) && $attribute->options && !is_array($data[$attribute->name])) {
                         $this->studentattributes[$attribute->name] = array($data[$attribute->name]);
                     } else {
                         $this->studentattributes[$attribute->name] = $data[$attribute->name];
@@ -2242,11 +2139,9 @@ class CustomPlugin {
                 // Matrix elements can't have the exact name, as they need the row in their name
                 // So it won't be found by doing the above, we need to check if there are any
                 // that start with that name
-                foreach($data as $key => $d)
-                {
+                foreach ($data as $key => $d) {
                     $explode = explode($attribute->name . "_", $key);
-                    if ($explode && count($explode) > 1)
-                    {
+                    if ($explode && count($explode) > 1) {
                         $this->studentattributes[$key] = $d;
                     }
                 }
@@ -2261,29 +2156,24 @@ class CustomPlugin {
      * @global \block_elbp\Plugins\type $DB
      * @return boolean
      */
-    private function saveSingle(){
+    private function saveSingle() {
 
         global $DB;
 
         // Loop through defined attributes and check if we have that submitted. Then validate it if needed
         $allAttributes = $this->getElementsFromAttributeString();
 
-        if ($allAttributes)
-        {
+        if ($allAttributes) {
 
             $FORM = new \block_elbp\ELBPForm();
 
-            foreach($allAttributes as $definedAttribute)
-            {
+            foreach ($allAttributes as $definedAttribute) {
 
                 $value = (isset($this->studentattributes[$definedAttribute->name])) ? $this->studentattributes[$definedAttribute->name] : '';
 
-                if (!empty($definedAttribute->validation))
-                {
-                    foreach($definedAttribute->validation as $validation)
-                    {
-                        if (!$definedAttribute->validateResponse($value, $validation))
-                        {
+                if (!empty($definedAttribute->validation)) {
+                    foreach ($definedAttribute->validation as $validation) {
+                        if (!$definedAttribute->validateResponse($value, $validation)) {
                             $langStr = str_replace("_", "", strtolower($validation));
                             $this->errors[] = get_string('validation:'.$langStr, 'block_elbp') . ": " . $definedAttribute->name;
                         }
@@ -2294,65 +2184,60 @@ class CustomPlugin {
 
         }
 
-
-        if (!empty($this->errors)) return false;
-
+        if (!empty($this->errors)) {
+            return false;
+        }
 
         // Move any tmp files
         $result = $this->moveTmpUploadedFiles($allAttributes);
-        if (!$result['result']){
+        if (!$result['result']) {
             $err = (strlen($result['errors'])) ? $result['errors'] : get_string('uploads:error', 'block_elbp');
             $this->errors[] = $err . " [".__FILE__.":".__LINE__."]";
             return false;
         }
 
-
         // Update attributes for target
-        if ($this->studentattributes)
-        {
+        if ($this->studentattributes) {
 
-            foreach($this->studentattributes as $field => $value)
-            {
-
+            foreach ($this->studentattributes as $field => $value) {
 
                 // If array, do each of them
-                if (is_array($value))
-                {
+                if (is_array($value)) {
 
                     // If it's an array then we're going to have to delete all records of this att first
                     // Otherwise, say we saved 4 values: one, two, three, four oringally, then we update to: one, four
                     // The two & thre would still be in there
                     $DB->delete_records("lbp_custom_plugin_attributes", array("userid" => $this->student->id, "pluginid" => $this->id, "field" => $field));
 
-                    foreach($value as $val)
-                    {
+                    foreach ($value as $val) {
 
-                        if ($val == '') $val = null;
+                        if ($val == '') {
+                            $val = null;
+                        }
 
                         $ins = new \stdClass();
                         $ins->pluginid = $this->id;
                         $ins->userid = $this->student->id;
                         $ins->field = $field;
                         $ins->value = $val;
-                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)){
+                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)) {
                             $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                             return false;
                         }
 
                     }
 
-                }
-                else
-                {
+                } else {
 
-                    if ($value == '') $value = null;
+                    if ($value == '') {
+                        $value = null;
+                    }
 
                     // Get att from DB
                     $attribute = $DB->get_record("lbp_custom_plugin_attributes", array("pluginid" => $this->id, "userid" => $this->student->id, "itemid" => null, "field" => $field));
 
                     // if it exists, update it
-                    if ($attribute)
-                    {
+                    if ($attribute) {
                         if ($value !== 'elbp:unchanged') {
                             $ins = new \stdClass();
                             $ins->id = $attribute->id;
@@ -2362,17 +2247,13 @@ class CustomPlugin {
                                 return false;
                             }
                         }
-                    }
-
-                    // Else, insert it
-                    else
-                    {
+                    } else {
                         $ins = new \stdClass();
                         $ins->pluginid = $this->id;
                         $ins->userid = $this->student->id;
                         $ins->field = $field;
                         $ins->value = $value;
-                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)){
+                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)) {
                             $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                             return false;
                         }
@@ -2385,34 +2266,26 @@ class CustomPlugin {
             // Now loop through the defined attributes in the config settings
             // If any of those cannot be found in the attributes supplied, e.g. may be a checkbox with nothing selected
             // now, having had something selected before (it won't send a value), and delete them
-            if ($allAttributes)
-            {
+            if ($allAttributes) {
 
-                foreach($allAttributes as $allAttribute)
-                {
+                foreach ($allAttributes as $allAttribute) {
 
-                    if (!isset($this->studentattributes[$allAttribute->name]))
-                    {
+                    if (!isset($this->studentattributes[$allAttribute->name])) {
                         $DB->delete_records("lbp_custom_plugin_attributes", array("pluginid" => $this->id, "userid" => $this->student->id, "field" => $allAttribute->name));
                     }
 
                 }
             }
 
-
         }
 
         // Notify
-        if ($this->isNotifyEnabled())
-        {
+        if ($this->isNotifyEnabled()) {
             $usernames = $this->getNotifyUsers();
-            if ($usernames)
-            {
-                foreach($usernames as $username)
-                {
+            if ($usernames) {
+                foreach ($usernames as $username) {
                     $user = \elbp_get_user($username);
-                    if ($user)
-                    {
+                    if ($user) {
                         $this->notifyUser($user);
                     }
                 }
@@ -2431,27 +2304,22 @@ class CustomPlugin {
      * @param int $itemID (Default: false)
      * @return boolean
      */
-    private function saveMulti($itemID = false){
+    private function saveMulti($itemID = false) {
 
         global $DB, $USER;
 
         // Loop through defined attributes and check if we have that submitted. Then validate it if needed
         $allAttributes = $this->getElementsFromAttributeString();
 
-        if ($allAttributes)
-        {
+        if ($allAttributes) {
 
-            foreach($allAttributes as $definedAttribute)
-            {
+            foreach ($allAttributes as $definedAttribute) {
 
                 $value = (isset($this->studentattributes[$definedAttribute->name])) ? $this->studentattributes[$definedAttribute->name] : '';
 
-                if (!empty($definedAttribute->validation))
-                {
-                    foreach($definedAttribute->validation as $validation)
-                    {
-                        if (!$definedAttribute->validateResponse($value, $validation))
-                        {
+                if (!empty($definedAttribute->validation)) {
+                    foreach ($definedAttribute->validation as $validation) {
+                        if (!$definedAttribute->validateResponse($value, $validation)) {
                             $langStr = str_replace("_", "", strtolower($validation));
                             $this->errors[] = get_string('validation:'.$langStr, 'block_elbp') . ": " . $definedAttribute->name;
                         }
@@ -2461,16 +2329,14 @@ class CustomPlugin {
             }
         }
 
-
-
-        if (!empty($this->errors)) return false;
-
+        if (!empty($this->errors)) {
+            return false;
+        }
 
         // First save the item itself
 
         // Existing item - updating it
-        if ($itemID)
-        {
+        if ($itemID) {
 
             // Don't think we actually need to do anything here, as settime, setbyuserid, etc... would always be the same
             // Log Action
@@ -2478,9 +2344,7 @@ class CustomPlugin {
                 "itemID" => $itemID
             ));
 
-        }
-        else
-        {
+        } else {
 
             // New item
             $obj = new \stdClass();
@@ -2497,37 +2361,32 @@ class CustomPlugin {
 
         }
 
-
         // Move any tmp files
         $result = $this->moveTmpUploadedFiles($allAttributes, $itemID);
-        if (!$result['result']){
+        if (!$result['result']) {
             $err = (strlen($result['errors'])) ? $result['errors'] : get_string('uploads:error', 'block_elbp');
             $this->errors[] = $err . " [".__FILE__.":".__LINE__."]";
             return false;
         }
 
-
         // Update attributes for target
-        if ($this->studentattributes)
-        {
+        if ($this->studentattributes) {
 
-            foreach($this->studentattributes as $field => $value)
-            {
-
+            foreach ($this->studentattributes as $field => $value) {
 
                 // If array, do each of them
-                if (is_array($value))
-                {
+                if (is_array($value)) {
 
                     // If it's an array then we're going to have to delete all records of this att first
                     // Otherwise, say we saved 4 values: one, two, three, four oringally, then we update to: one, four
                     // The two & thre would still be in there
                     $DB->delete_records("lbp_custom_plugin_attributes", array("userid" => $this->student->id, "pluginid" => $this->id, "itemid" => $itemID, "field" => $field));
 
-                    foreach($value as $val)
-                    {
+                    foreach ($value as $val) {
 
-                        if ($val == '') $val = null;
+                        if ($val == '') {
+                            $val = null;
+                        }
 
                         $ins = new \stdClass();
                         $ins->pluginid = $this->id;
@@ -2535,25 +2394,24 @@ class CustomPlugin {
                         $ins->itemid = $itemID;
                         $ins->field = $field;
                         $ins->value = $val;
-                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)){
+                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)) {
                             $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                             return false;
                         }
 
                     }
 
-                }
-                else
-                {
+                } else {
 
-                    if ($value == '') $value = null;
+                    if ($value == '') {
+                        $value = null;
+                    }
 
                     // Get att from DB
                     $attribute = $DB->get_record("lbp_custom_plugin_attributes", array("pluginid" => $this->id, "userid" => $this->student->id, "itemid" => $itemID, "field" => $field));
 
                     // if it exists, update it
-                    if ($attribute)
-                    {
+                    if ($attribute) {
                         if ($value !== 'elbp:unchanged') {
                             $ins = new \stdClass();
                             $ins->id = $attribute->id;
@@ -2563,18 +2421,14 @@ class CustomPlugin {
                                 return false;
                             }
                         }
-                    }
-
-                    // Else, insert it
-                    else
-                    {
+                    } else {
                         $ins = new \stdClass();
                         $ins->pluginid = $this->id;
                         $ins->userid = $this->student->id;
                         $ins->itemid = $itemID;
                         $ins->field = $field;
                         $ins->value = $value;
-                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)){
+                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)) {
                             $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                             return false;
                         }
@@ -2587,34 +2441,26 @@ class CustomPlugin {
             // Now loop through the defined attributes in the config settings
             // If any of those cannot be found in the attributes supplied, e.g. may be a checkbox with nothing selected
             // now, having had something selected before (it won't send a value), and delete them
-            if ($allAttributes)
-            {
+            if ($allAttributes) {
 
-                foreach($allAttributes as $allAttribute)
-                {
+                foreach ($allAttributes as $allAttribute) {
 
-                    if (!isset($this->studentattributes[$allAttribute->name]) || $this->studentattributes[$allAttribute->name] == "")
-                    {
+                    if (!isset($this->studentattributes[$allAttribute->name]) || $this->studentattributes[$allAttribute->name] == "") {
                         $DB->delete_records("lbp_custom_plugin_attributes", array("pluginid" => $this->id, "userid" => $this->student->id, "itemid" => $itemID, "field" => $allAttribute->name));
                     }
 
                 }
             }
 
-
         }
 
         // Notify
-        if ($this->isNotifyEnabled())
-        {
+        if ($this->isNotifyEnabled()) {
             $usernames = $this->getNotifyUsers();
-            if ($usernames)
-            {
-                foreach($usernames as $username)
-                {
+            if ($usernames) {
+                foreach ($usernames as $username) {
                     $user = \elbp_get_user($username);
-                    if ($user)
-                    {
+                    if ($user) {
                         $this->notifyUser($user);
                     }
                 }
@@ -2631,7 +2477,7 @@ class CustomPlugin {
      * @param type $itemID
      * @return boolean
      */
-    private function deleteMultiItem($itemID){
+    private function deleteMultiItem($itemID) {
 
         global $DB;
 
@@ -2639,7 +2485,7 @@ class CustomPlugin {
         $data->id = $itemID;
         $data->del = 1;
 
-        if (!$DB->update_record("lbp_custom_plugin_items", $data)){
+        if (!$DB->update_record("lbp_custom_plugin_items", $data)) {
             $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
             return false;
         }
@@ -2658,21 +2504,21 @@ class CustomPlugin {
      * @param type $itemID
      * @return type
      */
-    private function loadMultiItemAttributeData($itemID = false){
+    private function loadMultiItemAttributeData($itemID = false) {
 
         $attributes = $this->getAttributesForDisplay();
 
-        if ($itemID){
+        if ($itemID) {
 
             $this->loadStudent($this->student->id, $itemID);
 
-            if ($attributes){
+            if ($attributes) {
 
-                foreach($attributes as &$attribute){
+                foreach ($attributes as &$attribute) {
 
                     $attribute->loadObject($this);
 
-                    if (isset($this->studentattributes[$attribute->name])){
+                    if (isset($this->studentattributes[$attribute->name])) {
 
                         $attribute->setValue($this->studentattributes[$attribute->name]);
 
@@ -2683,16 +2529,14 @@ class CustomPlugin {
                         // that start with that name
                         $valueArray = array();
 
-                        foreach($this->studentattributes as $key => $d)
-                        {
+                        foreach ($this->studentattributes as $key => $d) {
                             $explode = explode($attribute->name . "_", $key);
-                            if ($explode && count($explode) > 1)
-                            {
+                            if ($explode && count($explode) > 1) {
                                 $valueArray[$explode[1]] = $d;
                             }
                         }
 
-                        if (count($valueArray) == 1){
+                        if (count($valueArray) == 1) {
                             $valueArray = reset($valueArray);
                         }
 
@@ -2706,9 +2550,9 @@ class CustomPlugin {
 
         } else {
 
-            if ($attributes){
+            if ($attributes) {
 
-                foreach($attributes as &$attribute){
+                foreach ($attributes as &$attribute) {
 
                     $attribute->loadObject($this);
 
@@ -2720,7 +2564,6 @@ class CustomPlugin {
 
         return $attributes;
 
-
     }
 
     /**
@@ -2730,27 +2573,22 @@ class CustomPlugin {
      * @param type $itemID
      * @return boolean
      */
-    private function saveIncremental($itemID = false){
+    private function saveIncremental($itemID = false) {
 
         global $DB, $USER;
 
         // Loop through defined attributes and check if we have that submitted. Then validate it if needed
         $allAttributes = $this->getElementsFromAttributeString();
 
-        if ($allAttributes)
-        {
+        if ($allAttributes) {
 
-            foreach($allAttributes as $definedAttribute)
-            {
+            foreach ($allAttributes as $definedAttribute) {
 
                 $value = (isset($this->studentattributes[$definedAttribute->name])) ? $this->studentattributes[$definedAttribute->name] : '';
 
-                if (!empty($definedAttribute->validation))
-                {
-                    foreach($definedAttribute->validation as $validation)
-                    {
-                        if (!$definedAttribute->validateResponse($value, $validation))
-                        {
+                if (!empty($definedAttribute->validation)) {
+                    foreach ($definedAttribute->validation as $validation) {
+                        if (!$definedAttribute->validateResponse($value, $validation)) {
                             $langStr = str_replace("_", "", strtolower($validation));
                             $this->errors[] = get_string('validation:'.$langStr, 'block_elbp') . ": " . $definedAttribute->name;
                         }
@@ -2760,16 +2598,14 @@ class CustomPlugin {
             }
         }
 
-
-
-        if (!empty($this->errors)) return false;
-
+        if (!empty($this->errors)) {
+            return false;
+        }
 
         // First save the item itself
 
         // Existing item - updating it
-        if ($itemID)
-        {
+        if ($itemID) {
 
             // Don't think we actually need to do anything here, as settime, setbyuserid, etc... would always be the same
             // Log Action
@@ -2777,9 +2613,7 @@ class CustomPlugin {
                 "itemID" => $itemID
             ));
 
-        }
-        else
-        {
+        } else {
 
             // New item
             $obj = new \stdClass();
@@ -2798,33 +2632,30 @@ class CustomPlugin {
 
         // Move any tmp files
         $result = $this->moveTmpUploadedFiles($allAttributes, $itemID);
-        if (!$result['result']){
+        if (!$result['result']) {
             $err = (strlen($result['errors'])) ? $result['errors'] : get_string('uploads:error', 'block_elbp');
             $this->errors[] = $err . " [".__FILE__.":".__LINE__."]";
             return false;
         }
 
         // Update attributes for target
-        if ($this->studentattributes)
-        {
+        if ($this->studentattributes) {
 
-            foreach($this->studentattributes as $field => $value)
-            {
-
+            foreach ($this->studentattributes as $field => $value) {
 
                 // If array, do each of them
-                if (is_array($value))
-                {
+                if (is_array($value)) {
 
                     // If it's an array then we're going to have to delete all records of this att first
                     // Otherwise, say we saved 4 values: one, two, three, four oringally, then we update to: one, four
                     // The two & thre would still be in there
                     $DB->delete_records("lbp_custom_plugin_attributes", array("userid" => $this->student->id, "pluginid" => $this->id, "itemid" => $itemID, "field" => $field));
 
-                    foreach($value as $val)
-                    {
+                    foreach ($value as $val) {
 
-                        if ($val == '') $val = null;
+                        if ($val == '') {
+                            $val = null;
+                        }
 
                         $ins = new \stdClass();
                         $ins->pluginid = $this->id;
@@ -2832,25 +2663,24 @@ class CustomPlugin {
                         $ins->itemid = $itemID;
                         $ins->field = $field;
                         $ins->value = $val;
-                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)){
+                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)) {
                             $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                             return false;
                         }
 
                     }
 
-                }
-                else
-                {
+                } else {
 
-                    if ($value == '') $value = null;
+                    if ($value == '') {
+                        $value = null;
+                    }
 
                     // Get att from DB
                     $attribute = $DB->get_record("lbp_custom_plugin_attributes", array("pluginid" => $this->id, "userid" => $this->student->id, "itemid" => $itemID, "field" => $field));
 
                     // if it exists, update it
-                    if ($attribute)
-                    {
+                    if ($attribute) {
                         if ($value !== 'elbp:unchanged') {
                             $ins = new \stdClass();
                             $ins->id = $attribute->id;
@@ -2860,18 +2690,14 @@ class CustomPlugin {
                                 return false;
                             }
                         }
-                    }
-
-                    // Else, insert it
-                    else
-                    {
+                    } else {
                         $ins = new \stdClass();
                         $ins->pluginid = $this->id;
                         $ins->userid = $this->student->id;
                         $ins->itemid = $itemID;
                         $ins->field = $field;
                         $ins->value = $value;
-                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)){
+                        if (!$DB->insert_record("lbp_custom_plugin_attributes", $ins)) {
                             $this->errors[] = get_string('errors:couldnotinsertrecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
                             return false;
                         }
@@ -2884,36 +2710,28 @@ class CustomPlugin {
             // Now loop through the defined attributes in the config settings
             // If any of those cannot be found in the attributes supplied, e.g. may be a checkbox with nothing selected
             // now, having had something selected before (it won't send a value), and delete them
-            if ($allAttributes)
-            {
+            if ($allAttributes) {
 
-                foreach($allAttributes as $allAttribute)
-                {
+                foreach ($allAttributes as $allAttribute) {
 
-                    if (!isset($this->studentattributes[$allAttribute->name]) || $this->studentattributes[$allAttribute->name] == "")
-                    {
+                    if (!isset($this->studentattributes[$allAttribute->name]) || $this->studentattributes[$allAttribute->name] == "") {
                         $DB->delete_records("lbp_custom_plugin_attributes", array("pluginid" => $this->id, "userid" => $this->student->id, "itemid" => $itemID, "field" => $allAttribute->name));
                     }
 
                 }
             }
 
-
         }
 
         $this->newItemID = $itemID;
 
         // Notify
-        if ($this->isNotifyEnabled())
-        {
+        if ($this->isNotifyEnabled()) {
             $usernames = $this->getNotifyUsers();
-            if ($usernames)
-            {
-                foreach($usernames as $username)
-                {
+            if ($usernames) {
+                foreach ($usernames as $username) {
                     $user = \elbp_get_user($username);
-                    if ($user)
-                    {
+                    if ($user) {
                         $this->notifyUser($user);
                     }
                 }
@@ -2930,7 +2748,7 @@ class CustomPlugin {
      * @param type $itemID
      * @return boolean
      */
-    private function deleteIncrementalItem($itemID){
+    private function deleteIncrementalItem($itemID) {
 
         global $DB;
 
@@ -2938,7 +2756,7 @@ class CustomPlugin {
         $data->id = $itemID;
         $data->del = 1;
 
-        if (!$DB->update_record("lbp_custom_plugin_items", $data)){
+        if (!$DB->update_record("lbp_custom_plugin_items", $data)) {
             $this->errors[] = get_string('errors:couldnotupdaterecord', 'block_elbp') . "[".__FILE__.":".__LINE__."]";
             return false;
         }
@@ -2963,30 +2781,36 @@ class CustomPlugin {
      * @param \block_elbp\Plugins\type $ELBP
      * @return boolean
      */
-    public function ajax($action, $params, $ELBP){
+    public function ajax($action, $params, $ELBP) {
 
         global $CFG, $DB, $USER;
 
-        switch($action)
-        {
+        switch ($action) {
 
-
-           case 'load_display_type':
+            case 'load_display_type':
 
                 // Correct params are set?
 
-                if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID'])) return false;
+                if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID'])) {
+                    return false;
+                }
 
                 // We have the permission to do this?
                 $access = $ELBP->getUserPermissions($params['studentID']);
-                if (!$ELBP->anyPermissionsTrue($access)) return false;
+                if (!$ELBP->anyPermissionsTrue($access)) {
+                    return false;
+                }
 
                 // Get the type from the ID
-                if (!isset($params['type'])) return false;
+                if (!isset($params['type'])) {
+                    return false;
+                }
 
                 $permissions = $this->getUserPermissions();
 
-                if (!$this->havePermission(self::PERMISSION_VIEW, $permissions)) return false;
+                if (!$this->havePermission(self::PERMISSION_VIEW, $permissions)) {
+                    return false;
+                }
 
                 $FORM = new \block_elbp\ELBPForm();
                 $FORM->loadStudentID($this->student->id);
@@ -3003,38 +2827,33 @@ class CustomPlugin {
                 $TPL->set("page", $page);
 
                 $itemID = (isset($params['itemID'])) ? $params['itemID'] : false;
-                if ($itemID){
+                if ($itemID) {
                     $item = $this->getMultiItem($itemID);
-                    if (!$item || $item->studentid <> $this->student->id){
+                    if (!$item || $item->studentid <> $this->student->id) {
                         $itemID = false;
                     }
                 }
 
                 // If we are trying to add/edit but we don't have the permission, then stop
-                if ($page == 'new' && !$this->havePermission( self::PERMISSION_ADD, $permissions )){
+                if ($page == 'new' && !$this->havePermission( self::PERMISSION_ADD, $permissions )) {
                     $page = 'all';
                 }
 
                 // If we are trying to add/edit but we don't have the permission, then stop
-                if ($page == 'edit' && $item && ( ($USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_ANY, $permissions )) || ($USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_OWN, $permissions )) ) ){
+                if ($page == 'edit' && $item && ( ($USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_ANY, $permissions )) || ($USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_OWN, $permissions )) ) ) {
                     $page = 'all';
                 }
 
-
-                if ($page == 'new' || $page == 'edit'){
+                if ($page == 'new' || $page == 'edit') {
                     $attributes = $this->getAttributesForDisplay();
                     $TPL->set("attributes", $attributes);
                 }
 
-                if ($page == 'edit'){
+                if ($page == 'edit') {
                     $page = 'new'; # Use the same form, just check for different capabilities
                 }
 
-
-
-
-
-                if ($page == 'all'){
+                if ($page == 'all') {
                     $this->setDisplayVarsMulti($TPL);
                 }
 
@@ -3044,33 +2863,37 @@ class CustomPlugin {
                 try {
                     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/'.$this->getStructure().'/'.$page.'.html' );
                     $TPL->display();
-                } catch (\block_elbp\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e) {
                     echo $e->getException();
                 }
                 exit;
 
-           break;
+                break;
 
+            case 'save_single':
 
-
-           case 'save_single':
-
-                if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID'])) return false;
+                if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID'])) {
+                    return false;
+                }
 
                 // We have the permission to do this?
                 $access = $ELBP->getUserPermissions($params['studentID']);
-                if (!$ELBP->anyPermissionsTrue($access)) return false;
+                if (!$ELBP->anyPermissionsTrue($access)) {
+                    return false;
+                }
 
                 $permissions = $this->getUserPermissions();
-                if (!$this->havePermission(self::PERMISSION_EDIT_ANY, $permissions)) return false;
+                if (!$this->havePermission(self::PERMISSION_EDIT_ANY, $permissions)) {
+                    return false;
+                }
 
                 $this->setSubmittedAttributes($params);
 
-                if (!$this->saveSingle()){
+                if (!$this->saveSingle()) {
 
                     echo "$('#custom_output').html('<div class=\"elbp_err_box\" id=\"custom_errors\"></div>');";
 
-                    foreach($this->getErrors() as $error){
+                    foreach ($this->getErrors() as $error) {
 
                         echo "$('#custom_errors').append('<span>{$error}</span><br>');";
 
@@ -3081,53 +2904,56 @@ class CustomPlugin {
                 }
 
                 // Reload expanded view to see changes.
-                echo "ELBP.load_expanded('{$this->getName()}', function(){
+                echo "ELBP.load_expanded('{$this->getName()}', function() {
                     $('#custom_output').html('<div class=\"elbp_success_box\" id=\"custom_success\"></div>');
                     $('#custom_success').append('<span>".get_string('saved', 'block_elbp')."</span><br>');
                 });";
 
                 exit;
 
-            break;
-
-
+                break;
 
             case 'save_multi':
 
-                if (!$params || !isset($params['studentID'])) return false;
+                if (!$params || !isset($params['studentID'])) {
+                    return false;
+                }
 
                 // We have the permission to do this?
                 $access = $ELBP->getUserPermissions($params['studentID']);
-                if (!$ELBP->anyPermissionsTrue($access)) return false;
+                if (!$ELBP->anyPermissionsTrue($access)) {
+                    return false;
+                }
 
                 $itemID = (isset($params['itemID']) && $params['itemID'] > 0) ? $params['itemID'] : false;
 
-                if (!$this->loadStudent($params['studentID'], $itemID)) return false;
+                if (!$this->loadStudent($params['studentID'], $itemID)) {
+                    return false;
+                }
 
                 $item = $this->getMultiItem($itemID);
 
                 $permissions = $this->getUserPermissions();
 
                 // New item
-                if (!$itemID && !$this->havePermission( self::PERMISSION_ADD , $permissions)){
+                if (!$itemID && !$this->havePermission( self::PERMISSION_ADD , $permissions)) {
                     return false;
                 }
 
                 // Existing item
-                if ( ($item && $USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_ANY, $permissions )) || ($item && $USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_OWN, $permissions )) ){
+                if ( ($item && $USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_ANY, $permissions )) || ($item && $USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_OWN, $permissions )) ) {
                     return false;
                 }
-
 
                 $this->setSubmittedAttributes($params);
 
                 // [Permissions] - If itemid false, check add permission, else check edit_any or edit_own
 
-                if (!$this->saveMulti($itemID)){
+                if (!$this->saveMulti($itemID)) {
 
                     echo "$('#custom_output').html('<div class=\"elbp_err_box\" id=\"custom_errors\"></div>');";
 
-                    foreach($this->getErrors() as $error){
+                    foreach ($this->getErrors() as $error) {
 
                         echo "$('#custom_errors').append('<span>{$error}</span><br>');";
 
@@ -3137,42 +2963,44 @@ class CustomPlugin {
 
                 }
 
-
                 // SUccess message at top
                 echo "$('#custom_output').html('<div class=\"elbp_success_box\" id=\"custom_success\"></div>');";
                 echo "$('#custom_success').append('<span>".get_string('saved', 'block_elbp')."</span><br>');";
 
-                if (!$itemID){
+                if (!$itemID) {
                     echo "$('#elbp_custom_plugin_form')[0].reset();";
                 }
 
                 exit;
 
-            break;
+                break;
 
+            case 'delete_item':
 
-
-           case 'delete_item':
-
-                if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID']) || !isset($params['itemID'])) return false;
+                if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID']) || !isset($params['itemID'])) {
+                    return false;
+                }
 
                 // We have the permission to do this?
                 $access = $ELBP->getUserPermissions($params['studentID']);
-                if (!$ELBP->anyPermissionsTrue($access)) return false;
+                if (!$ELBP->anyPermissionsTrue($access)) {
+                    return false;
+                }
 
                 $permissions = $this->getUserPermissions();
 
                 $item = $this->getMultiItem($params['itemID']);
 
-                if ( ($USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_DEL_ANY, $permissions )) || ($USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_DEL_OWN, $permissions )) ){
+                if ( ($USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_DEL_ANY, $permissions )) || ($USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_DEL_OWN, $permissions )) ) {
                     return false;
                 }
 
-
                 // If the record exists, check to make sure the student ID on it is the same as the one we specified
-                if (!$item || $item->studentid <> $params['studentID']) return false;
+                if (!$item || $item->studentid <> $params['studentID']) {
+                    return false;
+                }
 
-                if (!$this->deleteMultiItem($item->id)){
+                if (!$this->deleteMultiItem($item->id)) {
                     echo "$('#custom_output').html('<div class=\"elbp_err_box\" id=\"generic_err_box\"></div>');";
                     echo "$('#generic_err_box').append('<span>".get_string('errors:couldnotupdaterecord', 'block_elbp')."</span><br>');";
                     exit;
@@ -3184,43 +3012,50 @@ class CustomPlugin {
 
                 exit;
 
-           break;
+                break;
 
-           case 'save_incremental':
+            case 'save_incremental':
 
-                if (!$params || !isset($params['studentID'])) return false;
+                if (!$params || !isset($params['studentID'])) {
+                    return false;
+                }
 
                 // We have the permission to do this?
                 $access = $ELBP->getUserPermissions($params['studentID']);
-                if (!$ELBP->anyPermissionsTrue($access)) return false;
+                if (!$ELBP->anyPermissionsTrue($access)) {
+                    return false;
+                }
 
                 $itemID = (isset($params['itemID']) && $params['itemID'] > 0) ? $params['itemID'] : false;
 
-                if (!$this->loadStudent($params['studentID'], $itemID)) return false;
+                if (!$this->loadStudent($params['studentID'], $itemID)) {
+                    return false;
+                }
 
                 $item = $this->getMultiItem($itemID);
-                if ($item && $item->studentid <> $params['studentID']) return false;
+                if ($item && $item->studentid <> $params['studentID']) {
+                    return false;
+                }
 
                 $permissions = $this->getUserPermissions();
 
                 // New item
-                if (!$itemID && !$this->havePermission( self::PERMISSION_ADD , $permissions)){
+                if (!$itemID && !$this->havePermission( self::PERMISSION_ADD , $permissions)) {
                     return false;
                 }
 
                 // Existing item
-                if ( $item && (($USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_ANY, $permissions )) || ($USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_OWN, $permissions ))) ){
+                if ( $item && (($USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_ANY, $permissions )) || ($USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_EDIT_OWN, $permissions ))) ) {
                     return false;
                 }
 
-
                 $this->setSubmittedAttributes($params);
 
-                if (!$this->saveIncremental($itemID)){
+                if (!$this->saveIncremental($itemID)) {
 
                     echo "$('#custom_output').html('<div class=\"elbp_err_box\" id=\"custom_errors\"></div>');";
 
-                    foreach($this->getErrors() as $error){
+                    foreach ($this->getErrors() as $error) {
 
                         echo "$('#custom_errors').append('<span>{$error}</span><br>');";
 
@@ -3230,35 +3065,40 @@ class CustomPlugin {
 
                 }
 
-
                 // SUccess message at top
                 echo "$('#custom_output').html('<div class=\"elbp_success_box\" id=\"custom_success\"></div>');";
                 echo "$('#custom_success').append('<span>".get_string('saved', 'block_elbp')."</span><br>');";
 
                 exit;
 
-            break;
+                break;
 
-           case 'delete_incremental_item':
+            case 'delete_incremental_item':
 
-               if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID']) || !isset($params['itemID'])) return false;
+                if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID']) || !isset($params['itemID'])) {
+                    return false;
+                }
 
                 // We have the permission to do this?
                 $access = $ELBP->getUserPermissions($params['studentID']);
-                if (!$ELBP->anyPermissionsTrue($access)) return false;
+                if (!$ELBP->anyPermissionsTrue($access)) {
+                    return false;
+                }
 
                 $permissions = $this->getUserPermissions();
 
                 $item = $this->getMultiItem($params['itemID']);
 
-                if ( ($USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_DEL_ANY, $permissions )) || ($USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_DEL_OWN, $permissions )) ){
+                if ( ($USER->id <> $item->setbyuserid && !$this->havePermission( self::PERMISSION_DEL_ANY, $permissions )) || ($USER->id == $item->setbyuserid && !$this->havePermission( self::PERMISSION_DEL_OWN, $permissions )) ) {
                     return false;
                 }
 
                 // If the record exists, check to make sure the student ID on it is the same as the one we specified
-                if (!$item || $item->studentid <> $params['studentID']) return false;
+                if (!$item || $item->studentid <> $params['studentID']) {
+                    return false;
+                }
 
-                if (!$this->deleteIncrementalItem($item->id)){
+                if (!$this->deleteIncrementalItem($item->id)) {
                     echo "$('#custom_output').html('<div class=\"elbp_err_box\" id=\"generic_err_box\"></div>');";
                     echo "$('#generic_err_box').append('<span>".get_string('errors:couldnotupdaterecord', 'block_elbp')."</span><br>');";
                     exit;
@@ -3270,20 +3110,28 @@ class CustomPlugin {
                 echo "$('.incremental_item_{$item->id}_edit').remove();";
                 exit;
 
-           break;
+                break;
 
-           case 'refresh_incremental':
+            case 'refresh_incremental':
 
-               if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID'])) return false;
+                if (!$params || !isset($params['studentID']) || !$this->loadStudent($params['studentID'])) {
+                    return false;
+                }
 
-               if ($this->getStructure() != 'incremental') return false;
+                if ($this->getStructure() != 'incremental') {
+                    return false;
+                }
 
                 // We have the permission to do this?
                 $access = $ELBP->getUserPermissions($params['studentID']);
-                if (!$ELBP->anyPermissionsTrue($access)) return false;
+                if (!$ELBP->anyPermissionsTrue($access)) {
+                    return false;
+                }
 
                 $permissions = $this->getUserPermissions();
-                if (!$this->havePermission(self::PERMISSION_VIEW, $permissions)) return false;
+                if (!$this->havePermission(self::PERMISSION_VIEW, $permissions)) {
+                    return false;
+                }
 
                 $FORM = new \block_elbp\ELBPForm();
                 $FORM->loadStudentID($this->student->id);
@@ -3300,13 +3148,12 @@ class CustomPlugin {
                 try {
                     $TPL->load( $CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/incremental/items.html' );
                     $TPL->display();
-                } catch (\block_elbp\ELBPException $e){
+                } catch (\block_elbp\ELBPException $e) {
                     echo $e->getException();
                 }
                 exit;
 
-           break;
-
+                break;
 
         }
 
@@ -3322,97 +3169,95 @@ class CustomPlugin {
      * @param type $item
      * @return boolean
      */
-    public function displayMultiItem($item){
+    public function displayMultiItem($item) {
 
         global $CFG, $ELBP, $OUTPUT, $USER;
 
-        if (!$this->student) return false;
+        if (!$this->student) {
+            return false;
+        }
 
         // Reload student with item ID
         $this->loadStudent($this->student->id, $item->id);
         $attributes = $this->getAttributesForDisplay();
 
-        if (!$attributes) return get_string('noattributesdefined', 'block_elbp');
+        if (!$attributes) {
+            return get_string('noattributesdefined', 'block_elbp');
+        }
 
         $output = "";
 
         $output .= "<table class='elbp_custom_item_header_table' onclick='$(\"#custom_item_content_{$item->id}\").slideToggle();return false;'>";
-            $output .= "<tr>";
-                $output .= "<td class='elbp_object_icon'>";
-                if ($this->getSetting('plugin_icon') !== false){
-                    $output .= "<img src='". $CFG->wwwroot . "/blocks/elbp/download.php?f=".\elbp_get_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $this->getSetting('plugin_icon'))."' alt='{$this->getName()}'>";
-                }
+        $output .= "<tr>";
+        $output .= "<td class='elbp_object_icon'>";
+        if ($this->getSetting('plugin_icon') !== false) {
+            $output .= "<img src='". $CFG->wwwroot . "/blocks/elbp/download.php?f=".\elbp_get_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $this->getSetting('plugin_icon'))."' alt='{$this->getName()}'>";
+        }
 
-                $output .= "<td class='elbp_object_name'>";
-                    $title = date('D jS F Y', $item->settime);
-                    $titleAtt = $this->getSetting('title_attribute');
-                    if ( $titleAtt && $this->getAttribute($titleAtt, false) !== false && $this->getAttribute($titleAtt, false) != "" ){
-                        $title = $this->getAttribute($titleAtt, false);
-                    }
-                    $output .= "<span class='title'>{$title}</span><br><br>";
-                    $output .= get_string('setby', 'block_elbp') . ": " . \elbp_get_fullname($item->setbyuserid).", ". date('D jS F Y, H:i', $item->settime);
-               $output .= " </td>";
-            $output .= "</tr>";
+        $output .= "<td class='elbp_object_name'>";
+        $title = date('D jS F Y', $item->settime);
+        $titleAtt = $this->getSetting('title_attribute');
+        if ( $titleAtt && $this->getAttribute($titleAtt, false) !== false && $this->getAttribute($titleAtt, false) != "" ) {
+            $title = $this->getAttribute($titleAtt, false);
+        }
+        $output .= "<span class='title'>{$title}</span><br><br>";
+        $output .= get_string('setby', 'block_elbp') . ": " . \elbp_get_fullname($item->setbyuserid).", ". date('D jS F Y, H:i', $item->settime);
+        $output .= " </td>";
+        $output .= "</tr>";
         $output .= "</table>";
 
         $output .= "<div id='custom_item_content_{$item->id}' class='elbp_custom_item_hidden'>";
 
-            $output .= "<div class='elbp_centre'>";
-                $output .= "<small>";
-                if ( ($USER->id <> $item->setbyuserid && $this->havePermission( self::PERMISSION_EDIT_ANY, $this->userpermissions )) || ($USER->id == $item->setbyuserid && $this->havePermission( self::PERMISSION_EDIT_OWN, $this->userpermissions ))){
-                    $output .= "<a href='#' onclick='ELBP.Custom.edit_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/editstring', 'core')."' alt='' /> ".get_string('edit', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
-                }
-                if ( ($USER->id <> $item->setbyuserid && $this->havePermission( self::PERMISSION_DEL_ANY, $this->userpermissions )) || ($USER->id == $item->setbyuserid && $this->havePermission( self::PERMISSION_DEL_OWN, $this->userpermissions ))){
-                    $output .= "<a href='#' onclick='ELBP.Custom.delete_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/delete', 'core')."' alt='' /> ".get_string('delete', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
-                }
-                if ( ($this->havePermission( self::PERMISSION_PRINT, $this->userpermissions )) ){
-                    $output .= "<a href='{$CFG->wwwroot}/blocks/elbp/print.php?plugin={$this->id}&object={$item->id}&student={$item->studentid}&custom=1' target='_blank' ><img src='".elbp_image_url('t/print', 'core')."' alt='' /> ".get_string('print', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
-                }
-                $output .= "</small><br><br>";
-            $output .= "</div>";
+        $output .= "<div class='elbp_centre'>";
+        $output .= "<small>";
+        if ( ($USER->id <> $item->setbyuserid && $this->havePermission( self::PERMISSION_EDIT_ANY, $this->userpermissions )) || ($USER->id == $item->setbyuserid && $this->havePermission( self::PERMISSION_EDIT_OWN, $this->userpermissions ))) {
+            $output .= "<a href='#' onclick='ELBP.Custom.edit_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/editstring', 'core')."' alt='' /> ".get_string('edit', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
+        }
+        if ( ($USER->id <> $item->setbyuserid && $this->havePermission( self::PERMISSION_DEL_ANY, $this->userpermissions )) || ($USER->id == $item->setbyuserid && $this->havePermission( self::PERMISSION_DEL_OWN, $this->userpermissions ))) {
+            $output .= "<a href='#' onclick='ELBP.Custom.delete_item(\"{$this->getName()}\", {$item->id});return false;'><img src='".elbp_image_url('t/delete', 'core')."' alt='' /> ".get_string('delete', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
+        }
+        if ( ($this->havePermission( self::PERMISSION_PRINT, $this->userpermissions )) ) {
+            $output .= "<a href='{$CFG->wwwroot}/blocks/elbp/print.php?plugin={$this->id}&object={$item->id}&student={$item->studentid}&custom=1' target='_blank' ><img src='".elbp_image_url('t/print', 'core')."' alt='' /> ".get_string('print', 'block_elbp')."</a> &nbsp; &nbsp; &nbsp;";
+        }
+        $output .= "</small><br><br>";
+        $output .= "</div>";
 
-            $output .= "<div>";
+        $output .= "<div>";
 
-            // Main central elements
-            $output .= "<div class='elbp_custom_item_main_elements'>";
-                $mainAttributes = $this->getAttributesForDisplayDisplayType("main", $attributes);
+        // Main central elements
+        $output .= "<div class='elbp_custom_item_main_elements'>";
+        $mainAttributes = $this->getAttributesForDisplayDisplayType("main", $attributes);
 
-                if ($mainAttributes)
-                {
-                    foreach($mainAttributes as $attribute)
-                    {
-                        $output .= "<h2>{$attribute->name}</h2>";
-                        $output .= "<div class='elbp_custom_item_attribute_content'>";
-                            $output .= $attribute->displayValue();
-                        $output .= "</div>";
-                        $output .= "<br>";
-                    }
-                }
-            $output .= "</div>";
+        if ($mainAttributes) {
+            foreach ($mainAttributes as $attribute) {
+                $output .= "<h2>{$attribute->name}</h2>";
+                $output .= "<div class='elbp_custom_item_attribute_content'>";
+                $output .= $attribute->displayValue();
+                $output .= "</div>";
+                $output .= "<br>";
+            }
+        }
+        $output .= "</div>";
 
+        // Summary
+        $output .= "<div class='elbp_custom_item_summary_elements'>";
 
-            // Summary
-            $output .= "<div class='elbp_custom_item_summary_elements'>";
+        $sideAttributes = $this->getAttributesForDisplayDisplayType("side", $attributes);
 
-                $sideAttributes = $this->getAttributesForDisplayDisplayType("side", $attributes);
+        if ($sideAttributes) {
+            $output .= "<b>".get_string('otherattributes', 'block_elbp')."</b><br><br>";
+            $output .= "<table class='custom_item_summary_table'>";
+            foreach ($sideAttributes as $attribute) {
+                $output .= "<tr><td>{$attribute->name}:</td><td>{$attribute->displayValue()}</td></tr>";
+            }
+            $output .= "</table>";
+        }
 
-                if ($sideAttributes)
-                {
-                    $output .= "<b>".get_string('otherattributes', 'block_elbp')."</b><br><br>";
-                    $output .= "<table class='custom_item_summary_table'>";
-                    foreach($sideAttributes as $attribute)
-                    {
-                        //".elbp_html( $this->getAttribute($attribute->name, true) ) . "
-                         $output .= "<tr><td>{$attribute->name}:</td><td>{$attribute->displayValue()}</td></tr>";
-                    }
-                    $output .= "</table>";
-                }
+        $output .= "</div>";
 
-            $output .= "</div>";
+        $output .= "<br class='elbp_cl'>";
 
-            $output .= "<br class='elbp_cl'>";
-
-            $output .= "</div>";
+        $output .= "</div>";
 
         $output .= "</div>";
 
@@ -3420,11 +3265,11 @@ class CustomPlugin {
 
     }
 
-    public function getReportingElements(){
+    public function getReportingElements() {
         return false;
     }
 
-    public function getMassActions(){
+    public function getMassActions() {
         return false;
     }
 
@@ -3436,75 +3281,65 @@ class CustomPlugin {
      * @param type $studentID
      * @param type $type
      */
-    public function printOut($objectID, $studentID, $type){
+    public function printOut($objectID, $studentID, $type) {
 
         global $CFG, $DB;
 
         $structure = $this->getStructure();
-        if ($structure === false){
-             echo get_string('custompluginnostructure', 'block_elbp');
-             exit;
+        if ($structure === false) {
+            echo get_string('custompluginnostructure', 'block_elbp');
+            exit;
         }
 
         $this->loadStudent($studentID);
 
         $permissions = $this->getUserPermissions();
-        if (!$this->havePermission( self::PERMISSION_PRINT, $permissions )){
+        if (!$this->havePermission( self::PERMISSION_PRINT, $permissions )) {
             echo get_string('noaccess', 'block_elbp');
             exit;
         }
 
         $attributes = $this->getAttributesForDisplay();
 
-
         $txt = "";
 
-        switch($structure)
-        {
+        switch ($structure) {
 
             case 'single':
 
                 $mainAttributes = $this->getAttributesForDisplayDisplayType("main");
                 $sideAttributes = $this->getAttributesForDisplayDisplayType("side");
 
-                if ($mainAttributes)
-                {
-                    foreach($mainAttributes as $att)
-                    {
+                if ($mainAttributes) {
+                    foreach ($mainAttributes as $att) {
                         $txt .= "<h2 class='custom_attribute_title'>{$att->name}</h2>";
                         $txt .= "<div class='elbp_custom_attribute_content'>";
-                            $txt .= $att->displayValue(true);
+                        $txt .= $att->displayValue(true);
                         $txt .= "</div>";
                     }
                 }
 
-
-                if ($sideAttributes)
-                {
+                if ($sideAttributes) {
 
                     $txt .= "<br><hr><br>";
 
-                    foreach($sideAttributes as $att)
-                    {
+                    foreach ($sideAttributes as $att) {
                         $txt .= "<p>{$att->name}: ".$att->displayValue(true)."</p>";
                     }
                 }
 
-            break;
+                break;
 
             case 'multi':
             case 'incremental':
 
-
                 // ID of a specific item
-                if (is_numeric($objectID))
-                {
+                if (is_numeric($objectID)) {
 
                     $item = $this->getMultiItem($objectID);
-                    if ($item)
-                    {
+                    if ($item) {
 
-                        if ($item->studentid <> $this->student->id){
+                        if ($item->studentid <> $this->student->id) {
                             echo get_string('invaliduser', 'block_elbp');
                             exit;
                         }
@@ -3513,43 +3348,38 @@ class CustomPlugin {
 
                         $txt .= "<div>";
 
-                            // Main central elements
-                            $txt .= "<div style='width:80%;float:left;'>";
+                        // Main central elements
+                        $txt .= "<div style='width:80%;float:left;'>";
 
-                                $mainAttributes = $this->getAttributesForDisplayDisplayType("main", $attributes);
+                        $mainAttributes = $this->getAttributesForDisplayDisplayType("main", $attributes);
 
-                                if ($mainAttributes)
-                                {
-                                    foreach($mainAttributes as $attribute)
-                                    {
-                                        $txt .= "<h2>{$attribute->name}</h2>";
-                                        $txt .= "<div class='elbp_custom_item_attribute_content'>";
-                                            $txt .= $attribute->displayValue(true);
-                                        $txt .= "</div>";
-                                        $txt .= "<br>";
-                                    }
-                                }
+                        if ($mainAttributes) {
+                            foreach ($mainAttributes as $attribute) {
+                                $txt .= "<h2>{$attribute->name}</h2>";
+                                $txt .= "<div class='elbp_custom_item_attribute_content'>";
+                                $txt .= $attribute->displayValue(true);
+                                $txt .= "</div>";
+                                $txt .= "<br>";
+                            }
+                        }
 
-                            $txt .= "</div>";
+                        $txt .= "</div>";
 
+                        // Summary
+                        $txt .= "<div style='width:20%;float:left;padding-top:20px;'>";
 
-                            // Summary
-                            $txt .= "<div style='width:20%;float:left;padding-top:20px;'>";
+                        $sideAttributes = $this->getAttributesForDisplayDisplayType("side", $attributes);
 
-                                $sideAttributes = $this->getAttributesForDisplayDisplayType("side", $attributes);
+                        if ($sideAttributes) {
+                            $txt .= "<b>".get_string('otherattributes', 'block_elbp')."</b><br><br>";
+                            $txt .= "<table class='custom_item_summary_table'>";
+                            foreach ($sideAttributes as $attribute) {
+                                $txt .= "<tr><td>{$attribute->name}:</td><td>{$attribute->displayValue(true)}</td></tr>";
+                            }
+                            $txt .= "</table>";
+                        }
 
-                                if ($sideAttributes)
-                                {
-                                    $txt .= "<b>".get_string('otherattributes', 'block_elbp')."</b><br><br>";
-                                    $txt .= "<table class='custom_item_summary_table'>";
-                                    foreach($sideAttributes as $attribute)
-                                    {
-                                         $txt .= "<tr><td>{$attribute->name}:</td><td>{$attribute->displayValue(true)}</td></tr>";
-                                    }
-                                    $txt .= "</table>";
-                                }
-
-                            $txt .= "</div>";
+                        $txt .= "</div>";
 
                         $txt .= "</div>";
 
@@ -3557,59 +3387,50 @@ class CustomPlugin {
 
                     }
 
-                }
-                else // All of them
-                {
+                } else {
 
                     $items = $this->getMultiItems();
 
-                    if ($items)
-                    {
+                    if ($items) {
 
-                        foreach($items as $item)
-                        {
+                        foreach ($items as $item) {
 
                             $this->loadStudent($this->student->id, $item->id);
 
                             $txt .= "<div>";
 
-                                // Main central elements
-                                $txt .= "<div style='width:80%;float:left;'>";
+                            // Main central elements
+                            $txt .= "<div style='width:80%;float:left;'>";
 
-                                    $mainAttributes = $this->getAttributesForDisplayDisplayType("main", $attributes);
+                            $mainAttributes = $this->getAttributesForDisplayDisplayType("main", $attributes);
 
-                                    if ($mainAttributes)
-                                    {
-                                        foreach($mainAttributes as $attribute)
-                                        {
-                                            $txt .= "<h2>{$attribute->name}</h2>";
-                                            $txt .= "<div class='elbp_custom_item_attribute_content'>";
-                                                $txt .= $attribute->displayValue(true);
-                                            $txt .= "</div>";
-                                            $txt .= "<br>";
-                                        }
-                                    }
+                            if ($mainAttributes) {
+                                foreach ($mainAttributes as $attribute) {
+                                    $txt .= "<h2>{$attribute->name}</h2>";
+                                    $txt .= "<div class='elbp_custom_item_attribute_content'>";
+                                    $txt .= $attribute->displayValue(true);
+                                    $txt .= "</div>";
+                                    $txt .= "<br>";
+                                }
+                            }
 
-                                $txt .= "</div>";
+                            $txt .= "</div>";
 
+                            // Summary
+                            $txt .= "<div style='width:20%;float:left;padding-top:20px;'>";
 
-                                // Summary
-                                $txt .= "<div style='width:20%;float:left;padding-top:20px;'>";
+                            $sideAttributes = $this->getAttributesForDisplayDisplayType("side", $attributes);
 
-                                    $sideAttributes = $this->getAttributesForDisplayDisplayType("side", $attributes);
+                            if ($sideAttributes) {
+                                $txt .= "<b>".get_string('otherattributes', 'block_elbp')."</b><br><br>";
+                                $txt .= "<table class='custom_item_summary_table'>";
+                                foreach ($sideAttributes as $attribute) {
+                                    $txt .= "<tr><td>{$attribute->name}:</td><td>".$attribute->displayValue(true). "</td></tr>";
+                                }
+                                $txt .= "</table>";
+                            }
 
-                                    if ($sideAttributes)
-                                    {
-                                        $txt .= "<b>".get_string('otherattributes', 'block_elbp')."</b><br><br>";
-                                        $txt .= "<table class='custom_item_summary_table'>";
-                                        foreach($sideAttributes as $attribute)
-                                        {
-                                             $txt .= "<tr><td>{$attribute->name}:</td><td>".$attribute->displayValue(true). "</td></tr>";
-                                        }
-                                        $txt .= "</table>";
-                                    }
-
-                                $txt .= "</div>";
+                            $txt .= "</div>";
 
                             $txt .= "</div>";
 
@@ -3623,8 +3444,7 @@ class CustomPlugin {
 
                 }
 
-
-            break;
+                break;
 
             case 'int_db':
 
@@ -3635,57 +3455,46 @@ class CustomPlugin {
                 $names = $this->getMappedNames();
 
                 // Rows - Single
-                if ($this->getSetting('row_return_type') == 'single')
-                {
+                if ($this->getSetting('row_return_type') == 'single') {
 
-                    if ($result && $names)
-                    {
+                    if ($result && $names) {
 
-                        foreach($names as $name)
-                        {
+                        foreach ($names as $name) {
 
                             $txt .= "<h2 class='custom_attribute_title'>{$name}</h2>";
                             $txt .= "<div class='elbp_custom_attribute_content'>";
-                                $txt .= (isset($result[$name])) ? \elbp_html($result[$name], true) : '-';
+                            $txt .= (isset($result[$name])) ? \elbp_html($result[$name], true) : '-';
                             $txt .= "</div>";
 
                         }
 
                     }
 
-
-                }
-                elseif ($this->getSetting('row_return_type') == 'multiple')
-                {
+                } else if ($this->getSetting('row_return_type') == 'multiple') {
 
                     $txt .= "<table style='min-width:50%;margin:auto;'>";
 
+                    $txt .= "<tr>";
+                    foreach ($names as $name) {
+                        $txt .= "<th style='text-align:left;'>{$name}</th>";
+                    }
+                    $txt .= "</tr>";
+
+                    foreach ($result as $row) {
+
                         $txt .= "<tr>";
-                            foreach($names as $name)
-                            {
-                                $txt .= "<th style='text-align:left;'>{$name}</th>";
-                            }
+                        foreach ($names as $name) {
+                            $txt .= "<td>".( (isset($row[$name])) ? $row[$name] : '-' )."</td>";
+                        }
                         $txt .= "</tr>";
 
-                        foreach($result as $row)
-                        {
-
-                            $txt .= "<tr>";
-                                foreach($names as $name)
-                                {
-                                    $txt .= "<td>".( (isset($row[$name])) ? $row[$name] : '-' )."</td>";
-                                }
-                            $txt .= "</tr>";
-
-                        }
+                    }
 
                     $txt .= "</table>";
 
                 }
 
-            break;
-
-
+                break;
 
             case 'ext_db':
 
@@ -3696,60 +3505,48 @@ class CustomPlugin {
                 $names = $this->getMappedNames();
 
                 // Rows - Single
-                if ($this->getSetting('row_return_type') == 'single')
-                {
+                if ($this->getSetting('row_return_type') == 'single') {
 
-                    if ($result && $names)
-                    {
+                    if ($result && $names) {
 
-                        foreach($names as $name)
-                        {
+                        foreach ($names as $name) {
 
                             $txt .= "<h2 class='custom_attribute_title'>{$name}</h2>";
                             $txt .= "<div class='elbp_custom_attribute_content'>";
-                                $txt .= (isset($result[$name])) ? \elbp_html($result[$name], true) : '-';
+                            $txt .= (isset($result[$name])) ? \elbp_html($result[$name], true) : '-';
                             $txt .= "</div>";
 
                         }
 
                     }
 
-
-                }
-                elseif ($this->getSetting('row_return_type') == 'multiple')
-                {
+                } else if ($this->getSetting('row_return_type') == 'multiple') {
 
                     $txt .= "<table style='min-width:50%;margin:auto;'>";
 
+                    $txt .= "<tr>";
+                    foreach ($names as $name) {
+                        $txt .= "<th style='text-align:left;'>{$name}</th>";
+                    }
+                    $txt .= "</tr>";
+
+                    foreach ($result as $row) {
+
                         $txt .= "<tr>";
-                            foreach($names as $name)
-                            {
-                                $txt .= "<th style='text-align:left;'>{$name}</th>";
-                            }
+                        foreach ($names as $name) {
+                            $txt .= "<td>".( (isset($row[$name])) ? $row[$name] : '-' )."</td>";
+                        }
                         $txt .= "</tr>";
 
-                        foreach($result as $row)
-                        {
-
-                            $txt .= "<tr>";
-                                foreach($names as $name)
-                                {
-                                    $txt .= "<td>".( (isset($row[$name])) ? $row[$name] : '-' )."</td>";
-                                }
-                            $txt .= "</tr>";
-
-                        }
+                    }
 
                     $txt .= "</table>";
 
                 }
 
-            break;
-
+                break;
 
         }
-
-
 
         // Print the custom plugin
         $pageTitle = fullname($this->getStudent()) . ' (' . $this->student->username . ') - ' . $this->getName();
@@ -3764,11 +3561,9 @@ class CustomPlugin {
         $TPL->set("heading", $heading);
         $TPL->set("content", $txt);
 
-
         $TPL->load( $CFG->dirroot . '/blocks/elbp/tpl/print.html' );
         $TPL->display();
         exit;
-
 
     }
 
@@ -3780,7 +3575,7 @@ class CustomPlugin {
      * @global \block_elbp\Plugins\type $DB
      * @return \SimpleXMLElement
      */
-    public function exportXML(){
+    public function exportXML() {
 
         global $ELBP, $DB;
 
@@ -3791,24 +3586,18 @@ class CustomPlugin {
         $xml->addChild('name', $this->name);
 
         $s = $xml->addChild('settings');
-        if ($settings)
-        {
-            foreach($settings as $setting)
-            {
+        if ($settings) {
+            foreach ($settings as $setting) {
                 $el = $s->addChild('setting', $setting->value);
                 $el->addAttribute('name', $setting->setting);
             }
         }
 
         $p = $xml->addChild('permissions');
-        if ($permissions)
-        {
-            foreach($permissions as $roleID => $perms)
-            {
-                if ($perms)
-                {
-                    foreach($perms as $perm)
-                    {
+        if ($permissions) {
+            foreach ($permissions as $roleID => $perms) {
+                if ($perms) {
+                    foreach ($perms as $perm) {
                         $el = $p->addChild('permission', $perm);
                         $el->addAttribute('roleid', $roleID);
                     }
@@ -3817,16 +3606,15 @@ class CustomPlugin {
             }
         }
 
-
         // Icons
         $array = array('bmp', 'gif', 'jpeg', 'jpg', 'png', 'tiff');
         $icon = false;
 
-        foreach($array as $ext){
+        foreach ($array as $ext) {
 
             // Plugin icon
             $path = $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'.DIRECTORY_SEPARATOR.'custom_plugin_icon-' . $this->id . '.' . $ext;
-            if (file_exists($path)){
+            if (file_exists($path)) {
 
                 $type = pathinfo($path, PATHINFO_EXTENSION);
                 $data = file_get_contents($path);
@@ -3837,13 +3625,12 @@ class CustomPlugin {
 
             // Dock icon
             $path = $ELBP->dir . DIRECTORY_SEPARATOR . 'uploads'.DIRECTORY_SEPARATOR.'custom_plugin_icon_dock-' . $this->id . '.' . $ext;
-            if (file_exists($path)){
+            if (file_exists($path)) {
 
                 $type = pathinfo($path, PATHINFO_EXTENSION);
                 $data = file_get_contents($path);
                 $dock = 'data:image/' . $type . ';base64,' . base64_encode($data);
                 $xml->addChild('dockIcon', $dock);
-
 
             }
 
@@ -3858,32 +3645,31 @@ class CustomPlugin {
      * Import the custom plugin from an XML exported file
      * @param type $file
      */
-    public static function createFromXML($file){
+    public static function createFromXML($file) {
 
         global $ELBP;
 
         // CHeck file exists
-        if (!file_exists($file)){
+        if (!file_exists($file)) {
             return array('success' => false, 'error' => get_string('filenotfound', 'block_elbp') . " ( {$file} )");
         }
 
         // Check mime type of file to make sure it is csv
         $fInfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($fInfo, $file);
+        $mime = finfo_file($fInfo, $file);
         finfo_close($fInfo);
 
         // Has to be csv file, otherwise error and return
-        if ($mime != 'application/xml' && $mime != 'text/plain' && $mime != 'text/xml'){
+        if ($mime != 'application/xml' && $mime != 'text/plain' && $mime != 'text/xml') {
             return array('success' => false, 'error' => get_string('uploads:invalidmimetype', 'block_elbp') . " ( {$mime} )");
         }
 
         // Open file
         $xml = \simplexml_load_file($file);
 
-        if (!isset($xml->name) || !isset($xml->settings)){
+        if (!isset($xml->name) || !isset($xml->settings)) {
             return array('success' => false, 'error' => get_string('importcustomplugin:missingnodes', 'block_elbp'));
         }
-
 
         $title = (string)$xml->name;
         $settings = array();
@@ -3891,8 +3677,7 @@ class CustomPlugin {
 
         $i = 0;
 
-        foreach($xml->settings->setting as $setting)
-        {
+        foreach ($xml->settings->setting as $setting) {
             $name = (string)$xml->settings->setting[$i]->attributes()->name;
             $setting = (string)$setting;
             $settings[$name] = $setting;
@@ -3901,17 +3686,15 @@ class CustomPlugin {
 
         $i = 0;
 
-        foreach($xml->permissions->permission as $permission)
-        {
+        foreach ($xml->permissions->permission as $permission) {
             $roleID = (string)$xml->permissions->permission[$i]->attributes()->roleid;
             $permission = (string)$permission;
-            if (!isset($permissions[$roleID])){
+            if (!isset($permissions[$roleID])) {
                 $permissions[$roleID] = array();
             }
             $permissions[$roleID][] = $permission;
             $i++;
         }
-
 
         // Create the plugin
         $plugin = new \block_elbp\Plugins\CustomPlugin();
@@ -3919,21 +3702,20 @@ class CustomPlugin {
         $pluginID = $plugin->createPlugin();
         $plugin->setID($pluginID);
 
-        if (!$plugin->getID()){
+        if (!$plugin->getID()) {
             return array('success' => false, 'error' => get_string('errors:couldnotinsertrecord', 'block_elbp'));
         }
 
         // Settings
-        foreach($settings as $name => $value)
-        {
+        foreach ($settings as $name => $value) {
             $plugin->updateSetting($name, $value);
         }
 
         // Permissions
-        if ($permissions){
-            foreach($permissions as $roleID => $perms){
-                if ($perms){
-                    foreach($perms as $perm){
+        if ($permissions) {
+            foreach ($permissions as $roleID => $perms) {
+                if ($perms) {
+                    foreach ($perms as $perm) {
                         $plugin->addPermission($roleID, $perm);
                     }
                 }
@@ -3943,7 +3725,7 @@ class CustomPlugin {
         $plugin->savePermissions();
 
         // Icon
-        if (isset($xml->icon)){
+        if (isset($xml->icon)) {
 
             $icon = (string)$xml->icon;
             $ext = \elbp_get_image_ext_from_base64($icon);
@@ -3955,7 +3737,7 @@ class CustomPlugin {
         }
 
         // Dock Icon
-        if (isset($xml->dockIcon)){
+        if (isset($xml->dockIcon)) {
 
             $icon = (string)$xml->dockIcon;
             $ext = \elbp_get_image_ext_from_base64($icon);
@@ -3968,10 +3750,9 @@ class CustomPlugin {
 
         return array('success' => true, 'output' => get_string('created', 'block_elbp') . ' ' . get_string('created', 'block_elbp') . ': ' . $plugin->getName());
 
-
     }
 
-    public function calculateStudentProgress(){
+    public function calculateStudentProgress() {
 
         return array(
             'max' => 0,
@@ -3987,7 +3768,7 @@ class CustomPlugin {
      * to a proper directory so they don't get deleted
      * @param type $defaultAttributes
      */
-    protected function moveTmpUploadedFiles($defaultAttributes, $itemID = 0){
+    protected function moveTmpUploadedFiles($defaultAttributes, $itemID = 0) {
 
         global $CFG, $USER;
 
@@ -3996,56 +3777,52 @@ class CustomPlugin {
             'errors' => ''
         );
 
-        if ($defaultAttributes)
-        {
-            foreach($defaultAttributes as $attribute)
-            {
-                if ($attribute->type == 'File')
-                {
+        if ($defaultAttributes) {
+            foreach ($defaultAttributes as $attribute) {
+                if ($attribute->type == 'File') {
 
                     // Sanitize the path
                     $this->studentattributes[$attribute->name] = \elbp_sanitize_path($this->studentattributes[$attribute->name]);
 
                     $value = (isset($this->studentattributes[$attribute->name])) ? $this->studentattributes[$attribute->name] : false;
-                    if ($value)
-                    {
+                    if ($value) {
 
                         // Is it a tmp file?
-                        if (strpos($value, "tmp:") === 0){
+                        if (strpos($value, "tmp:") === 0) {
 
                             $value = \elbp_sanitize_path( substr($value, (4 - strlen($value))) );
                             $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $USER->id . '/' . $value;
 
                             // Create directory
                             $create = \elbp_create_data_directory( 'Custom/' . $this->getID() . '/' . $itemID );
-                            if ($create){
+                            if ($create) {
 
                                 $explode = explode("/", $value);
                                 $value = end($explode);
 
                                 // If we specified an itemID then we can use that as the path, as items will be user-specific
-                                if ($itemID > 0){
-                                  $newPath = $value;
+                                if ($itemID > 0) {
+                                    $newPath = $value;
                                 } else {
 
-                                  // If not, we cannot just store it under "0" as uploads with the same name will override and users could see files from
-                                  // other user's PLPs. So we will store it under "user-<uid>"
-                                  if ( \elbp_create_data_directory( 'Custom/' . $this->getID() . '/' . $itemID . '/' . 'u-' . $this->student->id ) ){
-                                    $newPath = 'u-' . $this->student->id . '/' . $value;
-                                  } else {
-                                    $result['result'] = false;
-                                    $result['errors'] = get_string('uploads:dirnoexist', 'block_elbp');
-                                  }
+                                    // If not, we cannot just store it under "0" as uploads with the same name will override and users could see files from
+                                    // other user's PLPs. So we will store it under "user-<uid>"
+                                    if ( \elbp_create_data_directory( 'Custom/' . $this->getID() . '/' . $itemID . '/' . 'u-' . $this->student->id ) ) {
+                                        $newPath = 'u-' . $this->student->id . '/' . $value;
+                                    } else {
+                                        $result['result'] = false;
+                                        $result['errors'] = get_string('uploads:dirnoexist', 'block_elbp');
+                                    }
 
                                 }
 
                                 // Set the newFile path
-                                if ($result['result']){
-                                  $newFile = $CFG->dataroot . '/ELBP/Custom/' . $this->getID() . '/' . $itemID . '/' . $newPath;
+                                if ($result['result']) {
+                                    $newFile = $CFG->dataroot . '/ELBP/Custom/' . $this->getID() . '/' . $itemID . '/' . $newPath;
                                 }
 
                                 // Try and move the tmp file to its new location
-                                if ($result['result'] && \rename($tmpFile, $newFile)){
+                                if ($result['result'] && \rename($tmpFile, $newFile)) {
                                     $this->studentattributes[$attribute->name] = 'Custom/' . $this->getID() . '/' . $itemID . '/' . $newPath;
                                 } else {
                                     $result['result'] = false;
@@ -4074,26 +3851,24 @@ class CustomPlugin {
      * @param type $newNames
      * @param type $oldNames
      */
-    public function updateChangedAttributeNames($newNames, $oldNames)
-    {
+    public function updateChangedAttributeNames($newNames, $oldNames) {
 
         global $DB;
 
         // Loop through attribute names and see if any are different
-        if ($newNames)
-        {
-            for ($i = 0; $i < count($newNames); $i++)
-            {
+        if ($newNames) {
+            for ($i = 0; $i < count($newNames); $i++) {
 
                 // New one, no old name
-                if (!isset($oldNames[$i])) continue;
+                if (!isset($oldNames[$i])) {
+                    continue;
+                }
 
                 $newName = $newNames[$i];
                 $oldName = $oldNames[$i];
 
                 // Name has changed
-                if ($newName !== $oldName)
-                {
+                if ($newName !== $oldName) {
 
                     // Update all references to the old name to the new name
                     $DB->execute("UPDATE {lbp_custom_plugin_attributes} SET field = ? WHERE field = ? AND pluginid = ?", array($newName, $oldName, $this->id));
@@ -4107,21 +3882,19 @@ class CustomPlugin {
 
     }
 
-    public function isNotifyEnabled(){
+    public function isNotifyEnabled() {
         $setting = $this->getSetting('notify_enabled');
         return ($setting == 1);
     }
 
-    public function getNotifyUsers(){
+    public function getNotifyUsers() {
 
         $return = array();
 
         $setting = $this->getSetting('notify_users');
-        if ($setting)
-        {
+        if ($setting) {
             $emails = explode(",", $setting);
-            foreach($emails as $email)
-            {
+            foreach ($emails as $email) {
                 $return[] = trim($email);
             }
         }
@@ -4130,7 +3903,7 @@ class CustomPlugin {
 
     }
 
-    private function notifyUser($emailToUser){
+    private function notifyUser($emailToUser) {
 
         $content = $this->getSetting('notify_message') . "\n\n" . $this->getInfoForEvent();
 
@@ -4147,8 +3920,7 @@ class CustomPlugin {
      * @param type $tmp
      * @return string
      */
-    private function getInfoForEvent()
-    {
+    private function getInfoForEvent() {
         global $CFG, $USER;
 
         $output = "";
@@ -4157,12 +3929,10 @@ class CustomPlugin {
         $output .= get_string('student', 'block_elbp') . ": " . fullname($this->getStudent()) . " ({$this->getStudent()->username})\n";
 
         // Attributes
-        if ($this->studentattributes)
-        {
+        if ($this->studentattributes) {
 
-            foreach($this->studentattributes as $field => $value)
-            {
-                if (is_array($value)){
+            foreach ($this->studentattributes as $field => $value) {
+                if (is_array($value)) {
                     $value = implode(",", $value);
                 }
                 $value = preg_replace("/\n/", " ", $value);
@@ -4180,12 +3950,12 @@ class CustomPlugin {
     }
 
 
-    public function getLastUpdated(){
+    public function getLastUpdated() {
 
         global $DB;
 
         $structure = $this->getStructure();
-        if ($structure == 'multi' || $structure == 'incremental'){
+        if ($structure == 'multi' || $structure == 'incremental') {
 
             $record = $DB->get_records("lbp_custom_plugin_items", array("studentid" => $this->student->id, "pluginid" => $this->id, "del" => 0), "settime DESC", "settime", 0, 1);
             $record = reset($record);
@@ -4198,12 +3968,12 @@ class CustomPlugin {
     }
 
 
-     /**
+    /**
      * Get the alert events on this plugin
      * @global \block_elbp\Plugins\type $DB
      * @return type
      */
-    public function getAlertEvents(){
+    public function getAlertEvents() {
         return false;
     }
 
@@ -4215,17 +3985,15 @@ class CustomPlugin {
      * @global \block_elbp\Plugins\type $DB
      * @return type
      */
-    public static function all(){
+    public static function all() {
 
         global $DB;
 
         $return = array();
         $records = $DB->get_records("lbp_custom_plugins", array("enabled" => 1), "name ASC");
 
-        if ($records)
-        {
-            foreach($records as $record)
-            {
+        if ($records) {
+            foreach ($records as $record) {
                 $return[$record->id] = $record->name;
             }
         }

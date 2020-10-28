@@ -17,8 +17,7 @@
 /**
  * Electronic Learning Blue Print
  *
- * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
- * reports, qualification progress, etc... as well as unlimited custom sections.
+ * This class represents the instance of an 'item'/'record' inside a plugin.
  *
  * @package     block_elbp
  * @copyright   2011-2017 Bedford College, 2017 onwards Conn Warwicker
@@ -32,11 +31,12 @@
 
 namespace block_elbp;
 
+defined('MOODLE_INTERNAL') or die();
+
 /**
  *
  */
 abstract class BasePluginObject {
-
 
     /**
      * Return an attribute from the $this->attributes property, which were loaded earlier
@@ -44,16 +44,30 @@ abstract class BasePluginObject {
      * @param type $na
      * @return string
      */
-    public function getAttribute($name, $na = false){
+    public function getAttribute($name, $na = false) {
 
         // First check to do is see if it's an array. If it is, we will implode it to a string
-        if (isset($this->attributes[$name]) && is_array($this->attributes[$name]) && !empty($this->attributes[$name])) return implode(", ", $this->attributes[$name]);
-        if (isset($this->attributes[$name]) && is_array($this->attributes[$name]) && empty($this->attributes[$name]) && $na) return get_string('na', 'block_elbp');
+        if (isset($this->attributes[$name]) && is_array($this->attributes[$name]) && !empty($this->attributes[$name])) {
+            return implode(", ", $this->attributes[$name]);
+        }
+
+        if (isset($this->attributes[$name]) && is_array($this->attributes[$name]) && empty($this->attributes[$name]) && $na) {
+            return get_string('na', 'block_elbp');
+        }
 
         // Not an array - string/int (well...string)
-        if (isset($this->attributes[$name]) && $this->attributes[$name] == '' && $na) return get_string('na', 'block_elbp');
-        if (isset($this->attributes[$name])) return $this->attributes[$name];
-        if ($na) return get_string('na', 'block_elbp');
+        if (isset($this->attributes[$name]) && $this->attributes[$name] == '' && $na) {
+            return get_string('na', 'block_elbp');
+        }
+
+        if (isset($this->attributes[$name])) {
+            return $this->attributes[$name];
+        }
+
+        if ($na) {
+            return get_string('na', 'block_elbp');
+        }
+
         return "";
     }
 
@@ -63,7 +77,7 @@ abstract class BasePluginObject {
      * @param type $name
      * @return type
      */
-    public function getAttributeAsIs($name){
+    public function getAttributeAsIs($name) {
         return (isset($this->attributes[$name])) ? $this->attributes[$name] : false;
     }
 
@@ -71,11 +85,11 @@ abstract class BasePluginObject {
      * Return all the attributes
      * @return type
      */
-    public function getAttributes(){
+    public function getAttributes() {
         return $this->attributes;
     }
 
-    public function getStudentAttributes(){
+    public function getStudentAttributes() {
         return $this->getAttributes();
     }
 
@@ -85,29 +99,22 @@ abstract class BasePluginObject {
      * @param type $check
      * @return type
      */
-    protected function _loadAttributes($check){
+    protected function _loadAttributes($check) {
 
         $results = array();
 
-        if ($check)
-        {
-            foreach($check as $att)
-            {
+        if ($check) {
+            foreach ($check as $att) {
                 // If something already set for this, turn it into an array
-                if ( isset($results[$att->field]) && !is_array($results[$att->field]) )
-                {
+                if ( isset($results[$att->field]) && !is_array($results[$att->field]) ) {
                     $tmpArray = array();
                     $tmpArray[] = $results[$att->field];
                     $tmpArray[] = $att->value;
                     $results[$att->field] = $tmpArray;
-                }
-                // If it's already set but it's already been converted to an array, just append new element
-                elseif ( isset($results[$att->field]) && is_array($results[$att->field]) )
-                {
+                } else if ( isset($results[$att->field]) && is_array($results[$att->field]) ) {
+                    // If it's already set but it's already been converted to an array, just append new element
                     $results[$att->field][] = $att->value;
-                }
-                else
-                {
+                } else {
                     $results[$att->field] = $att->value;
                 }
             }
@@ -121,10 +128,10 @@ abstract class BasePluginObject {
      * Load object into all attributes
      * @param type $attributes
      */
-    public function loadObjectIntoAttributes($attributes){
+    public function loadObjectIntoAttributes($attributes) {
 
-        if ($attributes){
-            foreach($attributes as $attribute){
+        if ($attributes) {
+            foreach ($attributes as $attribute) {
                 $attribute->loadObject($this);
             }
         }
@@ -136,21 +143,19 @@ abstract class BasePluginObject {
      * currently loaded student
      * @param type $data
      */
-    protected function setSubmittedAttributes(&$data, $obj){
+    protected function setSubmittedAttributes(&$data, $obj) {
 
         $possibleAttributes = $obj->getElementsFromAttributeString();
 
         $this->attributes = array();
 
-        if ($possibleAttributes)
-        {
-            foreach($possibleAttributes as $attribute)
-            {
+        if ($possibleAttributes) {
+            foreach ($possibleAttributes as $attribute) {
 
                 // If we submitted something for that attribute, add it to the target object
-                if (isset($data[$attribute->name])){
+                if (isset($data[$attribute->name])) {
 
-                    if (isset($attribute->options) && $attribute->options && !is_array($data[$attribute->name])){
+                    if (isset($attribute->options) && $attribute->options && !is_array($data[$attribute->name])) {
                         $this->attributes[$attribute->name] = array($data[$attribute->name]);
                     } else {
                         $this->attributes[$attribute->name] = $data[$attribute->name];
@@ -165,17 +170,15 @@ abstract class BasePluginObject {
                     // that start with that name
                     $like = false;
 
-                    foreach($data as $key => $d)
-                    {
+                    foreach ($data as $key => $d) {
                         $explode = explode($attribute->name . "_", $key);
-                        if ($explode && count($explode) > 1)
-                        {
+                        if ($explode && count($explode) > 1) {
                             $this->attributes[$key] = $d;
                             $like = true;
                         }
                     }
 
-                    if ($like){
+                    if ($like) {
                         unset($data[$attribute->name]);
                     }
 
@@ -185,8 +188,7 @@ abstract class BasePluginObject {
         }
 
         // ANything left over must be attributes from hooks
-        foreach($data as $att => $val)
-        {
+        foreach ($data as $att => $val) {
             $this->attributes[$att] = $val;
         }
 
@@ -197,7 +199,7 @@ abstract class BasePluginObject {
      * to a proper directory so they don't get deleted
      * @param type $defaultAttributes
      */
-    protected function moveTmpUploadedFiles($defaultAttributes, $obj){
+    protected function moveTmpUploadedFiles($defaultAttributes, $obj) {
 
         global $CFG, $USER;
 
@@ -205,54 +207,50 @@ abstract class BasePluginObject {
 
         $itemID = $this->getID();
 
-        if ($defaultAttributes)
-        {
-            foreach($defaultAttributes as $attribute)
-            {
-                if ($attribute->type == 'File')
-                {
+        if ($defaultAttributes) {
+            foreach ($defaultAttributes as $attribute) {
+                if ($attribute->type == 'File') {
 
                     // Sanitize the path
                     $this->attributes[$attribute->name] = \elbp_sanitize_path($this->attributes[$attribute->name]);
 
                     $value = (isset($this->attributes[$attribute->name])) ? $this->attributes[$attribute->name] : false;
-                    if ($value)
-                    {
+                    if ($value) {
 
                         // Is it a tmp file?
-                        if (strpos($value, "tmp:") === 0){
+                        if (strpos($value, "tmp:") === 0) {
 
                             $value = \elbp_sanitize_path( substr($value, (4 - strlen($value))) );
                             $tmpFile = $CFG->dataroot . '/ELBP/tmp/' . $USER->id . '/' . $value;
 
                             // Create directory
-                            if ( $obj->createDataDirectory($itemID) ){
+                            if ( $obj->createDataDirectory($itemID) ) {
 
                                 $explode = explode("/", $value);
                                 $value = end($explode);
 
                                 // If we specified an itemID then we can use that as the path, as items will be user-specific
-                                if ($itemID > 0){
-                                  $newPath = $value;
+                                if ($itemID > 0) {
+                                    $newPath = $value;
                                 } else {
 
-                                  // If not, we cannot just store it under "0" as uploads with the same name will override and users could see files from
-                                  // other user's PLPs. So we will store it under "user-<uid>"
-                                  if ( $obj->createDataDirectory($itemID . '/u-' . $this->student->id) ){
-                                    $newPath = 'u-' . $this->student->id . '/' . $value;
-                                  } else {
-                                    $result = false;
-                                  }
+                                    // If not, we cannot just store it under "0" as uploads with the same name will override and users could see files from
+                                    // other user's PLPs. So we will store it under "user-<uid>"
+                                    if ( $obj->createDataDirectory($itemID . '/u-' . $this->student->id) ) {
+                                        $newPath = 'u-' . $this->student->id . '/' . $value;
+                                    } else {
+                                        $result = false;
+                                    }
 
                                 }
 
                                 // Set the newFile path
-                                if ($result){
-                                  $newFile = $CFG->dataroot . '/ELBP/' . $obj->getName() . '/' . $itemID . '/' . $newPath;
+                                if ($result) {
+                                    $newFile = $CFG->dataroot . '/ELBP/' . $obj->getName() . '/' . $itemID . '/' . $newPath;
                                 }
 
                                 // Try and move the tmp file to its new location
-                                if ($result && \rename($tmpFile, $newFile)){
+                                if ($result && \rename($tmpFile, $newFile)) {
                                     $this->attributes[$attribute->name] = $obj->getName() . '/' . $itemID . '/' . $value;
                                 } else {
                                     $result = false;

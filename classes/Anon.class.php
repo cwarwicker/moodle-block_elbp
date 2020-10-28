@@ -19,7 +19,7 @@
  *
  * ELBP is a moodle block plugin, which provides one singular place for all of a student's key academic information to be stored and viewed, such as attendance, targets, tutorials,
  * reports, qualification progress, etc... as well as unlimited custom sections.
- * 
+ *
  * @package     block_elbp
  * @copyright   2011-2017 Bedford College, 2017 onwards Conn Warwicker
  * @author      Conn Warwicker <conn@cmrwarwicker.com>
@@ -27,11 +27,15 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * Originally developed at Bedford College, now maintained by Conn Warwicker
- * 
+ *
  */
 
+namespace block_elbp;
+
+defined('MOODLE_INTERNAL') or die();
+
 class Anon {
-    
+
     /**
      * Call dynamically created methods
      * @param type $name
@@ -39,30 +43,28 @@ class Anon {
      * @return type
      */
     public function __call($name, $arguments) {
-        if (isset($this->$name) && $this->$name instanceof Closure){
+        if (isset($this->$name) && $this->$name instanceof Closure) {
             return call_user_func_array($this->$name, $arguments);
         }
     }
-    
+
     /**
      * Print out info on object
      * @return string
      */
     public function __toString() {
-        
+
         $properties = get_class_vars( get_class($this) );
         $output = "";
-        
-        if ($properties)
-        {
-            foreach($properties as $prop => $val)
-            {
+
+        if ($properties) {
+            foreach ($properties as $prop => $val) {
                 $output .= $prop . ": " . $val . "<br>";
             }
         }
-        
+
         return $output;
-        
+
     }
-    
+
 }
