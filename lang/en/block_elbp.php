@@ -74,7 +74,7 @@ $string['addnewtarget'] = 'Add New Target';
 $string['addnewtype'] = 'Add New Type';
 $string['addrulecondition'] = 'Add Rule Condition';
 $string['addsuptutorrolename'] = 'ELBP Additional Support Tutor';
-$string['addsuptutor:desc']= 'This role should be used to assign Additional Support Tutors directly to students requiring additional support. It should only be assigned at the User context (i.e. you should not add this role to courses). This role should be given the capability block/elbp:elbp_view.';
+$string['addsuptutor:desc'] = 'This role should be used to assign Additional Support Tutors directly to students requiring additional support. It should only be assigned at the User context (i.e. you should not add this role to courses). This role should be given the capability block/elbp:elbp_view.';
 $string['addtypes'] = 'Add Types';
 $string['admin'] = 'Admin';
 $string['adminscripts'] = 'Admin Scripts';
@@ -830,8 +830,6 @@ $string['manualprogresscolours:desc'] = 'Choose what colours and definitions you
 $string['markasresolved'] = 'Mark as Resolved';
 $string['markasunresolved'] = 'Mark as Unresolved';
 
-//$string['markincidentasresolved:desc'] = 'Marking this as resolved means that it requires no further action and will be ignored in lists of active incidents';
-//$string['markincidentasunresolved:desc'] = 'Marking this as unresolved means that it has not yet been dealt with and will show up in lists of active incidents';
 $string['markincidentasresolved:desc'] = 'Marking this as resolved means that it requires no further action and will be ignored in lists of active comments';
 $string['markincidentasunresolved:desc'] = 'Marking this as unresolved means that it has not yet been dealt with and will show up in lists of active comments';
 
