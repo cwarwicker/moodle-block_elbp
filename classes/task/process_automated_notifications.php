@@ -32,7 +32,9 @@
 
 namespace block_elbp\task;
 
-require_once $CFG->dirroot . '/blocks/elbp/lib.php';
+defined('MOODLE_INTERNAL') or die();
+
+require_once($CFG->dirroot . '/blocks/elbp/lib.php');
 
 class process_automated_notifications extends \core\task\scheduled_task
 {
@@ -41,7 +43,7 @@ class process_automated_notifications extends \core\task\scheduled_task
      * Get the name of the task
      * @return type
      */
-    public function get_name(){
+    public function get_name() {
         return get_string('task:process_automated_notifications', 'block_elbp');
     }
 

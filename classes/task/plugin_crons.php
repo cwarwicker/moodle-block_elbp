@@ -31,7 +31,9 @@
 
 namespace block_elbp\task;
 
-require_once $CFG->dirroot . '/blocks/elbp/lib.php';
+defined('MOODLE_INTERNAL') or die();
+
+require_once($CFG->dirroot . '/blocks/elbp/lib.php');
 
 class plugin_crons extends \core\task\scheduled_task
 {
@@ -40,7 +42,7 @@ class plugin_crons extends \core\task\scheduled_task
      * Get the name of the task
      * @return type
      */
-    public function get_name(){
+    public function get_name() {
         return get_string('task:plugin_crons', 'block_elbp');
     }
 
@@ -53,12 +55,9 @@ class plugin_crons extends \core\task\scheduled_task
         $ELBP = \block_elbp\ELBP::instantiate();
 
         $plugins = $ELBP->getPlugins();
-        if ($plugins)
-        {
-            foreach($plugins as $plugin)
-            {
-                if ($plugin->isCronEnabled())
-                {
+        if ($plugins) {
+            foreach ($plugins as $plugin) {
+                if ($plugin->isCronEnabled()) {
                     mtrace("Processing cron for plugin ({$plugin->getTitle()})");
                     $plugin->cron();
                 }

@@ -31,7 +31,9 @@
 
 namespace block_elbp\task;
 
-require_once $CFG->dirroot . '/blocks/elbp/lib.php';
+defined('MOODLE_INTERNAL') or die();
+
+require_once($CFG->dirroot . '/blocks/elbp/lib.php');
 
 class clean_up extends \core\task\scheduled_task
 {
@@ -40,7 +42,7 @@ class clean_up extends \core\task\scheduled_task
      * Get the name of the task
      * @return type
      */
-    public function get_name(){
+    public function get_name() {
         return get_string('task:clean_up', 'block_elbp');
     }
 
@@ -59,7 +61,6 @@ class clean_up extends \core\task\scheduled_task
         // TODO: Clean-up old Attendance data we don't need any more.
 
         // TODO: Clean-up temp files in dataroot directory.
-
 
     }
 
