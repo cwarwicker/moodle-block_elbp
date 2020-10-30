@@ -376,6 +376,9 @@ JS;
             $ELBP->updateSetting('plugins_layout', $data['plugins_layout'], $userID);
         }
 
+        echo 'OK';
+        exit;
+
 
     break;
 
