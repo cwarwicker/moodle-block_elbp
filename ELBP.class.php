@@ -747,7 +747,7 @@ class ELBP
                   $TPL->set("logs", \block_elbp\Log::parseListOfLogs( \block_elbp\Log::getRecentLogs(15) ));
 
                   // DF Hub Site
-                  $site = new \DF\Site();
+                  $site = new \local_df_hub\site();
                   $TPL->set("site", $site);
 
                   // Plugins
