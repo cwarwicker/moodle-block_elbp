@@ -473,6 +473,21 @@ class ELBPFormElement {
         {
             return $this->default;
         }
+        elseif ($this->type == 'Textbox')
+        {
+
+            if ($this->obj){
+                $value = $this->obj->getAttribute( $this->name, true );
+
+                // Convert any links in the text.
+                $value = format_text($value);
+
+                $this->setValue($value);
+            }
+
+            return nl2br($this->getValue());
+
+        }
         else
         {
 
