@@ -1148,6 +1148,37 @@ class CustomPlugin {
     }
 
     /**
+     * Get the style for the table header when using database report.
+     * This gets the customised colours if set, or the default colours from the plugin.
+     * @return string
+     */
+    public function getTableHeaderStyle() {
+
+        $background = $this->getSetting('table_header_bg');
+        $font = $this->getSetting('table_header_font');
+
+        if (!$background) {
+            $background = $this->getHeaderBackgroundColour();
+        }
+
+        if (!$font) {
+            $font = $this->getHeaderFontColour();
+        }
+
+        // Make sure they are valid - could type anything into input box and display it on anyone who views
+        if (!preg_match("/^#[a-z0-9]{3,6}$/i", $background)){
+            $background = '#ffffff';
+        }
+
+        if (!preg_match("/^#[a-z0-9]{3,6}$/i", $font)){
+            $font = '#000000';
+        }
+
+        return "background:{$background};color:{$font};";
+
+    }
+
+    /**
      * Get the full style to apply to the plugin box header
      * @return type
      */
@@ -1453,6 +1484,9 @@ class CustomPlugin {
                     $this->updateSetting("query_map_name", implode(",", $settings['query_map_name']));
                 }
             }
+
+            $this->updateSetting("table_header_bg", $settings['table_header_bg']);
+            $this->updateSetting("table_header_font", $settings['table_header_font']);
 
             $MSGS['success'] = get_string('settingsupdated', 'block_elbp');
             return true;

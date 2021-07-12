@@ -29,9 +29,9 @@
                 
             <?php elseif( $obj->getSetting('row_return_type') == 'multiple' ): ?>
 
-                <table id='elbp_custom_db_report_table'>
+                <table id='elbp_custom_db_report_table' class="table table-bordered">
 
-                    <tr style="<?= $obj->getHeaderStyle() ?>">
+                    <tr style="<?= $obj->getTableHeaderStyle() ?>">
                         <?php foreach($names as $name): ?>
                             <th><?= $name ?></th>
                         <?php endforeach; ?>

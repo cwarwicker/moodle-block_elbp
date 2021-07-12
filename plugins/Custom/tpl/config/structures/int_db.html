@@ -44,10 +44,20 @@
         
     </div>
     
+    <br><br>
+
+    <h2>Style</h2>
+    <small><strong>Table Header Background Colour (Hex Code)</strong></small><br>
+    <input type="text" name="table_header_bg" value="<?= $OBJ->getSetting('table_header_bg') ?>">
+    <br><br>
+    <small><strong>Table Header Font Colour (Hex Code)</strong></small><br>
+    <input type="text" name="table_header_font" value="<?= $OBJ->getSetting('table_header_font') ?>">
+    <br><br>
+
     <br>
-    
+
     <input type="submit" name="submit_definitions" value="<?= $string['save'] ?>" />
-    
+
     <br><br><br>
 
     <h2><?= $string['querytest'] ?></h2>
