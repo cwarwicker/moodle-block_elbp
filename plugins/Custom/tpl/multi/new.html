@@ -23,6 +23,20 @@
                 <td><?= $attribute->convertToFormElement(); ?></td>
             </tr>
             <?php endforeach; ?>
+
+            <?php if(isset($notify_choose)): ?>
+            <tr>
+                <td>Notify<br><small>Send notification to the selected addresses</small></td>
+                <td>
+                    <select name="notify_choose" multiple="multiple">
+                        <?php foreach($notify_choose as $email): ?>
+                            <option value="<?= $email ?>"><?= $email ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>
+            <?php endif; ?>
+
         </table>
         
         <input type="hidden" name="itemID" value="<?= $itemID ?>" />

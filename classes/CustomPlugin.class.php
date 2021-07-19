@@ -1849,12 +1849,24 @@ class CustomPlugin {
             $enable = ($this->isNotifyEnabled()) ? 'checked' : '';
             $disable = (!$this->isNotifyEnabled()) ? 'checked' : '';
 
+            $method = $this->getSetting('notify_method');
+            if (!$method) {
+                $method = 'auto';
+            }
+
+            $methodauto = ($method === 'auto') ? 'checked' : '';
+            $methodchoose = ($method === 'choose') ? 'checked' : '';
+
             $output .= "<small><strong>".get_string('enabledisable', 'block_elbp')."</strong><br>";
             $output .= "<input type='radio' name='notify_enabled' value='1' {$enable} /> <label>".get_string('enable')."</label>  &nbsp;";
             $output .= "&nbsp; <input type='radio' name='notify_enabled' value='0' {$disable} /> <label>".get_string('disable')."</label><br><br>";
 
             $output .= "<small><strong>".get_string('notificationconfig:users', 'block_elbp')."</strong> - ".get_string('notificationconfig:users:desc', 'block_elbp')."</small><br>";
             $output .= "<input type='text' name='notify_users' value='{$this->getSetting('notify_users')}' class='elbp_max' /><br><br>";
+
+            $output .= "<small><strong>Method</strong> - Choice between automatically emailing the above addresses on form submission, or being given a select menu to choose which one(s) to email.</small><br>";
+            $output .= "<input type='radio' name='notify_method' value='auto' {$methodauto}> <label>Automatically email all addresses</label>  &nbsp;";
+            $output .= "&nbsp; <input type='radio' name='notify_method' value='choose' {$methodchoose}> <label>Choose which address to email for that form</label><br><br>";
 
             $output .= "<small><strong>".get_string('notificationconfig:emailcontent', 'block_elbp')."</strong> - ".get_string('notificationconfig:emailcontent:desc', 'block_elbp')."</small><br>";
             $output .= "<textarea name='notify_message'>{$this->getSetting('notify_message')}</textarea><br><br>";
@@ -2054,6 +2066,10 @@ class CustomPlugin {
         }
 
         $structure = strtolower($structure);
+
+        if ($this->getSetting('notify_method') == 'choose') {
+            $TPL->set('notify_choose', $this->getNotifyUsers());
+        }
 
         try {
             $output .= $TPL->load($CFG->dirroot . '/blocks/elbp/plugins/Custom/tpl/'.$structure.'/expanded.html');
@@ -2439,16 +2455,21 @@ class CustomPlugin {
         // Notify
         if ($this->isNotifyEnabled())
         {
-            $usernames = $this->getNotifyUsers();
-            if ($usernames)
+            $addresses = [];
+
+            if ($this->getSetting('notify_method') == 'choose') {
+                if (isset($_POST['params']['notify_choose'])) {
+                    $addresses = (array)$_POST['params']['notify_choose'];
+                }
+            } else {
+                $addresses = $this->getNotifyUsers();
+            }
+
+            if ($addresses)
             {
-                foreach($usernames as $username)
+                foreach($addresses as $address)
                 {
-                    $user = \elbp_get_user($username);
-                    if ($user)
-                    {
-                        $this->notifyUser($user);
-                    }
+                    $this->notifyUser($address);
                 }
             }
         }
@@ -2641,16 +2662,21 @@ class CustomPlugin {
         // Notify
         if ($this->isNotifyEnabled())
         {
-            $usernames = $this->getNotifyUsers();
-            if ($usernames)
+            $addresses = [];
+
+            if ($this->getSetting('notify_method') == 'choose') {
+                if (isset($_POST['params']['notify_choose'])) {
+                    $addresses = (array)$_POST['params']['notify_choose'];
+                }
+            } else {
+                $addresses = $this->getNotifyUsers();
+            }
+
+            if ($addresses)
             {
-                foreach($usernames as $username)
+                foreach($addresses as $address)
                 {
-                    $user = \elbp_get_user($username);
-                    if ($user)
-                    {
-                        $this->notifyUser($user);
-                    }
+                    $this->notifyUser($address);
                 }
             }
         }
@@ -2940,16 +2966,21 @@ class CustomPlugin {
         // Notify
         if ($this->isNotifyEnabled())
         {
-            $usernames = $this->getNotifyUsers();
-            if ($usernames)
+            $addresses = [];
+
+            if ($this->getSetting('notify_method') == 'choose') {
+                if (isset($_POST['params']['notify_choose'])) {
+                    $addresses = (array)$_POST['params']['notify_choose'];
+                }
+            } else {
+                $addresses = $this->getNotifyUsers();
+            }
+
+            if ($addresses)
             {
-                foreach($usernames as $username)
+                foreach($addresses as $address)
                 {
-                    $user = \elbp_get_user($username);
-                    if ($user)
-                    {
-                        $this->notifyUser($user);
-                    }
+                    $this->notifyUser($address);
                 }
             }
         }
@@ -3054,10 +3085,14 @@ class CustomPlugin {
                     $page = 'all';
                 }
 
-
                 if ($page == 'new' || $page == 'edit'){
                     $attributes = $this->getAttributesForDisplay();
                     $TPL->set("attributes", $attributes);
+
+                    if ($this->getSetting('notify_method') == 'choose') {
+                        $TPL->set('notify_choose', $this->getNotifyUsers());
+                    }
+
                 }
 
                 if ($page == 'edit'){
@@ -3328,6 +3363,10 @@ class CustomPlugin {
                 $TPL->set("access", $this->access);
                 $TPL->set("ELBP", $ELBP);
                 $TPL->set("permissions", $permissions);
+
+                if ($this->getSetting('notify_method') == 'choose') {
+                    $TPL->set('notify_choose', $this->getNotifyUsers());
+                }
 
                 $this->setDisplayVarsIncremental($TPL);
 

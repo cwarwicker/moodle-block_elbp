@@ -30,7 +30,7 @@
  *
  */
 
-$plugin->version = 2020031900;
+$plugin->version = 2020031901;
 $plugin->requires = 2017111300;
 $plugin->cron = 3600; # Run every hour
 $plugin->component = 'block_elbp';

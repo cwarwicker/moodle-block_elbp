@@ -124,16 +124,23 @@ abstract class Alert {
     {
         
         global $DB;
-        
+
         $data = new \stdClass();
         $data->type = $type;
-        $data->userid = $user->id;
         $data->subject = $subject;
         $data->content = $content;
         $data->htmlcontent = $htmlContent;
         $data->timequeued = time();
         $data->historyid = $historyID;
-        
+
+        // If $user is an object, we are doing it by a user ID. Otherwise it's an email address.
+        if (is_object($user)) {
+            $data->userid = $user->id;
+        } else {
+            $data->userid = 0;
+            $data->email = $user;
+        }
+
         return $DB->insert_record("lbp_alert_queue", $data);
         
     }
@@ -158,9 +165,15 @@ abstract class Alert {
             
             foreach($records as $record)
             {
-                
-                $user = $DB->get_record("user", array("id" => $record->userid));
-                
+
+                if ($record->userid > 0) {
+                    $user = $DB->get_record("user", array("id" => $record->userid));
+                } else {
+                    $user = new \stdClass();
+                    $user->id = -1;
+                    $user->email = $record->email;
+                }
+
                 // If the user exists, send the message
                 if ($user)
                 {

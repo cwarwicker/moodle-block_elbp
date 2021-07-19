@@ -6,6 +6,9 @@
             <?php foreach($attributes as $attribute): ?>
                 <div class="b"><?= $attribute->name ?></div>
             <?php endforeach; ?>
+            <?php if(isset($notify_choose)): ?>
+                <div class="b">Notify</div>
+            <?php endif; ?>
         </div>
 
         <?php if ($items): ?>
@@ -19,12 +22,16 @@
                             <?= $attribute->displayValue() ?>
                         </div>
                     <?php endforeach; ?>
+                    <?php if(isset($notify_choose)): ?>
+                        <div></div>
+                    <?php endif; ?>
                     <?php if ( ($item->setbyuserid == $USER->id && $obj->havePermission( $obj::PERMISSION_EDIT_OWN, $permissions )) || ($item->setbyuserid <> $USER->id && $obj->havePermission( $obj::PERMISSION_EDIT_ANY, $permissions ))): ?>
                         <div><input type='hidden' name='itemID' value='<?= $item->id ?>' /><button class="elbp_btn_small" onclick="showEditRow( <?= $item->id ?> );return false;"><?= $string['edit'] ?></button></div>
                     <?php endif; ?>
                     <?php if ( ($item->setbyuserid == $USER->id && $obj->havePermission( $obj::PERMISSION_DEL_OWN, $permissions )) || ($item->setbyuserid <> $USER->id && $obj->havePermission( $obj::PERMISSION_DEL_ANY, $permissions ))): ?>
                         <div><button class="elbp_btn_small" onclick="ELBP.Custom.delete_incremental_item('<?= $obj->getName() ?>', <?= $item->id ?>);return false;"><?= $string['delete'] ?></button></div>
                     <?php endif; ?>
+
                 </div>      
 
             <?php if ( ($item->setbyuserid == $USER->id && $obj->havePermission( $obj::PERMISSION_EDIT_OWN, $permissions )) || ($item->setbyuserid <> $USER->id && $obj->havePermission( $obj::PERMISSION_EDIT_ANY, $permissions ))): ?>
@@ -32,6 +39,17 @@
                     <?php foreach($attributes as $attribute): ?>
                         <div><?= $attribute->convertToFormElement( ) ?></div>
                     <?php endforeach; ?>
+
+                    <?php if(isset($notify_choose)): ?>
+                    <div>
+                        <select name="notify_choose" multiple="multiple">
+                            <?php foreach($notify_choose as $email): ?>
+                            <option value="<?= $email ?>"><?= $email ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <?php endif; ?>
+
                     <div><input type='hidden' name='itemID' value='<?= $item->id ?>' /><button class="elbp_btn_small" onclick="validateFormSubmission( $('#form_item_<?= $item->id ?>') );return false;"><?= $string['save'] ?></button></div>
                     <div><button class="elbp_btn_small" onclick="ELBP.Custom.delete_incremental_item('<?= $obj->getName() ?>', <?= $item->id ?>);return false;"><?= $string['delete'] ?></button></div>
                 </form>

@@ -4415,6 +4415,19 @@ class ELBP
 
         }
 
+        if ($oldversion < 2020031901) {
+
+            // Add email field to queue table.
+            $table = new \xmldb_table('lbp_alert_queue');
+            $field = new \xmldb_field('email', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'userid');
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+
+            // Elbp savepoint reached.
+            \upgrade_block_savepoint(true, 2020031901, 'elbp');
+        }
+
 
 
 
