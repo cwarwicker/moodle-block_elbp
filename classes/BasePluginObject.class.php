@@ -273,5 +273,42 @@ abstract class BasePluginObject {
 
     }
 
+    protected function notifyUser($emailToUser, $subject, $content){
+
+        $Alert = new \block_elbp\EmailAlert();
+        return $Alert->queue("email", $emailToUser, $subject, $content, nl2br($content));
+
+    }
+
+    /**
+     * Add email addresses to notify, based on any User Picker submitted with the email to users setting enabled.
+     * @param $attributes
+     * @param $studentattributes
+     * @param $addresses
+     * @throws \dml_exception
+     */
+    protected function addSelectedUsersToEmail($attributes, $studentattributes, &$addresses) {
+
+        global $DB;
+
+        // Do we have a user picker with the email setting ticked?
+        foreach ($attributes as $attribute) {
+
+            if ($attribute->type == 'User Picker' && isset($attribute->other['email_users']) && $attribute->other['email_users'] == '1') {
+
+                $usernames = $studentattributes[$attribute->name];
+                foreach ((array)$usernames as $username) {
+                    $user = $DB->get_record('user', ['username' => $username]);
+                    if ($user && !in_array($user->email, $addresses)) {
+                        $addresses[] = $user->email;
+                    }
+                }
+
+            }
+
+        }
+
+    }
+
 
 }

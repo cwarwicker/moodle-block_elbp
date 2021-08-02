@@ -2496,7 +2496,7 @@ class CustomPlugin {
             if ($attribute->type == 'User Picker' && isset($attribute->other['email_users']) && $attribute->other['email_users'] == '1') {
 
                 $usernames = $studentattributes[$attribute->name];
-                foreach ($usernames as $username) {
+                foreach ((array)$usernames as $username) {
                     $user = $DB->get_record('user', ['username' => $username]);
                     if ($user && !in_array($user->email, $addresses)) {
                         $addresses[] = $user->email;

@@ -536,6 +536,13 @@ class Tutorial extends \block_elbp\BasePluginObject {
                             $this->getInfoForEventTrigger(false);
             elbp_event_trigger("Tutorial Added", $this->Tutorials->getID(), $this->studentID, $alertContent, nl2br($alertContent));
 
+            // Also email any interested parties, if user picker field included with email users enabled.
+            $addresses = [];
+            $this->addSelectedUsersToEmail($allAttributes, $this->attributes, $addresses);
+            foreach($addresses as $address)
+            {
+                $this->notifyUser($address, "Tutorial Added", $alertContent);
+            }
 
             return true;
 
@@ -669,7 +676,13 @@ class Tutorial extends \block_elbp\BasePluginObject {
                            $this->getInfoForEventTrigger(true, $tmp);
             elbp_event_trigger("Tutorial Updated", $this->Tutorials->getID(), $this->studentID, $alertContent, $htmlContent);
 
-
+            // Also email any interested parties, if user picker field included with email users enabled.
+            $addresses = [];
+            $this->addSelectedUsersToEmail($allAttributes, $this->attributes, $addresses);
+            foreach($addresses as $address)
+            {
+                $this->notifyUser($address, "Tutorial Updated", $alertContent);
+            }
 
             return true;
 
