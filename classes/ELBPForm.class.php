@@ -864,6 +864,7 @@ class ELBPFormElement {
         {
             case "Matrix":
             case "Rating":
+            case "User Picker":
                 return true;
             break;
             default:

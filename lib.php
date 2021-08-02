@@ -1701,6 +1701,25 @@ JS;
 
 
             } );
+            
+            $('.field_setting_other_email_users').unbind('change');
+            $('.field_setting_other_email_users').change( function(){
+
+                // Update hidden input, or create if not there
+                if ( $('#attribute_row_'+num+'_field_other_email_users_input').length == 0 ){
+                    var input = "<input id='attribute_row_"+num+"_field_other_email_users_input' type='hidden' name='elementOther["+num+"][email_users]' value=''>";
+                    $('#attribute_row_'+num+'_field_edit_col').append(input);
+                }
+
+                var val = ($(this).prop('checked') === true) ? 1 : 0;
+                $('#attribute_row_'+num+'_field_other_email_users_input').val(val);
+
+
+                // Update JSON object
+                ELBPFORM.fields[num].other.max = $(this).val();
+
+
+            } );
 
 
 
@@ -2260,7 +2279,15 @@ function elbp_get_attribute_edit_form( \block_elbp\ELBPFormElement $element )
 
     }
 
+    if ($element->type == 'User Picker') {
 
+        $val = (isset($element->other['email_users'])) ? $element->other['email_users'] : false;
+        $output .= "<h3>Rules</h3>";
+        $output .= "<input type='checkbox' class='field_setting_other_email_users' name='field_setting_other_email_users' value='1' ".( ($val == '1') ? 'checked': '' )." /> ";
+        $output .= "<span>Email selected users when user's plugin is updated.</span>";
+        $output .= "<br><br>";
+
+    }
 
     // Default
     if ($element->canHaveDefault()){
