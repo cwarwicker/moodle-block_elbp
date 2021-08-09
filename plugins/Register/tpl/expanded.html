@@ -23,6 +23,7 @@
                     <th class='coursetd elbp_register_freeze_col'><?= $string['course'] ?></th>
                 <?php endif; ?>
                 <?php if ($display_name_setting == 'both' || $display_name_setting == 'event' || !$display_name_setting): ?>
+                    <th class='desctd elbp_register_freeze_col'><?= $string['event'] ?></th>
                     <th class='desctd elbp_register_freeze_col'><?= $string['desc'] ?></th>
                 <?php endif; ?>
                 <th class='daytd elbp_register_freeze_col'><?= $string['day'] ?></th>
@@ -44,6 +45,7 @@
                             <td class='coursetd'><?= (isset($event->courseid)) ? \elbp_get_course_fullname($event->courseid) : '-'; ?></td>
                         <?php endif; ?>
                         <?php if ($display_name_setting == 'both' || $display_name_setting == 'event' || !$display_name_setting): ?>
+                            <td class='desctd'><?= $event->event ?></td>
                             <td class='desctd' title='<?= elbp_html($event->description) ?>'><?= $event->description ?></td>
                         <?php endif; ?>
                         <td class='daytd'><?= (isset($event->dayname)) ? $event->dayname : $event->day ?></td>

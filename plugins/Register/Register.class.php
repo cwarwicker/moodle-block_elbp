@@ -194,6 +194,7 @@ class Register extends Plugin {
         return array(
             "dayname",
             "course",
+            "event",
             "description",
             "starttime",
             "endtime",
@@ -534,7 +535,7 @@ class Register extends Plugin {
                 foreach($this->all_results as $result)
                 {
 
-                    if ($result->course == $event->course && $result->dayname == $event->day && $result->week == $week && $result->starttime == $event->starttime && $result->endtime == $event->endtime)
+                    if ($result->course == $event->course && $result->event == $event->event && $result->dayname == $event->day && $result->week == $week && $result->starttime == $event->starttime && $result->endtime == $event->endtime)
                     {
                         $val = $result->value;
                         break;
@@ -1209,6 +1210,7 @@ class Register extends Plugin {
         $userField = $this->mis_settings['mis_username_or_idnumber'];
         if (!isset($this->student->$userField)) $this->student->$userField = $this->student->username;
         $query = $this->connection->query("SELECT DISTINCT {$this->plugin_connection->getFieldMapQuerySelect('course')},
+                                                           {$this->plugin_connection->getFieldMapQuerySelect('event')},
                                                            {$this->plugin_connection->getFieldMapQuerySelect('description')},
                                                            {$this->plugin_connection->getFieldMapQuerySelect('dayname')},
                                                            {$this->plugin_connection->getFieldMapQuerySelect('daynumber')},
@@ -1237,6 +1239,7 @@ class Register extends Plugin {
              {
 
                  $courseField = $this->plugin_connection->getFieldAliasOrMap('course');
+                 $eventField = $this->plugin_connection->getFieldAliasOrMap('event');
                  $descField = $this->plugin_connection->getFieldAliasOrMap('description');
                  $dayField = $this->plugin_connection->getFieldAliasOrMap('dayname');
                  $dayNumField = $this->plugin_connection->getFieldAliasOrMap('daynumber');
@@ -1245,6 +1248,7 @@ class Register extends Plugin {
 
                  $obj = new \stdClass();
                  $obj->course = $result[$courseField];
+                 $obj->event = $result[$eventField];
                  $obj->description = $result[$descField];
                  $obj->day = $result[$dayField];
                  $obj->daynum = $result[$dayNumField];
@@ -1254,7 +1258,6 @@ class Register extends Plugin {
 
              }
          }
-
 
          return $return;
 

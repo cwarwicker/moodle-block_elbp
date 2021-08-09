@@ -814,7 +814,8 @@ $string['map:attendance:period'] = 'Period';
 $string['map:attendance:period:desc'] = 'The field of the table/view that contains a string to define what period of time this record covers, e.g. "Term 1", "Last 7 Days", etc... It should exactly match one of the Periods set in your Attendance & Punctuality plugin.';
 $string['map:student_info'] = 'Student Info';
 $string['map:student_info:desc'] = 'The field of the table/view that contains a string to define the data you want displayed in the "Student Info" section of the profile.';
-
+$string['map:event'] = 'Event';
+$string['map:event:desc'] = 'The field of the table/view that contains the event code. Where there are multiple different events on the register for the same course, this will be used to separate them.';
 
 $string['main'] = 'Main';
 $string['mainelement'] = 'Main Element';
