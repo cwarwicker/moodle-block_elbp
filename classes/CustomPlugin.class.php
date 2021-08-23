@@ -525,7 +525,7 @@ class CustomPlugin {
 
         global $CFG;
         $logo = $this->getSetting($type);
-        return ($logo) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($CFG->dataroot . DIRECTORY_SEPARATOR . 'ELBP' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $logo) : false;
+        return ($logo) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code('uploads' . DIRECTORY_SEPARATOR . $logo) : false;
 
 
     }
@@ -1834,7 +1834,7 @@ class CustomPlugin {
         $output .= "</small><br>";
 
         if ($this->getSetting('plugin_icon_dock') !== false){
-            $output .= "<img src='". $CFG->wwwroot . "/blocks/elbp/download.php?f=".\elbp_get_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $this->getSetting('plugin_icon_dock'))."' alt='' style='width:64px;height:64px;' /><br>";
+            $output .= "<img src='". $CFG->wwwroot . "/blocks/elbp/download.php?f=".\elbp_get_data_path_code('uploads' . DIRECTORY_SEPARATOR . $this->getSetting('plugin_icon_dock'))."' alt='' style='width:64px;height:64px;' /><br>";
         }
 
         $output .= "<input type='file' name='plugin_icon_dock' value='' />";
