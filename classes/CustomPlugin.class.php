@@ -3448,7 +3448,7 @@ class CustomPlugin {
             $output .= "<tr>";
                 $output .= "<td class='elbp_object_icon'>";
                 if ($this->getSetting('plugin_icon') !== false){
-                    $output .= "<img src='". $CFG->wwwroot . "/blocks/elbp/download.php?f=".\elbp_get_data_path_code($ELBP->dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $this->getSetting('plugin_icon'))."' alt='{$this->getName()}'>";
+                    $output .= "<img src='". $CFG->wwwroot . "/blocks/elbp/download.php?f=".\elbp_get_data_path_code('uploads' . DIRECTORY_SEPARATOR . $this->getSetting('plugin_icon'))."' alt='{$this->getName()}'>";
                 }
 
                 $output .= "<td class='elbp_object_name'>";

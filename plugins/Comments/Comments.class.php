@@ -103,7 +103,7 @@ class Comments extends Plugin {
         global $CFG;
         
         $img = $this->getSetting('positive_icon');
-        $path = $this->getDataRoot() . '/custom_pix/'.$img;
+        $path = '/custom_pix/'.$img;
         
         return ($img && file_exists($path)) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($path) : $CFG->wwwroot . '/blocks/elbp/plugins/Comments/pix/positive.png';
         
@@ -119,7 +119,7 @@ class Comments extends Plugin {
         global $CFG;
         
         $img = $this->getSetting('negative_icon');
-        $path = $this->getDataRoot() . '/custom_pix/'.$img;
+        $path = '/custom_pix/'.$img;
         
         return ($img && file_exists($path)) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($path) : $CFG->wwwroot . '/blocks/elbp/plugins/Comments/pix/negative.png';
         

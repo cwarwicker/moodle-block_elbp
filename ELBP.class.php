@@ -193,7 +193,7 @@ class ELBP
 
         global $CFG;
         $logo = \block_elbp\Setting::getSetting('print_logo');
-        return ($logo) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code($CFG->dataroot . DIRECTORY_SEPARATOR . 'ELBP' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $logo) : false;
+        return ($logo) ? $CFG->wwwroot . '/blocks/elbp/download.php?f=' . \elbp_get_data_path_code('uploads' . DIRECTORY_SEPARATOR . $logo) : false;
 
     }
 

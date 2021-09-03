@@ -178,7 +178,7 @@
     <br>
     <?php if ($ELBP->getSetting('student_user_guide') !== false): ?>
         <?php if (\file_exists($CFG->dataroot . '/ELBP/' . $ELBP->getSetting('student_user_guide'))): ?>
-            <a href="<?= $CFG->wwwroot ?>/blocks/elbp/download.php?f=<?= elbp_get_data_path_code( $CFG->dataroot . '/ELBP/' . $ELBP->getSetting('student_user_guide') ) ?>" target="_blank"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/file_icons/<?= \elbp_get_file_icon( $ELBP->getSetting('student_user_guide') ) ?>" /> <?= $ELBP->getSetting('student_user_guide') ?></a>
+            <a href="<?= $CFG->wwwroot ?>/blocks/elbp/download.php?f=<?= elbp_get_data_path_code( $ELBP->getSetting('student_user_guide') ) ?>" target="_blank"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/file_icons/<?= \elbp_get_file_icon( $ELBP->getSetting('student_user_guide') ) ?>" /> <?= $ELBP->getSetting('student_user_guide') ?></a>
             <br>
         <?php endif; ?>
     <?php endif; ?>
@@ -190,7 +190,7 @@
     <br>
     <?php if ($ELBP->getSetting('staff_user_guide') !== false): ?>
         <?php if (\file_exists($CFG->dataroot . '/ELBP/' . $ELBP->getSetting('staff_user_guide'))): ?>
-            <a href="<?= $CFG->wwwroot ?>/blocks/elbp/download.php?f=<?= elbp_get_data_path_code( $CFG->dataroot . '/ELBP/' . $ELBP->getSetting('staff_user_guide') ) ?>" target="_blank"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/file_icons/<?= \elbp_get_file_icon( $ELBP->getSetting('staff_user_guide') ) ?>" /> <?= $ELBP->getSetting('staff_user_guide') ?></a>
+            <a href="<?= $CFG->wwwroot ?>/blocks/elbp/download.php?f=<?= elbp_get_data_path_code( $ELBP->getSetting('staff_user_guide') ) ?>" target="_blank"><img src="<?= $CFG->wwwroot ?>/blocks/elbp/pix/file_icons/<?= \elbp_get_file_icon( $ELBP->getSetting('staff_user_guide') ) ?>" /> <?= $ELBP->getSetting('staff_user_guide') ?></a>
             <br>
         <?php endif; ?>
     <?php endif; ?>

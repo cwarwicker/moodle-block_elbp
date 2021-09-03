@@ -90,7 +90,7 @@ class block_elbp extends block_base
 
             // User Guide
             if ($this->elbp->getSetting('student_user_guide') && (\file_exists($CFG->dataroot . '/ELBP/' . $this->elbp->getSetting('student_user_guide')))){
-                $this->content->text .= '<li><img src="'.$CFG->wwwroot.'/blocks/elbp/pix/file_icons/'.\elbp_get_file_icon( $this->elbp->getSetting('student_user_guide') ).'" /> <a href="'.$CFG->wwwroot.'/blocks/elbp/download.php?f='.elbp_get_data_path_code( $CFG->dataroot . '/ELBP/' . $this->elbp->getSetting('student_user_guide') ).'" target="_blank">'.get_string('userguide', 'block_elbp').'</a></li>';
+                $this->content->text .= '<li><img src="'.$CFG->wwwroot.'/blocks/elbp/pix/file_icons/'.\elbp_get_file_icon( $this->elbp->getSetting('student_user_guide') ).'" /> <a href="'.$CFG->wwwroot.'/blocks/elbp/download.php?f='.elbp_get_data_path_code( $this->elbp->getSetting('student_user_guide') ).'" target="_blank">'.get_string('userguide', 'block_elbp').'</a></li>';
             }
 
 
@@ -133,7 +133,7 @@ class block_elbp extends block_base
 
             // User Guide
             if ($this->elbp->getSetting('staff_user_guide') && (\file_exists($CFG->dataroot . '/ELBP/' . $this->elbp->getSetting('staff_user_guide')))){
-                $this->content->text .= '<li><img src="'.$CFG->wwwroot.'/blocks/elbp/pix/file_icons/'.\elbp_get_file_icon( $this->elbp->getSetting('staff_user_guide') ).'" /> <a href="'.$CFG->wwwroot.'/blocks/elbp/download.php?f='.elbp_get_data_path_code( $CFG->dataroot . '/ELBP/' . $this->elbp->getSetting('staff_user_guide') ).'" target="_blank">'.get_string('userguide', 'block_elbp').'</a></li>';
+                $this->content->text .= '<li><img src="'.$CFG->wwwroot.'/blocks/elbp/pix/file_icons/'.\elbp_get_file_icon( $this->elbp->getSetting('staff_user_guide') ).'" /> <a href="'.$CFG->wwwroot.'/blocks/elbp/download.php?f='.elbp_get_data_path_code( $this->elbp->getSetting('staff_user_guide') ).'" target="_blank">'.get_string('userguide', 'block_elbp').'</a></li>';
             }
 
             // WLBP Manager link
