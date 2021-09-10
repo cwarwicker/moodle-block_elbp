@@ -369,7 +369,7 @@ class ELBPFormElement {
 
             if (!$print)
             {
-                $code = \elbp_create_data_path_code( $CFG->dataroot . '/ELBP/' . $this->getValue() );
+                $code = \elbp_create_data_path_code( $this->getValue() );
                 $output .= "<a href='{$CFG->wwwroot}/blocks/elbp/download.php?f={$code}' target='_blank'>";
             }
 
